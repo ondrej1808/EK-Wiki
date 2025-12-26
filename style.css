@@ -158,6 +158,8 @@ body {
 .stat-value { color: #667eea; margin-left: 5px; }
 
 /* --- Cards --- */
+
+/* --- Cards --- */
 .cards-grid {
     position: relative; width: 100%; max-width: 800px; height: 100%; perspective: 1000px;
     display: flex; align-items: center; justify-content: center; padding: 0 20px;
@@ -171,7 +173,192 @@ body {
     overflow: hidden; touch-action: manipulation; user-select: none;
 }
 
-.card-content { flex: 1; overflow: hidden; padding: 40px; display: flex; flex-direction: column; min-height: 0; }
+.card-content { 
+    flex: 1; 
+    overflow: hidden; 
+    padding: 30px 40px; /* Trochu menší padding nahoře */
+    display: flex; 
+    flex-direction: column; 
+    min-height: 0; 
+}
+
+/* Stack Logic */
+.card.stack-0 { z-index: 30; transform: translateY(0) scale(1); opacity: 1; }
+.card.stack-1 { z-index: 20; transform: translateY(-30px) scale(0.95); opacity: 0; pointer-events: none; visibility: hidden; }
+.card.stack-2 { z-index: 10; transform: translateY(-60px) scale(0.9); opacity: 0; pointer-events: none; visibility: hidden; }
+.card.stack-prev { z-index: 5; transform: translateY(30px) scale(0.95); opacity: 0; pointer-events: none; visibility: hidden; }
+
+.card.swiping { transition: none !important; }
+.card.swipe-left { animation: swipeLeftOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.card.swipe-right { animation: swipeRightOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes swipeLeftOut { to { transform: translateX(-150%) scale(0.8) rotate(-10deg); opacity: 0; } }
+@keyframes swipeRightOut { to { transform: translateX(150%) scale(0.8) rotate(10deg); opacity: 0; } }
+
+/* === NOVÝ DESIGN HEADERU (Fix issues 1, 4, 5) === */
+.card-header {
+    display: flex;
+    flex-direction: column; /* Komponenty pod sebou */
+    width: 100%;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+.card-top-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.card-number { 
+    color: #667eea; 
+    font-size: 13px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+/* Kontejner pro kategorii a vlajku */
+.card-meta-row {
+    display: flex;
+    flex-direction: row;        /* Prvky vedle sebe */
+    justify-content: space-between;
+    align-items: flex-start;    /* Zarovnat nahoru (aby kategorie mohla růst dolů) */
+    gap: 10px;                  /* Mezera mezi textem a vlajkou */
+    width: 100%;
+    min-height: 30px;           /* Minimální výška řádku */
+}
+
+/* Samotný štítek kategorie */
+.category-badge {
+    background: var(--option-bg);
+    border: 1px solid var(--border-color);
+    color: var(--card-text);
+    padding: 8px 12px;          /* Trochu větší padding pro čitelnost */
+    border-radius: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+
+    /* === KLÍČOVÉ OPRAVY === */
+    display: block;             /* Musí se chovat jako blok */
+    flex: 1 1 auto;             /* Flexibilní šířka, může růst i se zmenšovat */
+    width: 0;                   /* Trik pro flexbox: vynutí zalamování i dlouhých slov */
+    min-width: 0;               /* Druhá část triku pro Firefox/Chrome */
+    
+    white-space: normal !important;    /* Vynutit zalamování řádků */
+    overflow-wrap: break-word;         /* Zalomit i dlouhá slova */
+    word-wrap: break-word;             /* Kompatibilita */
+    word-break: break-word;            /* Roztrhnout slovo, pokud se nevejde */
+    hyphens: auto;                     /* Dělení slov pokud je podporováno */
+    
+    height: auto !important;           /* Výška se musí přizpůsobit obsahu */
+    overflow: visible !important;      /* Žádné skrývání přetékajícího textu */
+    text-align: left;
+    line-height: 1.4;
+}
+
+/* Vlajka musí zůstat napravo a nesmí se smrsknout */
+.flag-btn { 
+    background: none; 
+    border: none; 
+    font-size: 24px; 
+    cursor: pointer; 
+    padding: 0; 
+    transition: transform 0.2s;
+    
+    flex: 0 0 auto;             /* Nesmí růst ani se zmenšovat */
+    margin-left: 5px;           /* Odstup od textu */
+    margin-top: 0;              /* Zarovnání s prvním řádkem textu */
+    line-height: 1;
+}
+.flag-btn:hover { transform: scale(1.2); }
+.flag-btn.flagged { filter: none; }
+.flag-btn:not(.flagged) { filter: grayscale(100%); opacity: 0.3; }
+
+/* === KONEC NOVÉHO DESIGNU === */
+
+.card-question {
+    font-size: 20px; /* Mírně menší pro mobily */
+    font-weight: bold; 
+    color: var(--card-text); 
+    margin-bottom: 20px;
+    padding-bottom: 15px; 
+    line-height: 1.5; 
+    text-align: center; 
+    transition: color 0.3s ease;
+    background: transparent; 
+    border-bottom: 2px solid var(--border-color); 
+    flex-shrink: 0;
+}
+
+.card-scrollable-content { 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    flex: 1; 
+    padding-right: 5px; 
+    padding-bottom: 40px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+/* Closed Questions Options */
+.card-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.option-btn {
+    background: var(--option-bg); border: 2px solid var(--option-border); padding: 16px;
+    font-size: 16px; border-radius: 12px; cursor: pointer; transition: all 0.2s;
+    text-align: left; position: relative; color: var(--card-text); font-weight: 500;
+    line-height: 1.4;
+}
+.option-btn:hover:not(:disabled) { background: var(--option-hover-bg); border-color: #667eea; transform: translateX(5px); }
+.option-btn:disabled { cursor: not-allowed; }
+.option-btn.correct { background: #28a745 !important; border-color: #1e7e34 !important; color: #ffffff !important; font-weight: bold; }
+.option-btn.wrong { background: #dc3545 !important; border-color: #c82333 !important; color: #ffffff !important; font-weight: bold; }
+
+/* Open Questions Content */
+.open-question-content { display: none; flex-direction: column; gap: 20px; color: var(--card-text); animation: fadeIn 0.5s ease; }
+.open-question-content.visible { display: flex; }
+.answer-part { background: var(--option-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
+.answer-part h3 { color: #667eea; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+.answer-part p { margin-bottom: 10px; line-height: 1.5; }
+.answer-image { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; display: block; }
+.answer-caption { font-size: 0.9em; color: var(--card-text); opacity: 0.8; text-align: center; font-style: italic; }
+
+/* Tables in answers */
+.custom-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.9em; }
+.custom-table th, .custom-table td { padding: 8px; border: 1px solid var(--border-color); text-align: left; }
+.custom-table th { background: var(--option-hover-bg); font-weight: bold; }
+
+/* Open Question Actions */
+.open-question-actions { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; align-items: center; justify-content: center; }
+.evaluation-buttons { display: none; gap: 15px; width: 100%; justify-content: center; }
+.evaluation-buttons.visible { display: flex; }
+
+.action-btn {
+    padding: 15px 30px; font-size: 16px; font-weight: bold; border: none;
+    border-radius: 25px; cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 300px;
+}
+.action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+.action-btn.show-answer { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+.action-btn.correct-self { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; flex: 1; }
+.action-btn.wrong-self { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; flex: 1; }
+
+.card.answered { background: var(--answered-bg); border: 3px solid var(--answered-border); }
+.card.flagged { border: 4px solid #ff5722; }
+
+/* ... (zbytek souboru .nav-btn, .explanation, utilities, media queries atd. je beze změn) ... */
+
+/* Přidat styl pro Select Wrapper */
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.subject-select {
+    appearance: none; -webkit-appearance: none; padding: 10px 35px 10px 20px; font-size: 14px; font-weight: bold; border: 1px solid var(--border-color); border-radius: 25px; cursor: pointer; background-color: var(--card-bg); color: var(--card-text); box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s; outline: none; min-width: 180px; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23667eea%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto;
+}
 
 /* Stack Logic */
 .card.stack-0 { z-index: 30; transform: translateY(0) scale(1); opacity: 1; }

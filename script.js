@@ -1,5 +1,8 @@
 let questions = [];
 let currentCardIndex = 0;
+// Current Subject Key for local storage
+let currentSubjectKey = 'default'; 
+
 let stats = {
     correct: 0,
     wrong: 0,
@@ -19,6 +22,28 @@ if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
     document.documentElement.classList.add('dark-mode');
 }
+
+// === KEYBOARD NAVIGATION (Fix issue 3) ===
+document.addEventListener('keydown', (e) => {
+    // Only navigate if no modal is open (menu)
+    if (document.querySelector('.menu-overlay').classList.contains('active')) return;
+    
+    if (e.key === 'ArrowRight') {
+        nextCard();
+    } else if (e.key === 'ArrowLeft') {
+        prevCard();
+    } else if (e.key === ' ' || e.key === 'Enter') {
+        // Optional: Reveal answer on Space/Enter
+        const card = document.querySelector('.card.stack-0');
+        if (card) {
+            const showBtn = card.querySelector('.show-answer');
+            if (showBtn && showBtn.style.display !== 'none') {
+                revealOpenAnswer(showBtn);
+                e.preventDefault();
+            }
+        }
+    }
+});
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
@@ -53,7 +78,6 @@ function toggleMenu() {
         selectContainer.appendChild(clonedSelect);
         menuContent.appendChild(selectContainer);
 
-        // Add controls
         const controls = [
             { text: '📂 Nahrát vlastní', class: 'btn-primary', action: "document.getElementById('fileInput').click()" },
             { text: '🔄 Import Anki', class: 'btn-warning', action: "document.getElementById('ankiInput').click()" },
@@ -69,7 +93,6 @@ function toggleMenu() {
             menuContent.appendChild(button);
         });
 
-        // Add flag toggle
         const flagDiv = document.createElement('div');
         flagDiv.className = 'filter-checkbox';
         flagDiv.style.marginTop = '10px';
@@ -94,13 +117,16 @@ async function changeSubject(path) {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         
-        // Update select value visually (in case triggered programmatically)
         const select = document.getElementById('subjectSelect');
         if(select) select.value = path;
         
         // Save choice
         localStorage.setItem('tsi_last_subject', path);
         
+        // Set unique key for this subject for persistence
+        // We use the filename as ID
+        currentSubjectKey = path; 
+
         loadQuestions(data);
     } catch (error) {
         console.error("Error loading subject:", error);
@@ -117,12 +143,24 @@ function loadQuestions(data) {
             type: q.type || 'closed'
         }));
         document.querySelector('.header-title h1').textContent = data.title || "TSI Kartičky";
+        
+        // If loading custom file, use title as key
+        if(currentSubjectKey === 'default') {
+             currentSubjectKey = data.title ? 'custom_' + data.title.replace(/\s+/g, '_') : 'custom_file';
+        }
+
     } else {
         showMessage('Neplatný formát JSON souboru!', 'error');
         return;
     }
     
-    resetStats();
+    // Reset internal state
+    stats = { correct: 0, wrong: 0, answered: new Set() };
+    currentCardIndex = 0;
+    
+    // Try to restore progress for this specific subject (Fix issue 2)
+    loadProgress();
+    
     updateUI();
     showMessage(`Načteno ${questions.length} otázek`, 'success');
 }
@@ -132,6 +170,27 @@ function getFilteredQuestions() {
         return questions.filter(q => flaggedQuestions.has(q.id));
     }
     return questions;
+}
+
+// === RENDER LOGIC ===
+
+function renderMath(element) {
+    // Fix issue 6: Extended delimiters config for matrices
+    renderMathInElement(element, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true},
+            {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+            {left: "\\begin{align}", right: "\\end{align}", display: true},
+            {left: "\\begin{pmatrix}", right: "\\end{pmatrix}", display: true},
+            {left: "\\begin{matrix}", right: "\\end{matrix}", display: true},
+            {left: "\\begin{vmatrix}", right: "\\end{vmatrix}", display: true}
+        ],
+        throwOnError: false,
+        trust: true
+    });
 }
 
 function updateUI() {
@@ -159,13 +218,8 @@ function updateUI() {
             const card = createCard(filteredQuestions[index], index, total, i);
             grid.appendChild(card);
             
-            renderMathInElement(card, {
-                delimiters: [
-                    {left: '$$', right: '$$', display: true},
-                    {left: '$', right: '$', display: false}
-                ],
-                throwOnError: false
-            });
+            // Render Math immediately
+            renderMath(card);
         }
     }
 
@@ -183,23 +237,27 @@ function createCard(q, index, total, stackIndex) {
     if (flaggedQuestions.has(q.id)) card.classList.add('flagged');
     
     const isFlagged = flaggedQuestions.has(q.id);
-    const categoryBadge = q.category ? `<span class="category-badge">${q.category}</span>` : '';
+    const categoryBadge = q.category ? `<div class="category-badge">${q.category}</div>` : '';
 
+    // === NEW HEADER STRUCTURE (Fix issues 1, 4, 5) ===
     let html = `
         <div class="card-content">
             <div class="card-header">
-                <div style="flex: 1; text-align: center;">
-                    ${categoryBadge}
+                <div class="card-top-row">
                     <div class="card-number">Otázka ${index + 1} / ${total}</div>
                 </div>
-                <button class="flag-btn ${isFlagged ? 'flagged' : ''}" onclick="toggleFlag(${q.id}, event)">
-                    ${isFlagged ? '🚩' : '🏳️'}
-                </button>
+                <div class="card-meta-row">
+                    ${categoryBadge}
+                    <button class="flag-btn ${isFlagged ? 'flagged' : ''}" onclick="toggleFlag(${q.id}, event)">
+                        ${isFlagged ? '🚩' : '🏳️'}
+                    </button>
+                </div>
             </div>
             
             <div class="card-scrollable-content">
                 <div class="card-question">${q.question}</div>
     `;
+    // === END NEW HEADER ===
 
     if (q.type === 'open') {
         html += `
@@ -215,8 +273,7 @@ function createCard(q, index, total, stackIndex) {
                 </div>
         `;
     } else {
-        // === OPRAVENÁ ČÁST ZDE ===
-        // Proměnná isAnswered musí být definována ZDE, před cyklem options
+        // Fix for isAnswered scope
         const isAnswered = stats.answered.has(q.id);
         
         html += `<div class="card-options">`;
@@ -233,7 +290,6 @@ function createCard(q, index, total, stackIndex) {
         });
         html += `</div>`;
         
-        // Nyní už je proměnná isAnswered viditelná i zde
         if (q.explanation) {
             html += `
                 <div class="card-answer ${isAnswered ? 'show' : ''}" id="explanation-${q.id}">
@@ -295,6 +351,9 @@ function checkAnswer(qId, optionIndex, btnElement) {
     const expl = card.querySelector('.card-answer');
     if (expl) expl.classList.add('show');
     
+    // Render math in explanation if needed
+    if(expl) renderMath(expl);
+    
     card.classList.add('answered');
     updateStats();
 }
@@ -306,7 +365,8 @@ function revealOpenAnswer(btn) {
     btn.style.display = 'none';
     content.classList.add('visible');
     evalBtns.classList.add('visible');
-    renderMathInElement(content, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false});
+    
+    renderMath(content);
 }
 
 function rateOpenAnswer(qId, knewIt) {
@@ -353,7 +413,7 @@ function toggleFlag(qId, event) {
             btn.classList.remove('flagged');
         }
     }
-    saveProgressToUrl();
+    saveProgress();
 }
 
 function toggleFlaggedMode() {
@@ -365,8 +425,11 @@ function toggleFlaggedMode() {
 
 function updateStats() {
     const total = getFilteredQuestions().length;
-    const actualRemaining = total - currentCardIndex;
-    const totalAnswered = stats.correct + stats.wrong;
+    
+    // Zjistíme počet skutečně zodpovězených unikátních otázek
+    const totalAnswered = stats.answered.size; 
+    
+    const actualRemaining = total - totalAnswered;
     const accuracy = totalAnswered === 0 ? 0 : Math.round((stats.correct / totalAnswered) * 100);
 
     document.getElementById('totalCount').textContent = total;
@@ -378,23 +441,28 @@ function updateStats() {
     document.getElementById('mobileRemaining').textContent = actualRemaining;
     document.getElementById('mobileAccuracy').textContent = `${accuracy}%`;
 
-    const progress = total === 0 ? 0 : ((currentCardIndex) / total) * 100;
+    // OPRAVA ZDE: Progress bar se nyní počítá podle počtu zodpovězených / celkem
+    const progress = total === 0 ? 0 : (totalAnswered / total) * 100;
+    
     document.getElementById('progressBar').style.width = `${progress}%`;
     document.getElementById('progressText').textContent = `🎯 Pokrok: ${Math.round(progress)}%`;
     
-    saveProgressToUrl();
+    saveProgress();
 }
 
 function resetStats() {
     currentCardIndex = 0;
     stats = { correct: 0, wrong: 0, answered: new Set() };
-    updateStats();
+    // DO NOT updateStats() here blindly if called from loadQuestions, 
+    // because loadProgress will overwrite it immediately.
 }
 
 function resetProgress() {
     if(confirm("Opravdu chcete resetovat celý postup?")) {
-        resetStats();
+        stats = { correct: 0, wrong: 0, answered: new Set() };
+        currentCardIndex = 0;
         flaggedQuestions.clear();
+        saveProgress(); // Save the wipe
         updateUI();
     }
 }
@@ -417,19 +485,37 @@ function downloadFailed() {
     a.remove();
 }
 
-function saveProgressToUrl() {
-    const state = { idx: currentCardIndex, flags: Array.from(flaggedQuestions) };
-    localStorage.setItem('tsi_state', JSON.stringify(state));
+// === PERSISTENCE (Fix issue 2) ===
+function saveProgress() {
+    const state = {
+        idx: currentCardIndex,
+        flags: Array.from(flaggedQuestions),
+        stats: {
+            correct: stats.correct,
+            wrong: stats.wrong,
+            answered: Array.from(stats.answered)
+        }
+    };
+    // Use unique key per subject
+    localStorage.setItem('tsi_save_' + currentSubjectKey, JSON.stringify(state));
 }
 
-function loadProgressFromUrl() {
-    const saved = localStorage.getItem('tsi_state');
+function loadProgress() {
+    const saved = localStorage.getItem('tsi_save_' + currentSubjectKey);
     if (saved) {
         try {
             const state = JSON.parse(saved);
-            currentCardIndex = state.idx || 0;
+            // Restore only if index is valid within new set
+            if(state.idx < questions.length) currentCardIndex = state.idx || 0;
+            
             if (state.flags) flaggedQuestions = new Set(state.flags);
-        } catch (e) { console.error(e); }
+            
+            if (state.stats) {
+                stats.correct = state.stats.correct || 0;
+                stats.wrong = state.stats.wrong || 0;
+                if(state.stats.answered) stats.answered = new Set(state.stats.answered);
+            }
+        } catch (e) { console.error("Save load error", e); }
     }
 }
 
@@ -470,9 +556,10 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                loadQuestions(JSON.parse(e.target.result));
-                // Clear select selection to indicate custom file
+                // Reset select because we are loading custom file
+                currentSubjectKey = 'custom_' + file.name;
                 document.getElementById('subjectSelect').value = "";
+                loadQuestions(JSON.parse(e.target.result));
             } catch (err) { showMessage('Chyba JSON!', 'error'); }
         };
         reader.readAsText(file);
@@ -500,8 +587,9 @@ document.getElementById('ankiInput').addEventListener('change', function(e) {
                         });
                     }
                 });
-                loadQuestions({title: "Import Anki", questions: newQuestions});
+                currentSubjectKey = 'anki_' + file.name;
                 document.getElementById('subjectSelect').value = "";
+                loadQuestions({title: "Import Anki", questions: newQuestions});
                 showMessage(`Importováno ${questions.length} otázek!`, 'success');
             } catch (err) { showMessage('Chyba importu!', 'error'); }
         };
@@ -521,8 +609,6 @@ function showMessage(text, type = 'info') {
 
 // Startup Logic
 window.addEventListener('load', () => {
-    loadProgressFromUrl();
-    
     // Check if there was a last selected subject
     const lastSubject = localStorage.getItem('tsi_last_subject');
     
