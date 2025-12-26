@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolo Štěstí - Kvíz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 30px;
+            overflow: hidden;
+        }
+
+        .left-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .right-section {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: block;
+            width: 100%;
+            flex: 1;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-wrapper .btn {
+            width: 100%;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .button-row > * {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stats h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .wheel-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-top: 50px solid #FFD700;
+            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3));
+            z-index: 10;
+        }
+
+        canvas {
+            border-radius: 50%;
+            box-shadow: 0 15px 60px rgba(0,0,0,0.4);
+            background: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        canvas:hover {
+            transform: scale(1.02);
+        }
+        
+        canvas:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .spin-btn {
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .speed-control {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .speed-control label {
+            display: block;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .speed-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            outline: none;
+            -webkit-appearance: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.6);
+            border: 3px solid white;
+        }
+
+        .speed-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.6);
+        }
+
+        .speed-value {
+            display: inline-block;
+            margin-left: 5px;
+            color: #ffeb3b;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .question-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 3px solid #e9ecef;
+            padding: 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option-btn.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-btn.correct::before,
+        .option-btn.wrong::before {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-size: 20px;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .option-btn.correct::before {
+            content: '✓';
+            background: #28a745;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong::before {
+            content: '✗';
+            background: #dc3545;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .close-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .explanation-container {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .explanation-container.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .explanation-text {
+            color: #333;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .explanation-text strong {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .explanation-text .katex {
+            font-size: 1.1em;
+        }
+
+        #messageContainer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+
+        .subway-surfers-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10000;
+            opacity: 0.3;
+            pointer-events: none;
+            display: none;
+        }
+
+        .subway-surfers-bg.active {
+            display: block;
+        }
+
+        .subway-surfers-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .checkbox-container:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+        }
+
+        .progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, 
+                #ff0080 0%, 
+                #ff8c00 20%, 
+                #40e0d0 40%, 
+                #00ff7f 60%, 
+                #9370db 80%, 
+                #ff1493 100%);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0 20px 20px 0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
+                        0 0 40px rgba(255, 0, 255, 0.3);
+        }
+
+        .progress-text {
+            position: relative;
+            z-index: 10001;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8),
+                         0 0 20px rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">🎯 Pokrok: 0%</div>
+    </div>
+    <div class="subway-surfers-bg" id="subwaySurfersBg">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzJ3eGQyNjBnZnE2cTBkMnZ4ZnRhYzZxdnBvYnN6YnRrYzN3YWh6YiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNQ03J5JxX6lva/giphy.gif" alt="Subway Surfers">
+    </div>
+    <div id="messageContainer"></div>
+    <div class="left-section">
+        <div class="wheel-container">
+            <div class="arrow"></div>
+            <canvas id="wheelCanvas" width="700" height="700"></canvas>
+        </div>
+    </div>
+
+    <div class="right-section">
+        <div class="controls">
+            <h2>⚙️ Ovládání</h2>
+            <div class="button-row">
+                <div class="file-input-wrapper">
+                    <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">📁 Nahrát JSON</button>
+                    <input type="file" id="fileInput" accept=".json">
+                </div>
+                <button class="btn btn-primary" id="downloadBtn">💾 Stáhnout Vzor JSON</button>
+            </div>
+            <button class="btn btn-secondary" id="resetBtn">🔄 Reset Kola</button>
+            <button class="btn btn-success" id="shareBtn">🔗 Sdílet Progress</button>
+            <div class="checkbox-container">
+                <input type="checkbox" id="subwaySurfersToggle">
+                <label for="subwaySurfersToggle">🎮 Subway Surfers Background</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="shuffleAnswersToggle">
+                <label for="shuffleAnswersToggle">🔀 Náhodné pořadí odpovědí</label>
+            </div>
+            <div class="speed-control">
+                <label for="speedSlider">⚡ Rychlost kola: <span class="speed-value" id="speedValue">Normální</span></label>
+                <input type="range" id="speedSlider" class="speed-slider" min="1" max="5" value="3" step="1">
+            </div>
+            <button class="spin-btn" id="spinBtn">Roztočit Kolo</button>
+        </div>
+
+        <div class="stats">
+            <h2>📊 Statistiky</h2>
+            <div class="stat-item">
+                <span>Celkem otázek:</span>
+                <span class="stat-value" id="totalQuestions">0</span>
+            </div>
+            <div class="stat-item">
+                <span>✅ Zodpovězeno:</span>
+                <span class="stat-value" id="answeredQuestions">0</span>
+            </div>
+            <div class="stat-item">
+                <span>❌ Špatných odpovědí:</span>
+                <span class="stat-value" id="wrongAnswers">0</span>
+            </div>
+            <div class="stat-item">
+                <span>⏳ Zbývá:</span>
+                <span class="stat-value" id="remainingQuestions">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Otázka #1</div>
+            </div>
+            <div class="question-text" id="questionText"></div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="explanation-container" id="explanationContainer">
+                <div class="explanation-title">💡 Vysvětlení:</div>
+                <div class="explanation-text" id="explanationText"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="close-btn" id="closeBtn">Pokračovat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to render explanation with markdown and LaTeX
+        function renderExplanation(text, element) {
+            // Convert markdown bold **text** to <strong>text</strong>
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Set the HTML
+            element.innerHTML = html;
+            
+            // Render LaTeX math with KaTeX (wait for library to load)
+            setTimeout(() => {
+                if (window.renderMathInElement) {
+                    renderMathInElement(element, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
+            }, 100);
+        }
+
+        // Globální proměnné
+        let allQuestions = [];
+        let activeQuestions = [];
+        let answeredCorrectly = [];
+        let wrongAnswersCount = 0;
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        // Načtení obrázku pro pozadí kola
+        const backgroundImage = new Image();
+        backgroundImage.src = 'jares.jpg';
+        let imageLoaded = false;
+        backgroundImage.onload = () => {
+            imageLoaded = true;
+            drawWheel();
+        };
+        
+        let isSpinning = false;
+        let startAngle = 0;
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
+        
+        // Preload audio files
+        const tickSound = new Audio('tick.wav');
+        const applauseSound = new Audio('applause.ogg');
+        tickSound.volume = 0.5;
+        applauseSound.volume = 0.7;
+        
+        // Audio pool for tick sounds to prevent overload
+        const tickSoundPool = [];
+        const TICK_POOL_SIZE = 10;
+        for (let i = 0; i < TICK_POOL_SIZE; i++) {
+            const audio = new Audio('tick.wav');
+            audio.volume = 0.5;
+            tickSoundPool.push(audio);
+        }
+        let currentTickIndex = 0;
+        
+        // Throttle tick sound to prevent too many plays
+        let lastTickTime = 0;
+        const TICK_THROTTLE_MS = 50;
+        
+        // Cookie management functions
+        function saveProgressToCookies() {
+            const answeredIds = answeredCorrectly.map(q => q.id);
+            document.cookie = `tsi_answered=${JSON.stringify(answeredIds)};max-age=2592000;path=/`; // 30 days
+            document.cookie = `tsi_wrong=${wrongAnswersCount};max-age=2592000;path=/`;
+        }
+        
+        function loadProgressFromCookies() {
+            const cookies = document.cookie.split(';');
+            const result = { answeredIds: [], wrongCount: 0 };
+            
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'tsi_answered') {
+                    try {
+                        result.answeredIds = JSON.parse(value);
+                    } catch (e) {
+                        console.error('Failed to parse answered cookie:', e);
+                    }
+                } else if (name === 'tsi_wrong') {
+                    result.wrongCount = parseInt(value) || 0;
+                }
+            }
+            return result;
+        }
+        
+        function clearProgressCookies() {
+            document.cookie = 'tsi_answered=;max-age=0;path=/';
+            document.cookie = 'tsi_wrong=;max-age=0;path=/';
+        }
+        
+        // Function to play tick sound
+        function playTick() {
+            const now = Date.now();
+            if (now - lastTickTime < TICK_THROTTLE_MS) {
+                return; // Skip if too soon after last tick
+            }
+            lastTickTime = now;
+            
+            const sound = tickSoundPool[currentTickIndex];
+            sound.currentTime = 0;
+            sound.play().catch(e => {}); // Silent fail
+            currentTickIndex = (currentTickIndex + 1) % TICK_POOL_SIZE;
+        }
+        
+        // Function to play applause sound
+        function playApplause() {
+            // Stop any playing audio first
+            tickSoundPool.forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            
+            applauseSound.currentTime = 0;
+            applauseSound.play().catch(e => console.log('Audio play failed:', e));
+        }
+
+        // Načtení progressu z URL
+        function loadProgressFromUrl() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#progress=')) {
+                try {
+                    const encoded = hash.substring(10); // remove '#progress='
+                    const progressData = JSON.parse(atob(encoded));
+                    
+                    // Apply progress to cookies (using correct cookie names)
+                    const answeredIds = progressData.answered || [];
+                    const wrong = progressData.wrong || 0;
+                    
+                    document.cookie = `tsi_answered=${JSON.stringify(answeredIds)}; max-age=${30 * 24 * 60 * 60}; path=/`;
+                    document.cookie = `tsi_wrong=${wrong}; max-age=${30 * 24 * 60 * 60}; path=/`;
+                    
+                    showMessage('✅ Progress načten ze sdíleného linku!', 'success');
+                    
+                    // Clear hash from URL
+                    history.replaceState(null, null, window.location.pathname);
+                } catch (e) {
+                    console.error('Neplatný progress link:', e);
+                    showMessage('⚠️ Neplatný progress link!', 'error');
+                }
+            }
+        }
+
+        // Načtení výchozích otázek při startu
+        window.addEventListener('load', async () => {
+            // First, load progress from URL if available
+            loadProgressFromUrl();
+            
+            try {
+                const response = await fetch('tsi-json-questions-explanation.json');
+                const data = await response.json();
+                loadQuestions(data);
+                showMessage(`Načteno ${data.questions.length} TSI otázek!`, 'success');
+            } catch (error) {
+                console.error('Chyba při načítání JSON:', error);
+                showMessage('Chyba při načítání otázek ze souboru!', 'error');
+            }
+        });
+
+        // Načtení otázek
+        function loadQuestions(data) {
+            if (!data.questions || !Array.isArray(data.questions)) {
+                showMessage('Neplatný formát JSON! Očekává se pole "questions".', 'error');
+                return;
+            }
+
+            allQuestions = data.questions;
+            
+            // Restore progress from cookies
+            const savedProgress = loadProgressFromCookies();
+            if (savedProgress.answeredIds.length > 0) {
+                answeredCorrectly = allQuestions.filter(q => savedProgress.answeredIds.includes(q.id));
+                activeQuestions = allQuestions.filter(q => !savedProgress.answeredIds.includes(q.id));
+                wrongAnswersCount = savedProgress.wrongCount;
+                showMessage(`Načteno ${allQuestions.length} otázek! Obnoveno ${answeredCorrectly.length} zodpovězených.`, 'success');
+            } else {
+                activeQuestions = [...allQuestions];
+                answeredCorrectly = [];
+                wrongAnswersCount = 0;
+                showMessage(`Načteno ${allQuestions.length} otázek!`, 'success');
+            }
+            
+            updateStats();
+            drawWheel();
+        }
+
+        // Nahrání souboru
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        loadQuestions(data);
+                    } catch (error) {
+                        showMessage('Chyba při čtení JSON souboru!', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Sdílení progressu
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            const progressData = {
+                answered: answeredCorrectly.map(q => q.id),
+                wrong: wrongAnswersCount
+            };
+            const encoded = btoa(JSON.stringify(progressData));
+            const shareUrl = `${window.location.origin}${window.location.pathname}#progress=${encoded}`;
+            
+            // Copy to clipboard
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                showMessage('🔗 Link zkopírován do schránky!', 'success');
+            } catch (err) {
+                // Fallback pro starší prohlížeče
+                const textArea = document.createElement('textarea');
+                textArea.value = shareUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.top = '0';
+                textArea.style.left = '0';
+                textArea.style.width = '2em';
+                textArea.style.height = '2em';
+                textArea.style.padding = '0';
+                textArea.style.border = 'none';
+                textArea.style.outline = 'none';
+                textArea.style.boxShadow = 'none';
+                textArea.style.background = 'transparent';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    showMessage(successful ? '🔗 Link zkopírován do schránky!' : '❌ Kopírování selhalo', successful ? 'success' : 'error');
+                } catch (err2) {
+                    showMessage('❌ Kopírování není podporováno', 'error');
+                }
+                
+                document.body.removeChild(textArea);
+            }
+        });
+
+        // Reset kola
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            activeQuestions = [...allQuestions];
+            answeredCorrectly = [];
+            wrongAnswersCount = 0;
+            clearProgressCookies();
+            updateStats();
+            drawWheel();
+            showMessage('Kolo bylo resetováno!', 'success');
+        });
+
+        // Stažení vzorového JSON
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const sample = {
+                title: "Můj Kvíz",
+                questions: [
+                    {
+                        id: 1,
+                        question: "Jaká je hlavní město České republiky?",
+                        options: ["Praha", "Brno", "Ostrava", "Plzeň"],
+                        correctIndex: 0
+                    },
+                    {
+                        id: 2,
+                        question: "Kolik je 2 + 2?",
+                        options: ["3", "4", "5", "6"],
+                        correctIndex: 1
+                    }
+                ]
+            };
+            
+            const blob = new Blob([JSON.stringify(sample, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'vzor-kviz.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Track if celebration has been triggered
+        let celebrationTriggered = false;
+
+        // Aktualizace statistik
+        function updateStats() {
+            document.getElementById('totalQuestions').textContent = allQuestions.length;
+            document.getElementById('answeredQuestions').textContent = answeredCorrectly.length;
+            document.getElementById('wrongAnswers').textContent = wrongAnswersCount;
+            document.getElementById('remainingQuestions').textContent = activeQuestions.length;
+            
+            // Update progress bar
+            const progress = allQuestions.length > 0 ? (answeredCorrectly.length / allQuestions.length) * 100 : 0;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `🎯 Pokrok: ${Math.round(progress)}% (${answeredCorrectly.length}/${allQuestions.length})`;
+            
+            // Enable celebration mode when all questions answered
+            if (allQuestions.length > 0 && answeredCorrectly.length === allQuestions.length && !celebrationTriggered) {
+                celebrationTriggered = true;
+                startCelebrationMode();
+            }
+        }
+
+        // Celebration mode with velocity and deceleration
+        let rotationVelocity = 0;
+        let rotationAnimationId = null;
+        let blackHoleTriggered = false;
+        let speedWarningTriggered = false;
+        let warningElement = null;
+        const DECELERATION = 0.98; // Deceleration factor (closer to 1 = slower deceleration)
+        const MIN_VELOCITY = 0.001; // Stop animating below this velocity
+        const SPEED_OF_LIGHT = 2.0; // Threshold for black hole singularity
+        const WARNING_THRESHOLD = SPEED_OF_LIGHT * 0.6; // 60% of light speed for warning
+        
+        function startCelebrationMode() {
+            if (rotationAnimationId) return;
+            
+            function animate() {
+                if (rotationVelocity > MIN_VELOCITY) {
+                    startAngle += rotationVelocity;
+                    rotationVelocity *= DECELERATION; // Apply deceleration
+                    drawWheel();
+                    
+                    // Check for 60% speed of light warning
+                    if (rotationVelocity >= WARNING_THRESHOLD && !speedWarningTriggered && !blackHoleTriggered) {
+                        speedWarningTriggered = true;
+                        triggerSpeedWarning();
+                    }
+                    
+                    // Turn off shaking and remove warning if decelerated below warning threshold
+                    if (rotationVelocity < WARNING_THRESHOLD && speedWarningTriggered && !blackHoleTriggered) {
+                        document.body.style.animation = 'none';
+                        if (warningElement && document.body.contains(warningElement)) {
+                            warningElement.remove();
+                            warningElement = null;
+                        }
+                        speedWarningTriggered = false;
+                    }
+                    
+                    // Check for speed of light singularity
+                    if (rotationVelocity >= SPEED_OF_LIGHT && !blackHoleTriggered) {
+                        triggerBlackHole();
+                    }
+                    
+                    rotationAnimationId = requestAnimationFrame(animate);
+                } else {
+                    rotationAnimationId = null;
+                    rotationVelocity = 0;
+                }
+            }
+            
+            // Give initial spin
+            rotationVelocity = 0.2;
+            animate();
+        }
+        
+        function accelerateWheel() {
+            rotationVelocity += 0.3; // Boost velocity
+            // No cap - can reach speed of light!
+            
+            if (!rotationAnimationId) {
+                startCelebrationMode();
+            }
+        }
+        
+        function triggerSpeedWarning() {
+            // Add screen shake animation
+            document.body.style.animation = 'screenShake 0.5s infinite';
+            
+            const shakeStyle = document.createElement('style');
+            shakeStyle.textContent = `
+                @keyframes screenShake {
+                    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+                    10% { transform: translate(-5px, -5px) rotate(-0.5deg); }
+                    20% { transform: translate(5px, 5px) rotate(0.5deg); }
+                    30% { transform: translate(-5px, 5px) rotate(-0.5deg); }
+                    40% { transform: translate(5px, -5px) rotate(0.5deg); }
+                    50% { transform: translate(-5px, -5px) rotate(-0.5deg); }
+                    60% { transform: translate(5px, 5px) rotate(0.5deg); }
+                    70% { transform: translate(-5px, 5px) rotate(-0.5deg); }
+                    80% { transform: translate(5px, -5px) rotate(0.5deg); }
+                    90% { transform: translate(-5px, -5px) rotate(-0.5deg); }
+                }
+            `;
+            document.head.appendChild(shakeStyle);
+            
+            // Show warning message
+            const warning = document.createElement('div');
+            warning.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                color: #ff3333;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 15px 25px;
+                border: 3px solid #ff3333;
+                border-radius: 10px;
+                font-size: 20px;
+                font-weight: bold;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                z-index: 99999;
+                opacity: 0;
+                animation: warningPulse 0.5s ease-out forwards, warningBlink 0.5s infinite;
+                text-shadow: 0 0 10px #ff3333;
+                box-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
+            `;
+            warning.innerHTML = `⚠️ WARNING: Jareš is reaching the speed of light! ⚠️`;
+            document.body.appendChild(warning);
+            warningElement = warning; // Store reference for black hole
+            
+            const warningStyle = document.createElement('style');
+            warningStyle.textContent = `
+                @keyframes warningPulse {
+                    0% {
+                        opacity: 0;
+                        transform: scale(0.8);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                @keyframes warningBlink {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                }
+            `;
+            document.head.appendChild(warningStyle);
+        }
+        
+        function triggerBlackHole() {
+            blackHoleTriggered = true;
+            
+            // Stop screen shake
+            document.body.style.animation = 'none';
+            
+            // Create black hole overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.9) 70%, black 100%);
+                pointer-events: none;
+                z-index: 9998;
+                animation: blackHolePulse 0.5s ease-out;
+            `;
+            document.body.appendChild(overlay);
+            
+            // Get wheel center position
+            const rect = canvas.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Get all major elements to animate individually
+            const elements = [
+                document.querySelector('.left-section'),
+                document.querySelector('.right-section'),
+                document.querySelector('.controls'),
+                document.querySelector('.stats'),
+                document.querySelector('.progress-bar-container'),
+                warningElement, // Include the warning in the black hole consumption
+                ...document.querySelectorAll('.btn'),
+                ...document.querySelectorAll('.stat-item'),
+                document.getElementById('subwaySurfersBg')
+            ].filter(el => el); // Remove nulls
+            
+            // Animate each element individually
+            elements.forEach((element, index) => {
+                const elementRect = element.getBoundingClientRect();
+                const elementCenterX = elementRect.left + elementRect.width / 2;
+                const elementCenterY = elementRect.top + elementRect.height / 2;
+                
+                // Calculate vector from element to black hole center
+                const deltaX = centerX - elementCenterX;
+                const deltaY = centerY - elementCenterY;
+                
+                // Random rotation and stretch
+                const randomRotation = (Math.random() - 0.5) * 720;
+                const randomDelay = Math.random() * 0.5;
+                
+                element.style.position = 'fixed';
+                element.style.left = elementRect.left + 'px';
+                element.style.top = elementRect.top + 'px';
+                element.style.width = elementRect.width + 'px';
+                element.style.height = elementRect.height + 'px';
+                element.style.transformOrigin = 'center';
+                element.style.animation = `suckIntoBlackHole-${index} ${2.5 + randomDelay}s ease-in forwards`;
+                element.style.animationDelay = randomDelay + 's';
+                element.style.zIndex = 10000 - index;
+                
+                // Create unique animation for this element
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes suckIntoBlackHole-${index} {
+                        0% {
+                            transform: translate(0, 0) rotate(0deg) scale(1);
+                            filter: blur(0px) brightness(1);
+                            opacity: 1;
+                        }
+                        30% {
+                            transform: translate(${deltaX * 0.2}px, ${deltaY * 0.2}px) rotate(${randomRotation * 0.3}deg) scale(${0.9 + Math.random() * 0.2}) scaleY(${1 + Math.random() * 0.5});
+                            filter: blur(${Math.random() * 3}px) brightness(0.8);
+                            opacity: 0.9;
+                        }
+                        60% {
+                            transform: translate(${deltaX * 0.6}px, ${deltaY * 0.6}px) rotate(${randomRotation * 0.7}deg) scale(${0.5 + Math.random() * 0.3}) scaleX(${0.3 + Math.random() * 0.4});
+                            filter: blur(${5 + Math.random() * 5}px) brightness(0.4);
+                            opacity: 0.6;
+                        }
+                        100% {
+                            transform: translate(${deltaX}px, ${deltaY}px) rotate(${randomRotation}deg) scale(0);
+                            filter: blur(${10 + Math.random() * 10}px) brightness(0);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            });
+            
+            // Add CSS animation for overlay
+            const baseStyle = document.createElement('style');
+            baseStyle.textContent = `
+                @keyframes blackHolePulse {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+            `;
+            document.head.appendChild(baseStyle);
+            
+            // After animation, fade to black
+            setTimeout(() => {
+                document.body.style.background = 'black';
+                
+                // Show message after darkness
+                setTimeout(() => {
+                    const message = document.createElement('div');
+                    message.style.cssText = `
+                        position: fixed;
+                        bottom: 20px;
+                        left: 20px;
+                        color: white;
+                        font-size: 18px;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        line-height: 1.6;
+                        max-width: 500px;
+                        z-index: 99999;
+                        opacity: 0;
+                        animation: fadeInFromBottom 2s ease-out forwards;
+                        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                    `;
+                    message.innerHTML = `Jareš was finally destroyed, there is no more TSI.<br>Reset page to start again (it clears cookies progress.)`;
+                    document.body.appendChild(message);
+                    
+                    const messageStyle = document.createElement('style');
+                    messageStyle.textContent = `
+                        @keyframes fadeInFromBottom {
+                            0% {
+                                opacity: 0;
+                                transform: translateY(20px);
+                            }
+                            100% {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+                    `;
+                    document.head.appendChild(messageStyle);
+                    
+                    // Clear cookies when message appears
+                    clearProgressCookies();
+                }, 2000);
+            }, 3500);
+        }
+
+        // Vykreslení kola
+        function drawWheel() {
+            if (activeQuestions.length === 0 && !celebrationTriggered) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 32px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Všechny otázky', canvas.width / 2, canvas.height / 2 - 15);
+                ctx.fillText('zodpovězeny!', canvas.width / 2, canvas.height / 2 + 25);
+                return;
+            }
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 330;
+            const arc = (Math.PI * 2) / activeQuestions.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Vykreslení otočeného obrázku jako pozadí celého kola
+            if (imageLoaded) {
+                ctx.save();
+                
+                // Oříznutí do kruhu
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                
+                // Rotace celého kola s obrázkem
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle);
+                ctx.translate(-centerX, -centerY);
+                
+                // Vykreslení obrázku přes celé kolo
+                const imgSize = radius * 2;
+                ctx.drawImage(backgroundImage, centerX - imgSize/2, centerY - imgSize/2, imgSize, imgSize);
+                
+                ctx.restore();
+            }
+
+            for (let i = 0; i < activeQuestions.length; i++) {
+                const angle = startAngle + i * arc;
+                
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.globalAlpha = 0.4; // Průhlednost barev, aby byl obrázek lépe vidět
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, angle, angle + arc);
+                ctx.lineTo(centerX, centerY);
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+
+                ctx.save();
+                ctx.translate(
+                    centerX + Math.cos(angle + arc / 2) * (radius * 0.7),
+                    centerY + Math.sin(angle + arc / 2) * (radius * 0.7)
+                );
+                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 22px Arial';
+                ctx.textAlign = 'center';
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.strokeText(`#${activeQuestions[i].id}`, 0, 0);
+                ctx.fillText(`#${activeQuestions[i].id}`, 0, 0);
+                ctx.restore();
+            }
+            
+            // Okraj kola
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // Speed control
+        let spinSpeed = 3; // Default: normal (1=very slow, 5=very fast)
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+        const speedLabels = ['Velmi pomalé', 'Pomalé', 'Normální', 'Rychlé', 'Velmi rychlé'];
+        
+        speedSlider.addEventListener('input', (e) => {
+            spinSpeed = parseInt(e.target.value);
+            speedValue.textContent = speedLabels[spinSpeed - 1];
+        });
+        
+        // Initialize speed label
+        speedValue.textContent = speedLabels[spinSpeed - 1];
+
+        // Funkce pro roztočení kola
+        function spinWheel() {
+            if (isSpinning || activeQuestions.length === 0) return;
+            
+            isSpinning = true;
+            spinBtn.disabled = true;
+            
+            // Speed multipliers: 1=slowest (0.3x), 5=fastest (2.5x)
+            const speedMultiplier = 0.3 + (spinSpeed - 1) * 0.55;
+            const baseDuration = 3000 + Math.random() * 2000;
+            const spinDuration = baseDuration / speedMultiplier;
+            const baseRotation = 10 + Math.random() * 10;
+            const spinRotation = baseRotation * (0.7 + speedMultiplier * 0.3); // Less rotation at slow speeds
+            const startTime = Date.now();
+            let lastSegment = -1;
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / spinDuration, 1);
+                
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const currentRotation = spinRotation * easeOut;
+                
+                startAngle = currentRotation * Math.PI * 2;
+                drawWheel();
+                
+                // Play tick sound when crossing segments
+                if (activeQuestions.length > 0) {
+                    const arc = (Math.PI * 2) / activeQuestions.length;
+                    const normalizedAngle = ((Math.PI / 2 - startAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+                    const currentSegment = Math.floor(normalizedAngle / arc);
+                    
+                    if (currentSegment !== lastSegment) {
+                        playTick();
+                        lastSegment = currentSegment;
+                    }
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    playApplause();
+                    selectQuestion();
+                }
+            }
+            
+            animate();
+        }
+
+        // Roztočení kola - tlačítko
+        spinBtn.addEventListener('click', spinWheel);
+
+        // Drag to spin functionality
+        let isDragging = false;
+        let hasMoved = false; // Track if mouse actually moved during drag
+        let lastMouseAngle = 0;
+        let lastDragTime = 0;
+        let dragVelocity = 0;
+        
+        function getMouseAngle(e) {
+            const rect = canvas.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            return Math.atan2(mouseY - centerY, mouseX - centerX);
+        }
+        
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            hasMoved = false;
+            lastMouseAngle = getMouseAngle(e);
+            lastDragTime = Date.now();
+            dragVelocity = 0;
+            canvas.style.cursor = 'grabbing';
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const currentAngle = getMouseAngle(e);
+            const currentTime = Date.now();
+            const timeDelta = Math.max(currentTime - lastDragTime, 1);
+            
+            let angleDelta = currentAngle - lastMouseAngle;
+            
+            // Handle angle wrap-around
+            if (angleDelta > Math.PI) angleDelta -= Math.PI * 2;
+            if (angleDelta < -Math.PI) angleDelta += Math.PI * 2;
+            
+            // Mark as moved if there's significant angle change
+            if (Math.abs(angleDelta) > 0.01) {
+                hasMoved = true;
+            }
+            
+            if (celebrationTriggered) {
+                // In celebration mode, add to velocity
+                const acceleration = angleDelta / timeDelta * 50; // Scale factor for responsiveness
+                rotationVelocity += acceleration;
+                
+                if (!rotationAnimationId) {
+                    startCelebrationMode();
+                }
+            } else {
+                // In normal mode, directly rotate the wheel
+                startAngle += angleDelta;
+                drawWheel();
+                
+                // Calculate velocity for spin after release
+                dragVelocity = angleDelta / timeDelta * 1000; // rad/s
+            }
+            
+            lastMouseAngle = currentAngle;
+            lastDragTime = currentTime;
+        });
+        
+        function handleMouseUp() {
+            if (!isDragging) return;
+            
+            const wasClick = !hasMoved; // It's a click if mouse didn't move
+            
+            isDragging = false;
+            canvas.style.cursor = 'pointer';
+            
+            if (wasClick) {
+                // Handle as click - trigger spin or acceleration
+                if (celebrationTriggered) {
+                    accelerateWheel();
+                } else {
+                    spinWheel();
+                }
+            } else {
+                // Handle as drag release
+                // If dragged in normal mode with sufficient velocity, initiate a spin
+                if (!celebrationTriggered && Math.abs(dragVelocity) > 0.5) {
+                    // Convert drag velocity to spin parameters
+                    const spinPower = Math.min(Math.abs(dragVelocity) * 2, 15);
+                    const direction = dragVelocity > 0 ? 1 : -1;
+                    
+                    isSpinning = true;
+                    spinBtn.disabled = true;
+                    
+                    const spinDuration = 2000 + Math.random() * 1000;
+                    const spinRotation = spinPower * direction;
+                    const startTime = Date.now();
+                    const startRotation = startAngle;
+                    let lastSegment = -1;
+                    
+                    function animate() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / spinDuration, 1);
+                        
+                        const easeOut = 1 - Math.pow(1 - progress, 3);
+                        const currentRotation = spinRotation * easeOut;
+                        
+                        startAngle = startRotation + currentRotation * Math.PI * 2;
+                        drawWheel();
+                        
+                        // Play tick sound when crossing segments
+                        if (activeQuestions.length > 0) {
+                            const arc = (Math.PI * 2) / activeQuestions.length;
+                            const normalizedAngle = ((Math.PI / 2 - startAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+                            const currentSegment = Math.floor(normalizedAngle / arc);
+                            
+                            if (currentSegment !== lastSegment) {
+                                playTick();
+                                lastSegment = currentSegment;
+                            }
+                        }
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            isSpinning = false;
+                            spinBtn.disabled = false;
+                            playApplause();
+                            selectQuestion();
+                        }
+                    }
+                    
+                    animate();
+                }
+            }
+        }
+        
+        canvas.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('mouseup', handleMouseUp); // Handle mouse up outside canvas
+        
+        canvas.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                canvas.style.cursor = 'pointer';
+            }
+        });
+        
+        canvas.addEventListener('mouseenter', () => {
+            if (!isDragging) {
+                canvas.style.cursor = 'pointer';
+            }
+        });
+
+        // Spacebar to spin
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.key === ' ') {
+                e.preventDefault(); // Prevent page scroll
+                
+                if (celebrationTriggered) {
+                    accelerateWheel();
+                } else {
+                    spinWheel();
+                }
+            }
+        });
+
+        // Výběr otázky
+        function selectQuestion() {
+            const arc = (Math.PI * 2) / activeQuestions.length;
+            const normalizedAngle = ((Math.PI / 2 - startAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+            const index = Math.floor(normalizedAngle / arc);
+            const question = activeQuestions[index];
+            
+            showQuestion(question, index);
+        }
+
+        // Shuffle answers setting
+        let shuffleAnswersEnabled = false;
+        document.getElementById('shuffleAnswersToggle').addEventListener('change', (e) => {
+            shuffleAnswersEnabled = e.target.checked;
+        });
+
+        // Zobrazení otázky
+        function showQuestion(question, questionIndex) {
+            document.getElementById('questionNumber').textContent = `Otázka #${question.id}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            // Create array of options with their original indices
+            let optionsWithIndices = question.options.map((option, index) => ({
+                text: option,
+                originalIndex: index
+            }));
+            
+            // Shuffle if enabled
+            if (shuffleAnswersEnabled) {
+                // Fisher-Yates shuffle
+                for (let i = optionsWithIndices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [optionsWithIndices[i], optionsWithIndices[j]] = [optionsWithIndices[j], optionsWithIndices[i]];
+                }
+            }
+            
+            // Store the mapping for keyboard shortcuts
+            const indexMapping = optionsWithIndices.map(opt => opt.originalIndex);
+            
+            optionsWithIndices.forEach((optionData, displayIndex) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = optionData.text;
+                btn.dataset.originalIndex = optionData.originalIndex; // Store original index
+                btn.onclick = () => checkAnswer(optionData.originalIndex, question.correctIndex, questionIndex, displayIndex);
+                optionsContainer.appendChild(btn);
+            });
+            
+            // Hide explanation and continue button initially
+            document.getElementById('explanationContainer').classList.remove('show');
+            closeBtn.style.display = 'none';
+            modal.style.display = 'flex';
+            
+            // Keyboard handler for answering questions
+            const keyHandler = (e) => {
+                const buttons = document.querySelectorAll('.option-btn');
+                if (buttons.length === 0 || buttons[0].disabled) return;
+                
+                let displayIndex = -1;
+                
+                // Handle numbers 1-9
+                if (e.key >= '1' && e.key <= '9') {
+                    displayIndex = parseInt(e.key) - 1;
+                }
+                // Handle Czech keyboard layout: +ěščřžýáí (on positions 1-9)
+                else if (e.key === '+') displayIndex = 0;
+                else if (e.key === 'ě') displayIndex = 1;
+                else if (e.key === 'š') displayIndex = 2;
+                else if (e.key === 'č') displayIndex = 3;
+                else if (e.key === 'ř') displayIndex = 4;
+                else if (e.key === 'ž') displayIndex = 5;
+                else if (e.key === 'ý') displayIndex = 6;
+                else if (e.key === 'á') displayIndex = 7;
+                else if (e.key === 'í') displayIndex = 8;
+                
+                if (displayIndex >= 0 && displayIndex < buttons.length) {
+                    e.preventDefault();
+                    // Click the button at the display position
+                    // The button already has the correct onclick handler with original index
+                    buttons[displayIndex].click();
+                    document.removeEventListener('keydown', keyHandler);
+                }
+            };
+            
+            document.addEventListener('keydown', keyHandler);
+        }
+
+        // Kontrola odpovědi
+        function checkAnswer(selectedIndex, correctIndex, questionIndex, displayIndex) {
+            // Stop all audio immediately
+            tickSoundPool.forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            applauseSound.pause();
+            applauseSound.currentTime = 0;
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Use displayIndex for highlighting (where the answer appears on screen)
+            const selectedDisplayIndex = displayIndex !== undefined ? displayIndex : selectedIndex;
+            
+            // Find which display position has the correct answer
+            let correctDisplayIndex = -1;
+            buttons.forEach((btn, idx) => {
+                if (parseInt(btn.dataset.originalIndex) === correctIndex) {
+                    correctDisplayIndex = idx;
+                }
+            });
+            
+            // Highlight the selected answer
+            buttons[selectedDisplayIndex].classList.add(selectedIndex === correctIndex ? 'correct' : 'wrong');
+            
+            // If wrong, also highlight the correct answer
+            if (selectedIndex !== correctIndex && correctDisplayIndex >= 0) {
+                buttons[correctDisplayIndex].classList.add('correct');
+            }
+            
+            const question = activeQuestions[questionIndex];
+            const explanationContainer = document.getElementById('explanationContainer');
+            const explanationText = document.getElementById('explanationText');
+            
+            // Show explanation if available
+            if (question.explanation) {
+                renderExplanation(question.explanation, explanationText);
+                explanationContainer.classList.add('show');
+            } else {
+                explanationContainer.classList.remove('show');
+            }
+            
+            if (selectedIndex === correctIndex) {
+                answeredCorrectly.push(activeQuestions[questionIndex]);
+                activeQuestions.splice(questionIndex, 1);
+                saveProgressToCookies();
+                updateStats();
+                
+                // Show continue button for correct answer
+                closeBtn.style.display = 'block';
+                const continueAction = () => {
+                    modal.style.display = 'none';
+                    explanationContainer.classList.remove('show');
+                    drawWheel();
+                    if (activeQuestions.length === 0) {
+                        showMessage('🎉 Gratulujeme! Všechny otázky zodpovězeny správně!', 'success');
+                    }
+                    document.removeEventListener('keydown', continueKeyHandler);
+                };
+                
+                closeBtn.onclick = continueAction;
+                
+                // Keyboard handler for continuing
+                const continueKeyHandler = (e) => {
+                    if (e.code === 'Space' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        continueAction();
+                    }
+                };
+                document.addEventListener('keydown', continueKeyHandler);
+            } else {
+                wrongAnswersCount++;
+                saveProgressToCookies();
+                updateStats();
+                closeBtn.style.display = 'block';
+                const continueAction = () => {
+                    modal.style.display = 'none';
+                    explanationContainer.classList.remove('show');
+                    document.removeEventListener('keydown', continueKeyHandler);
+                };
+                
+                closeBtn.onclick = continueAction;
+                
+                // Keyboard handler for continuing
+                const continueKeyHandler = (e) => {
+                    if (e.code === 'Space' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        continueAction();
+                    }
+                };
+                document.addEventListener('keydown', continueKeyHandler);
+            }
+        }
+
+        // Zobrazení zprávy
+        function showMessage(text, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            container.innerHTML = '';
+            container.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        // Subway Surfers toggle
+        const subwaySurfersToggle = document.getElementById('subwaySurfersToggle');
+        const subwaySurfersBg = document.getElementById('subwaySurfersBg');
+        
+        subwaySurfersToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                subwaySurfersBg.classList.add('active');
+            } else {
+                subwaySurfersBg.classList.remove('active');
+            }
+        });
+
+        // Inicializace
+        drawWheel();
+    </script>
+</body>
+</html>

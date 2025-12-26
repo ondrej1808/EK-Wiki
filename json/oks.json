@@ -1,0 +1,118 @@
+{
+  "title": "OKS Zkouska",
+  "questions": [
+    {
+      "id": 1,
+      "type": "closed",
+      "category": "GPON a přístupové sítě",
+      "question": "Maximální rozsah útlumu Gigabitové PON je:",
+      "options": [
+        "3 dB",
+        "13 dB",
+        "32 dB",
+        "130 dB"
+      ],
+      "correctIndex": 2,
+      "explanation": "Gigabitová pasivní optická síť (GPON) je navržena s maximálním rozsahem útlumu 32 dB..."
+    },
+    {
+      "id": 2,
+      "type": "closed",
+      "category": "GPON a přístupové sítě",
+      "question": "Fyzický dosah PON je typicky:",
+      "options": [
+        "200 km",
+        ">1000 km",
+        "20 km",
+        "několik metrů"
+      ],
+      "correctIndex": 2,
+      "explanation": "Pasivní optické sítě (PON) mají typický fyzický dosah okolo 20 km..."
+    },
+    {
+      "id": 3,
+      "type": "open",
+      "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+      "question": "Definujte optický paprsek, co je trajektorie paprsku.",
+      "answer_parts": [
+        {
+          "title": "Optický paprsek",
+          "text": "Jedná se o zjednodušenou interpretaci šíření elektromagnetického vlnění pomocí vektoru šíření $\\overrightarrow{k}$. Pokud si představíme vlnoplochy tvořící „trubici“ světla, paprsek je myšlená čára spojující středy těchto vlnoploch. Je to tedy svazek světla s určitým směrem, který se může lámat a ohýbat.",
+          "image": {
+            "src": "figs/definice_paprsku.png",
+            "caption": "Optický paprsek, převzato z [SOK]"
+          }
+        },
+        {
+          "title": "Trajektorie paprsku",
+          "text": "Jde o dráhu („cestu“), kterou opíše optický paprsek při průchodu optickou soustavou."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "open",
+      "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+      "question": "Kdy vzniká totální odraz? Snellovy zákony, Brewsterův úhel.",
+      "answer_parts": [
+        {
+          "title": "Snellův zákon lomu",
+          "text": "Popisuje lom paprsku na rozhraní dvou prostředí s indexy lomu $n_1$ a $n_2$:\n$$n_1 \\sin \\alpha = n_2 \\sin \\beta$$\nkde $\\alpha$ je úhel dopadu a $\\beta$ je úhel lomu."
+        },
+        {
+          "title": "Totální odraz",
+          "text": "Jev, kdy se světlo neláme do druhého prostředí, ale zcela se odráží zpět.\n* Světlo se musí šířit z opticky hustšího do řidšího prostředí ($n_1 > n_2$).\n* Nastává pro úhly dopadu větší než **kritický úhel** $\\alpha_c$:\n$$\\sin \\alpha_c = \\frac{n_2}{n_1}$$"
+        },
+        {
+          "title": "Brewsterův úhel",
+          "text": "Úhel dopadu, při kterém dochází k úplné polarizaci odraženého světla (odražené světlo je lineárně polarizované kolmo k rovině dopadu).\n$$\\tan \\alpha_B = \\frac{n_2}{n_1}$$"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "open",
+      "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+      "question": "Fázová a skupinová rychlost v optickém vlnovodu",
+      "answer_parts": [
+        {
+          "title": null,
+          "text": "Fázová rychlost vlny je rychlost, kterou se v prostoru propagují místa konstantní fáze (vlnoplochy), platí $v_f = \\frac{\\omega}{\\beta}$.\nGrupová rychlost je pak rychlost šíření celé signálové obálky (tedy samotné informace), platí $v_g = \\frac{\\partial\\omega}{\\partial\\beta}$.\nSignál, do něhož je zakódovaná informace má formu skupiny kmitočtů (nosné a postranních pásem) a vytváří tak *vlnový balík*. Skupinová rychlost je rychlost šíření tohoto balíku."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "open",
+      "category": "Maticová optika, přenosové matice prvků",
+      "question": "Principy maticové optiky, parametry matic",
+      "answer_parts": [
+        {
+          "title": null,
+          "text": "Maticová optika je způsob výpočtu transformace paprsku v optickém systému bez použití grafických metod. Tedy vlastně maticový přepis zobrazovacích rovnic. Matice vlnového vektoru je ve tvaru $\\begin{pmatrix} x \\\\ y \\end{pmatrix}$, kde $x$ je poloha vstupu paprsku vztažená k optické ose a $y$ je tangens úhlu vstupu/výstupu paprsku $\\varphi$. Transformační matice jsou pak rozměru $2 \\times 2$."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "open",
+      "category": "Maticová optika, přenosové matice prvků",
+      "question": "Matice jednoduchých prvků částí (volný prostor, rozhraní, slabá destička, čočka)",
+      "answer_parts": [
+        {
+          "title": "Přehled matic",
+          "text": "Tabulka přenosových matic:",
+          "table_data": [
+            { "element": "Volný prostor (d)", "matrix": "\\begin{pmatrix} 1 & d \\\\ 0 & 1 \\end{pmatrix}" },
+            { "element": "Lom na rovinné ploše", "matrix": "\\begin{pmatrix} 1 & 0 \\\\ 0 & \\frac{n_1}{n_2} \\end{pmatrix}" },
+            { "element": "Lom tenkou čočkou (f)", "matrix": "\\begin{pmatrix} 1 & 0 \\\\ -\\frac{1}{f} & 1 \\end{pmatrix}" },
+            { "element": "Tenká destička", "matrix": "\\begin{pmatrix} 1 & d \\cdot \\frac{n_1}{n_2} \\\\ 0 & 1 \\end{pmatrix}" },
+            { "element": "Lom na kulové ploše (r)", "matrix": "\\begin{pmatrix} 1 & 0 \\\\ \\frac{n_1-n_2}{n_2 \\cdot r} & \\frac{n_1}{n_2} \\end{pmatrix}" },
+            { "element": "Rovinné zrcadlo", "matrix": "\\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}" },
+            { "element": "Kulové zrcadlo", "matrix": "\\begin{pmatrix} 1 & 0 \\\\ -\\frac{2}{r} & -1 \\end{pmatrix}" }
+          ]
+        }
+      ]
+    }
+  ]
+}
