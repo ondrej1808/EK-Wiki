@@ -113,42 +113,6 @@
             "id": 8,
             "type": "open",
             "category": "Maticová optika, přenosové matice prvků",
-            "question": "Matice jednoduchých prvků částí - volný prostor",
-            "answer_parts": [
-                {
-                    "title": "Matice volného prostoru",
-                    "text": "\\begin{pmatrix} 1 & d \\\\ 0 & 1 \\end{pmatrix}"
-                }
-            ]
-        },
-        {
-            "id": 9,
-            "type": "open",
-            "category": "Maticová optika, přenosové matice prvků",
-            "question": "Matice jednoduchých prvků částí - lom na rovinné ploše",
-            "answer_parts": [
-                {
-                    "title": "Matice lomu na rovinné ploše",
-                    "text": "\\begin{pmatrix} 1 & 0 \\\\ 0 & \\frac{n_1}{n_2} \\end{pmatrix}"
-                }
-            ]
-        },
-        {
-            "id": 10,
-            "type": "open",
-            "category": "Maticová optika, přenosové matice prvků",
-            "question": "Matice jednoduchých prvků částí - lom na rovinné ploše",
-            "answer_parts": [
-                {
-                    "title": "Matice lomu na rovinné ploše",
-                    "text": "\\begin{pmatrix} 1 & 0 \\\\ 0 & \\frac{n_1}{n_2} \\end{pmatrix}"
-                }
-            ]
-        },
-        {
-            "id": 10,
-            "type": "open",
-            "category": "Maticová optika, přenosové matice prvků",
             "question": "Matice: Volný prostor (d)",
             "answer_parts": [
                 {
@@ -158,7 +122,7 @@
             ]
         },
         {
-            "id": 11,
+            "id": 9,
             "type": "open",
             "category": "Maticová optika, přenosové matice prvků",
             "question": "Matice: Lom na rovinné ploše",
@@ -170,7 +134,7 @@
             ]
         },
         {
-            "id": 12,
+            "id": 10,
             "type": "open",
             "category": "Maticová optika, přenosové matice prvků",
             "question": "Matice: Lom tenkou čočkou (f)",
@@ -182,7 +146,7 @@
             ]
         },
         {
-            "id": 13,
+            "id": 11,
             "type": "open",
             "category": "Maticová optika, přenosové matice prvků",
             "question": "Matice: Tenká destička",
@@ -194,7 +158,7 @@
             ]
         },
         {
-            "id": 14,
+            "id": 12,
             "type": "open",
             "category": "Maticová optika, přenosové matice prvků",
             "question": "Matice: Lom na kulové ploše (r)",
@@ -206,7 +170,7 @@
             ]
         },
         {
-            "id": 15,
+            "id": 13,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Princip Gaussova svazku",
@@ -218,7 +182,7 @@
             ]
         },
         {
-            "id": 16,
+            "id": 14,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Pološířka svazku (waist) $w_0$",
@@ -230,7 +194,7 @@
             ]
         },
         {
-            "id": 17,
+            "id": 15,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Pološířka v libovolném místě $w(z)$",
@@ -242,7 +206,7 @@
             ]
         },
         {
-            "id": 18,
+            "id": 16,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Rayleighova vzdálenost $z_0$",
@@ -254,7 +218,7 @@
             ]
         },
         {
-            "id": 19,
+            "id": 17,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Poloměr vlnoplochy $R(z)$",
@@ -266,7 +230,7 @@
             ]
         },
         {
-            "id": 20,
+            "id": 18,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Rozbíhavost svazku $\\theta$",
@@ -278,7 +242,7 @@
             ]
         },
         {
-            "id": 21,
+            "id": 19,
             "type": "open",
             "category": "Základy vlnové optiky, Gaussovské svazky",
             "question": "Intenzita a výkon Gaussova svazku",
@@ -290,7 +254,7 @@
             ]
         },
         {
-            "id": 22,
+            "id": 20,
             "type": "open",
             "category": "Základní technologie optických vlnovodů a jejich řešení - vidová struktura",
             "question": "Na jakém fyzikálním principu je založeno šíření v optických vlnovodech? Co je efektivní index lomu?",
@@ -302,7 +266,7 @@
             ]
         },
         {
-            "id": 23,
+            "id": 21,
             "type": "open",
             "category": "Základní technologie optických vlnovodů a jejich řešení - vidová struktura",
             "question": "Grafické řešení 2D souměrného planárního vlnovodu",
@@ -318,7 +282,7 @@
             ]
         },
         {
-            "id": 24,
+            "id": 22,
             "type": "open",
             "category": "Základní technologie optických vlnovodů a jejich řešení - vidová struktura",
             "question": "Uveďte, jak se řeší žebrový vlnovod metodou efektivního indexu lomu.",
@@ -330,7 +294,7 @@
             ]
         },
         {
-            "id": 25,
+            "id": 23,
             "type": "open",
             "category": "Přenosové vlastnosti optických vláken, analýza šíření optického záření v optickém vlákně na základě geometrické optiky a řešení vlnové rovnice - vidová struktura",
             "question": "Jaké znáte typy vláknových vlnovodů? Trajektorie paprsku v SI a gradientním vlnovodu.",
@@ -342,7 +306,7 @@
             ]
         },
         {
-            "id": 26,
+            "id": 24,
             "type": "open",
             "category": "Přenosové vlastnosti optických vláken, analýza šíření optického záření v optickém vlákně na základě geometrické optiky a řešení vlnové rovnice - vidová struktura",
             "question": "Uveďte základní konstrukční parametry optických vláken různých typů.",
@@ -354,7 +318,7 @@
             ]
         },
         {
-            "id": 27,
+            "id": 25,
             "type": "open",
             "category": "Přenosové vlastnosti optických vláken, analýza šíření optického záření v optickém vlákně na základě geometrické optiky a řešení vlnové rovnice - vidová struktura",
             "question": "Dominantní vid SI vláknového vlnovodu. Co jsou LP vidy?",
@@ -366,7 +330,7 @@
             ]
         },
         {
-            "id": 28,
+            "id": 26,
             "type": "open",
             "category": "Absorpce a disperze, šíření pulsů v disperzním prostředí",
             "question": "Čím jsou způsobeny ztráty v optických vlnovodech? Jak závisí přenosové vlastnosti na druhu skla (transparence skel v NIR/MIR)?",
@@ -378,7 +342,7 @@
             ]
         },
         {
-            "id": 29,
+            "id": 27,
             "type": "open",
             "category": "Absorpce a disperze, šíření pulsů v disperzním prostředí",
             "question": "Čím je způsobena disperze signálu v optickém vlnovodu? Druhy disperzí, jejich popis.",
@@ -390,7 +354,7 @@
             ]
         },
         {
-            "id": 30,
+            "id": 28,
             "type": "open",
             "category": "Nelineární vláknová optika, trendy ve vláknové optice",
             "question": "Nelineární chování optického vlákna, čím je definována nelinearita, techniky pro potlačení/zvýšení nelinearity (skla, modifikace struktury vlákna)",
@@ -402,7 +366,7 @@
             ]
         },
         {
-            "id": 31,
+            "id": 29,
             "type": "open",
             "category": "Nelineární vláknová optika, trendy ve vláknové optice",
             "question": "Ramanův a Brillouinův rozptyl",
@@ -414,7 +378,7 @@
             ]
         },
         {
-            "id": 32,
+            "id": 30,
             "type": "open",
             "category": "Nelineární vláknová optika, trendy ve vláknové optice",
             "question": "Optické zesilovače – EDFA",
