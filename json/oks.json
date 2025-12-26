@@ -117,7 +117,7 @@
             "answer_parts": [
                 {
                     "title": "Volný prostor (d)",
-                    "text": "\begin{pmatrix} 1 & d \\ 0 & 1 \\end{pmatrix}"
+                    "text": "\\begin{pmatrix} 1 & d \\ 0 & 1 \\end{pmatrix}"
                 }
             ]
         },
@@ -129,7 +129,7 @@
             "answer_parts": [
                 {
                     "title": "Lom na rovinné ploše",
-                    "text": "\begin{pmatrix} 1 & 0 \\ 0 & \frac{n_1}{n_2} \\end{pmatrix}"
+                    "text": "\\begin{pmatrix} 1 & 0 \\ 0 & \frac{n_1}{n_2} \\end{pmatrix}"
                 }
             ]
         },
@@ -141,7 +141,7 @@
             "answer_parts": [
                 {
                     "title": "Lom tenkou čočkou (f)",
-                    "text": "\begin{pmatrix} 1 & 0 \\ -\frac{1}{f} & 1 \\end{pmatrix}"
+                    "text": "\\begin{pmatrix} 1 & 0 \\ -\frac{1}{f} & 1 \\end{pmatrix}"
                 }
             ]
         },
@@ -153,7 +153,7 @@
             "answer_parts": [
                 {
                     "title": "Tenká destička",
-                    "text": "\begin{pmatrix} 1 & d \\cdot \\frac{n_1}{n_2} \\ 0 & 1 \\end{pmatrix}"
+                    "text": "\\begin{pmatrix} 1 & d \\cdot \\frac{n_1}{n_2} \\ 0 & 1 \\end{pmatrix}"
                 }
             ]
         },
@@ -165,7 +165,7 @@
             "answer_parts": [
                 {
                     "title": "Lom na kulové ploše (r)",
-                    "text": "\begin{pmatrix} 1 & 0 \\ \frac{n_1-n_2}{n_2 \\cdot r} & \frac{n_1}{n_2} \\end{pmatrix}"
+                    "text": "\\begin{pmatrix} 1 & 0 \\ \frac{n_1-n_2}{n_2 \\cdot r} & \frac{n_1}{n_2} \\end{pmatrix}"
                 }
             ]
         },
