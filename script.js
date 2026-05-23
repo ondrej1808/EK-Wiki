@@ -11,6 +11,7 @@ let stats = {
 let flaggedQuestions = new Set();
 let isFlaggedMode = false;
 let selectedSubsetPath = null;
+const CREATOR_HANDOFF_KEY = 'cards_creator_handoff_v1';
 
 const SUBSET_VALUE_SEPARATOR = '||>';
 
@@ -101,6 +102,7 @@ function toggleMenu() {
         const controls = [
             { text: '📂 Nahrát vlastní', class: 'btn-primary', action: "document.getElementById('fileInput').click()" },
             { text: '🔄 Import Anki', class: 'btn-warning', action: "document.getElementById('ankiInput').click()" },
+            { text: '✏️ Otevřít v editoru', class: 'btn-secondary', action: "openCurrentSetInEditor()" },
             { text: '↺ Resetovat', class: 'btn-secondary', action: "resetProgress()" },
             { text: '⬇️ Stáhnout chyby', class: 'btn-success', action: "downloadFailed()" }
         ];
@@ -303,6 +305,48 @@ function loadQuestions(data) {
     showMessage(`Načteno ${questions.length} otázek`, 'success');
 }
 
+function loadCreatorHandoff() {
+    const stored = localStorage.getItem(CREATOR_HANDOFF_KEY);
+    if (!stored) return false;
+
+    try {
+        const data = JSON.parse(stored);
+        localStorage.removeItem(CREATOR_HANDOFF_KEY);
+        if (data && Array.isArray(data.questions)) {
+            loadQuestions(data);
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to load creator handoff:', error);
+        localStorage.removeItem(CREATOR_HANDOFF_KEY);
+    }
+
+    return false;
+}
+
+function openCurrentSetInEditor() {
+    if (!questions.length) {
+        showMessage('Nejsou načtené žádné otázky k otevření v editoru.', 'info');
+        return;
+    }
+
+    const currentVisibleQuestion = getFilteredQuestions()[currentCardIndex] || questions[0];
+    const editingIndex = currentVisibleQuestion
+        ? questions.findIndex(q => q.id === currentVisibleQuestion.id || q.originalIndex === currentVisibleQuestion.originalIndex)
+        : 0;
+
+    localStorage.setItem(CREATOR_HANDOFF_KEY, JSON.stringify({
+        title: document.querySelector('.header-title h1')?.textContent || 'Kartičky',
+        questions: questions.map(q => ({
+            ...q,
+            subsetPath: Array.isArray(q.subsetPath) ? q.subsetPath.slice() : normalizeSubsetPath(q)
+        })),
+        editingIndex: editingIndex >= 0 ? editingIndex : 0
+    }));
+
+    window.location.href = 'cards_creator.html?from=cards';
+}
+
 function getFilteredQuestions() {
     let filtered = questions;
 
@@ -450,6 +494,11 @@ function createCard(q, index, total, stackIndex) {
 
     html += `</div></div>`;
     card.innerHTML = html;
+
+    const openAnswerContent = card.querySelector('.open-question-content');
+    if (openAnswerContent) renderMath(openAnswerContent);
+    const explanation = card.querySelector('.card-answer');
+    if (explanation) renderMath(explanation);
     return card;
 }
 
@@ -765,6 +814,13 @@ function showMessage(text, type = 'info') {
 
 // Startup Logic
 window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const fromCreator = params.get('from') === 'creator';
+
+    if (fromCreator && loadCreatorHandoff()) {
+        return;
+    }
+
     // Check if there was a last selected subject
     const lastSubject = localStorage.getItem('tsi_last_subject');
     

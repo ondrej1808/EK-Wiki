@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cards Hub</title>
+  <style>
+    :root{--bg1:#0f172a;--bg2:#1e293b;--card:#ffffff;--text:#0f172a;--muted:#475569;--accent:#2563eb}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:Inter,system-ui,Segoe UI,Helvetica,Arial,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}
+    .shell{width:min(900px,100%);background:rgba(255,255,255,0.96);color:var(--text);border-radius:24px;padding:28px;box-shadow:0 20px 70px rgba(0,0,0,0.35)}
+    h1{margin:0 0 8px 0;font-size:28px}
+    p{margin:0 0 22px 0;color:var(--muted);line-height:1.5}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .card{display:block;text-decoration:none;border:1px solid #e2e8f0;border-radius:18px;padding:20px;background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:0 8px 24px rgba(15,23,42,0.06);transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease}
+    .card:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(15,23,42,0.12);border-color:#cbd5e1}
+    .card h2{margin:0 0 6px 0;font-size:20px;color:#0f172a}
+    .card p{margin:0;color:#475569}
+    .badge{display:inline-block;margin-top:14px;padding:5px 10px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:700;letter-spacing:.02em}
+    @media (max-width:720px){.grid{grid-template-columns:1fr}.shell{padding:20px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <h1>Cards Hub</h1>
+    <p>Choose where you want to go. The quiz page is for studying, and the creator is for making and organizing cards.</p>
+
+    <div class="grid">
+      <a class="card" href="cards.html">
+        <h2>Cards</h2>
+        <p>Open the flashcard trainer and start practicing questions.</p>
+        <span class="badge">Go to cards.html</span>
+      </a>
+
+      <a class="card" href="cards_creator.html">
+        <h2>Cards Creator</h2>
+        <p>Create, edit, reorder, and preview cards before exporting them.</p>
+        <span class="badge">Go to cards_creator.html</span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
