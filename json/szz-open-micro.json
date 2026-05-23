@@ -1,0 +1,365 @@
+{
+  "title": "SZZ - Open Microcards",
+  "questions": [
+    {
+      "id": 1,
+      "type": "open",
+      "category": "TELKOM - Routing",
+      "question": "Jaky je hlavni rozdil mezi statickym a dynamickym smerovanim?",
+      "answer_parts": [
+        {
+          "title": "Staticke vs. dynamicke",
+          "text": "Staticke smerovani se nastavuje rucne a samo se neprizpusobuje, dynamicke pouziva protokoly a trasy aktualizuje automaticky."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "open",
+      "category": "TELKOM - Routing",
+      "question": "K cemu slouzi vychozi brana (default gateway) v hostu?",
+      "answer_parts": [
+        {
+          "title": "Default gateway",
+          "text": "Posila provoz mimo lokalni sit na smerovac, kdyz cilova sit neni lokalne dostupna."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "open",
+      "category": "TELKOM - TCP/IP",
+      "question": "Ktera vrstva modelu TCP/IP resi logicke adresovani a smerovani paketu?",
+      "answer_parts": [
+        {
+          "title": "Internet vrstva",
+          "text": "Internet vrstva (IP)."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "open",
+      "category": "TELKOM - TCP/IP",
+      "question": "Proc je v hlavicce IP pole TTL?",
+      "answer_parts": [
+        {
+          "title": "TTL",
+          "text": "Zabraňuje nekonecnemu cykleni paketu v siti; pri kazdem hopu se snizuje."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "open",
+      "category": "TELKOM - LAN",
+      "question": "Jaky je princip pristupu k mediu u Ethernetu (historicky CSMA/CD)?",
+      "answer_parts": [
+        {
+          "title": "CSMA/CD",
+          "text": "Stanice pred vysilanim nasloucha mediu, vysila pri volnem kanalu a pri kolizi prerusi vysilani a opakuje jej po nahodne prodleve."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "open",
+      "category": "TELKOM - xDSL",
+      "question": "Jaky fyzikalni faktor nejvic omezuje dosah a rychlost xDSL?",
+      "answer_parts": [
+        {
+          "title": "Omezeni xDSL",
+          "text": "Utlum metalickeho vedeni rostouci s delkou a frekvenci."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "open",
+      "category": "TELKOM - Digitalizace reci",
+      "question": "Vyjmenuj 3 kroky digitalizace analogoveho hovoroveho signalu.",
+      "answer_parts": [
+        {
+          "title": "ADC reci",
+          "text": "Vzorkovani, kvantovani, kodovani."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "open",
+      "category": "TELKOM - Vzorkovani",
+      "question": "Napis Nyquistovu podminku pro vzorkovani signalu s maximalni frekvenci f_max.",
+      "answer_parts": [
+        {
+          "title": "Nyquist",
+          "text": "$$f_s \\ge 2 f_{max}$$"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "open",
+      "category": "TELKOM - Informacni teorie",
+      "question": "Napis Shannonuv vztah pro kapacitu idealniho pasmove omezeného kanalu.",
+      "answer_parts": [
+        {
+          "title": "Shannon",
+          "text": "$$C = B \\log_2(1+\\mathrm{SNR})$$"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "open",
+      "category": "TELKOM - Radio",
+      "question": "Co vyjadruje Friisuv vztah ve vykonove bilanci radioveho spoje?",
+      "answer_parts": [
+        {
+          "title": "Friis",
+          "text": "Vztah mezi vykonem prijatym a vysilanym v zavislosti na ziscich anten, vlnove delce a vzdalenosti ve volnem prostoru."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "open",
+      "category": "TELKOM - Radio",
+      "question": "Jak se v dB zapise free-space loss (FSL) zavisly na vzdalenosti?",
+      "answer_parts": [
+        {
+          "title": "FSL trend",
+          "text": "Roste jako 20 log10(d) plus clen zavisly na frekvenci a konstanta jednotek."
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "open",
+      "category": "SIGNALY",
+      "question": "Co je autokorelace signalu intuitivne?",
+      "answer_parts": [
+        {
+          "title": "Autokorelace",
+          "text": "Mira podobnosti signalu se sebou samym pri casovem posunu."
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "open",
+      "category": "SIGNALY",
+      "question": "K cemu slouzi Fourierova transformace v analyze signalu?",
+      "answer_parts": [
+        {
+          "title": "FT",
+          "text": "Prevadi signal z casove oblasti do frekvencni, kde je videt spektralni slozeni."
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "open",
+      "category": "SIGNALY",
+      "question": "Ktery transformacni nastroj je primarne urcen pro diskretni casove soustavy?",
+      "answer_parts": [
+        {
+          "title": "Z-transformace",
+          "text": "Z-transformace."
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "open",
+      "category": "OBVODY",
+      "question": "Co rika superpozicni veta pro linearni obvody?",
+      "answer_parts": [
+        {
+          "title": "Superpozice",
+          "text": "Celkovou odezvu dostaneme souctem odezev od jednotlivych nezavislych zdroju pri vypnuti ostatnich."
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "open",
+      "category": "OBVODY",
+      "question": "Jaky je rozdil mezi ekvivalenty Thevenin a Norton?",
+      "answer_parts": [
+        {
+          "title": "Thevenin vs. Norton",
+          "text": "Thevenin: napetovy zdroj v serii s odporem; Norton: proudovy zdroj paralelne s odporem."
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "open",
+      "category": "OBVODY",
+      "question": "Napis zakon pro napeti na kondenzatoru: i_C(t) = ?. ",
+      "answer_parts": [
+        {
+          "title": "Kondenzator",
+          "text": "$$i_C(t) = C \\frac{du_C(t)}{dt}$$"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "open",
+      "category": "OBVODY",
+      "question": "Napis zakon pro napeti na civce: u_L(t) = ?. ",
+      "answer_parts": [
+        {
+          "title": "Civka",
+          "text": "$$u_L(t) = L \\frac{di_L(t)}{dt}$$"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "open",
+      "category": "ELEKTRONIKA",
+      "question": "Proc ma kremikovy PN prechod typicky prah kolem 0.6 az 0.7 V?",
+      "answer_parts": [
+        {
+          "title": "PN prah",
+          "text": "Kvuli potencialove bariere PN prechodu, kterou je treba pri propustnem smeru prekonat."
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "open",
+      "category": "ELEKTRONIKA",
+      "question": "Jaka je hlavni role bazi v BJT tranzistoru?",
+      "answer_parts": [
+        {
+          "title": "Baze BJT",
+          "text": "Ridi proud mezi emitorem a kolektorem malou ridici zmenou proudu nebo napeti podle zapojeni."
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "open",
+      "category": "ELEKTRONIKA",
+      "question": "Co urcuje hradlo u MOSFETu?",
+      "answer_parts": [
+        {
+          "title": "MOSFET gate",
+          "text": "Elektrickym polem ridi vodivost kanalu mezi source a drain."
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "open",
+      "category": "LOGIKA",
+      "question": "Jakou roli ma multiplexor v cislicove logice?",
+      "answer_parts": [
+        {
+          "title": "MUX",
+          "text": "Vybere jeden z vice vstupu a prepne ho na jeden vystup podle adresovacich bitu."
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "open",
+      "category": "LOGIKA",
+      "question": "Jakou roli ma dekoder v cislicove logice?",
+      "answer_parts": [
+        {
+          "title": "Dekoder",
+          "text": "Prevede binarni kod na aktivaci jednoho z vice vystupu."
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "type": "open",
+      "category": "ELMAG",
+      "question": "Napis integralni tvar Ampérova zakona pro magneticke pole H.",
+      "answer_parts": [
+        {
+          "title": "Ampere",
+          "text": "$$\\oint \\mathbf{H}\\cdot d\\mathbf{l}=I_{\\mathrm{enc}}$$"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "open",
+      "category": "ELMAG",
+      "question": "Co vyjadruje Gaussuv zakon elektrostatiky jednou vetou?",
+      "answer_parts": [
+        {
+          "title": "Gauss elektrostatika",
+          "text": "Tok elektricke indukce uzavrenou plochou je roven celkovemu naboji uvnitr deleno permitivitou."
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "type": "open",
+      "category": "OPTO",
+      "question": "Napis Snelluv zakon lomu (krátka karta ke statnicim).",
+      "answer_parts": [
+        {
+          "title": "Snell",
+          "text": "$$n_1\\sin\\alpha = n_2\\sin\\beta$$"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "type": "open",
+      "category": "OPTO",
+      "question": "Kdy nastava totalni odraz?",
+      "answer_parts": [
+        {
+          "title": "Totalni odraz",
+          "text": "Pri prechodu z hustejsiho do ridsiho prostredi a pri uhlu dopadu vetsim nez kriticky uhel."
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "type": "open",
+      "category": "MULTIMEDIA",
+      "question": "Co je hlavni smysl JPEG komprese v jedne vete?",
+      "answer_parts": [
+        {
+          "title": "JPEG",
+          "text": "Snizit datovy objem obrazu ztratovou kompresi s vyuzitim mensi citlivosti oka na nektere frekvencni slozky."
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "type": "open",
+      "category": "MULTIMEDIA",
+      "question": "Co je hlavni smysl MPEG komprese videa v jedne vete?",
+      "answer_parts": [
+        {
+          "title": "MPEG",
+          "text": "Snizit datovy tok videa vyuzitim prostorove i casove redundancy mezi snimky."
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "type": "open",
+      "category": "ZKOUSKOVA STRATEGIE",
+      "question": "Jak ma vypadat idealni odpoved na open kartu ve statecnicovem treninku?",
+      "answer_parts": [
+        {
+          "title": "Format odpovedi",
+          "text": "1 definice + 1 klicovy vztah nebo priklad + 1 veta o pouziti v praxi."
+        }
+      ]
+    }
+  ]
+}

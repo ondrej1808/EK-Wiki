@@ -64,8 +64,16 @@
                         <div class="select-wrapper">
                             <select id="subjectSelect" class="subject-select" onchange="changeSubject(this.value)">
                                 <option value="" disabled selected>📚 Vybrat předmět...</option>
+                                <option value="json/ozd-open-micro.json">OZD - Open microcards</option>
+                                <option value="json/szz-open-micro.json">SZZ - Open microcards</option>
                                 <option value="json/oks.json">OKS - Optické systémy</option>
                                 </select>
+                        </div>
+
+                        <div class="select-wrapper">
+                            <select id="subsetSelect" class="subject-select" onchange="changeSubsetFilter(this.value)">
+                                <option value="">🧭 Všechny subsety</option>
+                            </select>
                         </div>
 
                         <div class="file-input-wrapper">

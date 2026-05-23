@@ -11,6 +11,8 @@ Tento projekt slouží k procvičování a studiu otázek z oblasti optických k
 - **script.js** – JavaScript pro logiku aplikace (načítání otázek, ovládání kartiček, interakce uživatele).
 - **style.css** – Moderní responzivní stylování pro všechny stránky, včetně podpory světlého/tmavého režimu.
 - **json/** – Složka s datovými soubory ve formátu JSON:
+  - `ozd-open-micro.json` – OZD sada otevřených mikro-karet (úzké, konkrétní prompty).
+  - `szz-open-micro.json` – SZZ sada otevřených mikro-karet (úzké, konkrétní prompty).
   - `oks.json` – Hlavní databáze otázek a odpovědí (včetně LaTeX vzorců, obrázků, tabulek).
   - `tsi-json-questions-explanation.json` – Další sada otázek (pravděpodobně pro jiný předmět nebo část zkoušky).
   - `oks.json` – (duplicitní v seznamu, pravděpodobně překlep)
@@ -75,6 +77,15 @@ Každá otázka v `json/oks.json` má následující strukturu:
 - Uzavřené otázky mají pole `options`, `correctIndex` a volitelně `explanation`.
 - Vzorce lze zapisovat v LaTeX formátu, např. `$a^2 + b^2 = c^2$` nebo `$$E=mc^2$$`.
 - Obrázky a tabulky jsou volitelné a slouží k rozšíření odpovědi.
+
+## Doporučený design pro otevřené kartičky (OZD, SZZ)
+
+U otevřených otázek je klíčové vyhnout se příliš širokým zadáním. V sadách `ozd-open-micro.json` a `szz-open-micro.json` jsou proto použity **micro-prompty**:
+
+- 1 karta = 1 pojem, 1 vztah nebo 1 jasné porovnání.
+- Zadání má být zodpověditelné za 15–45 sekund.
+- Odpověď má mít ideálně formát: **definice + klíčový vztah / příklad + 1 věta použití**.
+- Široká témata (např. „vysvětli celé xDSL“) se dělí na několik malých karet (princip, limitace, typické pásmo, použití).
 
 #### Příklad otevřené otázky:
 ```json

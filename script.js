@@ -10,6 +10,9 @@ let stats = {
 };
 let flaggedQuestions = new Set();
 let isFlaggedMode = false;
+let selectedSubsetPath = null;
+
+const SUBSET_VALUE_SEPARATOR = '||>';
 
 // Touch handling variables
 let touchStartX = 0;
@@ -78,6 +81,23 @@ function toggleMenu() {
         selectContainer.appendChild(clonedSelect);
         menuContent.appendChild(selectContainer);
 
+        const originalSubsetSelect = document.getElementById('subsetSelect');
+        if (originalSubsetSelect) {
+            const subsetContainer = document.createElement('div');
+            subsetContainer.className = 'select-wrapper';
+            subsetContainer.style.marginBottom = '12px';
+
+            const clonedSubsetSelect = originalSubsetSelect.cloneNode(true);
+            clonedSubsetSelect.id = 'mobileSubsetSelect';
+            clonedSubsetSelect.style.width = '100%';
+            clonedSubsetSelect.onchange = (e) => {
+                changeSubsetFilter(e.target.value);
+                toggleMenu();
+            };
+            subsetContainer.appendChild(clonedSubsetSelect);
+            menuContent.appendChild(subsetContainer);
+        }
+
         const controls = [
             { text: '📂 Nahrát vlastní', class: 'btn-primary', action: "document.getElementById('fileInput').click()" },
             { text: '🔄 Import Anki', class: 'btn-warning', action: "document.getElementById('ankiInput').click()" },
@@ -105,6 +125,116 @@ function toggleMenu() {
 
     overlay.classList.toggle('active');
     popup.classList.toggle('active');
+}
+
+function normalizeSubsetPath(question) {
+    if (!question || typeof question !== 'object') return [];
+
+    const source = question.subsetPath || question.hierarchyPath;
+    if (Array.isArray(source)) {
+        return source
+            .map(part => String(part || '').trim())
+            .filter(Boolean);
+    }
+
+    if (typeof source === 'string') {
+        return source
+            .split('>')
+            .map(part => part.trim())
+            .filter(Boolean);
+    }
+
+    if (typeof question.category === 'string' && question.category.trim()) {
+        return [question.category.trim()];
+    }
+
+    return [];
+}
+
+function encodeSubsetPath(pathArray) {
+    if (!Array.isArray(pathArray) || pathArray.length === 0) return '';
+    return pathArray.join(SUBSET_VALUE_SEPARATOR);
+}
+
+function decodeSubsetPath(encoded) {
+    if (!encoded) return null;
+    const decoded = encoded
+        .split(SUBSET_VALUE_SEPARATOR)
+        .map(part => part.trim())
+        .filter(Boolean);
+    return decoded.length ? decoded : null;
+}
+
+function isPathPrefix(prefixPath, fullPath) {
+    if (!Array.isArray(prefixPath) || !Array.isArray(fullPath)) return false;
+    if (prefixPath.length > fullPath.length) return false;
+    return prefixPath.every((part, i) => part === fullPath[i]);
+}
+
+function syncSubsetSelects() {
+    const value = encodeSubsetPath(selectedSubsetPath || []);
+    const desktop = document.getElementById('subsetSelect');
+    const mobile = document.getElementById('mobileSubsetSelect');
+    if (desktop) desktop.value = value;
+    if (mobile) mobile.value = value;
+}
+
+function populateSubsetFilter() {
+    const subsetSelect = document.getElementById('subsetSelect');
+    if (!subsetSelect) return;
+
+    const prevValue = encodeSubsetPath(selectedSubsetPath || []);
+    subsetSelect.innerHTML = '<option value="">🧭 Všechny subsety</option>';
+
+    const nodes = new Map();
+    questions.forEach(q => {
+        const path = Array.isArray(q.subsetPath) ? q.subsetPath : [];
+        for (let i = 1; i <= path.length; i++) {
+            const nodePath = path.slice(0, i);
+            const key = encodeSubsetPath(nodePath);
+            if (!nodes.has(key)) {
+                nodes.set(key, {
+                    path: nodePath,
+                    count: 0
+                });
+            }
+        }
+    });
+
+    nodes.forEach(node => {
+        node.count = questions.filter(q => isPathPrefix(node.path, q.subsetPath)).length;
+    });
+
+    const sorted = Array.from(nodes.values()).sort((a, b) => {
+        const aKey = a.path.join(' / ').toLowerCase();
+        const bKey = b.path.join(' / ').toLowerCase();
+        return aKey.localeCompare(bKey, 'cs');
+    });
+
+    sorted.forEach(node => {
+        const option = document.createElement('option');
+        const depth = node.path.length;
+        const indent = depth > 1 ? `${' '.repeat((depth - 1) * 2)}↳ ` : '';
+        option.value = encodeSubsetPath(node.path);
+        option.textContent = `${indent}${node.path[node.path.length - 1]} (${node.count})`;
+        subsetSelect.appendChild(option);
+    });
+
+    if (prevValue && nodes.has(prevValue)) {
+        subsetSelect.value = prevValue;
+    } else {
+        selectedSubsetPath = null;
+        subsetSelect.value = '';
+    }
+
+    syncSubsetSelects();
+}
+
+function changeSubsetFilter(encodedPath) {
+    selectedSubsetPath = decodeSubsetPath(encodedPath);
+    currentCardIndex = 0;
+    syncSubsetSelects();
+    updateUI();
 }
 
 // === FILE LOADING LOGIC ===
@@ -140,8 +270,15 @@ function loadQuestions(data) {
             ...q,
             originalIndex: i,
             id: q.id || i,
-            type: q.type || 'closed'
+            type: q.type || 'closed',
+            subsetPath: normalizeSubsetPath(q)
         }));
+
+        questions = questions.map(q => ({
+            ...q,
+            category: q.category || (q.subsetPath[0] || '')
+        }));
+
         document.querySelector('.header-title h1').textContent = data.title || "TSI Kartičky";
         
         // If loading custom file, use title as key
@@ -160,16 +297,24 @@ function loadQuestions(data) {
     
     // Try to restore progress for this specific subject (Fix issue 2)
     loadProgress();
+    populateSubsetFilter();
     
     updateUI();
     showMessage(`Načteno ${questions.length} otázek`, 'success');
 }
 
 function getFilteredQuestions() {
-    if (isFlaggedMode) {
-        return questions.filter(q => flaggedQuestions.has(q.id));
+    let filtered = questions;
+
+    if (selectedSubsetPath && selectedSubsetPath.length > 0) {
+        filtered = filtered.filter(q => isPathPrefix(selectedSubsetPath, q.subsetPath || []));
     }
-    return questions;
+
+    if (isFlaggedMode) {
+        filtered = filtered.filter(q => flaggedQuestions.has(q.id));
+    }
+
+    return filtered;
 }
 
 // === RENDER LOGIC ===
@@ -237,7 +382,10 @@ function createCard(q, index, total, stackIndex) {
     if (flaggedQuestions.has(q.id)) card.classList.add('flagged');
     
     const isFlagged = flaggedQuestions.has(q.id);
-    const categoryBadge = q.category ? `<div class="category-badge">${q.category}</div>` : '';
+    const hierarchyLabel = Array.isArray(q.subsetPath) && q.subsetPath.length > 0
+        ? q.subsetPath.join(' / ')
+        : q.category;
+    const categoryBadge = hierarchyLabel ? `<div class="category-badge">${hierarchyLabel}</div>` : '';
 
     // === NEW HEADER STRUCTURE (Fix issues 1, 4, 5) ===
     let html = `
@@ -425,11 +573,12 @@ function toggleFlaggedMode() {
 
 function updateStats() {
     const total = getFilteredQuestions().length;
+    const answeredInCurrentFilter = getFilteredQuestions().filter(q => stats.answered.has(q.id)).length;
     
     // Zjistíme počet skutečně zodpovězených unikátních otázek
     const totalAnswered = stats.answered.size; 
     
-    const actualRemaining = total - totalAnswered;
+    const actualRemaining = total - answeredInCurrentFilter;
     const accuracy = totalAnswered === 0 ? 0 : Math.round((stats.correct / totalAnswered) * 100);
 
     document.getElementById('totalCount').textContent = total;
@@ -442,7 +591,7 @@ function updateStats() {
     document.getElementById('mobileAccuracy').textContent = `${accuracy}%`;
 
     // OPRAVA ZDE: Progress bar se nyní počítá podle počtu zodpovězených / celkem
-    const progress = total === 0 ? 0 : (totalAnswered / total) * 100;
+    const progress = total === 0 ? 0 : (answeredInCurrentFilter / total) * 100;
     
     document.getElementById('progressBar').style.width = `${progress}%`;
     document.getElementById('progressText').textContent = `🎯 Pokrok: ${Math.round(progress)}%`;
@@ -489,6 +638,7 @@ function downloadFailed() {
 function saveProgress() {
     const state = {
         idx: currentCardIndex,
+        subsetPath: selectedSubsetPath,
         flags: Array.from(flaggedQuestions),
         stats: {
             correct: stats.correct,
@@ -507,6 +657,10 @@ function loadProgress() {
             const state = JSON.parse(saved);
             // Restore only if index is valid within new set
             if(state.idx < questions.length) currentCardIndex = state.idx || 0;
+
+            if (Array.isArray(state.subsetPath)) {
+                selectedSubsetPath = state.subsetPath;
+            }
             
             if (state.flags) flaggedQuestions = new Set(state.flags);
             
@@ -517,6 +671,8 @@ function loadProgress() {
             }
         } catch (e) { console.error("Save load error", e); }
     }
+
+    syncSubsetSelects();
 }
 
 function attachSwipeListeners() {

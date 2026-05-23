@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cards Creator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <style>
+    .creator-container{display:flex;gap:20px;padding:16px}
+    .creator-list{width:320px;max-height:80vh;overflow:auto}
+    .creator-editor{flex:1;max-height:80vh;overflow:auto}
+    .card-row{display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid #eee}
+    .preview{border:1px solid #ddd;padding:12px;margin-top:12px;background:var(--card-bg,#fff)}
+    .options-list>div{display:flex;gap:8px;margin-bottom:6px}
+    .small{font-size:0.9rem}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cards Creator</h1>
+  </header>
+  <main class="creator-container">
+    <section class="creator-list">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button id="newCardBtn">+ New Card</button>
+        <button id="importBtn">Import JSON</button>
+        <button id="exportBtn">Export JSON</button>
+      </div>
+      <div id="cardsList"></div>
+      <input type="file" id="importFile" accept="application/json" style="display:none">
+    </section>
+
+    <section class="creator-editor">
+      <form id="cardForm">
+        <div style="display:flex;gap:8px;align-items:center">
+          <label>Type: <select id="cardType"><option value="open">open</option><option value="closed">closed</option></select></label>
+          <label class="small">SubsetPath (comma separated): <input id="subsetPath" placeholder="Topic,Subtopic"></label>
+        </div>
+
+        <div>
+          <label>Question</label>
+          <textarea id="question" rows="4" style="width:100%"></textarea>
+        </div>
+
+        <div id="closedOptions" style="display:none">
+          <label>Options</label>
+          <div class="options-list" id="optionsList"></div>
+          <button id="addOptionBtn" type="button">Add option</button>
+        </div>
+
+        <div id="openAnswer">
+          <label>Answer / Explanation</label>
+          <textarea id="answerText" rows="6" style="width:100%"></textarea>
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Image (optional) <input id="imageFile" type="file" accept="image/*"></label>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="saveCardBtn" type="button">Save Card</button>
+          <button id="deleteCardBtn" type="button">Delete</button>
+          <button id="clearDraftBtn" type="button">Clear Draft</button>
+        </div>
+      </form>
+
+      <div class="preview" id="preview">
+        <strong>Preview</strong>
+        <div id="previewContent"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <script src="cards_creator.js"></script>
+</body>
+</html>

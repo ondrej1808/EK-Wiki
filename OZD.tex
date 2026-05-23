@@ -1,0 +1,1488 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[left=3cm, top=2cm, right=3cm, bottom=4cm]{geometry}
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    pdftitle={OZD - Zkouška},
+    pdfauthor={Ondřej Hlaváček}
+}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{needspace}
+\usepackage{cite}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage[siunitx, european, american currents]{circuitikz}
+\usepackage{cancel}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+
+\usepackage{soul}
+\usepackage{svg}
+
+\setlength{\parindent}{10pt}
+\setlength{\droptitle}{-2cm} 
+
+\title{OZD -- Zkouška}
+\author{OH}
+\date{LS 2026}
+
+
+
+\begin{document}
+    \maketitle
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\textwidth]{figs/sef.png}
+        \caption{Opto daddy}
+    \end{figure}
+    \newpage
+
+    \tableofcontents
+
+    \newpage
+    \section{Optické zdroje a detektory základní pojmy a principy, historický vývoj a milníky}
+        \subsection{Typy zdrojů optického záření a jejich základní vlastnosti}
+            Mezi zdroje optického záření patří: přírodní, chemické, biologické, elektrické a tektonické.
+            V tabulce~\ref{tab:zdroje_typy} jsou uvedeny příklady ke každému typu.
+            \begin{table}[H]
+            \centering
+            \caption{Typy zdrojů optického záření a příklady}
+            \label{tab:zdroje_typy}
+            \begin{tabular}{|l|l|}
+                \hline
+                \textbf{Typ zdroje} & \textbf{Příklady} \\
+                \hline
+                Přírodní & Slunce, hvězdy, Měsíc (sekundární zdroj) \\
+                Chemické reakce & oheň \\
+                Biologické & světlušky, různí živočichové \\
+                Elektrické výboje & blesk \\
+                Tektonické jevy & žhnoucí láva \\
+                \hline
+            \end{tabular}
+            \end{table}
+
+
+            \textbf{Nejdůležitější vlastnosti optických zdrojů jsou:}
+            \textbf{spektrální charakteristika a její stabilita v čase, výkon a jeho časový průběh, přeladitelnost, koherentní vlastnosti a životnost.}
+            
+            Vlastní x nevlastní zdroj - vlastní zdroj přímo generuje světlo (Slunce), nevlastní použe odráží (Měsíc).
+
+            Pro člověka je nejpřirozenějším zdrojem světla Slunce, které vyzařuje svoje charakteristické \textbf{spektrum},
+            které má maximum na $\textcolor{green}{\qty{555}{\nano\meter}}$. Dopadající \textbf{Intenzita} ze slunce je většinou uváděna
+            jako $\qty{1000}{\watt / \meter\squared}$~\cite{pveducation_solar_spectra} na povrchu planety, toto číslo je celkový výkon
+            spektra dohromady. Tedy základními vlastnostmi zdrojů je jejich vyzařovací \textbf{spektrum}, \textbf{intenzita} a také \textbf{směrovost}. 
+
+            Podle vzdálenosti a velikosti zdroje, rozlišujeme jestli je zdroj \textbf{Bodový} a nebo \textbf{Plošný}. Bodový zdroj (Žárovka) má zanedbatelné
+            rozměry oproti vzdálenosti ve které měříme jeho parametry, naopak plošný zdroj (Slunce) rozměry zanedbatelné nemá.
+
+        \subsection{Typy detektorů optického záření a jejich základní vlastnosti}
+            Mezi detektory záření řadíme \textbf{biologické} (čípky, tyčinky u člověka), dále neorganické dělíme na
+            detektory s \textbf{přímou přeměnou} (fotodioda) a s \textbf{nepřímou přeměnou} (bolometr).
+            Vlastnosti detektorů v optoelektronice jsou \textbf{citlivost}, \textbf{odezva}, \textbf{selektivita}, 
+            \textbf{účinnost}, šumové vlastnosti, teplotní závislost.
+            
+            Citlivost nám říká jak slabý signál detektor ještě rozliší. Odezvou je myšleno jak rychle detektor reaguje na změny ozáření.
+            Selektivita souvisí se spektrálními vlastnosmi, tedy jaké vlnové délky detektor zachytí. Účinnost nám říká jak
+            dobře detektor přeměňuje světelnou energii na světlo.
+
+            Mezi zdroje s nepřímou přeměnou patří \textbf{tepelné}, principem je ohřátí detektoru světlem a to změní nějaké elektrické vlastnosti.
+            Tepelné detektory jsou pomalé, málo citlivé, neselektivní a málo účinné. Příklady jsou termočlánky, termistory.
+            
+            Mezi zdroje s přímou přeměnou patří \textbf{fotoelektrické} detektory, které přímo převádí záření na el. energii, dokážeme je udělat velmi selektivní,
+            a jsou rychlé (opto komunikace). Příklady jsou fotonka, fotonásobič a fotodiody.   
+
+        \subsection{Lidské oko, lidské spektrum vidění}
+            Na obrázku~\ref{fig:human_eye} je vyobrazeno lidské oko, skládá se z 
+        několika základních částí: \textbf{rohovky}, duhovky, zornice, \textbf{čočky}, sklivce, 
+        \textbf{sítnice} a zrakového nervu (optic nerve). 
+        
+        Každá z těchto částí má specifickou funkci – například rohovka 
+        a čočka zajišťují lom světla, duhovka reguluje množství světla vstupujícího do oka, sítnice převádí světelné
+        podněty na nervové signály (\textbf{tyčinky} (černo-bílé) a \textbf{čípky} (barevné) 6 až 7 milionů máme čípků lol) a zrakový nerv je odvádí do mozku. 
+
+        \begin{figure}[H]
+            \centering
+            \begin{minipage}[t]{0.48\textwidth}
+                \centering
+                % Nastavení velikosti písma na 50 % (např. z 10pt na 5pt s řádkováním 6pt)
+                {\fontsize{5pt}{6pt}\selectfont 
+                \includesvg[width=0.95\textwidth]{figs/eye.svg}
+                }
+                \caption{Schéma lidského oka s popisem základních částí. Zdroj obrázku: \cite{wikimedia_eye}}
+            \end{minipage}\hfill
+            \begin{minipage}[t]{0.48\textwidth}
+                \centering
+                % Nastavení velikosti písma na 50 %
+                {\fontsize{5pt}{6pt}\selectfont 
+                \includesvg[width=0.95\textwidth]{figs/eye_spectrum.svg}
+                }
+                \caption*{Spektrální citlivost čípků v lidském oku. Zdroj obrázku: \cite{wikimedia_spectrum}}
+            \end{minipage}
+            \caption{Schéma lidského oka a spektrální citlivost čípků.}
+            \label{fig:human_eye}
+        \end{figure}
+
+        Lidské oko je nejcitlivější na 555 nm, kde mám slunce maximum vyzařování.
+        
+        \newpage
+        \subsection{Aplikace pro optoelektronické prvky v dopravě, telekomunikacích, spotřební technice a osvětlování, různá řešení.}
+            \begin{itemize}
+                \item Doprava
+                \begin{itemize}
+                    \item LIDAR (light + radar)
+                    \item Radar pro snímání okolí
+                \end{itemize}
+                \item Telekomunikace
+                \begin{itemize}
+                    \item Optické vlákna
+                    \item Laserové diody, fotodetektory
+                \end{itemize}
+                \item Spotřební technika
+                \begin{itemize}
+                    \item Televizní ovladač
+                    \item Displeje (OLED, LED)
+                \end{itemize}
+                \item Osvětlení
+                \begin{itemize}
+                    \item LED osvětlení
+                    \item Zářivky
+                    \item Výbojky: veřejné osvětlení
+                    \item Laserové osvětlení na koncertech
+                \end{itemize}
+                \item Průmysl
+                \begin{itemize}
+                    \item Optické závory 
+                    \item Měření vzdálenosti
+                \end{itemize}
+            \end{itemize}
+
+        \subsection{Bezpečnost při práci s LASERy - třídy bezpečnosti}
+
+            \begin{itemize}
+                \item \textbf{I.} Možný trvalý pohled do svazku laserových paprsků
+                \item \textbf{II.} Kontinuální a viditelné záření, mrkací reflex chrání oko, výkon do 1~mW
+                \item \textbf{IIIa.} Stejné jako II., oko může být poškozeno při pohledu do zdroje pomocí optické soustavy
+                \item \textbf{IIIb.} Nebezpečí poškození oka, nutné používat ochranné pomůcky
+                \item \textbf{IV.} Emise překračuje 0{,}5~W. Paprsky mohou vyvolat poškození oka nebo kůže i difuzně odraženým svazkem paprsků
+            \end{itemize}
+        
+        \newpage
+        \subsection{Spektrální charakteristiky křemenných a polymerních vláken a vlnová pásma}
+            Křemenné vlákna jednovidová mají nejmenší útlum na vlnové délce 1550 nm a nejmenší disperzi pro 1310 nm.
+            Je to omezený dvěma jevy a to \textbf{Rayleighovým rozptylem} a \textbf{Infračervenou absorbcí}.
+
+            \begin{figure}[H]
+                \centering
+                \begin{minipage}[t]{0.65\textwidth}
+                    \centering
+                    \includesvg[width=0.95\textwidth]{figs/sio2_fiber_dB.svg}
+                    \caption*{Spektrální útlum křemenného optického vlákna.}
+                \end{minipage}\hfill
+                \begin{minipage}[t]{0.65\textwidth}
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/vlakna.png}
+                    \caption*{Spektrální útlum různých vláken}
+                \end{minipage}
+                \caption{POF vs silicate fibers}
+                \label{fig:sio2_fiber_attenuation}
+            \end{figure}
+
+            Polymerové (PMMA=Plexisklo) se používá pro 650 nm, tam má nejmenší útlum, UV PMMA degraduje,
+            zhnědne, což zvyšuje útlum, oproti křemeným vláknům mají až 1000x větší útlum.
+
+        \subsection{Materiály pro optické detektory a zdroje záření}
+            \begin{itemize}
+                \item Lze Křemík pro výrobu zdroje optického záření: Ne, ale může se použít jako podložka pro jiné materiály.
+                \item Lze Křemík použít jako podložku pro výrobu zdroje optického záření: Ano, ale musíme přizpůsobit mřízkové konstanty (nemůžeme dát něco co má mřížku 10 nm na křemík, který má 0,5 nm mřížkovou konstantu.).
+                \item Lze křemík použít pro výrobu detektoru optického záření: Ano, ale musíme ho nadopovat přiměsemi, křemík je dobrý pro VIS.
+                \item Lze křemík použít jako podložku pro výrobu optických vlnovodů: Ano, ale musíme vlnovod izolovat vrstvou o menším indexu lomu, křemík má nejvyšší index lomu ze všech materiálů asi 3,5.
+                \item Lze křemík použít jako optický vlnovod: Ano, ale musíme ho obalit něčím co má menší index lomu abychom měli totální odraz.
+            \end{itemize}
+
+            Polovodiče s přímým přechodem: GaAs, GaAsP, GaAlAs, InGaP, GaN, SiC
+
+            Polovodiče s nepřímým přechodem: Si, Ge, GaP
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/si_vs_gaas.jpg}
+            \end{figure}
+    
+    \newpage
+    \section{Radiometrické a fotometrické veličiny}
+        \subsection{Radiometrické veličiny}
+            Jsou nezávislé na pozorovateli, fyzikální.
+            \begin{itemize}
+                \item zářivý tok $\Phi_e$ [watt]
+                \item spektrální zářivý tok $\Phi_{e,\lambda}$ [watt/nanometr]
+                \item intenzita ozáření $E_e$ [watt/metr$^2$]
+                \item intenzita vyzařování $M_e$ [watt/metr$^2$]
+                \item zářivost $I_e$ [watt/steradián]
+                \item zář $L_e$ [watt/metr$^2$/steradián]
+            \end{itemize}
+        \subsection{Radiometrické a fotometrické veličiny}
+            Fotometrické veličiny se vztahují k spektru, které člověk vidí.
+
+            Fotometrické veličiny:
+            \begin{itemize}
+                \item světelný tok $\Phi_v$ [lumen]
+                \item osvětlenost $E_v$ [lux]
+                \item světlení $M_v$ [lumen/metr$^2$]
+                \item svítivost $I_v$ [lumen/steradián]
+                \item jas $L_v$ [lumen/steradián/metr$^2$=kandela/metr$^2$=nit]
+            \end{itemize}
+        \subsection{Měření světelnětechnických veličin}
+            Detektory jsou citlivé na různé vlnové délky, nutna kompenzace filtry.
+            Záleží pod jakým úhlem dopadá světlo na detektor (cosinový kompenzátor to fixne aby to bylo jako když dopadá z 90°).
+            Ideální bodový zdroj není, vždy musíme měřit v dostatečné vzdálenosti, abychom mohli
+            zanedbat rozměry zdroje.
+
+            Goniofotometr se dá různě vzdalovat/přibližovat aby se dala měřit směrovost zdroje.
+            Buď hýbeme s detktorem nebo se zdrojem.
+
+        \subsection{Oko jako detektor jasu}
+            \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/oko_detektor_jasu.png}
+                    \caption{Oko jako detektor jasu}
+                \end{figure}
+        \subsection{Lambertovský zdroj}
+            \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/lambert.png}
+                    \caption{Lambertovský zdroj}
+                \end{figure}
+    
+    \section{Fotodetektory s přímou přeměnou}
+        \subsection{Fotoodpory a fototranzistory - princip funkce, vlastnosti a použití}
+            \subsubsection{Fotoodpory}
+                Principem je \textbf{Vnitřní fotovodivostní jev na polovodiči bez PN přechodu}. Dopadající záření
+                ovlivňuje elektrickou vodivost $\sigma$, tím že generuje fotoelektrony a fotodíry a tím roste koncentrace elektronů $N_e$ a děr $N_p$.
+                \begin{equation}
+                    \sigma = eN_e \mu_n + eN_p \mu_p
+                \end{equation}
+                $\mu$ je pohyblivost díry/elektronu.
+                Tento jev nastavá za podmínky, že energie fotonu $h\ni \geq W_G \geq kT$ a tedy
+                \begin{equation}
+                    \lambda < \frac{hc}{W_G}\text{ a } T<\frac{hc}{k\lambda}
+                \end{equation}
+                kT je energie tepelného šumu, říká nám to tedy že fotoodpor je citlivý pouze od nějaké vlnové délky a menší a teplota musí být
+                dost nízka aby nebyl teplotní šum větší než energie přijímaného světla.
+
+                Vlastnosti: Závislost odporu R je exponencální na ozáření E. VA chka je lineární, Provedení fotoodporů je meandr, tak aby pokrýval co nejvěrší plochu,
+                s co nejtenčím světlocitlivým kanálkem. Podle materiálu je citlivý na určitou část spektra.
+
+                Výhody: citlivost, levné, snandé použití, použitelný i v AC obvodech (je to prostě odpor).
+                Nevýhody: doba odezvy je v sekundách pro CdS a PbS. Kolem mikrosekundy pro InSb. Značná závislost na osvětlení a teplotě. Fotorezistory v provozu stárnou.
+                Použití: měření neelektrických veličin, intenzita záření, fotozávory, požární hlásiče, kalorimetry, regulační technika.
+            \subsubsection{Fototranzistory}
+                \paragraph{Definice a princip}
+                Fototranzistor je běžný bipolární tranzistor, který využívá \textbf{vnitřní fotoelektrický jev}
+                na přechodu báze-kolektor pro generování fotoproudu. Na rozdíl od fotodiody pracuje
+                fototranzistor v režimu, kdy je fotoproud zesílován vnitřním zesílením tranzistoru
+                (faktor $\beta$ nebo $h_{fe}$). Trojvrstvá struktura (emiter-báze-kolektor) má
+                velkou kapacitu báze-kolektor a malé proudové zesílení.
+
+                \paragraph{Fyzikální mechanismus}
+                    Dopadající foton ionizuje elektron-díru pár na závěrném přechodu báze-kolektor.
+                    Fotogenerovaný proud pak teče do báze, kde je zesílený faktorem $\beta$ a finálně
+                    vytváří proud kolektoru. Výsledkem je efektivní responsivita vyšší než u jednoduché
+                    fotodiody.
+
+                \paragraph{Základní charakteristiky}
+                \begin{itemize}
+                    \item \textbf{Responsivita:} typicky 20--30~A/W (zesílení oproti fotodiodě až $\sim \beta \times$).
+                    \item \textbf{Výstupní proud:} $I_c = h_{fe} \times I_{ph} + I_{d,rem}$,
+                    kde $I_{ph}$ je fotoproud, $h_{fe}$ integrální zesílení a $I_{d,rem}$ temný proud po zesílení.
+                    \item \textbf{VA charakteristika:} kolektorový proud $I_c$ závisí na napětí báze-emiter $U_{CE}$
+                    a intenzitě dopadajícího světla $E$; typicky se zobrazuje jako rodina křivek.
+                    \item \textbf{Šum:} relativně vysoký šum při zesílení (šumový faktor se zvyšuje s $\beta$).
+                    \item \textbf{Šířka pásma:} omezená transitním časem a kapacitami; obvykle nižší než u fotodiod.
+                \end{itemize}
+
+                \paragraph{Technologické provedení}
+                \begin{itemize}
+                    \item \textbf{Homopřechodový Si fototranzistor:} jednoduchá konstrukce pro VIS pásmo (přibližně 0{,}4--0{,}9~\textmu m).
+                    \item \textbf{Heteropřechodový InGaAs/InP fototranzistor:} vhodný pro NIR pásmo (0{,}9--1{,}7~\textmu m),
+                    používaný v telekomunikacích a přijímačích.
+                \end{itemize}
+
+                \paragraph{Aplikace a omezení}
+                Fototranzistory se používají v aplikacích vyžadujících \textbf{průmyslové aplikace, automatizaci,
+                senzoriku a zvětšování signálu bez separátního předzesilovače}. Výhody jsou vysoká responsivita
+                a malá složitost obvodu. Nevýhody: vyšší šum, nižší šířka pásma a silná závislost
+                na teplotě a zesílení tranzistoru $\beta$. Fototranzistory se \textbf{nehodí pro dělování}
+                (imaging) kvůli vysokému šumu a horší linearitě.
+            
+        \subsection{Princip přímé fotodetekce na PN, PIN fotodetektoru - popis fyzikálních procesů při fotodetekci, pásový diagram}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/pn_fotodioda.png}
+                \caption{PN Fotodioda}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/pn_fotodiody_pasak.png}
+                \caption{PN Fotodiody pasák}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/PIN_fotodioda.png}
+                \caption{PN Fotodiody pasák}
+            \end{figure}
+            
+        \subsection{VA charakteristika PN fotodetektoru - fotovodivostní a fotovoltaický režim}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/pn_va.png}
+                \caption{PN VA chka}
+            \end{figure}
+        \subsection{PN, PIN, Schottky a MSM fotodetektory - princip, vlastnosti a použití}
+            \subsubsection{PN}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/fotodiody_schema.png}
+                    \caption{PN Fotodiody nahradni schema}
+                \end{figure}
+                Vlastnosti: Výstřelový šum - šumová složka fotoproudu, šumová složka temného proudu.
+            \subsubsection{MSM}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/msm.png}
+                    \caption{MSM (Metal-Semiconductor-Metal) detektory pro IO}
+                \end{figure}
+            \subsubsection{Porovnání}
+            \begin{table}[H]
+                \centering
+                \caption{Srovnání vybraných fotodiod}
+                \label{tab:fotodiody_porovnani}
+                \resizebox{\textwidth}{!}{%
+                \footnotesize
+                \setlength{\tabcolsep}{2pt}
+                \begin{tabular}{@{}l l l c c c@{}}
+                    \toprule
+                    \textbf{Typ} & \textbf{Materiál} & \textbf{Vln. délka} & \textbf{Responsivita} & \textbf{Temný} & \textbf{$D^*$} \\
+                    & & \textbf{(\textmu m)} & \textbf{(A/W)} & \textbf{proud (A)} & \textbf{(cm Hz$^{1/2}$ W$^{-1}$)} \\
+                    \midrule
+                    PN / PIN & Si & 0,4--0,9 & 0,5--0,7 & $2\cdot10^{-9}$ & $6\cdot10^{12}$ \\
+                    PN & Ge & 0,8--1,8 & \cellcolor{yellow!30}0,9 & $10^{-6}$ & $6\cdot10^{11}$ \\
+                    PIN (hetero) & InGaAs/InP & 0,9--1,7 (1,0--1,3) & \cellcolor{yellow!30}0,9 & \cellcolor{yellow!30}$10^{-10}$ & $3\cdot10^{12}$ \\
+                    Schottky & Au/GaN & 0,2--0,42 & 0,1--0,5 & $1{,}3\cdot10^{-10}$ & \cellcolor{yellow!30}$1{,}2\cdot10^{13}$ \\
+                    \bottomrule
+                \end{tabular}%
+                }
+                \vspace{4pt}
+                \footnotesize{Pozn.: Zvýrazněné buňky ukazují nejlepší hodnoty v daném sloupci (nejvyšší responsivita, nejnižší temný proud, nejvyšší $D^*$).}
+            \end{table}
+        \subsection{APD fotodetektory - princip, typy, vlastnosti a použití}
+        \paragraph{Definice a princip}
+        Lavinová fotodioda (APD -- avalanche photodiode) je polovodičový fotodetektor s vnitřním zesílením
+        založeným na lavinovém násobení nosičů v silném elektrickém poli. Při dopadu fotonů vzniknou
+        fotogenerované nosiče, které jsou urychleny v absorpční/driftové oblasti a mohou svými srážkami
+        ionizovat matici a vytvářet další nosiče (impact ionization). Výsledkem je multiplikace
+        fotoproudu popsaná faktorem násobení $M$.
+
+        \paragraph{Základní vztahy}
+        Výstupní proud při zapojení v lineárním režimu lze zapsat jako
+        \begin{equation}
+            I_{out} = M\,I_{ph} + I_{d,rem},
+        \end{equation}
+        kde $I_{ph}$ je fotoproud bez násobení, $M$ je multiplikční faktor a $I_{d,rem}$ je zbytkový (temný)
+        proud po násobení. Responsivita s násobením se aproximuje vztahem
+        \begin{equation}
+            S(\lambda)=\eta(\lambda)\,M\,\frac{e\lambda}{hc},
+        \end{equation}
+        kde $\eta(\lambda)$ je kvantová účinnost, $e$ elementární náboj, $h$ Planckova konstanta a $c$
+        rychlost světla.
+
+        \paragraph{Multiplikace a šum}
+        Multiplikace $M$ závisí nelineárně na přiloženém zpětném napětí a typicky nabývá hodnot $\sim 10$ až $\sim300$.
+        Zesílení zvyšuje i šum; celkový šum lavinového detektoru se popisuje pomocí šumového faktoru $F(M)$,
+        který se často aproximuje jako $F\approx M^{x}$, kde index $x$ závisí na materiálu a typu nosičů (obvykle
+        $0{,}2\le x \le 1$). Vyšší $M$ tedy vede k vyššímu šumu a obecně existuje kompromis mezi citlivostí a
+        signál-k-šum poměrem.
+
+        \paragraph{Technologické provedení a materiály}
+        Standardní konstrukce:
+        \begin{itemize}
+            \item \textbf{Homopřechodová APD (Si):} jednoduchá konstrukce vhodná pro pásmo 0{,}4--1{,}1~\textmu m.
+            \item \textbf{Reach-through / separate absorption and multiplication (SAM/SAGM):} absorpční část oddělená
+            od multiplikace — umožňuje použít materiály s dobrou absorpcí (InGaAs) a separátní násobicí část (InP/Si).
+            \item \textbf{Heteropřechodové APD:} InGaAs/InP pro NIR (0{,}9--1{,}7~\textmu m), používané v telekomunikačních přijímačích.
+        \end{itemize}
+
+        \paragraph{Typické parametry}
+        \begin{itemize}
+            \item Responsivita (s M): typicky $\sim$10--50~A/W (u vysokých M; linearizovaná responsivita bez M je nižší).
+            \item Multiplikační faktor $M$: $\sim$10--300 (závisí na napětí a konstrukci).
+            \item Šumový faktor $F(M)$: závisí na materiálu, pro elektrony $x\approx0{,}2$--1.
+            \item Šířka pásma: omezená transitním časem a kapacitami; rostoucí $M$ obvykle snižuje šířku pásma.
+            \item Temný proud: citlivý na teplotu a albační procesy; u InGaAs bývá vyšší než u Si.
+        \end{itemize}
+
+        \paragraph{Provozní režimy a aplikace}
+        APD pracují v \textbf{lineárním režimu} (pod průrazným napětím) pro zesílení analogových signálů
+        (optické přijímače, LiDAR) a v \textbf{Geigerově režimu} (nad průrazným napětím s kvenčováním) pro
+        detekci jednotlivých fotonů (single-photon detectors, fotonové měření, kvantová komunikace).
+
+        Mezi hlavní aplikace patří: optické komunikace (přijímače v NIR okně), lidar a dálkoměry, spektrometrie,
+        laserové range-finders a vědecké detektory vyžadující vysokou citlivost.
+
+        \paragraph{Poznámky k návrhu}
+        Při použití APD je nutné řešit: stabilní a přesné napájení vysokým napětím, chlazení pro snížení temného proudu,
+        návrh nízkošumového předzesilovače a optimalizaci kompromisu mezi $M$ a šířkou pásma.
+
+        \subsection{Fotomagnetoelektrický senzor - princip, vlastnosti, použití}
+        \paragraph{Definice a princip}
+        Fotomagnetoelektrický jev (neboli fotomagnetickÝ efekt) je obdobou \textbf{Hallova jevu pro fotoproud}.
+        Na krystalu InSb nebo obdobných materiálů vzniká fotogenerovaný proud účinkem dopadajícího záření.
+        Přiložené silné magnetické pole pak ovlivňuje směr a velikost tohoto fotoproudu díky Lorentzově síle
+        působící na nosné nábojové.
+
+        \paragraph{Fyzikální mechanismus}
+        Dopadající foton ionizuje elektron-díru pár v krystalu. Elektrony a díry se pohybují a vytvářejí fotoproud.
+        Když na krystal působí kolmé magnetické pole, Lorentzova síla odklání nosiče náboje a mění jejich dráhu.
+        To vede k výrazné změně velikosti detekovaného signálu v závislosti na orientaci a síle magnetického pole.
+        Výsledkem je efektivní přeměna magnetického pole na elektrický signál s vysokou citlivostí.
+
+        \paragraph{Základní charakteristiky}
+        \begin{itemize}
+            \item \textbf{Citlivost (Responsivita):} typicky až 0{,}7~V/W, což je vynikající hodnota bez nutnosti ochlazení.
+            \item \textbf{Vlnová délka:} krystal InSb detekuje až do délky kolem 7~\textmu m (infračervené pásmo).
+            \item \textbf{Pracovní teplota:} funguje při pokojové teplotě bez speciálního ochlazování.
+            \item \textbf{Spektrální rozsah:} velmi široké pásmo, což umožňuje měření širokého spektra záření.
+            \item \textbf{Výhoda:} nejcitlivější fotodetektor pracující bez chlazení.
+        \end{itemize}
+
+        \paragraph{Technologické provedení}
+        Základní konstrukce spočívá v krystalu \textbf{InSb} (antimon indnatý), na kterém jsou připevněny 
+        \textbf{permanentní magnety} (zpravidla magnetické póly v osách X a Y). Krystal se orientuje tak,
+        aby magnetické pole bylo kolmé na dopadající světlo. Elektrické kontakty na krystalu umožňují 
+        měřit výstupní napětí nebo proud.
+
+        \paragraph{Aplikace a omezení}
+        Fotomagnetoelektrické senzory se používají v:
+        \begin{itemize}
+            \item \textbf{Infračervené měřicí technice} -- detekce slabého infračerveného záření bez ochlazení.
+            \item \textbf{Radiometrických přístrojích} -- měření intenzity elektromagnetického záření v širokém spektru.
+            \item \textbf{Průmyslových snímačích} -- aplikace vyžadující vysokou citlivost a nižší cenu než u chladičů.
+            \item \textbf{Vědeckých přístrojích} -- spektroskopie, měření teploty těles.
+        \end{itemize}
+        
+        Nevýhody: vyšší teplota operace (více šumu než chlazené detektory), závislost na magnetickém poli,
+        omezená dostupnost kvalitních InSb krystalů.
+    
+    \section{Fotodetektory s nepřímou přeměnou}
+        \subsection{Princip fotodetektorů s nepřímou přeměnou, základní parametry fotodetektorů}
+            Využívají jevů: fotovodivostní, Seebackův, pyroelektrický pro převod světla/tepla na elektrickou informaci.
+
+            Využívají změn teploty díky dopadajícímu absorbovanému záření ke změně jiného elektrického parametru
+            (odpor, termoelektrické napětí (Seebackův jev), pyroelektrického napětí).
+
+            Nevýhodou je že mají nižší detektivitu oproti přímým detektorům. Na druhou stranu
+            mají výborné spektrální vlastnosti v infračerveném pásmu. Kvůli jejich principu (světlo->teplo->elektro)
+            mají velmi špatné dynamické vlastnosti (pomalá reakce na změnu vstupních světelených podmínek).
+
+        \subsection{Bolometry - základní princip, konstrukce, vlastnosti a použití}
+            Bolometry pracují na principu měření změny elektrického odporu, který je teplotně závislí (absorbuje světlo formou tepla).
+            Koeficient teplotní závislosti je $\alpha_R$ a je značný.
+
+            Konstrukčně jsou tvořeny tenkou kovovou vrstvou platiny nebo niklu.
+            Elektricky jsou zapojeny do Wheatstonova můstku. 
+
+            Mají velkou citlivost, používají se na měření kosmického záření.
+
+
+        \subsection{Termoelektrické články - princip, konstrukce, vlastnosti a použití}
+            Termoelektrické články vužívají Seebackův jev, ke kterému nastávu
+            pokud spojíme dva různé kovy, jeden ohříváme mezitím co druhý se snažíme nechat
+            na stejné teplotě, tím přes spoj vzniká gradient teploty, která způsobí termoelektrickou
+            sílu (TEMSA) působící na elektrony -> elektrické napětí.
+
+            $$U_T=\alpha_{AB}\Delta T$$,
+            kde $U_T$ je termoelektrické napětí, $\alpha_{AB}$ je koeficient temsy a $\Delta T$ rozdíl teplot.
+
+            Podmínkou je dobrá elektrická vodivost kovů a malá tepelná vodivost (aby se neohřály na stejnou teplotu).
+
+            Používá se jako senzor pro bezdotykové měření teploty. Vysoká citlivost až $10^{-8}$ W a při speciální
+            konstrukci rychlá odezva až 10 ns.
+
+        \subsection{Pyroelektrické články - princip, konstrukce, vlastnosti a použití}
+            Využívá změnu teploty feroelektrických materiálů, která vyvoláva změny vektoru polarizace P
+            (změna pevného náboje), což je provázeno posuvnými proudy a změnami vnějšího
+            napětí (přeměna tepelné energie na elektrickou).
+            
+            Použití: levné IR detektory požárů, senzory pohybu, termostaty.
+        
+        \subsection{Fotonka - princip, konstrukce, vlastnosti a použití}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/fotonka.png}
+            \end{figure}
+
+        \subsection{Fotonásobiče - princip, konstrukce, vlastnosti a použití}
+            \subsubsection{Princip}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/foto_nasobic.png}
+                \end{figure}
+            \subsubsection{Konstrukce}
+                Jednotlivé dynody se pokrývají materiály s vysokým koeficientem sekundární
+                emise. Počet sekundárně emitovaných elektronů závisí na energii dopadajícího
+                elektronu, která musí být optimální.
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/foto_nasobic_konstrukce.png}
+                \end{figure}    
+            \subsubsection{Vlastnosti}
+                \begin{itemize}
+                    \item Dynamické vlastnosti – dané disperzí elektronů mezi fotokatodou a první dynodou $6\cdot 10^{-9}$ až $2\cdot 10^{-8}$ s.
+                    \item Šum fotonásobiče – je především ovlivněn termoemisním proudem fotokatody a kvantovým šumem fotoemisního proudu.
+                    \item Multiplikačním koeficientem dynodového systému M a koeficientem sekundární emise $\sigma$. Udává počet sekundárně emitovaných elektronů, které emituje jeden elektron, dopadající na dynodu.
+                    \item Výhody: velká plocha pro příjem záření, rychlá odezva, velký zisk a nízký šum
+                \end{itemize}
+            \subsubsection{Využití}
+                \begin{itemize}
+                    \item citlivé měřiče osvětlení a světelného toku v UV, VIS a IR oblasti
+                    \item detektory rentgenového záření
+                    \item měření činitelů odrazu a prostupu
+                    \item součást scintilačních detektorů
+                    \item Elektronové mikroskopy
+                \end{itemize}
+    \section{Typy luminiscence v polovodičích}
+        \subsection{Typy luminiscence, přímý a nepřímý polovodič, typy zářivých přechodů mezi pásy - vyjmenovat, vysvětlit, použití}
+            \begin{itemize}
+                \item Fotoluminiscence - energie dodaná látce je ve formě záření – luminofory pro displeje a zářivky
+                \item Katodoluminiscence - energie dodaná látce je dodána bombardováním urychlenými částicemi, pohybujícími se ve vakuu - vakuové obrazovky
+                \item Elektroluminiscence - energie dodaná látce je ve formě elektrického pole - LED
+                \item Přímý polovodič - polovodič, ve kterém může elektron při rekombinaci s dírou přímo vyzářit světlo (foton) => LED
+                \item Nepřímý polovodič - takový, ve kterém elektron při rekombinaci s dírou nevydá světlo, protože musí nejdřív změnit hybnost
+            \end{itemize}
+        \subsection{Základní typy polovodičových PN zářičů - vyjmenovat, vysvětlit, použití}
+            \begin{itemize}
+                \item Dobré dynamické vlastnosti až do GHz
+                \item Selektivní zdroje záření vlnové délky 0.4 um až 10 um
+                \item Elektroluminiscenční signalizační diody LED (signalizace, optické závory, čidla)
+                \item Elektroluminiscenční komunikační diody LED
+                \item Laserové diody LD – multividové, monovidové
+            \end{itemize}
+        
+        \subsection{Polovodičové signalizačních LED - typy, princip funkce, vlastnosti a použití}
+            \begin{itemize}
+                \item vytvořena na homopřechodu PN s přímými polovodiči GaAs, GaAlAs
+                \item pro NIR a UV pásmo včetně modré
+                \item nepřímými polovodiči září v blízké UV, viditelné VIS nebo blízké infračervené NIR oblasti spektra, mají vysoký zářivý výkon, horší dynamické vlastnosti
+                \item signalizace, optické závory, čidla
+            \end{itemize}
+        
+        \subsection{Typy komunikačních LED - princip funkce, vlastnosti a použití}
+            \subsubsection{Základní vlastnosti a použití komunikačních LED}
+            \begin{itemize}
+                \item zářiče pro informatiku po optických vláknech
+                \item modifikovaný kontakt pro zúžení vyzařování
+                \item úzké vyzařování pro napojení na vláknové vlnovody
+                \item výborné dynamické vlastnosti
+                \item dlouhá životnost a malá teplotní závislost parametrů
+            \end{itemize}
+            \subsubsection{Typy}
+            \begin{itemize}
+                \item Burrusova plošně emitující dioda - vyšší zářivý výkon ve vlákně, horší dynamické vlastnosti
+                \item Hranově emitující dioda - nižší zářivý výkon ve vlákně, lepší dynamické vlastnosti
+            \end{itemize}
+        
+        \subsection{Laserové diody s Fabry-Perotovým rezonátorem (LD), princip, vlastnosti a použití}
+            \begin{itemize}
+                \item Fabry-Perotův rezonátor je dvojice zrcadel, mezi nimiž se odráží světlo, a pouze určité vlnové délky se zesilují díky interferenci
+                \item Obsahuje více vlnových délek (více módů)
+                \item Jednodušší, levnější než DFB nebo DBR lasery
+                \item Měření vzdálenosti, LiDAR, Polohovací systémy
+            \end{itemize}
+        \subsection{Laserové diody DFB, BFR a QW - LD, principy funkce, vlastnosti a použití}
+            \subsubsection{DFB}
+                Braggova optická mřížka je vytvořena přímo uvnitř rezonátoru na jednom
+                rozhraní aktivní vrstvy LD prostorovým periodickým rýhováním. Leptáním
+                prostorově modulované optické mřížky může snižovat zisk aktivní vrstvy LD.
+
+            \subsubsection{QW}
+                QW dioda funguje tak, že využívá extrémně tenkou vrstvu (kvantovou jámu)
+                :O, kde jsou nosiče silně omezeny → díky tomu je světelná emise efektivnější
+                a lépe řízená.
+
+            \subsubsection{BFR}
+                (Bragg-Fresnel) lasery: Optická mřížka Braggova typu odráží zpět světlo na
+                základě interference a Fresnelova typu ovlivňuje šíření světla.
+
+    \section{Principy funkce nekoherentních tepelných, polovodičových zdrojů záření a výbojek}
+        \subsection{Tepelné zdroje záření - princip funkce, druhy zdrojů, vlastnosti a použití}
+            \subsubsection{Princip funkce}
+                Tepelné zdroje záření pracují na principu záření černého tělesa, většinou se skládají
+                z nějakého vlákna, které se protékajícím proudem ropálí do běla, čím vyšší teplota tím více červená -> bílá -> modrá.
+            \subsubsection{Druhy zdrojů}
+                Řadí se mezi ně klasické žárovky, halogenové žárovky (mají plyn halogen který pomáhá obnovovat wolfram vlákna).
+            \subsubsection{Vlastnosti a použití}
+                \begin{itemize}
+                    \item Žárovky - nízká účinnost (< 10 lm/W), většina energie se mění na teplo. Velmi dobré spektrum podobné dennímu.
+                    \item Halogenové - o trochu vyšší (okolo 10-20 lm/W), používali se v autech jako světlomety, vyšší teplota lepší spektrum. Mají větší UV složku než klasické.
+                \end{itemize}
+            
+        \subsection{Vyjmenujte základní parametry zdrojů záření}
+            \begin{itemize}
+                \item Teplota chromatičnosti [K]
+                \item Příkon [W]
+                \item Světelný tok [lm]
+                \item Účinnost [lm/W]
+                \item Barevné podání (CRI) (spektrum)
+                \item Světelná intenzita cd = lm/sr
+                \item Životnost
+                \item Vyzařovací diagram
+            \end{itemize}
+        \subsection{Funkce, vlastnosti a použití halogennových žárovek}
+            Źárovka se skládá z křemenné baňky ve které je plyn halogenidu (Brom, Iod), když se z vlákna odpaří wolfram tak se naváže na halogenid
+            a poté se zpátky se usadí na vlákno W + Br <-> WBr, tím se zpomaluje degradace vlákna a prodlužuje se životnost.
+
+            Používali se hodně v autech (světlomety) dlouhou dobu před nástupem LEDek.
+        \subsection{Princip funkce a typy výbojek (nízkokotlaké, vysokotlaké)}
+            Máme trubici, která má v sobě nějaký plyn (nízký tlak nebo vysoký),
+            dále dvě elektrody. Abychom zapálil v plynu oblouk potřebujeme buď vysoké napětí nebo ohřát plyn.
+            Klasické zářivky pracují tak, že se na začátku pomocí startéru ohřívají elektrody, ty začnou emitovat elektrony, čímž
+            se zvodiví plyn a sníží se zápalné napětí, ve chvíli kdy startér rozepne, síťové napětí je dostatečné pro zažehnutí oblouku.
+            Páry rtuti produkují UVčko, proto má zářivka luminofor, který absorbuje vetší část UV složky a vyzáří jí jako ve viditelném spektru.
+
+            Modernější (cca 2010 - 2020) zářivková svítidla mají místo startéru + tlumivky,
+            chytrej obvůdek z mosfety který místo ohřívání přes elektrody, nakopne zářivku napěťovou špičkou, říká se mu balast.
+            Ale dnes se nahrazují led trubicemi, startér se nahradí fake startérem, což je podle mě jenom kondík nebo co, ale bez toho se to nezapne.
+
+            Další výbojové zdroje jsou rtuťové, sodíkové (dříve pouliční osvětlení nízkotlaké/vysokotlaké), nízkotlaká sodíkovka je monochromatický zdroj.
+            Potom jsou také Xenonky, Neonky, Kryptonky ... Využívající výboj v inertním plynu, což každý plyn má jiné barvičky.
+            Xenonové výbojky se používali ve fancy autech jako světlomety.
+        
+        \subsection{Konstrukce výbojek, jejich vlastnosti a použití}
+            Konstrukce: trubice + plyn + elektrody + luminofor na trubici.
+            Vždy mají silnou modrou složku, vhodné pro pracovní prostředí, nevhodné pro spánek.
+            Mají více lm/W než žárovky, cca 40 - 50 lm/W (normální zářivkové trubice).
+
+        \subsection{Elektroluminiscenční zdroje LED – princip funkce, vlastnosti a použití}
+            Vznik fotonů rekombinací páru elektron - díra na PN přechodu.
+            \begin{itemize}
+                \item vlnová délka emise je daná energií zakázaného pásu použitých polovodičů (podobné jako emise u výbojkových zdrojů excitací e - a návratem zpět)
+                \item relativně velmi vysoká účinnost 40 -50 \%, až 200 lm /W bílého světla , teoreticky až 300 lm/W
+                \item nutné elektronické řízení, malé DC napětí
+                \item LED citlivé na proudové poškození
+                \item možná integrace více LED
+                \item DIP (Dual Line Package), SMD (Surface Mounted Device), COB (Chip-on Board), COG (Chip-on Glass)
+                \item vývoj v účinnosti rekombinace (teplo), extrakce světla
+                \item vyzařované spektrum vždy úzkopásmové
+                \item bíla barva = RGB nebo modrá / UV LED a luminofor
+                \item vyzařovací charakteristika – bez úprav Lambert. zdroj
+                \item dlouhá životnost 50 000 h + (pokles svítivosti na 70 \%) , malé výkony až $10^6$ h
+                \item okamžité zapínání
+                \item malé rozměry, miniaturizace, možnost škálovat
+                \item výborné barevná věrnost CRI až 95 +
+                \item široký rozsah barevných teplot
+                \item nízké tepelné záření a menší emise UV záření
+                \item Když spadne na zem tak se nerozbije a nezabije tě rtuť
+                \item Lze připojit k WiFi nebo Bluetooth když jsi debilIOT
+            \end{itemize}
+
+        
+    \section{Principy a funkce základních pevnolátkových a plynných laserů. Způsoby čerpání, konstrukce, jejich charakteristiky a použití}
+        \subsection{Laser a Maser – definice, základní části, popis}
+            \begin{itemize}
+                \item LASER = Light Amplification using Stimulated Emission of Radiation
+                \item MASER = Microwave Amplification using Stimulated Emission of Radiation
+            \end{itemize}
+            Základní podmínky LASERu:
+            \begin{itemize}
+                \item Opticky aktivní prostředí
+                \item Inverze populace
+                \item Rezonátor
+                \item Zdroj energie (pumpování)
+            \end{itemize}
+            Elektrony vázané v atomy mají pouze omezené možnosti jaké energie můžou mít (Kvantovka),
+            energetické hladiny jsou konkrétní hodnoty energií které elektrony vázané v atomu můžou mít.
+            "Poloha"/Energie elektornu v atomu se popisuje kvantovýma číslama, josu čtyři n,l,m,s. 
+            Pokud chceme dostat elektron do vyšší energetické hladiny, musíme mu dodat velmi konkrétní množství energie,
+            to je rovno rozdílu mezi jeho aktuální hladinou a hladinou kam ho chceme vyexcitovat.
+            
+            Tuto energii můžeme elektronu dodat například v podobě fotonu, foton který má přesně energii
+            $hf=\Delta E=E_2-E_1$, může elektron vyexcitovat do vyšší hladiny, tomuto jevu říkáme \textbf{ABSORBCE}.
+            
+            Když je elektron vyexcitovaný do vyšší hladiny, tak se mu tam moc nelíbí. Má několik možností 
+            jak se dostat zpět na nižší hladinu, může SPONTÁNĚ vyzářit foton (\textbf{spontanní emise}), který má energii
+            přesně rovnu rozdílu energii hladin, ale ten foton má náhodný směr a fázi. 
+            
+            Další možnost co můžeme s excitovaným elektronem v atomu dělat je to že kolem něj prletíme jiný foton,
+            který má přesně energii jako je rozdíl mezi energií elektronu a nižší neobsazenou hladinou. V tu chvíli
+            se může stát, že námi poslaný foton s energií $hv=\Delta E$ zainteraguje s excitovaným elektronem a ten
+            vazáří foton s naprosto totožnými parametry jako ten co ho stimuloval (fáze a směr). Tomuto jevu
+            se říká \textbf{stimulovaná emise} a je to hlavní princip laseru.
+
+            Další možnost co elektron má je multi-fonová absorbce/emise, kdy místo vyrobení světla rozvibruje mřížku.
+            Fonony jsou kvantum vibrace mřížky podle jejich frekvence se dělí na optické (velká f) a akustické (malá f).
+            Fonony nás už nebudou zajímat.
+
+            Každý atom má určitý počet protnů, elektronů\footnote{taky neutrony} (nemusí být stejný -> ionty).
+            Tento sytém nabitých částic definuje energetické hladiny iontu/atomu.
+            Emise fotonů je legální jen mezi některými hladinami, protože kvantovka (foton vs. fonon).
+            Pokud atom/iont dáme do nějakého materilálu (krystalické mřížky) tak mu to rozhází hladiny.
+            Pokud na něj budeme působit elektrickým nebo magnetickým polem, tak ho to také ovlivňuje hladiny.
+            Důležié je že můžeme různě kombinovat inoty/atomy, abychom docílil různých rozpoložení hladin.
+            Což přímo ovliňuje, jakou barvičkou atom/iont může svítit.
+
+        \subsection{Princip LASERu třihladinový systém – výhody a nevýhody, příklady}
+            Už víme že atomy mají hladiny. Podle toho kolik a jak jsou hladiny rozmístěné,
+            můžeme pré LASER využít tří nebo čtyř hladinový systém.
+
+            \begin{figure}[H]
+                \centering
+                \includesvg{figs/3level.svg}
+                \caption{Tří hladinový systém}
+            \end{figure}
+
+            V obrázku je uveden tříhladinový systém, skládá se překvapivě ze tří hladin. Hladina $E_0$ je základní,
+            kde má elektron nejmenší energii a rád v ní bude věčně. Hladina $E_1$ je charakteristická tím,
+            že v elektron v ní setrvává velmi krátkou dobu (doba života v hladině je v řádu mikrosekund), vyzáří totiž
+            potřebný počet fononů, aby se dostal do kvazi-stabilní úrovně $E_2$, kde má elektorn mnohem delší
+            dobu životu (řádově milisekundy) a z té se může dostat do $E_0$ zářivým přechodem (spontánní nebo stimulovaná emise).
+            
+            My chceme vytvořit LASER, tudíž zesilovat světlo pomcí stimulované emise, proto potřebujeme aby většina atomů měla
+            elektrony v hladině $E_1$, aby byly ready na stimulovanou emisi. To zařídíme tak zvanou inverzí populace,
+            což znamená že přinutím nadpoloviční množství elektronů do hladiny $E_2$ než jicj je v hladině $E_0$.
+
+            To zařídíme zdrojem energie (buď ve formě elektrického pole nebo fotony), excitujeme externím zdrojem elektrony
+            do $E_1$, tam moc dlouho nevydrží a de-excitujou se do $E_2$. V tu chvíli musíme stihnout poslat jim správný foton
+            na stimulovanou emisi. To zařídíme tím, že zavřeme aktivní prostředí do rezonátoru. 
+
+            Rezonátor může být například dvě protilehlá zrcadla, mezi těma se budou odrážet fotony a způsobovat stimulovanou emisi.
+            Jedno zrcadlo trochu propouští a to je náš výstupní koherentní (V prostoru i čase) paprsek (stejná fáze a směr šíření fotonů).
+
+            Nikdy se nám nepodaří mít pořád všechny elektrony v excitovaném stavu během co LASER běží, vždycky tam bude nějaký poměr excitovaných a neexcitovaných elektronů.
+            Tudíž se může stát, že vyprodukovaný foton ze stimulované emise se nechá absorbovat elektronem v hladině $E_1$, což nám snižuje účinnost LASERu (ten foton už nemůže udělat stimulovanou emisi, elektron ho sežral).
+            To je nevýhoda tříhladinového systému. Výhoda je jednoduchost. Příkladem jsou vlákové Yb lasery, rubínové lasery, erbiové lasery (telkom).
+            
+            LASER musíme chladit (fonony co se vyzáří mezi $E_1$ a $E_2$ jsou na velkém měřítku teplo).  
+
+        \subsection{Princip LASERu čtyřhladinový systém – výhody a nevýhody, příklady}
+            \begin{figure}[H]
+                \centering
+                \includesvg{figs/4level.svg}
+                \caption{Čtyř hladinový systém}
+            \end{figure}
+            Princip je stejný jako u 3 hladinového, excitujeme elektron do vyšší hladiny,
+            ten "relaxuje"/de-excituje do nižší hladiny nezářivě a tam čeká (! ne do nekonečna) na foton
+            aby nastala stim. emise, ale po stim. emise nepřejde elektron na základní hladinu $E_0$,
+            ale na hladinu $E_1$, odkud de-excituje do základní (vyzáří fonony), to má tu výhodu,
+            že elektrony v základní hladině nemůžou být excitovány do hladiny $E_2$, což nám zhoršovalo
+            vlastnosti LASERu, to je jeho výhoda oproti 3-hladinovému.
+            
+            Příkladem tohoto systému jsou LASERy: Nd:YAG, Helium-Neon, CO2.
+
+        \subsection{Plynové lasery – typy, hladinové diagramy, vlnová délka, použití}
+            Plynové LASERy využívají většinou inertní plyny (HeNe), jak už víme
+            když nakombinujeme různé atomy získáme celkově různé hladiny, které elektrony můžou obývat.
+            HeNe umí svítit vlnovýma délkama 543, 594 a 633 nm. A má výhodu, že má velmi úzkou spektrální čáru $\Delta \lambda < 1 nm$.
+            Používá se pro laboratorní měření.
+
+            Pak je ještě třeba CO2 LASER který svítí 10,6 $\mu m$ (MIR). Používá se v průmyslu a zdravotnictví.
+            Pumpují se elektrickým polem.
+        \subsection{Pevnolátkové lasery – typy, hladinové diagramy, vlnová délka, použití}
+            Využíváme nějakého krystalu s uvězněnými ionty, které jsou opticky aktivní.
+            Příklad je Nd:YAG (iont Neodymu v krystal Hliník yttrium garnite) nebo rubín (Iont Chromu v Al2O3).
+            Pumpují se elektrickým polem.
+        \subsection{Principy vláknového LASERu – využití}
+            Pumpujeme rare earth (Er, Yb) doped vlákno kratší vlnovou délkou než vyzařujeme z LASERu.
+            použití má široce v telkom. Erbium je super protože umí svítit 1530 nm, což je velmi blízko k 1550 nm, nejnižší útlum.
+            
+            Ytterbium svítí kolem 1030 nm, dopované vlákna se používají pro výkonové aplikace (laser gravírky, řezání).
+            Taky se dá udělat Yb-Er vlákno - lepší zisk, excitujeme elektron v Yb a ten předá energii elktronu v Er a to zasvítí (stim. emisí) 1530 nm. 
+            
+    \section{Optoelektronické přijímače a vysílače pro intenzitní a koherentní vlnové přenosové systémy. Optické vysílače a přijímače pro intenzitní a heterodynní systémy a paketový přenos}
+        \subsection{Rozdělení komunikačních systémů podle typu modulace}
+            \begin{itemize}
+                \item Systémy s intenzitní modulací jedné optické nosné a přímou detekcí - amplitudovou modulaci intenzity výkonu optické vlny udávaných ve W/cm2.
+                \item Systémy s intenzitní modulací WDM více optických nosných a přímou detekcí - modulaci uloženou do amplitudy, frekvence nebo fáze optické vlny udávané v příslušných jednotkách
+                \item Systémy koherentní s modulací amplitudy nebo fáze a heterodynní detekcí
+            \end{itemize}
+
+        \subsection{Základní typy OE vysílačů – blokové schéma, vlastnosti a použití}
+            Jsou dva základní druhy vysílačů: Intenzitní (LED, LD) a koherentní (LD).
+            Intenzitní umožnují pouze modulaci intenzity světla.
+            Koherentní vysílače umožňují modulaci nejen amplitudy, ale i frekvence (WDM) a fáze.
+            Lze modulovat bud vstupním proudem (Injekční modulace), nebo výstupní paprsek optickým modulátorem (Vnější optická modulace).
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.7\textwidth]{figs/vysilac_inzenzita.png}
+                    \caption{Blokové schéma}
+                \end{figure}
+                \begin{itemize}
+                    \item Vlastnosti (LED) - široké spektrum (10x nm), levné a jednoduché, krátký dosah
+                    \item Použití (LED) - krátké optické zdroje, levné senzory
+                    \item Vlastnosti (LD) - úzké spektrum (<1 nm), vysoký výkon, vyšší přenosová rychlost, drahý
+                    \item Použití (LD) - LIDAR, optické sítě
+                \end{itemize}            
+        \subsection{Typy injekčních modulátorů OE vysílačů, jejich vlastnosti a použití, stabilizace optického výkonu}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.65\textwidth]{figs/injekcni_modulatory.png}
+                \caption{Blokové schéma tří typů injekčních vysílačů.}
+            \end{figure}
+            \begin{itemize}
+                \item Vlastnosti Sériového) horší dynamické vlastnosti ve vypínací fázi modulace, vybíjení přes rozep. tranz.
+                \item Použití Sériového) LED a LD vysílače do šířky pásma 1 GHz
+                \item Vlastnosti Bočníkového) vhodně kompenzuje horší dynamické parametry LED ve vypínací fázi
+                \item Použití Bočníkového) pro modulaci OEV s LED až do 300 MHz
+                \item Vlastnosti Emitorového) dobré modulační vlastnosti a vysoká teplotní stabilita
+                \item Použití Emitorového) pro modulaci OEV s LD v planárních monolitických IO nad 1 GHz
+            \end{itemize}
+            LD potřebují regulaci proudu: analogová regulační smyčka, kterou tvoří monitorovací fotodioda (většinou na zpětném zrcadle LD), operační zesilovač OZ s integrujícím kondenzátorem na vstupu
+            a regulační tranzistor, nastavující ss. pracovní bod LD.
+            \begin{figure}
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/regulace_LD.png}
+                \caption{Regulační smyčka pro LD}
+            \end{figure}
+
+        \subsection{Základní typy OE přijímačů – blokové schéma, vlastnosti a použití, citlivost a šum přijímače}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/oe_prijimace.png}
+                \caption{Blokové schéma přijímačů.}
+            \end{figure}
+            \begin{itemize}
+                \item Vlastnosti a) Velká šířka pásma, nízký přenos a velký šum
+                \item Použití a) Přenos do šířky pásma od jednotek až desítek GHz
+                \item Vlastnosti b) Kompromisní přenos při střední šířce pásma a střední míře šumu
+                \item Použití b) Přenos do šířky pásma 1 GHz
+                \item Vlastnosti c) Velký přenos, nízký šum, nalá šířka pásma
+                \item Použití c) Přenos do šířky pásma 150 MHz
+            \end{itemize}
+        
+        \subsection{Jedno vlnný a WDM přenosový systém – popište jednotlivé bloky a uveďte příklady prvků v blocích, překlenutelný útlum}
+            NVM ani cápek z minulého roku to nemá wtf
+            \begin{itemize}
+                \item Jednovlnný: LD (s regulací) + modulátor + přenosový řetezec + OE přijímač
+                \item WDM: X vstupních barviček + modulátor na každý kanál + combiner + vlákno + decombiner + přijímač každé barvy kanálu
+            \end{itemize} 
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/preklenuty_utlum.png}
+                \caption{Preklenuty utlum}
+            \end{figure}
+        \subsection{Heterodynní komunikační systém – vlastnosti a popis jednotlivých bloků}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/hetero.png}
+                \caption{Hetero řetězec}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/hetero2.png}
+                \caption{Hetero řetězec}
+            \end{figure}
+
+    \newpage
+    \section{Aplikace optoelektronických prvků pro informatiku a senzoriku, sluneční články}
+        \subsection{FV články – princip, konstrukce, vhodné materiály, účinnost FV článku (vztah)}
+            \subsubsection{Princip}
+                Fotovoltaika je metoda přímé přeměny slunečního záření na elektřinu ($U_{\text{SS}}$, $I_{\text{SS}}$),
+                využívá fotovoltaického jevu na velkoplošných fotodiodách při využití vnitřního fotovoltaického jevu.
+                Principem je, že na přechod PN dopadají fotony a ty excitují elektrony do vodivostního pásu z pásu valenčního.
+            \subsubsection{Konstrukce}
+            \begin{minipage}[t]{0.6\textwidth}
+                \vspace{0pt}
+                Přechod PN musí být co nejblíže k povrchu (na přechodu se děje fotovoltaický efekt),
+                protože podle Lambertova zákona klesá intenzita (množství fotonů) světla exponenciálně od povrchu materiálu.
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.35\textwidth}
+                \vspace{0pt}
+                \centering
+                \includegraphics[width=\textwidth]{figs/fv_clanek.png}
+                \captionof{figure}{Konstrukce jednoho FV článku}
+            \end{minipage}
+            \hfil
+            \subsubsection{Vhodné materiály}
+                Křemík, GaAs, amorfní křemík, amorfní SiGe, CdTe/CdS.
+            \subsubsection{Účinnost FV článku (vztah)}
+                Rovnice~\ref{eq:clanek_ucinnost} představuje účinnost FV článku, kde $\eta$ je účinnost,
+                $U_{\text{č}}$ je výstupní napětí článku, $I_{\text{č}}$ je výstupní proud článku, $A$ je plocha článku,
+                $G$ je ozářenost článku. Typické hodnoty jsou $U_{\text{č}}=\qty{2}{\volt}$ a $I_{\text{č}}/A=\qty{35}{\milli\ampere / \centi\meter\squared}$.
+                \begin{equation}\label{eq:clanek_ucinnost}
+                    \eta = \frac{U_{\text{č}}\cdot I_{\text{č}}}{AG}
+                \end{equation}
+        
+        \newpage
+        \subsection{Typy přechodů využívaných pro FV články, definice jednotky Wp}
+            Články můžou mít přechod PN (stejný materiál), heteropřechod (kontakt dvou různých materiálů), nebo struktura PIN (P, Intrinsic, N).
+            \begin{figure}[H]
+                \centering
+                \begin{subfigure}[t]{0.31\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figs/homo_pn.png}
+                    \caption{Homo PN}
+                \end{subfigure}\hfill
+                \begin{subfigure}[t]{0.31\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figs/hetero_pn.png}
+                    \caption{Hetero PN}
+                \end{subfigure}\hfill
+                \begin{subfigure}[t]{0.31\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figs/pin.png}
+                    \caption{PIN struktura}
+                \end{subfigure}
+                \caption{Základní typy přechodů využívaných pro FV články.}
+                \label{fig:fv_transitions}
+            \end{figure}
+
+            Definice jednotky Wp, je to maximální výkon panelu v laboratorních podmínkách při ozáření $\qty{1000}{\watt / \meter\squared}$ při teplotě $\qty{25}{\degreeCelsius}$.
+            Tyto podmínky se nazývají STC (Standard test conditions).
+                
+        \subsection{Typy FVE systémů – vlastnosti a využití}
+            S akumulací elektrické energie (Akumulátory), bez akumulace energie (když nesvítí nejde proud, ohřev bojleru).
+            Ostrovní (FVE dělá vlastní elektrickou síť) , "on-grid" (FVE připojena jako elektrárna k elektrické síti).
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/fve.png}
+                \caption{Různé FVE systémy}
+                \label{fig:fve_system}
+            \end{figure}
+        
+        \subsection{Součásti optického senzoru a jeho parametry a detekované veličiny}
+            \subsubsection{Součásti}
+                Optický senzor se skládá z: Zdroje světla, detekční části, Foto-detektoru a elektrické části.
+                
+                Zdrojem světla může být širokopásmový zdroj, LED, LASER. 
+                
+                Detekční část, zde detekovaná veličina mění vlastnosti světla
+                (intenzitu, fázi, polarizaci, vlnovou délku), může to být optický vlnovod
+                (vlákonový/planární), optická mřížka, atd. 
+                
+                Foto-detektor detekuje změněné světlo, může to být fotodioda, PIN dioda, lavinová fotodioda.
+                Elektrická část zajišťuje zpracování signálu. 
+            \subsubsection{Parametry}
+                \begin{itemize}
+                    \item \textbf{Citlivost optického senzoru -- selektivita k proměnné D:}
+                        Schopnost senzoru detekovat hledanou veličinu D a potlačit vliv ostatních proměnných.
+                        Selektivita je vysoká, pokud je vliv nežádoucích veličin v detekčním místě menší než hladina šumu
+                        (např. $I<$ limit šumu) nebo efektivně zanedbatelný ($S\rightarrow 0$) pro ostatní proměnné.
+                    \item \textbf{Dynamika senzoru:}
+                        Časová odezva senzoru, tj. čas potřebný k přechodu výstupu z aktuálního stavu do konečného stavu
+                        v rámci určeného tolerančního rozmezí (např. 5\%).
+                    \item \textbf{Přesnost senzoru:}
+                        Charakterizuje odchylku naměřené hodnoty od skutečné (referenční) hodnoty.
+                    \item \textbf{Reprodukovatelnost:}
+                        Charakterizuje variabilitu výsledků při opakovaných měřeních za stejných podmínek.
+                    \item \textbf{Limit detekce:}
+                        Nejmenší veličina, kterou lze spolehlivě rozlišit od šumu (nejmenší detekovatelná hodnota).
+                \end{itemize}
+            
+            \subsubsection{Detekované veličiny}
+                \begin{itemize}
+                    \item \textbf{Fyzikální:} teplota, tlak, mechanické deformace, mechanická napětí, elektrické veličiny (U, I), radioaktivní záření
+                    \item \textbf{Chemické:} detekce molekul v roztoku, plynu (převodník)
+                    \item \textbf{Biologické:} přítomnost látek např. ve fyziologickém roztoku
+                \end{itemize}
+
+        \subsection{Základní druhy optických senzorů, jejich typy dle uspořádání a detekované veličiny}
+            Optické senzory můžeme dělit podle uspořádání na \textbf{lokální} a \textbf{distribuované}.
+
+            \begin{itemize}
+                \item \textbf{Lokální senzory:} snímání dané veličiny v jednom místě.
+                \item \textbf{Distribuované senzory:} snímání veličiny po celé délce senzorického vlákna.
+            \end{itemize}
+
+            Měřená veličina může ovlivňovat zejména \textbf{útlum}, \textbf{fázi}, \textbf{polarizaci}, \textbf{spektrum} a \textbf{disperzi}.
+
+            Podle principu činnosti rozlišujeme tyto základní typy optických senzorů:
+            \begin{itemize}
+                \item \textbf{Amplitudové senzory} -- využívají změnu intenzity nebo útlumu signálu.
+                \begin{itemize}
+                    \item vazební
+                    \item ztrátové
+                \end{itemize}
+                \item \textbf{Polarizační senzory} -- vyhodnocují změny polarizace světla.
+                \item \textbf{Interferometrické fázové senzory} -- sledují změny fáze optického signálu.
+                \item \textbf{Fotoluminiscenční senzory} -- vyhodnocují luminiscenci vyvolanou měřenou veličinou.
+            \end{itemize}
+
+            U distribuovaných senzorů, například při měření na optickém vlákně, umožňuje OTDR určit velikost i místo působení vlivu.
+                
+        \subsection{Interferometrické senzory – druhy senzorů a jejich principy činnosti}
+            \subsubsection{Michelsonův Interferometr}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/michelson.png}
+                    \caption{Michelsonův Interferometr}
+                \end{figure}
+                Vstupní laserový svazek se dělí na beamsplitteru (dělič svazku) na dva, ty se odráží od zrcátek,
+                a následně spolu interferují na dělič, což detekujeme.
+                Principem je, že jedno ramena něčím ovlivňujeme a druhé je referenční.
+
+                Takto se dá měřít vibrace, tlak, teplota a je to princip OCT=optická kohenerentní tomografie.
+            \subsubsection{Sagancův}
+                Funguje na bázi speciální teorie relativity. V neinerciálních soustávach, které rotují
+                se signál šíří jinou rychlost ve směru otáčení a v protisměru otáčení. Používá se v gyroskopech (letadla, dron, navigace raket).
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/sagnac.png}
+                    \caption{Sagnacův Interferometr}
+                \end{figure}
+            \subsubsection{Mach-Zehnderův Interferometr}
+                Slouží pro přesná měření transparentních objektů, i když není tak citlivý, jako Michelsonův, kde prochází světlo 
+                měřený předmět dvakrát.
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/mach-zehnder.png}
+                    \caption{Mach-Zehnderův Interferometr}
+                \end{figure}
+            \subsection{LIDAR – princip činnosti, vlastnosti a využití}
+                LiDAR = Light Detection and Ranging, pracuje na principu toho že svítíme laserem a měříme,
+                za jaký čas se nám vrátí odražené světlo. Využití je pro pohyb ve 3D prostoru (skenujeme okolí).    
+                Měřitelné vzdálenosti jsou desítky centimetrů až 450 m.
+
+                \begin{figure}[H]
+                        \centering
+                        \includegraphics[width=0.95\textwidth]{figs/lidar_princip.png}
+                        \caption{Princip LiDARu}
+                \end{figure}
+
+    \section{Základní typy vláknových a polovodičových optických zesilovačů a vlnových konvertorů. Principy vláknových, parametrických zesilovačů a jejich vlastnosti. Ramanovy vláknové a polovodičové zesilovače, jejich princip a vlastnosti}
+        \subsection{Základní typy optických zesilovačů (OZ), způsoby čerpání, jejich využití}
+            Základní typy:
+            \begin{itemize}
+                \item SOA = Semiconductor optical amplifier
+                \item Vláknové
+                \item Planární Vlnovodné
+            \end{itemize}
+            Způsoby čerpání:
+            \begin{itemize}
+                \item Elektrickým polem (SOA)
+                \item LASERem s kratší vlnovou délkou než zesilujeme (vlákna, planární vlnovody) - dělí se na čeerpání z jedné nebo obou stran aktivního prostředí
+            \end{itemize}
+
+        \subsection{Princip optického zesilování - blokové schéma, způsoby čerpání, výhody a nevýhody}
+            \begin{figure}
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/oz.png}
+            \end{figure}
+            Principem je stimulovaná emise, zde také musíme docílit inverze populace, to se dělá tzv. čerpáním,
+            to může být elektrický proud, nebo světlo s konkrétní vyšší energií (konkrétní kratší vln. délkou) než světlo, které zesilujeme.
+            
+            Do zesilovače se přivádí vstupní světlo co chceme zesílit, to intergauje s aktivním prostředím, kde mají
+            atomy elektrony v excitovaném stavu, ty po interakci ze vstupním světlem vyzáří naprosto stejný foton. Elektron poté
+            spadne na nižší hladinu a musí být čerpáním znovu vyexcitován na hladinu kde je ready na stimulovnaou emisi.
+            Samozřejmě musí mít aktivní prostředí takové hladiny aby elektron zasvítil stejný foton, jinak to nefunguje.
+            Pro zesilování telkom 1550 nm se používá erbium, které má vyzařovací peak na 1530 nm, viz Hlaváček et. al Prep. and Char. of dielectric layers for Photonics.
+
+            Aktivní prostředí tedy specifikuje, jakou vlnovou délku potřebujeme na pumpování a jakou můžeme zesilovat (závislost zesílení na vlnové délce, pro erbium je to asi 1500 - 1560, 1530 nm je maximum).
+
+            Zesilovač vnáší šum = ASE = amplified spontaneous emission (elektroni, který si nepočkali na stimulační foton a spontáně odemitovali, vygenerovaný foton se potom  kaskádně zesiluje). 
+            Má také určitý maximální výkon $P_{sat}$ pro danou úroveň čerpání, způsobenou tím že když přvedeme moc velký výkon, tak se deexcituje populace elektronů ve vyšším stavu a nebude se stíhat pumpovat. 
+            
+            Aktivní médium může být lineární (EDFA, OH BP, SOA) nebo nelineární (čtyřvlnné směšování FWM, ramanův zesilovač).
+            Podle toho se rozlišuje závislost fotonového toku $\Phi_{stim}$ na čerpacím fotonovém toku $\Phi_p$.
+            Pro lineární:
+            \begin{equation}
+                \Phi_{stim}=P_{21}(\nu)N_2\Phi_p
+            \end{equation}
+            Pro nelineární:
+            \begin{equation}
+                \Phi_{stim}=k\chi_{21}(\nu)N_2\Phi_p
+            \end{equation}
+            kde $P_{21}$ je pravděpodobnost stimulované emise, $N_2$ je koncentrace nosičů (počet excitovaných atomů ready na stimulaci na $\unit{\centi\meter^3}$),
+            $\chi_t$ je koeficient nelineární permeability, $k$ je konstanta.
+
+            Jsou dvě metody čerpání: homogenní a čerpání koncové.
+            Pro homogenní je fotonový tok podél osy z konstantní (každá část prostředí je čerpána stejnou intenzitou).
+            Pro koncové (svítíme čerpacím zdrojem na konce vlákna) ubývá intenzita podle lambertova zákona, tedy exponenciálně.
+            $\Phi_p(z)=\Phi_{p}(0)e^{-\alpha_{p_0}z}$.
+            \begin{figure}
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/cerpani.png}
+            \end{figure}
+
+        \subsection{Závislost zesílení na vstupním výkonu, čerpání a délce aktivního vlákna}
+            \subsubsection{Závislost na vstupním výkonu}
+                \begin{figure}
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/zavislost_na_signalu.png}
+                \end{figure}
+            \subsubsection{Závislost na čerpání}
+                
+            \subsubsection{Závislost na délce vlákna}
+                \begin{figure}
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/zavislost_zesileni.png}
+                \end{figure}
+                \begin{equation}
+                    G = \frac{\Phi_S(l)}{\Phi_s(0)}
+                \end{equation}
+                $\gamma(z)$ je měrný optický zisk (nevim wtf)
+                \begin{equation}
+                    \Phi_s(z)=\Phi_s(0)e^{\gamma(z)z}
+                \end{equation}
+
+        \subsection{Typy lineárních optických vláknových zesilovačů, bloková schémata, hladinové modely, vlnová pásma}
+            Lineární typy:
+            \begin{itemize}
+                \item SOA = Semiconductor optical amplifier
+                \item Vláknové
+                \item Planární Vlnovodné (Integrované)
+            \end{itemize}
+            Způsoby čerpání:
+            \begin{itemize}
+                \item Elektrickým polem (SOA)
+                \item LASERem s kratší vlnovou délkou než zesilujeme (vlákna, planární vlnovody) - dělí se na čeerpání z jedné nebo obou stran aktivního prostředí
+            \end{itemize}
+            \subsubsection{Hladinové modely}
+                Stejně jako u LASERů můžeme mít tří nebo čtyř hladinové. (Er3+, Yb3+ (tří hladinové); Thulium, Bismut (čtyř hladinový))
+            \subsubsection{Blokové schéma}
+                Pro vláknový (pro integrovaný stejná ale všechno se dá urobit na chipu, vstupní signál bude přivedený vláknem -> chip -> vlákno se zesíleným signálem):
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/oa_blok_schema.png}
+                \end{figure}
+            \subsubsection{Vlnová pásma}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/vlnova_pasma.png}
+                \end{figure}
+            \subsubsection{Erbium - 3 hladinový}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/er_3hladinovy.png}
+                \end{figure}
+            \subsubsection{Thulium - 4 hladinový}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/Thulium_blokove_schema.png}
+                \end{figure}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/thulium_hladiny.png}
+                \end{figure}
+        \subsection{Principy polovodičových zesilovačů (SOA) a vlnových konvertorů, konstrukce, vlastnosti, využití}
+            \subsubsection{SOA}
+                Polovodičové zesilovače SOA (semiconductor optical amplifier) využívají stimulované
+                emise záření při homogenním čerpání elektrickou injekcí na PN přechodu, kde dochází v aktivní
+                vrstvě SOA k zesilování optického záření.
+                \begin{figure}[H]
+                        \centering
+                        \includegraphics[width=0.95\textwidth]{figs/soa_princip.png}
+                \end{figure}
+                \begin{figure}[H]
+                        \centering
+                        \includegraphics[width=0.95\textwidth]{figs/SOA_vlastnosti.png}
+                \end{figure}
+            \subsubsection{Vlnové konvertory}        
+                Pracují ve fotonických sítích WDM jako prvky
+                optického processingu při směrování vlnových informačních toků tím, že
+                dokážou měnit vlnovou délku optické vlny.
+                
+                Obecné požadavky: Vysoká rychlost konverze, Malé požadavky na elektrické napájení, Polarizační nezávislost konverze, Technologická slučitelnost s integrovanými obvody, Velká přeladitelnost vlnové délky, Malý šum ASE.
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/vlnovy_konvertor.png}
+                \end{figure}
+        \subsection{Nelineární parametrické a Ramanovy OZ, principy funkce, jejich vlastnosti a využití}
+            \subsubsection{Parametrické zesilovače}
+                \paragraph{Princip}
+                Parametrické nelineární vláknové zesilovače FOPA -- (fiber optical parametric amplifier)
+                využívají nelinearity optického vlákna HNLF při velkém čerpání s jednou nebo dvěma optickými
+                pumpami, jde o tzv. čtyřvlnové směšování (FWM), optický nelineární jev třetího řádu $\chi^{(3)}$.
+
+                Výsledek nelineárního směšování -- předání energie a zesílení signálu $\omega_1$ i a vznik nového
+                optického produktu tzv. idleru $\omega_{2idler}$. FOPA tvoří nelineární vlákno opticky čerpané vlnou
+                $\omega_{3pa}$ případně $\omega_{4p}$, kde přes optický slučovač je připojen zesilovaný signál $\omega_1$.
+
+                \paragraph{Vlastnosti}
+                \begin{itemize}
+                    \item Optický zisk až 26 dB na 20 m vlákna při velkých čerpáních až 700 mW
+                    \item Šířka pásma až 40 nm s vln. konverzí, vznik idleru
+                \end{itemize}
+
+                \paragraph{Využití}
+                FWM na vlákně HNLF.
+
+            \subsubsection{Ramanovy zesilovače}
+                \paragraph{Princip}
+                Ramanův optický zesilovač -- využívá stimulované zesílení vznikající účinkem Ramanova rozptylu,
+                optického nelineárního jevu třetího řádu $\chi^{(3)}$, při optickém čerpání v transparentních
+                nízkoztrátových optických prostředích jako je kupř. telekomunikační křemíčité optické vlákno.
+                U Ramanových optických zesilovačů čerpací foton frekvence $\omega_o$ předává část energie
+                signálové vlně frekvence $\omega_i$ a zesiluje ji jako důsledek nelineární interakce s atomy
+                optického prostředí, kterým se tato vlna šíří za vzniku optického fononu frekvence $\omega_v$.
+
+                \begin{itemize}
+                    \item Energie zesilovaného fotonu $\Delta E_i = \hbar\omega_i = \hbar\omega_o - \hbar\omega_v$,
+                    tedy $\omega_i = \omega_o - \omega_v$ (Stokesův rozptyl)
+                    \item Energie čerpání $\Delta E_o = \hbar\omega_o$
+                    \item Zisk $G_R$ Ramanova zesilovače:
+                    \begin{equation}
+                        G_R = \exp\!\left(\frac{\gamma_R\Phi_p L_{eff}}{A_{eff}}\right)
+                    \end{equation}
+                    kde $\gamma_R$ měrný ziskový koef., $L_{eff}$ efekt. délka vlákna, $A_{eff}$ efekt. plocha,
+                    $\Phi_p$ čerpací tok
+                \end{itemize}
+
+                \paragraph{Vlastnosti}
+                \begin{itemize}
+                    \item Spektrální charakteristika Ramanova zesilovače má šířku pásma až 20 THz, tedy 160 nm,
+                    se ziskem až 20 dB
+                    \item Pro skleněné vlákno SiO$_2$ platí $g_R \approx 0.5 \times 10^{-13}\,\mathrm{m/W}$
+                    \item Měrný ziskový koeficient $\gamma$ [m$^{-1}$]:
+                    \begin{equation}
+                        \gamma = \frac{12\pi n_0\chi^{(3)}}{\varepsilon_0 n^2}\frac{1}{\lambda_0 A_{eff}}\Phi_p
+                    \end{equation}
+                    kde $A_{eff}$ ... efektivní plocha vlnovodu (m$^2$), $\Phi_p$ ... čerpací výkon (W)
+                    \item Optický zisk až 20 dB na 10 km vlákna při čerpacím výkonu 100 mW
+                    \item Velká šířka pásma až 160 nm
+                    \item CW zisk < 3,5 dB s čerpacím výkonem do 200 mW
+                    \item Impulsní zisk až 20 dB s čerpacím impulsním výkonem do 25 W
+                    \item Velmi dobrá dynamika zasahující do terabitové oblasti, nízký šum
+                \end{itemize}
+
+                \paragraph{Využití}
+                Aplikace Ramanových zesilovačů v telekomunikacích.
+                Blokové schéma zapojení hybridního optického zesilovače kombinujícího Ramanův a EDFA optický zesilovač [8].
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.45\textwidth]{figs/raman.png}
+                \end{figure}
+    \newpage
+    \section{Zobrazovače, Displeje}
+        \subsection{Rozdělení optických zobrazovacích jednotek podle hustoty informace, podle optické aktivity a technologie zobrazování}
+            Optické zovrazovací jednotky s \textbf{velkou hustotou informace} zahrnují televize, výpočetní, měřící technika, mobilní telefony, fotoaparáty.
+            \textbf{Malá hustota informace}, to jsou displeje jako 7 seg. zobrazení číslic, hodinky, klakulačky.
+
+            \textbf{Aktivní} X \textbf{Pasivní} - Aktivní zobrazovací jednotky mají rozsvitelní nebo zhasnutelné body,
+            které jsou individuálně adresovatelné, aktivní jednotky sami generují světlo (LED, OLED, CRT).
+            Pasivní jednotky naopak mění útlum procházejícího světla (LCD).
+
+            \begin{itemize}
+                \item LED - každý bod je RGB LEDka
+                \item LCD - liquid crystal display, má podsvícení
+                \item OLED - organické led
+                \item Dotykové displeje - dotykové vrstvy (odporové, kapacitní)
+                \item CRT - elektronový svazek skenující řádky - elektron dopadne na luminofor který svítí
+                \item Plazmové - velkoplošné TV, podsvícení je výbojka
+                \item Projektory
+            \end{itemize}
+        \subsection{Základní parametry zobrazovacích jednotek a jejich popis}
+            Parametry zobrazovacích jednotek jsou:
+            \begin{itemize}
+                \item Rozlišení = maximální počet rozlišovacích bodů, pro daný poměr výška x šířka
+                \item Úhlopříčka = vzdálenost protilehlých rohů obrazovky
+                \item Jemnost displeje = PPI pixel per inch, počet pixelů na palec, kolik pixelů máme na jendom palci, Nad 300 PPI už lidské oko nerozliší jednotlivé pixely od sebe.
+                \item Obnovovací frekvence (Hz)
+                \item Elektrický příkon
+                \item Rozhraní (hdmi, vga, dvi, display port)
+                \item Svítivost [cd/m$^2$]
+                \item Kontrast - poměr mzi bílou a černou LCD (1500:1), dynamický kontrast = dosahuje se pomocí regulace podsvícení.
+                \item Doba odezvy [ms] - doba změny z černé na bílou
+                \item Pozorovací úhly
+                \item Barevná hloubka - 8 bitů, 10 bitů
+                \item Příslušenství, rozměry, hmotnost
+            \end{itemize}
+        \subsection{Popište vnitřní strukturu a funkci LCD, typy displejů LCD}
+            Princip LCD:
+            \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/lcd.png}
+                    \caption{Princip LCD}
+            \end{figure}
+
+            Typy LCD:
+            \begin{itemize}
+                \item pasivní DSTN (double super twisted nematic) - Regulace elektrické pole pomocí vodivých drah, každý řádek a sloupec je řízen jedním tranzistorem (tento typ se už nevyrábí)
+                \item aktivní TFT (Thin film transitor) - každý pixel je spínán vlastním tranzistorem.
+            \end{itemize}
+
+
+        \subsection{Popište vnitřní strukturu a funkci PM-OLED a AM-OLED, výhody a nevýhody}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/PM-OLED.png}
+                \caption{PM OLED}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/am-oled.png}
+                \caption{AM OLED}
+            \end{figure}
+            
+
+        \subsection{Typy dotykových displejů a jejich vlastnosti}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/rezistivni_displej.png}
+                \caption{Rezistivní displej}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/kapacitni_displej.png}
+                \caption{Kapacitní displej}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/ir_displej.png}
+                \caption{IR displej}
+            \end{figure}            
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/saw_displej.png}
+                \caption{SAW displej}
+            \end{figure}
+            
+        \subsection{Projektory - princip činnosti, vlastnosti a využití}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/dlp.png}
+                \caption{DLP}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figs/lcd_led_projektory.png}
+                \caption{Další typy projektorů}
+            \end{figure}
+            
+            
+
+    \section{Světelná technika automobilů (Škoda Auto)}
+        \subsection{Typy klasických zdrojů osvětlení v automobilech a jejich vlastnosti}
+            Po velkou část historie automotive se používala halogenová žárovka. Ta má spektrum podobné slunci
+            ale je málo účinná (10 lm/W), hodně topí. 
+            Na přelomu milénia se používali také pro prémiové vozidla xenonové výbojky,
+            ty měli lepší účinnost a byly více stylové.
+
+        \subsection{Polovodičové zdroje osvětlení v automobilech a jejich vlastnosti}
+            Posledních 15 let se už rozvinuli LED technologie, tak se v autech používají LEDky.
+            Oproti předešlím typům se dá mnohem lépe vyhrát s tím jak je světlomet složený.
+            Místo jedné žárovky, můžeme různě jednotlivé ledky rozeskládat a tlumit, měnit jas
+            a adaptivně svítit (vymaskoání protijedoucího auta).
+
+            V automotive je důklad na design, vibrace, teploty. LED světla mají na sobě chladič, který
+            je o dost větší než samotnej plosnaček s LEDkama. Taky tedka delaji led chipy, kde je 
+            matice stovek LED která se každá dá adresovat vypínat/zapínat/stmívat.
+
+            Řídí se proudem, VA chka LEDky se mění s teplotou.
+        \subsection{Světelné systémy předních světlometů automobilů}
+            Přední světlomet se neskládá pouze z ledky ale je tam i čočka a reflektor.
+            \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.95\textwidth]{figs/svetlomet.png}
+                    \caption{Michelsonův Interferometr}
+                \end{figure}
+
+        \subsection{Zkušební technika pro automobily, typy přístrojů a jejich použití}
+            Goniofotometr - měří svítivost, barvu, osvětlení v různých úhlech a vzdálenostech.
+            
+            Dalšími testery jsou lidi (auta jsou pro lidi) - nezávislá komise posuzuje světlo.
+        \subsection{Přijímače záření důležité pro automotive}
+            Kamera - vyhodnucje kam chceme a kam nechceme svítit + údaje rychlosti a natočení volantu.
+
+    \section{Elektrooptické komponenty (SIEMENS) Závěrečné shrnutí předmětu}
+
+        \subsection{GOF, POF a PoF – význam zkratek, princip}
+        Tato skupina zkratek popisuje různé technologie optických vlnovodů a specifických způsobů využití optických vláken v průmyslové komunikaci a napájení:
+        \begin{itemize}
+            \item \textbf{GOF (Glass Optical Fiber) – Skleněné optické vlákno:} 
+            Vlákno s křemíkovým skleněným jádrem a pláštěm, které funguje na principu totálního vnitřního odrazu světla. Vyznačuje se extrémně nízkým útlumem a schopností přenášet data na velké vzdálenosti. V průmyslovém Ethernetu (např. Profinet) se běžně využívá pro spojení s maximálním dosahem až \textbf{3~km}. Zásadní výhodou oproti metalickým (měděným) kabelům je stoprocentní odolnost vůči elektromagnetickému rušení (EMI).
+            
+            \item \textbf{POF (Plastic Optical Fiber) – Plastové optické vlákno:} 
+            Optické vlákno vyrobené z polymerních materiálů (nejčastěji PMMA). Představuje mechanicky výrazně odolnější, pružnější a levnější alternativu ke skleněným vláknům, která se snadno zkracuje a spojuje. Kvůli vyššímu optickému útlumu je však jeho použití omezeno na kratší vzdálenosti – v průmyslu (rozhraní Profinet s konektory SCRJ) je maximální délka trasy typicky \textbf{50~m}. Hojně se využívá v automobilovém průmyslu a lokálních distribučních sítích control cabinetů.
+            
+            \item \textbf{PoF (Power over Fiber) – Napájení po optickém vlákně:} 
+            Technologický princip přenosu čistě elektrické energie prostřednictvivým optického paprsku vedeného vlnovodem. Na vysílací straně se elektrická energie převádí výkonovým laserem na optický výkon, ten se přenese vláknem a na přijímací straně se pomocí fotovoltaického článku (nebo specializované fotodiody) transformuje zpět na elektřinu. Používá se v prostředích citlivých na elektromagnetické rušení, v prostorech s nebezpečím výbuchu (Ex) či v aplikacích s požadavkem na absolutní galvanické oddělení při extrémně vysokých napětích, kde měděné vodiče představují bezpečnostní riziko jiskření.
+        \end{itemize}
+
+        \subsection{Optocoupler - popis a využití součástky}
+        \textbf{Popis součástky:} Optočlen (optocoupler) je elektronická komponenta sloužící k bezpečnému přenosu signálu mezi dvěma elektrickými obvody s různými napěťovými potenciály bez jejich přímého vodivého propojení. Skládá se ze zdroje záření (interní \textbf{vstupní LED diody}) a detektoru (nejčastěji \textbf{fototranzistoru}) umístěných společně v jednom neprůsvitném pouzdře. Galvanická izolace standardně dosahuje hodnot v řádu několika \textbf{kV}.
+
+        \textbf{Princip činnosti:}
+        \begin{itemize}
+            \item \textbf{Stav A (Logická `1` / Off state):} Vstupní LED diodou neprotéká žádný proud $\rightarrow$ nedochází k emisi světla $\rightarrow$ fototranzistor je uzavřen $\rightarrow$ výstupní napětí zůstává na úrovni napájecího potenciálu (při zapojení s pull-up rezistorem).
+            \item \textbf{Stav B (Logická `0` / On state):} Vstupem protéká budicí proud ($I_{\text{F}}$) $\rightarrow$ LED emituje světlo dopadající na závěrně polarizovaný přechod báze-kolektor fototranzistoru $\rightarrow$ generuje se fotoproud, tranzistor se otevře do saturace a stáhne výstup do logické nuly.
+        \end{itemize}
+
+        \textbf{Klíčové parametry a omezení při návrhu:}
+        \begin{itemize}
+            \item \textbf{CTR (Current Transfer Ratio):} Proudový přenosový činitel definovaný vztahem $\text{CTR} = \frac{I_{\text{OUT}}}{I_{\text{F}}} \cdot 100\,\%$. Pohybuje se typicky od $10\,\%$ do $1000\,\%$. CTR silně závisí na typu optočlenu, teplotě okolí a protékajícím proudu $I_{\text{F}}$. Při výpočtu např. digitálních vstupů PLC (s typickými rozsahy $0\dots28\,\text{V}$) je nutné vždy kalkulovat s nejhorším možným scénářem poklesu CTR vlivem teploty a stárnutí komponenty (tzv. \textit{Normalized CTR}).
+            \item \textbf{Spínací časy ($t_{\text{on}}, t_{\text{off}}$):} Limitují šířku pásma součástky. Klasické tranzistorové optočleny (např. řady ILD205 / ILD217) vykazují spínací časy v řádu jednotek mikrosekund ($t_{\text{on}} \approx 3\,\mu\text{s}$, $t_{\text{off}} \approx 10\,\mu\text{s}$), což omezuje jejich frekvenční použití na oblast jednotek \textbf{kHz}. Nejsou použitelné tam, kde jsou vyžadovány náběžné hrany v řádu nanosekund. V takových aplikacích musí být nasazeny pokročilejší digitální izolátory (např. ADuM3200 na bázi mikrotransformátorů).
+        \end{itemize}
+        \textbf{Využití:} Ochrana citlivé řídicí elektroniky (mikroprocesorů) před přepěťovými špičkami z výkonové části, galvanické oddělení digitálních vstupů a výstupů průmyslových automatů (PLC), zpětná vazba ve spínaných napájecích zdrojích a oddělení průmyslových sběrnic.
+
+        \subsection{Optotriak - popis a využití součástky}
+        \textbf{Popis součástky:} Optotriak je optoelektronický spínací prvek koncepčně podobný optočlenu, avšak jeho výstupní část tvoří světlem spínaný výkonový \textbf{triak}. Vstupní část je tvořena standardní LED diodou.
+
+        \textbf{Charakteristické vlastnosti a rozdíly oproti optočlenu:}
+        \begin{itemize}
+            \item \textbf{Vysoké napětí a proud:} Poskytuje přibližně 10krát vyšší spínací napětí (až několik kV) a je schopen přímo spínat proudy až kolem \textbf{1~A}.
+            \item \textbf{Absence CTR:} Výstupní proud v sepnutém stavu je dán pouze parametry zátěže, není lineárně závislý na vstupním proudu (parametr CTR zde neexistuje). Úbytek napětí v sepnutém stavu je cca $2\,\text{V}$.
+            \item \textbf{Nemožnost vypnutí vstupem:} Jakmile optotriak sepne, není možné ho vypnout přerušením proudu do vstupní LED. K rozepnutí (vypnutí) dojde až v momentě, kdy proud protékající výkonovým triakem klesne pod hodnotu tzv. \textit{držicího proudu} (\textit{holding current}), což u střídavých obvodů nastává přirozeně při každém průchodu napájecího napětí nulou.
+            \item \textbf{Kritické $dU/dt$:} Součástka je náchylná na prudké změny napětí na výstupu. Překročení kritické strmosti nárůstu napětí ($dU/dt$) může způsobit nechtěné samovolné sepnutí bez budicího signálu.
+        \end{itemize}
+
+        \textbf{Způsoby spínání střídavé zátěže (AC):}
+        \begin{itemize}
+            \item \textbf{Spínání okamžité (Non-Zero Cross):} Sepne ihned po aktivaci vstupu. Pokud sepne na vrcholu sinusoidy, generuje masivní elektromagnetické rušení (EMC problémy) a proudové rázy. Vyžaduje dodatečné softwarové hlídání průchodu nulou, což je ale zatíženo zpožděním mikroprocesoru v řádu několika $\mu\text{s}$.
+            \item \textbf{Spínání v nule (Zero Cross Switching):} Obsahuje integrovaný hardwarový detektor průchodu nulou (\textit{Zero Cross Circuit}). Triak se automaticky sepne až v okamžiku, kdy střídavé napětí prochází bodem $0\,\text{VAC}$. Tím se kompletně eliminují EMC problémy při zapínání a minimalizuje se namáhání zátěže. Pro řízení výkonu je nutné navrhnout algoritmus distribuce zapnutých půlperiod tak, aby se zamezilo blikání sítě (\textit{flicker efekt}).
+        \end{itemize}
+        \textbf{Využití:} Bezpečné spínání a bezkontaktní fázové/periodické řízení střídavých AC zátěží, buzení výkonových průmyslových triaků a tyristorů, ovládání AC motorů, ventilů, stykačů, relé a topných těles.
+
+        \subsection{Photodiode array - popis a využití součástky}
+        \textbf{Popis součástky:} Photodiode array (PDA – pole/matice fotodiod) je polovodičová struktura integrující několik samostatných fotodiod uspořádaných vedle sebe v jedné linii (lineární pole) nebo v matici na společném čipu. V průmyslových aplikacích (architektura Siemens) se tento termín úzce pojí s tzv. \textbf{fotovoltaickými MOSFET drivery}.
+
+        \textbf{Princip činnosti:}
+        V režimu detekce dopadá na jednotlivé pixely pole světlo a každá dioda generuje nezávislý fotoproud úměrný lokální intenzitě osvětlení. V režimu výkonového driveru je interní LED diodou osvíceno celé sériově zapojené pole fotodiod, které vygeneruje dostatečné napětí naprázdno (kolem $10\,\text{V}$) pro přímé nabití kapacity hradla (Gate) externího výkonového spínače typu MOSFET nebo IGBT, čímž ho sepne.
+
+        \textbf{Typické technické parametry (příklad z praxe):}
+        \begin{itemize}
+            \item \textbf{Napětí naprázdno (Open voltage):} $\approx 10\,\text{V}$ (typická hodnota dostačující pro plné otevření hradla MOSFET).
+            \item \textbf{Zkratový výstupní proud (Output short current):} $\approx 10\,\mu\text{A}$ (minimum).
+            \item \textbf{Dopředný výstupní proud (Output forward current):} $\approx 50\,\mu\text{A}$ (typicky).
+            \item \textbf{Izolační pevnost (Isolation voltage):} $\ge 3750\,\text{V}_{\text{rms}}$.
+            \item \textbf{Doba zapnutí ($t_{\text{on}}$):} $\approx 0{,}2\,\text{ms}$ (pomalejší reakce z důvodu nízkého nabíjecího proudu řádu $\mu\text{A}$ pro kapacitu hradla).
+            \item \textbf{Svodový proud (Leakage current):} Klíčový parametr, se kterým se musí v hardwarovém návrhu počítat, aby nedocházelo k nestabilitám a nechtěnému částečnému pootevírání tranzistoru za vysokých teplot.
+        \end{itemize}
+        \textbf{Využití:} Core komponenta pro Solid State Relays (SSR – polovodičová relé) zajišťující bezkontaktní spínání, lineární skenery, optické spektrometry (např. OceanOptics, kde difrakční mřížkou rozložené spektrum dopadá přímo na senzorovou matici fotodiod), čtečky čárových kódů, systémy optického rozpoznávání znaků (OCR) a přesné měření polohy laserového paprsku.
+
+    \section{Cvičení}
+        \subsection{WDM - princip, použití}
+            Wavelength division multiplexing, používáme různé vlnové délky světla pro různé komunikační kanály
+            v jednom optickém vlákně. Použítí je pro optické komunikace.
+        \subsection{Prahový proud - polovodičový laser}
+            Prahový proud polovodičového laseru je proud při, kterém začne 
+            převažovat stimulovaná emise na spontánní, emitovaný výkon začne růst rychleji než před tím.
+            Se zvyšující teplotou ase prahový proud zvyšuje.
+
+        \subsection{Princip spektrálního analyzátoru OceanOptics}
+            Širokospektrální zdroj svítí na analyzovaný povrch,
+            odražené světlo se poté v analyzátoru ohýbá přes difrakční mřížku
+            a každá barvička se ohýbá trošku jinak a dopadá tak do jiného chlívečku řádkového detektoru.
+
+    \newpage
+    \section{Bibliografie}
+        \begin{thebibliography}{9}
+            \bibitem{wikimedia_eye}
+            Wikimedia Commons. Schematic diagram of the human eye. Online, webová stránka. In: Wikimedia Commons [cit. 2026-04-27]. Dostupné z: \url{https://upload.wikimedia.org/wikipedia/commons/1/1e/Schematic_diagram_of_the_human_eye_en.svg}
+            \bibitem{pveducation_solar_spectra}
+            PV EDUCATION. Standard Solar Spectra. Online, webová stránka. In: PV Education. [s.l.]: PV Education, [cit. 2026-04-27]. Dostupné z: \url{https://www.pveducation.org/pvcdrom/appendices/standard-solar-spectra}
+
+            \bibitem{wikimedia_spectrum}
+            Wikimedia Commons. Cone fundamentals with sRGB spectrum. Online, webová stránka. In: Wikimedia Commons [cit. 2026-04-27]. Dostupné z: \url{https://upload.wikimedia.org/wikipedia/commons/0/04/Cone-fundamentals-with-srgb-spectrum.svg}
+        \end{thebibliography}
+
+\end{document}
