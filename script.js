@@ -395,12 +395,16 @@ function handleWrongAnswerChoice(action, baseValue = null, event) {
     stats.wrong++;
 
     let scheduled = false;
+    let toastText = 'Nevěděl jsem';
     if (action === 'remind' && baseValue !== null) {
+        toastText = `Nevěděl jsem → připomenout za ${baseValue} karet`;
         scheduled = scheduleReminderInternal(qId, sampleReminderDelay(baseValue), false);
     } else if (action === 'random') {
+        toastText = 'Nevěděl jsem → náhodné zamíchání do dalších karet';
         scheduled = scheduleReminderInternal(qId, sampleShuffleDelay(), false);
     }
 
+    showMessage(toastText, 'info');
     updateStats();
 
     if (scheduled) {
