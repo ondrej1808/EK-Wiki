@@ -168,6 +168,12 @@ body {
     opacity: 0.9;
 }
 
+.wrong-answer-hint {
+    margin-top: -8px;
+    font-size: 13px;
+    opacity: 0.75;
+}
+
 .wrong-answer-actions {
     display: flex;
     flex-direction: column;

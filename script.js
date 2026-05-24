@@ -37,8 +37,15 @@ if (localStorage.getItem('darkMode') === 'true') {
 
 // === KEYBOARD NAVIGATION (Fix issue 3) ===
 document.addEventListener('keydown', (e) => {
+    if (isWrongAnswerPopupOpen()) {
+        if (handleWrongAnswerShortcut(e)) {
+            e.preventDefault();
+        }
+        return;
+    }
+
     // Only navigate if no modal is open (menu)
-    if (isBlockingDialogOpen()) return;
+    if (document.querySelector('.menu-overlay').classList.contains('active')) return;
     
     if (e.key === 'ArrowRight') {
         nextCard();
@@ -1111,4 +1118,36 @@ window.addEventListener('load', () => {
 function isBlockingDialogOpen() {
     return document.querySelector('.menu-overlay')?.classList.contains('active')
         || document.querySelector('.wrong-answer-overlay')?.classList.contains('active');
+}
+
+function isWrongAnswerPopupOpen() {
+    return document.getElementById('wrongAnswerPopup')?.classList.contains('active');
+}
+
+function getWrongAnswerShortcutChoice(event) {
+    const key = event.key;
+    const code = event.code;
+
+    const choices = [
+        { type: 'remind', baseValue: 10, keys: ['1', '+'], codes: ['Digit1', 'Numpad1'] },
+        { type: 'remind', baseValue: 20, keys: ['2', 'ě'], codes: ['Digit2', 'Numpad2'] },
+        { type: 'remind', baseValue: 50, keys: ['3', 'š'], codes: ['Digit3', 'Numpad3'] },
+        { type: 'remind', baseValue: 100, keys: ['4', 'č'], codes: ['Digit4', 'Numpad4'] },
+        { type: 'random', baseValue: null, keys: ['5', 'ř'], codes: ['Digit5', 'Numpad5'] }
+    ];
+
+    return choices.find(choice => choice.keys.includes(key) || choice.codes.includes(code)) || null;
+}
+
+function handleWrongAnswerShortcut(event) {
+    const choice = getWrongAnswerShortcutChoice(event);
+    if (!choice) return false;
+
+    if (choice.type === 'random') {
+        handleWrongAnswerChoice('random', null, event);
+    } else {
+        handleWrongAnswerChoice('remind', choice.baseValue, event);
+    }
+
+    return true;
 }

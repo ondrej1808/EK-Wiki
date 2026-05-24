@@ -43,14 +43,15 @@
 
     <div class="wrong-answer-overlay" id="wrongAnswerOverlay"></div>
     <div class="wrong-answer-popup" id="wrongAnswerPopup" role="dialog" aria-modal="true" aria-labelledby="wrongAnswerTitle">
-        <h3 id="wrongAnswerTitle">Choose</h3>
-        <p>Choose how this card should come back.</p>
+        <h3 id="wrongAnswerTitle">Vyberte možnost</h3>
+        <p>Jak se má tato karta vrátit?</p>
+        <p class="wrong-answer-hint">Zkratky: 1–5 nebo +ěščř</p>
         <div class="wrong-answer-actions">
-            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 10, event)">Remind in 10 cards</button>
-            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 20, event)">Remind in 20 cards</button>
-            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 50, event)">Remind in 50 cards</button>
-            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 100, event)">Remind in 100 cards</button>
-            <button class="btn btn-primary" onclick="handleWrongAnswerChoice('random', null, event)">Random shuffle to next cards</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 10, event)">1️⃣ Připomenout za 10 karet</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 20, event)">2️⃣ Připomenout za 20 karet</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 50, event)">3️⃣ Připomenout za 50 karet</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 100, event)">4️⃣ Připomenout za 100 karet</button>
+            <button class="btn btn-primary" onclick="handleWrongAnswerChoice('random', null, event)">5️⃣ 🔀 Náhodně zamíchat do dalších karet</button>
         </div>
     </div>
 
