@@ -60,6 +60,14 @@ textarea{resize:vertical}
 .editor-legend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px}
 .editor-legend kbd{display:inline-block;padding:2px 6px;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:6px;background:#fff;font-size:11px}
 .options-list > div{padding:8px;background:#fbfdff;border-radius:6px;border:1px solid #eef3ff}
+.answer-parts-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.answer-parts-editor{display:flex;flex-direction:column;gap:12px}
+.answer-part-row{padding:12px;border:1px solid #e6edf3;border-radius:12px;background:#fbfdff;display:flex;flex-direction:column;gap:10px}
+.answer-part-row-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.answer-part-row-title{font-weight:700;color:#0f172a}
+.answer-part-row-actions{display:flex;gap:8px}
+.answer-part-row-actions button{padding:6px 10px;border:1px solid #d7e0ea;border-radius:8px;background:#fff}
+.answer-part-image-preview img{max-width:180px;max-height:120px;border-radius:10px;display:block;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
 .subset-section{margin-top:8px;padding:12px;border:1px solid #e6edf3;border-radius:8px;background:#fbfdff}
 .subset-builder{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .subset-level{display:flex;gap:8px;align-items:center}

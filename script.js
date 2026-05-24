@@ -8,12 +8,14 @@ let stats = {
     wrong: 0,
     answered: new Set()
 };
+let questionStates = {};
 let flaggedQuestions = new Set();
 let isFlaggedMode = false;
 let selectedSubsetPath = null;
 let viewStates = {};
 let pendingWrongAnswer = null;
 const CREATOR_HANDOFF_KEY = 'cards_creator_handoff_v1';
+const DEBUG_CARDS_LOGS = true;
 
 const SUBSET_VALUE_SEPARATOR = '||>';
 const REMINDER_WINDOWS = [
@@ -22,6 +24,78 @@ const REMINDER_WINDOWS = [
     { value: 50, min: 25, max: 75 },
     { value: 100, min: 50, max: 150 }
 ];
+
+function debugCardsLog(message, details) {
+    if (!DEBUG_CARDS_LOGS) return;
+    if (typeof details === 'undefined') {
+        console.log(`[cards] ${message}`);
+        return;
+    }
+    console.log(`[cards] ${message}`, details);
+}
+
+function getQuestionStateKey(qId) {
+    return String(qId);
+}
+
+function getQuestionState(qId, createIfMissing = true) {
+    const key = getQuestionStateKey(qId);
+    if (!questionStates[key] && createIfMissing) {
+        questionStates[key] = { correct: false, wrong: 0 };
+    }
+    return questionStates[key] || null;
+}
+
+function isQuestionResolved(qId) {
+    const state = getQuestionState(qId, false);
+    return Boolean(state && state.correct);
+}
+
+function hasQuestionAttempt(qId) {
+    const state = getQuestionState(qId, false);
+    return Boolean(state && (state.correct || (state.wrong || 0) > 0));
+}
+
+function recordQuestionOutcome(qId, isCorrect) {
+    const state = getQuestionState(qId);
+    if (isCorrect) {
+        state.correct = true;
+    } else {
+        state.wrong = (state.wrong || 0) + 1;
+    }
+}
+
+function computeScopeProgress(scopeQuestions) {
+    const progress = {
+        total: scopeQuestions.length,
+        correct: 0,
+        wrong: 0,
+        attempted: 0,
+        remaining: scopeQuestions.length,
+        accuracy: 0,
+        percent: 0
+    };
+
+    scopeQuestions.forEach(question => {
+        const state = getQuestionState(question.id, false);
+        if (!state) return;
+        if (state.correct) progress.correct += 1;
+        if (state.wrong) progress.wrong += state.wrong;
+        if (state.correct || (state.wrong || 0) > 0) progress.attempted += 1;
+    });
+
+    progress.remaining = Math.max(0, progress.total - progress.correct);
+    progress.percent = progress.total === 0 ? 0 : Math.round((progress.correct / progress.total) * 100);
+    progress.accuracy = progress.attempted === 0 ? 0 : Math.round((progress.correct / progress.attempted) * 100);
+    return progress;
+}
+
+function persistCurrentScopeState() {
+    const scopeState = getCurrentScopeState();
+    if (scopeState) {
+        scopeState.currentCardIndex = currentCardIndex;
+    }
+}
 
 // Touch handling variables
 let touchStartX = 0;
@@ -120,6 +194,7 @@ function toggleMenu() {
             { text: '🔀 Zamíchat set', class: 'btn-secondary', action: 'shuffleCurrentSet()' },
             { text: '✏️ Otevřít v editoru', class: 'btn-secondary', action: "openCurrentSetInEditor()" },
             { text: '↺ Resetovat', class: 'btn-secondary', action: "resetProgress()" },
+            { text: '🧹 Smazat cache', class: 'btn-warning', action: "clearAppCache()" },
             { text: '⬇️ Stáhnout chyby', class: 'btn-success', action: "downloadFailed()" }
         ];
 
@@ -212,7 +287,8 @@ function getCurrentScopeState(createIfMissing = true) {
         viewStates[scopeKey] = {
             order: [],
             reminders: {},
-            sequence: 0
+            sequence: 0,
+            currentCardIndex: 0
         };
     }
 
@@ -221,6 +297,7 @@ function getCurrentScopeState(createIfMissing = true) {
     if (!Array.isArray(state.order)) state.order = [];
     if (!state.reminders || typeof state.reminders !== 'object') state.reminders = {};
     if (typeof state.sequence !== 'number') state.sequence = 0;
+    if (typeof state.currentCardIndex !== 'number') state.currentCardIndex = 0;
     return state;
 }
 
@@ -392,7 +469,7 @@ function handleWrongAnswerChoice(action, baseValue = null, event) {
     if (qId === null || qId === undefined) return;
 
     closeWrongAnswerPopup();
-    stats.wrong++;
+    recordQuestionOutcome(qId, false);
 
     let scheduled = false;
     let toastText = 'Nevěděl jsem';
@@ -439,7 +516,11 @@ function populateSubsetFilter() {
     });
 
     nodes.forEach(node => {
-        node.count = questions.filter(q => isPathPrefix(node.path, q.subsetPath)).length;
+        const nodeQuestions = questions.filter(q => isPathPrefix(node.path, q.subsetPath));
+        const nodeProgress = computeScopeProgress(nodeQuestions);
+        node.count = nodeProgress.correct;
+        node.total = nodeProgress.total;
+        node.wrong = nodeProgress.wrong;
     });
 
     const sorted = Array.from(nodes.values()).sort((a, b) => {
@@ -453,7 +534,8 @@ function populateSubsetFilter() {
         const depth = node.path.length;
         const indent = depth > 1 ? `${' '.repeat((depth - 1) * 2)}↳ ` : '';
         option.value = encodeSubsetPath(node.path);
-        option.textContent = `${indent}${node.path[node.path.length - 1]} (${node.count})`;
+        option.textContent = `${indent}${node.path[node.path.length - 1]} (${node.count}/${node.total})`;
+        option.title = `Správně: ${node.count}, špatně: ${node.wrong}, celkem: ${node.total}`;
         subsetSelect.appendChild(option);
     });
 
@@ -468,8 +550,10 @@ function populateSubsetFilter() {
 }
 
 function changeSubsetFilter(encodedPath) {
+    persistCurrentScopeState();
     selectedSubsetPath = decodeSubsetPath(encodedPath);
-    currentCardIndex = 0;
+    const scopeState = getCurrentScopeState();
+    currentCardIndex = scopeState ? scopeState.currentCardIndex || 0 : 0;
     syncSubsetSelects();
     updateUI();
 }
@@ -480,6 +564,7 @@ async function changeSubject(path) {
     if (!path) return;
     
     try {
+        debugCardsLog('changeSubject:start', { path, currentSubjectKey, selectedSubsetPath, totalQuestions: questions.length });
         const response = await fetch(path);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
@@ -494,6 +579,12 @@ async function changeSubject(path) {
         // We use the filename as ID
         currentSubjectKey = path; 
 
+        debugCardsLog('changeSubject:loaded-json', {
+            path,
+            title: data && data.title,
+            questionCount: Array.isArray(data && data.questions) ? data.questions.length : 0,
+            keys: data && typeof data === 'object' ? Object.keys(data).slice(0, 10) : []
+        });
         loadQuestions(data);
     } catch (error) {
         console.error("Error loading subject:", error);
@@ -503,6 +594,13 @@ async function changeSubject(path) {
 
 function loadQuestions(data) {
     if (data.questions && Array.isArray(data.questions)) {
+        debugCardsLog('loadQuestions:start', {
+            title: data.title || 'TSI Kartičky',
+            rawQuestionCount: data.questions.length,
+            currentSubjectKey,
+            selectedSubsetPath,
+            hadProgressState: Boolean(localStorage.getItem('tsi_save_' + currentSubjectKey))
+        });
         questions = data.questions.map((q, i) => ({
             ...q,
             originalIndex: i,
@@ -530,6 +628,7 @@ function loadQuestions(data) {
     
     // Reset internal state
     stats = { correct: 0, wrong: 0, answered: new Set() };
+    questionStates = {};
     currentCardIndex = 0;
     viewStates = {};
     closeWrongAnswerPopup();
@@ -539,23 +638,54 @@ function loadQuestions(data) {
     populateSubsetFilter();
     
     updateUI();
+        debugCardsLog('loadQuestions:after-update', {
+            loadedQuestionCount: questions.length,
+            currentCardIndex,
+            selectedSubsetPath,
+            flaggedCount: flaggedQuestions.size,
+            viewStateKeys: Object.keys(viewStates),
+            stats: {
+                correct: stats.correct,
+                wrong: stats.wrong,
+                answered: stats.answered.size
+            }
+        });
     showMessage(`Načteno ${questions.length} otázek`, 'success');
 }
 
 function loadCreatorHandoff() {
-    const stored = localStorage.getItem(CREATOR_HANDOFF_KEY);
-    if (!stored) return false;
+    const sessionStored = sessionStorage.getItem(CREATOR_HANDOFF_KEY);
+    const stored = sessionStored || localStorage.getItem(CREATOR_HANDOFF_KEY);
+    debugCardsLog('loadCreatorHandoff:start', {
+        hasSessionStorage: Boolean(sessionStored),
+        hasLocalStorage: Boolean(localStorage.getItem(CREATOR_HANDOFF_KEY))
+    });
+    if (!stored) {
+        debugCardsLog('loadCreatorHandoff:empty');
+        return false;
+    }
 
     try {
         const data = JSON.parse(stored);
         localStorage.removeItem(CREATOR_HANDOFF_KEY);
         if (data && Array.isArray(data.questions)) {
+            debugCardsLog('loadCreatorHandoff:parsed', {
+                title: data.title,
+                questionCount: data.questions.length,
+                editingIndex: data.editingIndex,
+                firstQuestionId: data.questions[0] && data.questions[0].id
+            });
             loadQuestions(data);
             return true;
         }
+        debugCardsLog('loadCreatorHandoff:invalid-payload', {
+            hasData: Boolean(data),
+            keys: data && typeof data === 'object' ? Object.keys(data) : []
+        });
     } catch (error) {
         console.error('Failed to load creator handoff:', error);
         localStorage.removeItem(CREATOR_HANDOFF_KEY);
+        debugCardsLog('loadCreatorHandoff:error', { message: error.message });
     }
 
     return false;
@@ -571,15 +701,17 @@ function openCurrentSetInEditor() {
     const editingIndex = currentVisibleQuestion
         ? questions.findIndex(q => q.id === currentVisibleQuestion.id || q.originalIndex === currentVisibleQuestion.originalIndex)
         : 0;
+    const handoffQuestions = questions.map(q => ({
+        ...q,
+        subsetPath: Array.isArray(q.subsetPath) ? q.subsetPath.slice() : normalizeSubsetPath(q)
+    }));
 
-    localStorage.setItem(CREATOR_HANDOFF_KEY, JSON.stringify({
+    sessionStorage.setItem(CREATOR_HANDOFF_KEY, JSON.stringify({
         title: document.querySelector('.header-title h1')?.textContent || 'Kartičky',
-        questions: questions.map(q => ({
-            ...q,
-            subsetPath: Array.isArray(q.subsetPath) ? q.subsetPath.slice() : normalizeSubsetPath(q)
-        })),
+        questions: handoffQuestions,
         editingIndex: editingIndex >= 0 ? editingIndex : 0
     }));
+    localStorage.removeItem(CREATOR_HANDOFF_KEY);
 
     window.location.href = 'cards_creator.html?from=cards';
 }
@@ -624,7 +756,9 @@ function updateUI() {
     grid.innerHTML = '';
     
     const visibleQuestions = ensureVisibleOrder();
+    const filteredQuestions = getFilteredQuestions();
     const total = visibleQuestions.length;
+    const deckTotal = filteredQuestions.length;
 
     if (total > 0 && currentCardIndex >= total) {
         currentCardIndex = total - 1;
@@ -645,7 +779,9 @@ function updateUI() {
     for (let i = 0; i < 3; i++) {
         const index = currentCardIndex + i;
         if (index < total) {
-            const card = createCard(visibleQuestions[index], index, total, i);
+            const cardQuestion = visibleQuestions[index];
+            const deckIndex = filteredQuestions.findIndex(q => q.id === cardQuestion.id);
+            const card = createCard(cardQuestion, deckIndex >= 0 ? deckIndex : index, deckTotal, i);
             grid.appendChild(card);
             
             // Render Math immediately
@@ -663,7 +799,7 @@ function updateUI() {
 function createCard(q, index, total, stackIndex) {
     const card = document.createElement('div');
     card.className = `card stack-${stackIndex}`;
-    if (stats.answered.has(q.id)) card.classList.add('answered');
+    if (isQuestionResolved(q.id) || hasQuestionAttempt(q.id)) card.classList.add('answered');
     if (flaggedQuestions.has(q.id)) card.classList.add('flagged');
     
     const isFlagged = flaggedQuestions.has(q.id);
@@ -700,6 +836,7 @@ function createCard(q, index, total, stackIndex) {
     // === END NEW HEADER ===
 
     if (q.type === 'open') {
+        const isAnswered = isQuestionResolved(q.id);
         html += `
                 <div class="open-question-actions">
                     <button class="action-btn show-answer" onclick="revealOpenAnswer(this)">👁️ Zobrazit odpověď</button>
@@ -712,9 +849,10 @@ function createCard(q, index, total, stackIndex) {
                     ${buildAnswerContent(q.answer_parts)}
                 </div>
         `;
+        if (isAnswered) card.classList.add('answered');
     } else {
         // Fix for isAnswered scope
-        const isAnswered = stats.answered.has(q.id);
+        const isAnswered = hasQuestionAttempt(q.id);
         
         html += `<div class="card-options">`;
         q.options.forEach((opt, i) => {
@@ -785,13 +923,11 @@ function createTable(data) {
 }
 
 function checkAnswer(qId, optionIndex, btnElement) {
-    if (stats.answered.has(qId)) return;
+    if (hasQuestionAttempt(qId)) return;
     const question = questions.find(q => q.id === qId);
     const isCorrect = optionIndex === question.correctIndex;
 
-    if (isCorrect) stats.correct++;
-    else stats.wrong++;
-    stats.answered.add(qId);
+    recordQuestionOutcome(qId, isCorrect);
 
     const card = btnElement.closest('.card');
     const options = card.querySelectorAll('.option-btn');
@@ -821,9 +957,8 @@ function revealOpenAnswer(btn) {
 
 function rateOpenAnswer(qId, knewIt) {
     if (knewIt) {
-        if (stats.answered.has(qId)) return;
-        stats.correct++;
-        stats.answered.add(qId);
+        if (isQuestionResolved(qId)) return;
+        recordQuestionOutcome(qId, true);
         document.querySelector('.card.stack-0').classList.add('answered');
         updateStats();
         setTimeout(() => nextCard(), 300);
@@ -895,21 +1030,51 @@ function toggleFlag(qId, event) {
 }
 
 function toggleFlaggedMode() {
+    persistCurrentScopeState();
     isFlaggedMode = !isFlaggedMode;
     document.getElementById('onlyFlagged').checked = isFlaggedMode;
-    currentCardIndex = 0;
+    const scopeState = getCurrentScopeState();
+    currentCardIndex = scopeState ? scopeState.currentCardIndex || 0 : 0;
     updateUI();
 }
 
 function updateStats() {
-    const total = getFilteredQuestions().length;
-    const answeredInCurrentFilter = getFilteredQuestions().filter(q => stats.answered.has(q.id)).length;
-    
-    // Zjistíme počet skutečně zodpovězených unikátních otázek
-    const totalAnswered = stats.correct + stats.wrong; 
-    
-    const actualRemaining = total - answeredInCurrentFilter;
-    const accuracy = totalAnswered === 0 ? 0 : Math.round((stats.correct / totalAnswered) * 100);
+    const visibleQuestions = ensureVisibleOrder();
+    const filteredQuestions = getFilteredQuestions();
+    const total = filteredQuestions.length;
+    const scopeProgress = computeScopeProgress(filteredQuestions);
+    const scopeState = getCurrentScopeState();
+    const pendingReminderIds = Object.keys(scopeState.reminders || {});
+    const hiddenByReminders = Math.max(0, filteredQuestions.length - visibleQuestions.length);
+
+    stats.correct = scopeProgress.correct;
+    stats.wrong = scopeProgress.wrong;
+    stats.answered = new Set(filteredQuestions.filter(q => hasQuestionAttempt(q.id)).map(q => q.id));
+
+    const totalAnswered = scopeProgress.attempted;
+    const actualRemaining = scopeProgress.remaining;
+    const accuracy = scopeProgress.accuracy;
+
+    debugCardsLog('updateStats', {
+        currentSubjectKey,
+        selectedSubsetPath,
+        loadedQuestionCount: questions.length,
+        filteredQuestionCount: filteredQuestions.length,
+        visibleTotal: total,
+        hiddenByReminders,
+        pendingReminderCount: pendingReminderIds.length,
+        pendingReminderIds,
+        answeredInCurrentFilter: scopeProgress.attempted,
+        totalAnswered,
+        actualRemaining,
+        accuracy,
+        progressPercent: scopeProgress.percent,
+        currentCardIndex,
+        visibleQuestionIds: visibleQuestions.slice(0, 10).map(q => q.id),
+        scopeKey: getCurrentScopeKey(),
+        orderSize: scopeState.order.length,
+        reminderSequences: Object.fromEntries(Object.entries(scopeState.reminders || {}).map(([id, reminder]) => [id, reminder.sequence]))
+    });
 
     document.getElementById('totalCount').textContent = total;
     document.getElementById('remainingCount').textContent = actualRemaining;
@@ -920,8 +1085,7 @@ function updateStats() {
     document.getElementById('mobileRemaining').textContent = actualRemaining;
     document.getElementById('mobileAccuracy').textContent = `${accuracy}%`;
 
-    // OPRAVA ZDE: Progress bar se nyní počítá podle počtu zodpovězených / celkem
-    const progress = total === 0 ? 0 : (answeredInCurrentFilter / total) * 100;
+    const progress = scopeProgress.percent;
     
     document.getElementById('progressBar').style.width = `${progress}%`;
     document.getElementById('progressText').textContent = `🎯 Pokrok: ${Math.round(progress)}%`;
@@ -939,6 +1103,7 @@ function resetStats() {
 function resetProgress() {
     if(confirm("Opravdu chcete resetovat celý postup?")) {
         stats = { correct: 0, wrong: 0, answered: new Set() };
+        questionStates = {};
         currentCardIndex = 0;
         flaggedQuestions.clear();
         viewStates = {};
@@ -946,6 +1111,46 @@ function resetProgress() {
         saveProgress(); // Save the wipe
         updateUI();
     }
+}
+
+function clearAppCache() {
+    const message = [
+        'Opravdu chcete smazat celou cache aplikace?',
+        'Tím se smaže postup, poslední předmět, dark mode, creator draft i handoff.'
+    ].join('\n');
+
+    if (!confirm(message)) return;
+
+    const localKeysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        if (
+            key.startsWith('tsi_save_') ||
+            key === 'tsi_last_subject' ||
+            key === 'darkMode' ||
+            key === 'cards_creator_draft_v1' ||
+            key === CREATOR_HANDOFF_KEY
+        ) {
+            localKeysToRemove.push(key);
+        }
+    }
+
+    localKeysToRemove.forEach(key => localStorage.removeItem(key));
+    sessionStorage.removeItem(CREATOR_HANDOFF_KEY);
+
+    questions = [];
+    currentCardIndex = 0;
+    stats = { correct: 0, wrong: 0, answered: new Set() };
+    questionStates = {};
+    flaggedQuestions.clear();
+    isFlaggedMode = false;
+    selectedSubsetPath = null;
+    viewStates = {};
+    pendingWrongAnswer = null;
+
+    debugCardsLog('clearAppCache:done', { removedLocalKeys: localKeysToRemove, sessionHandOffCleared: true });
+    window.location.reload();
 }
 
 function downloadFailed() {
@@ -968,16 +1173,14 @@ function downloadFailed() {
 
 // === PERSISTENCE (Fix issue 2) ===
 function saveProgress() {
+    persistCurrentScopeState();
     const state = {
+        version: 2,
         idx: currentCardIndex,
         subsetPath: selectedSubsetPath,
         flags: Array.from(flaggedQuestions),
         viewStates,
-        stats: {
-            correct: stats.correct,
-            wrong: stats.wrong,
-            answered: Array.from(stats.answered)
-        }
+        questionStates
     };
     // Use unique key per subject
     localStorage.setItem('tsi_save_' + currentSubjectKey, JSON.stringify(state));
@@ -989,6 +1192,15 @@ function loadProgress() {
         try {
             const state = JSON.parse(saved);
             // Restore only if index is valid within new set
+            if (state.questionStates && typeof state.questionStates === 'object') {
+                questionStates = state.questionStates;
+            } else if (state.stats && state.stats.answered) {
+                questionStates = {};
+                state.stats.answered.forEach(qId => {
+                    questionStates[getQuestionStateKey(qId)] = { correct: true, wrong: 0 };
+                });
+            }
+
             if(state.idx < questions.length) currentCardIndex = state.idx || 0;
 
             if (Array.isArray(state.subsetPath)) {
@@ -1000,11 +1212,10 @@ function loadProgress() {
             if (state.viewStates && typeof state.viewStates === 'object') {
                 viewStates = state.viewStates;
             }
-            
-            if (state.stats) {
-                stats.correct = state.stats.correct || 0;
-                stats.wrong = state.stats.wrong || 0;
-                if(state.stats.answered) stats.answered = new Set(state.stats.answered);
+
+            const scopeState = getCurrentScopeState();
+            if (scopeState && typeof scopeState.currentCardIndex === 'number') {
+                currentCardIndex = scopeState.currentCardIndex;
             }
         } catch (e) { console.error("Save load error", e); }
     }

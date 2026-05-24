@@ -65,11 +65,20 @@
         </div>
 
         <div id="openAnswer">
+          <div class="answer-parts-header">
+            <label>Answer parts</label>
+            <button id="addAnswerPartBtn" type="button">Add answer part</button>
+          </div>
+          <div id="answerPartsEditor" class="answer-parts-editor"></div>
+          <div class="small">Each part can hold its own title, text, and optional image.</div>
+        </div>
+
+        <div id="closedAnswer">
           <label>Answer / Explanation</label>
           <textarea id="answerText" rows="6" style="width:100%"></textarea>
         </div>
 
-        <div style="margin-top:8px">
+        <div id="imageSection" style="margin-top:8px">
           <label>Image (optional) <input id="imageFile" type="file" accept="image/*"></label>
           <div class="small image-hint">Tip: click anywhere on the creator and press Ctrl+V to paste a screenshot from the clipboard.</div>
           <div id="imagePreviewThumb" class="image-preview-thumb"></div>
@@ -130,6 +139,7 @@
             <li><kbd>Ctrl</kbd> + <kbd>V</kbd> pastes an image from the clipboard.</li>
             <li><kbd>Esc</kbd> deselects the current field so arrow keys can switch cards.</li>
             <li>Subset path creates structured questions like Topic / Subtopic / Detail.</li>
+            <li>Open cards can now store multiple answer parts, each with its own text and optional image.</li>
             <li>Open cards store answers in <code>answer_parts</code>, so images appear in the real cards page.</li>
           </ul>
         </section>
@@ -143,6 +153,7 @@
             <li><kbd>Ctrl</kbd> + <kbd>V</kbd> vloží obrázek ze schránky.</li>
             <li><kbd>Esc</kbd> zruší fokus na poli, aby šipky přepínaly karty.</li>
             <li>Subset path slouží pro strukturované otázky typu Téma / Podtéma / Detail.</li>
+            <li>Otevřené karty teď mohou mít více částí odpovědi, každou s vlastním textem a volitelným obrázkem.</li>
             <li>U otevřených karet se obrázky ukládají do <code>answer_parts</code>, takže se zobrazí i v hlavní stránce.</li>
           </ul>
         </section>

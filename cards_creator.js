@@ -9,6 +9,7 @@
   let cards = [];
   let editingIndex = -1;
   let currentImageData = null;
+  let restoredFormState = null;
   let autosaveTimer = null;
   let draggedCardIndex = null;
 
@@ -48,6 +49,284 @@
     return Math.max(0, Math.min(totalCards - 1, index));
   }
 
+  function cloneJson(value){
+    return value ? JSON.parse(JSON.stringify(value)) : value;
+  }
+
+  function extractImageSrc(image){
+    if (!image) return null;
+    if (typeof image === 'string') return image;
+    if (typeof image === 'object' && typeof image.src === 'string') return image.src;
+    return null;
+  }
+
+  function normalizeAnswerPart(part){
+    const source = part && typeof part === 'object' ? part : {};
+    return {
+      title: typeof source.title === 'string' ? source.title : '',
+      text: typeof source.text === 'string' ? source.text : '',
+      imageSrc: extractImageSrc(source.image),
+      raw: cloneJson(source) || {},
+    };
+  }
+
+  function normalizeAnswerParts(input, fallbackText = '', fallbackImageSrc = null){
+    const parts = Array.isArray(input)
+      ? input.filter(part => part && typeof part === 'object').map(normalizeAnswerPart)
+      : [];
+
+    if (!parts.length) {
+      parts.push(normalizeAnswerPart({
+        title: '',
+        text: fallbackText || '',
+        image: fallbackImageSrc ? { src: fallbackImageSrc } : null,
+      }));
+      return parts;
+    }
+
+    if (fallbackText && !parts.some(part => part.text.trim())) {
+      parts[0].text = fallbackText;
+    }
+
+    if (fallbackImageSrc && !parts.some(part => part.imageSrc)) {
+      parts[0].imageSrc = fallbackImageSrc;
+    }
+
+    return parts;
+  }
+
+  function serializeAnswerPart(partState){
+    const raw = cloneJson(partState.raw) || {};
+    raw.title = partState.title || '';
+    raw.text = partState.text || '';
+
+    if (partState.imageSrc) {
+      const image = raw.image && typeof raw.image === 'object' ? cloneJson(raw.image) : {};
+      image.src = partState.imageSrc;
+      raw.image = image;
+    } else if (raw.image) {
+      delete raw.image;
+    }
+
+    return raw;
+  }
+
+  function getAnswerPartRows(){
+    if (!els.answerPartsEditor) return [];
+    return Array.from(els.answerPartsEditor.querySelectorAll('.answer-part-row'));
+  }
+
+  function getAnswerPartStateFromRow(row){
+    const titleInput = row.querySelector('input[name="answerPartTitle"]');
+    const textInput = row.querySelector('textarea[name="answerPartText"]');
+    const state = row._answerPartState || { raw: {} };
+    return {
+      title: titleInput ? titleInput.value : '',
+      text: textInput ? textInput.value : '',
+      imageSrc: state.imageSrc || '',
+      raw: state.raw || {},
+    };
+  }
+
+  function getAnswerPartStates(){
+    const rows = getAnswerPartRows();
+    if (!rows.length) {
+      return normalizeAnswerParts([]);
+    }
+    return rows.map(row => getAnswerPartStateFromRow(row));
+  }
+
+  function setAnswerPartImage(row, imageSrc){
+    if (!row) return;
+    const state = row._answerPartState || { raw: {} };
+    state.imageSrc = imageSrc || '';
+    row._answerPartState = state;
+    const preview = row.querySelector('.answer-part-image-preview');
+    if (preview) {
+      preview.innerHTML = imageSrc ? `<img src="${imageSrc}" alt="Answer part image preview">` : '';
+    }
+  }
+
+  function createAnswerPartRow(partState = {}){
+    const normalized = normalizeAnswerPart(partState);
+    const row = document.createElement('div');
+    row.className = 'answer-part-row';
+    row._answerPartState = {
+      raw: cloneJson(normalized.raw) || {},
+      imageSrc: normalized.imageSrc || '',
+    };
+
+    const header = document.createElement('div');
+    header.className = 'answer-part-row-header';
+
+    const title = document.createElement('div');
+    title.className = 'answer-part-row-title';
+    title.textContent = 'Answer part';
+
+    const actions = document.createElement('div');
+    actions.className = 'answer-part-row-actions';
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.textContent = '+';
+    addBtn.title = 'Add answer part below';
+    addBtn.addEventListener('click', ()=>{
+      const next = row.nextElementSibling;
+      const newRow = createAnswerPartRow();
+      els.answerPartsEditor.insertBefore(newRow, next);
+      syncAnswerPartEmptyState();
+      renderPreview();
+      scheduleAutosave();
+      const focusTarget = newRow.querySelector('input[name="answerPartTitle"]');
+      if (focusTarget) focusTarget.focus();
+    });
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '−';
+    removeBtn.title = 'Remove answer part';
+    removeBtn.addEventListener('click', ()=>{
+      row.remove();
+      if (!getAnswerPartRows().length) {
+        appendAnswerPart();
+      }
+      syncAnswerPartEmptyState();
+      renderPreview();
+      scheduleAutosave();
+    });
+
+    actions.appendChild(addBtn);
+    actions.appendChild(removeBtn);
+    header.appendChild(title);
+    header.appendChild(actions);
+
+    const titleLabel = document.createElement('label');
+    titleLabel.textContent = 'Title';
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.name = 'answerPartTitle';
+    titleInput.value = normalized.title;
+    titleLabel.appendChild(titleInput);
+
+    const textLabel = document.createElement('label');
+    textLabel.textContent = 'Text';
+    const textInput = document.createElement('textarea');
+    textInput.name = 'answerPartText';
+    textInput.rows = 4;
+    textInput.value = normalized.text;
+    textLabel.appendChild(textInput);
+
+    const imageLabel = document.createElement('label');
+    imageLabel.textContent = 'Image (optional)';
+    const imageInput = document.createElement('input');
+    imageInput.type = 'file';
+    imageInput.accept = 'image/*';
+    imageLabel.appendChild(imageInput);
+
+    const preview = document.createElement('div');
+    preview.className = 'answer-part-image-preview';
+
+    imageInput.addEventListener('change', event=>{
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = loadEvent => {
+        setAnswerPartImage(row, loadEvent.target.result);
+        renderPreview();
+        scheduleAutosave();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    titleInput.addEventListener('input', ()=>{ renderPreview(); scheduleAutosave(); });
+    textInput.addEventListener('input', ()=>{ renderPreview(); scheduleAutosave(); });
+
+    row.appendChild(header);
+    row.appendChild(titleLabel);
+    row.appendChild(textLabel);
+    row.appendChild(imageLabel);
+    row.appendChild(preview);
+    setAnswerPartImage(row, normalized.imageSrc || '');
+    return row;
+  }
+
+  function appendAnswerPart(partState = {}){
+    if (!els.answerPartsEditor) return;
+    els.answerPartsEditor.appendChild(createAnswerPartRow(partState));
+  }
+
+  function renderAnswerPartsEditor(parts){
+    if (!els.answerPartsEditor) return;
+    els.answerPartsEditor.innerHTML = '';
+    const normalized = normalizeAnswerParts(parts, '', null);
+    normalized.forEach(part => appendAnswerPart(part));
+    syncAnswerPartEmptyState();
+  }
+
+  function syncAnswerPartEmptyState(){
+    if (!els.answerPartsEditor) return;
+    const rows = getAnswerPartRows();
+    rows.forEach((row, index) => {
+      const title = row.querySelector('.answer-part-row-title');
+      const removeBtn = row.querySelector('.answer-part-row-actions button:last-child');
+      if (title) title.textContent = `Answer part ${index + 1}`;
+      if (removeBtn) removeBtn.disabled = rows.length <= 1;
+    });
+  }
+
+  function getFocusedAnswerPartRow(){
+    const active = document.activeElement;
+    if (!active || !els.answerPartsEditor) return null;
+    return active.closest ? active.closest('.answer-part-row') : null;
+  }
+
+  function applyFormState(form = {}){
+    const type = form.type || 'open';
+    els.cardType.value = type;
+    renderSubsetBuilder(form.subsetPath || []);
+    els.question.value = form.question || '';
+
+    if (type === 'open') {
+      els.answerText.value = '';
+      currentImageData = null;
+      renderAnswerPartsEditor(normalizeAnswerParts(form.answerParts || form.answer_parts || [], form.answerText || '', extractImageSrc(form.image) || form.currentImageData || null));
+    } else {
+      els.answerText.value = form.answerText || form.explanation || '';
+      currentImageData = form.currentImageData || extractImageSrc(form.image) || null;
+      renderAnswerPartsEditor([]);
+    }
+
+    els.optionsList.innerHTML = '';
+    const optionValues = Array.isArray(form.options) ? form.options : [];
+    if (optionValues.length) {
+      optionValues.forEach(option => addOptionField(option));
+      const correctIndex = typeof form.correctIndex === 'number' ? form.correctIndex : -1;
+      const radios = els.optionsList.querySelectorAll('input[type="radio"]');
+      if (correctIndex >= 0 && radios[correctIndex]) radios[correctIndex].checked = true;
+    }
+
+    renderImageThumb();
+    toggleType();
+  }
+
+  function collectFormState(){
+    const state = {
+      type: els.cardType.value,
+      subsetPath: getSubsetPathFromBuilder(),
+      question: els.question.value,
+      options: Array.from(els.optionsList.querySelectorAll('input[type="text"]')).map(input => input.value),
+      correctIndex: Array.from(els.optionsList.querySelectorAll('input[type="radio"]')).findIndex(radio => radio.checked)
+    };
+
+    if (state.type === 'open') {
+      state.answerParts = getAnswerPartStates();
+    } else {
+      state.answerText = els.answerText.value;
+    }
+
+    return state;
+  }
+
   function captureCardRects(){
     const rects = new Map();
     Array.from(els.cardsList.querySelectorAll('.card-row')).forEach(row => {
@@ -81,14 +360,16 @@
   function hasMeaningfulCardContent(){
     const subset = getSubsetPathFromBuilder();
     const question = els.question.value.trim();
-    const answer = els.answerText.value.trim();
-    const image = !!currentImageData;
     const optionValues = Array.from(els.optionsList.querySelectorAll('input[type="text"]')).map(input => input.value.trim());
     const hasOptionText = optionValues.some(Boolean);
     const type = els.cardType.value;
+    const openParts = type === 'open' ? getAnswerPartStates() : [];
+    const hasOpenContent = openParts.some(part => Boolean((part.title || '').trim() || (part.text || '').trim() || part.imageSrc));
+    const answer = els.answerText.value.trim();
+    const image = !!currentImageData;
 
     if (type === 'open') {
-      return Boolean(question || answer || image || subset.length);
+      return Boolean(question || hasOpenContent || subset.length);
     }
 
     return Boolean(question || answer || image || subset.length || hasOptionText);
@@ -127,7 +408,11 @@
     helpCloseBtn: q('#helpCloseBtn'),
     previewCard: q('#previewCard'),
     openAnswer: q('#openAnswer'),
-    closedOptions: q('#closedOptions')
+    closedAnswer: q('#closedAnswer'),
+    closedOptions: q('#closedOptions'),
+    answerPartsEditor: q('#answerPartsEditor'),
+    addAnswerPartBtn: q('#addAnswerPartBtn'),
+    imageSection: q('#imageSection')
   };
 
   function init(){
@@ -137,7 +422,11 @@
     if (!sessionLoaded) loadDraft();
     debugLog('init:loaded', { sessionLoaded, cards: cards.length, editingIndex });
     renderList();
-    renderFormFromCard(getCurrentCard());
+    if (restoredFormState) {
+      applyFormState(restoredFormState);
+    } else {
+      renderFormFromCard(getCurrentCard());
+    }
     renderPreview();
   }
 
@@ -165,6 +454,11 @@
     els.question.addEventListener('input', ()=>{ debugLog('input:question', { value: els.question.value }); renderPreview(); });
     els.answerText.addEventListener('input', ()=>{ debugLog('input:answerText', { length: els.answerText.value.length }); renderPreview(); });
     els.optionsList.addEventListener('input', ()=>{ debugLog('input:optionsList'); renderPreview(); scheduleAutosave(); });
+    if (els.answerPartsEditor) {
+      els.answerPartsEditor.addEventListener('input', ()=>{ debugLog('input:answerPartsEditor'); renderPreview(); scheduleAutosave(); });
+      els.answerPartsEditor.addEventListener('change', ()=>{ debugLog('change:answerPartsEditor'); renderPreview(); scheduleAutosave(); });
+    }
+    if (els.addAnswerPartBtn) els.addAnswerPartBtn.addEventListener('click', ()=>{ debugLog('event:addAnswerPartBtn'); appendAnswerPart(); syncAnswerPartEmptyState(); renderPreview(); scheduleAutosave(); });
     els.imageFile.addEventListener('change', handleImageFile);
     if(els.subsetPathBuilder) els.subsetPathBuilder.addEventListener('input', ()=>{ debugLog('input:subsetPathBuilder'); syncSubsetHiddenField(); renderPreview(); scheduleAutosave(); });
     window.addEventListener('paste', handleClipboardPaste);
@@ -259,18 +553,13 @@
       version: CREATOR_SESSION_VERSION,
       cards,
       editingIndex,
-      currentImageData,
-      form: {
-        type: els.cardType.value,
-        subsetPath: getSubsetPathFromBuilder(),
-        question: els.question.value,
-        answerText: els.answerText.value,
-        options: Array.from(els.optionsList.querySelectorAll('input[type="text"]')).map(input => input.value),
-        correctIndex: Array.from(els.optionsList.querySelectorAll('input[type="radio"]')).findIndex(radio => radio.checked)
-      }
+      currentImageData: els.cardType.value === 'closed' ? currentImageData : null,
+      form: collectFormState()
     };
   }
 
+          currentImageData = null;
+          restoredFormState = null;
   function encodeSessionState(state){
     const json = JSON.stringify(state);
     const bytes = new TextEncoder().encode(json);
@@ -297,31 +586,15 @@
       if (!parsed || !Array.isArray(parsed.cards)) return false;
 
       cards = normalizeCards(parsed.cards);
-      editingIndex = typeof parsed.editingIndex === 'number' ? parsed.editingIndex : (cards.length ? 0 : -1);
-        editingIndex = clampEditingIndex(parsed.editingIndex, cards.length);
-        editingIndex = clampEditingIndex(parsed.editingIndex, cards.length);
+      editingIndex = clampEditingIndex(parsed.editingIndex, cards.length);
       currentImageData = parsed.currentImageData || null;
-      renderSubsetBuilder(parsed.form && parsed.form.subsetPath ? parsed.form.subsetPath : []);
-
-      if (parsed.form) {
-        els.cardType.value = parsed.form.type || 'open';
-        els.question.value = parsed.form.question || '';
-        els.answerText.value = parsed.form.answerText || '';
-        els.optionsList.innerHTML = '';
-        const optionValues = Array.isArray(parsed.form.options) ? parsed.form.options : [];
-        if (optionValues.length) {
-          optionValues.forEach(option => addOptionField(option));
-          const correctIndex = typeof parsed.form.correctIndex === 'number' ? parsed.form.correctIndex : -1;
-          const radios = els.optionsList.querySelectorAll('input[type="radio"]');
-          if (correctIndex >= 0 && radios[correctIndex]) radios[correctIndex].checked = true;
-        }
-      }
+      restoredFormState = parsed.form || null;
 
       localStorage.setItem(LS_KEY, JSON.stringify({
         cards,
         editingIndex,
         currentImageData,
-        form: parsed.form || {}
+        form: restoredFormState || {}
       }));
 
       history.replaceState({}, '', window.location.pathname);
@@ -333,7 +606,8 @@
   }
 
   function loadSessionFromHandoff(){
-    const stored = localStorage.getItem(HANDOFF_KEY);
+    const sessionStored = sessionStorage.getItem(HANDOFF_KEY);
+    const stored = sessionStored || localStorage.getItem(HANDOFF_KEY);
     if (!stored) return false;
 
     try {
@@ -345,17 +619,20 @@
         ? clampEditingIndex(parsed.editingIndex, cards.length)
         : (cards.length ? 0 : -1);
       currentImageData = parsed.currentImageData || null;
+      restoredFormState = parsed.form || null;
       localStorage.setItem(LS_KEY, JSON.stringify({
         cards,
         editingIndex,
         currentImageData,
-        form: parsed.form || {}
+        form: restoredFormState || {}
       }));
+      sessionStorage.removeItem(HANDOFF_KEY);
       localStorage.removeItem(HANDOFF_KEY);
       history.replaceState({}, '', window.location.pathname);
       return true;
     } catch (error) {
       console.error('Failed to load creator handoff:', error);
+      sessionStorage.removeItem(HANDOFF_KEY);
       localStorage.removeItem(HANDOFF_KEY);
       return false;
     }
@@ -390,7 +667,9 @@
   function toggleType(){
     const t = els.cardType.value;
     els.closedOptions.style.display = t === 'closed' ? 'block' : 'none';
+    if (els.closedAnswer) els.closedAnswer.style.display = t === 'closed' ? 'block' : 'none';
     if (els.openAnswer) els.openAnswer.style.display = t === 'open' ? 'block' : 'none';
+    if (els.imageSection) els.imageSection.style.display = t === 'closed' ? 'block' : 'none';
     renderPreview();
   }
 
@@ -675,20 +954,39 @@
 
   function renderFormFromCard(card){
     debugLog('renderFormFromCard', { hasCard: !!card, editingIndex, type: card && card.type, question: card && card.question });
-    if(!card){ els.cardType.value='open'; els.question.value=''; els.answerText.value=''; els.optionsList.innerHTML=''; currentImageData = null; renderSubsetBuilder(['']); addOptionField(); toggleType(); editingIndex=-1; updateCardPosition(); renderImageThumb(); renderPreview(); return; }
+    if(!card){
+      els.cardType.value='open';
+      els.question.value='';
+      els.answerText.value='';
+      els.optionsList.innerHTML='';
+      currentImageData = null;
+      renderSubsetBuilder(['']);
+      renderAnswerPartsEditor([normalizeAnswerPart({})]);
+      toggleType();
+      editingIndex=-1;
+      updateCardPosition();
+      renderImageThumb();
+      renderPreview();
+      return;
+    }
+
     els.cardType.value = card.type || 'open';
     renderSubsetBuilder(card.subsetPath || []);
     els.question.value = card.question || '';
-    els.answerText.value = card.answer_parts && card.answer_parts[0] && typeof card.answer_parts[0].text === 'string'
-      ? card.answer_parts[0].text
-      : (card.answer || '');
     els.optionsList.innerHTML='';
-    currentImageData = card.answer_parts && card.answer_parts[0] && card.answer_parts[0].image && card.answer_parts[0].image.src
-      ? card.answer_parts[0].image.src
-      : (card.image && card.image.src ? card.image.src : null);
+
+    if ((card.type || 'open') === 'open') {
+      els.answerText.value = '';
+      currentImageData = null;
+      renderAnswerPartsEditor(normalizeAnswerParts(card.answer_parts, card.answer || '', extractImageSrc(card.image)));
+    } else {
+      els.answerText.value = card.explanation || card.answer || '';
+      currentImageData = extractImageSrc(card.image);
+      renderAnswerPartsEditor([]);
+    }
+
     renderImageThumb();
     if(card.options && card.options.length){ card.options.forEach(o=>addOptionField(o));
-      // mark correct index if present
       if(typeof card.correctIndex === 'number'){
         const radios = els.optionsList.querySelectorAll('input[type="radio"]');
         if(radios[card.correctIndex]) radios[card.correctIndex].checked = true;
@@ -720,19 +1018,19 @@
 
     const type = els.cardType.value;
     const qtext = els.question.value.trim();
-    const image = currentImageData || null;
     const card = attachCardId({ type: type, question: qtext, subsetPath: subset });
 
     if(type === 'open'){
-      card.answer_parts = [{ title:'', text: els.answerText.value || '' }];
-      if(image) card.answer_parts[0].image = { src: image };
+      card.answer_parts = getAnswerPartStates().map(serializeAnswerPart);
     } else {
       const options = Array.from(els.optionsList.querySelectorAll('input[type="text"]')).map(i=>i.value);
       const radios = Array.from(els.optionsList.querySelectorAll('input[type="radio"]'));
       const correctIndex = radios.findIndex(r=>r.checked);
       card.options = options;
       card.correctIndex = correctIndex >= 0 ? correctIndex : 0;
-      if(image) card.image = { src: image };
+      card.explanation = els.answerText.value || '';
+      if(currentImageData) card.image = { src: currentImageData };
+      else delete card.image;
     }
 
     if(editingIndex >= 0){
@@ -753,7 +1051,7 @@
     if(editingIndex>=0){ cards.splice(editingIndex,1); editingIndex = cards.length ? Math.min(editingIndex, cards.length - 1) : -1; saveDraft(); renderList(); renderFormFromCard(getCurrentCard()); }
   }
 
-  function handleImportFile(e){ const f = e.target.files && e.target.files[0]; if(!f) return; debugLog('action:handleImportFile', { name: f.name, size: f.size, type: f.type }); const r=new FileReader(); r.onload = ev=>{ try{ const obj = JSON.parse(ev.target.result); if(obj.questions) cards = normalizeCards(obj.questions); else if(Array.isArray(obj)) cards = normalizeCards(obj); else alert('Unrecognized JSON'); editingIndex = cards.length ? 0 : -1; currentImageData = null; saveDraft(); renderList(); renderFormFromCard(getCurrentCard()); debugLog('action:handleImportFile:done', { cards: cards.length, editingIndex }); }catch(err){ debugLog('action:handleImportFile:error', { message: err.message }); alert('Invalid JSON: '+err.message); } }; r.readAsText(f); }
+  function handleImportFile(e){ const f = e.target.files && e.target.files[0]; if(!f) return; debugLog('action:handleImportFile', { name: f.name, size: f.size, type: f.type }); const r=new FileReader(); r.onload = ev=>{ try{ const obj = JSON.parse(ev.target.result); if(obj.questions) cards = normalizeCards(obj.questions); else if(Array.isArray(obj)) cards = normalizeCards(obj); else alert('Unrecognized JSON'); editingIndex = cards.length ? 0 : -1; currentImageData = null; restoredFormState = null; saveDraft(); renderList(); renderFormFromCard(getCurrentCard()); debugLog('action:handleImportFile:done', { cards: cards.length, editingIndex }); }catch(err){ debugLog('action:handleImportFile:error', { message: err.message }); alert('Invalid JSON: '+err.message); } }; r.readAsText(f); }
 
   function exportJSON(){ const out = { title: 'Created with cards_creator', questions: cards }; const blob = new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=(els.exportFilename && els.exportFilename.value ? els.exportFilename.value.trim() : 'cards_export.json'); document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
 
@@ -761,10 +1059,11 @@
     debugLog('action:openInCards:start', { editingIndex, cards: cards.length });
     commitCurrentFormToCard(false);
     saveDraft();
-    localStorage.setItem(HANDOFF_KEY, JSON.stringify({
+    sessionStorage.setItem(HANDOFF_KEY, JSON.stringify({
       title: 'Cards Creator handoff',
       questions: cards
     }));
+    localStorage.removeItem(HANDOFF_KEY);
     debugLog('action:openInCards:handoffSaved', { cards: cards.length });
     window.location.href = 'cards.html?from=creator';
   }
@@ -783,17 +1082,10 @@
     const state = {
       cards,
       editingIndex,
-      currentImageData,
-      form: {
-        type: els.cardType.value,
-        subsetPath: getSubsetPathFromBuilder(),
-        question: els.question.value,
-        answerText: els.answerText.value,
-        options: Array.from(els.optionsList.querySelectorAll('input[type="text"]')).map(input => input.value),
-        correctIndex: Array.from(els.optionsList.querySelectorAll('input[type="radio"]')).findIndex(radio => radio.checked)
-      }
+      currentImageData: els.cardType.value === 'closed' ? currentImageData : null,
+      form: collectFormState()
     };
-    debugLog('saveDraft', { editingIndex, cards: cards.length, currentImageData: !!currentImageData, question: state.form.question, answerLength: state.form.answerText.length });
+    debugLog('saveDraft', { editingIndex, cards: cards.length, currentImageData: !!currentImageData, question: state.form.question, formType: state.form.type });
     localStorage.setItem(LS_KEY, JSON.stringify(state));
   }
 
@@ -801,45 +1093,36 @@
     try{
       debugLog('loadDraft:start');
       const d = localStorage.getItem(LS_KEY);
+      restoredFormState = null;
       if(!d) return;
       const parsed = JSON.parse(d);
       if(Array.isArray(parsed)){
         cards = normalizeCards(parsed);
-        editingIndex = cards.length ? 0 : -1;
-          editingIndex = clampEditingIndex(0, cards.length);
-          editingIndex = clampEditingIndex(0, cards.length);
-          editingIndex = clampEditingIndex(parsed.editingIndex, cards.length);
+        editingIndex = clampEditingIndex(0, cards.length);
         debugLog('loadDraft:legacyArray', { cards: cards.length, editingIndex });
         return;
       }
       cards = normalizeCards(parsed.cards);
-      editingIndex = typeof parsed.editingIndex === 'number' ? parsed.editingIndex : (cards.length ? 0 : -1);
+      editingIndex = clampEditingIndex(parsed.editingIndex, cards.length);
       currentImageData = parsed.currentImageData || null;
-      renderImageThumb();
-      if(parsed.form){
-        els.cardType.value = parsed.form.type || 'open';
-        renderSubsetBuilder(parsed.form.subsetPath || []);
-        els.question.value = parsed.form.question || '';
-        els.answerText.value = parsed.form.answerText || '';
-        els.optionsList.innerHTML = '';
-        const optionValues = Array.isArray(parsed.form.options) ? parsed.form.options : [];
-        if(optionValues.length){
-          optionValues.forEach(option => addOptionField(option));
-          const correctIndex = typeof parsed.form.correctIndex === 'number' ? parsed.form.correctIndex : -1;
-          const radios = els.optionsList.querySelectorAll('input[type="radio"]');
-          if(correctIndex >= 0 && radios[correctIndex]) radios[correctIndex].checked = true;
-        }
-      }
+      restoredFormState = parsed.form || null;
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        cards,
+        editingIndex,
+        currentImageData,
+        form: restoredFormState || {}
+      }));
       debugLog('loadDraft:done', { cards: cards.length, editingIndex, hasForm: !!parsed.form });
     }catch(e){
       debugLog('loadDraft:error', { message: e.message });
       cards = [];
       editingIndex = -1;
       currentImageData = null;
+      restoredFormState = null;
     }
   }
 
-  function clearDraft(){ if(confirm('Clear draft?')){ localStorage.removeItem(LS_KEY); cards=[]; editingIndex=-1; currentImageData=null; renderList(); renderFormFromCard(null); } }
+  function clearDraft(){ if(confirm('Clear draft?')){ localStorage.removeItem(LS_KEY); cards=[]; editingIndex=-1; currentImageData=null; restoredFormState=null; renderList(); renderFormFromCard(null); } }
 
   function handleImageFile(e){ const f = e.target.files && e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ currentImageData = ev.target.result; renderImageThumb(); renderPreview(); scheduleAutosave(); }; r.readAsDataURL(f); }
 
@@ -855,8 +1138,17 @@
     e.preventDefault();
     const reader = new FileReader();
     reader.onload = ev => {
-      currentImageData = ev.target.result;
-      renderImageThumb();
+      if (els.cardType.value === 'open') {
+        let row = getFocusedAnswerPartRow();
+        if (!row) {
+          if (!getAnswerPartRows().length) appendAnswerPart();
+          row = getAnswerPartRows()[0];
+        }
+        if (row) setAnswerPartImage(row, ev.target.result);
+      } else {
+        currentImageData = ev.target.result;
+        renderImageThumb();
+      }
       renderPreview();
       scheduleAutosave();
     };
@@ -892,8 +1184,7 @@
     };
 
     if (type === 'open') {
-      question.answer_parts = [{ title: '', text: els.answerText.value || '' }];
-      if(currentImageData) question.answer_parts[0].image = { src: currentImageData };
+      question.answer_parts = getAnswerPartStates().map(serializeAnswerPart);
     } else {
       const options = Array.from(els.optionsList.querySelectorAll('input[type="text"]')).map(input => input.value);
       const correctIndex = Array.from(els.optionsList.querySelectorAll('input[type="radio"]')).findIndex(radio => radio.checked);
