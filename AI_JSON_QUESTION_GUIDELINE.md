@@ -1,6 +1,6 @@
 # AI Guideline for JSON Question Generation
 
-Use this guideline when generating new question cards for the `json/` datasets in this project.
+Use this guideline when generating or validating loadable JSON files for the `json/` datasets in this project.
 
 ## Goal
 
@@ -10,6 +10,38 @@ Create cards that match the existing study-card style used by the MA1A, LAGA, ZE
 - questions should be short, precise, and answerable in a single study pass
 - open questions should behave like micro-prompts, not like broad essay prompts
 - answers should be structured, compact, and easy to scan
+
+## Loadable JSON Document
+
+The app loads a JSON document as a top-level object with a deck title and a `questions` array. This is the format exported by the creator and the format the viewer expects when loading a file.
+
+Minimal wrapper:
+
+```json
+{
+   "title": "Created with cards_creator",
+   "questions": [
+      {
+         "type": "open",
+         "question": "Théveninův teorém",
+         "subsetPath": ["ZEOA", "Elementární a obecné metody analýzy obvodů"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Libovolný lineární obvod lze z pohledu svorek A, B nahradit zdrojem napětí U_th sériově s odporem R_th."
+            }
+         ]
+      }
+   ]
+}
+```
+
+Important document-level rules:
+
+- `title` is recommended and becomes the deck name in the UI, but the viewer can fall back to a default if it is missing.
+- `questions` must be an array of card objects.
+- The importer also accepts a legacy bare array of cards, but new files should use the wrapper object above.
+- Keep the top-level shape stable so the file can be opened by both the viewer and the creator.
 
 ## Core rules
 
