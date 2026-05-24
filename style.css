@@ -230,6 +230,39 @@ body {
     min-height: 30px;           /* Minimální výška řádku */
 }
 
+.card-reminder-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.dark-mode .reminder-label {
+    color: #ffffff;
+}
+
+.reminder-btn {
+    appearance: none;
+    border: 1px solid var(--border-color);
+    background: var(--option-bg);
+    color: var(--card-text);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.reminder-btn:hover {
+    transform: translateY(-1px);
+    border-color: #667eea;
+    background: var(--option-hover-bg);
+}
+
 /* Samotný štítek kategorie */
 .category-badge {
     background: var(--option-bg);

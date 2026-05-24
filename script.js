@@ -11,9 +11,16 @@ let stats = {
 let flaggedQuestions = new Set();
 let isFlaggedMode = false;
 let selectedSubsetPath = null;
+let viewStates = {};
 const CREATOR_HANDOFF_KEY = 'cards_creator_handoff_v1';
 
 const SUBSET_VALUE_SEPARATOR = '||>';
+const REMINDER_WINDOWS = [
+    { value: 10, min: 5, max: 15 },
+    { value: 20, min: 10, max: 30 },
+    { value: 50, min: 25, max: 75 },
+    { value: 100, min: 50, max: 150 }
+];
 
 // Touch handling variables
 let touchStartX = 0;
@@ -102,6 +109,7 @@ function toggleMenu() {
         const controls = [
             { text: '📂 Nahrát vlastní', class: 'btn-primary', action: "document.getElementById('fileInput').click()" },
             { text: '🔄 Import Anki', class: 'btn-warning', action: "document.getElementById('ankiInput').click()" },
+            { text: '🔀 Zamíchat set', class: 'btn-secondary', action: 'shuffleCurrentSet()' },
             { text: '✏️ Otevřít v editoru', class: 'btn-secondary', action: "openCurrentSetInEditor()" },
             { text: '↺ Resetovat', class: 'btn-secondary', action: "resetProgress()" },
             { text: '⬇️ Stáhnout chyby', class: 'btn-success', action: "downloadFailed()" }
@@ -179,6 +187,166 @@ function syncSubsetSelects() {
     const mobile = document.getElementById('mobileSubsetSelect');
     if (desktop) desktop.value = value;
     if (mobile) mobile.value = value;
+}
+
+function getQuestionIdKey(qId) {
+    return String(qId);
+}
+
+function getCurrentScopeKey() {
+    const subsetKey = encodeSubsetPath(selectedSubsetPath || []);
+    return `${subsetKey || '__all__'}::${isFlaggedMode ? 'flagged' : 'all'}`;
+}
+
+function getCurrentScopeState(createIfMissing = true) {
+    const scopeKey = getCurrentScopeKey();
+    if (!viewStates[scopeKey] && createIfMissing) {
+        viewStates[scopeKey] = {
+            order: [],
+            reminders: {},
+            sequence: 0
+        };
+    }
+
+    const state = viewStates[scopeKey];
+    if (!state) return null;
+    if (!Array.isArray(state.order)) state.order = [];
+    if (!state.reminders || typeof state.reminders !== 'object') state.reminders = {};
+    if (typeof state.sequence !== 'number') state.sequence = 0;
+    return state;
+}
+
+function buildFilteredQuestionMap() {
+    const filteredQuestions = getFilteredQuestions();
+    const questionMap = new Map();
+    filteredQuestions.forEach(q => {
+        questionMap.set(getQuestionIdKey(q.id), q);
+    });
+    return { filteredQuestions, questionMap };
+}
+
+function ensureVisibleOrder() {
+    const scopeState = getCurrentScopeState();
+    const { filteredQuestions, questionMap } = buildFilteredQuestionMap();
+    const filteredIdSet = new Set(filteredQuestions.map(q => getQuestionIdKey(q.id)));
+    const pendingReminderIds = new Set(Object.keys(scopeState.reminders).map(getQuestionIdKey));
+    const seen = new Set();
+    const normalizedOrder = [];
+
+    scopeState.order.forEach(id => {
+        const key = getQuestionIdKey(id);
+        if (filteredIdSet.has(key) && !seen.has(key) && questionMap.has(key)) {
+            seen.add(key);
+            normalizedOrder.push(questionMap.get(key).id);
+        }
+    });
+
+    filteredQuestions.forEach(q => {
+        const key = getQuestionIdKey(q.id);
+        if (!seen.has(key) && !pendingReminderIds.has(key)) {
+            seen.add(key);
+            normalizedOrder.push(q.id);
+        }
+    });
+
+    scopeState.order = normalizedOrder;
+    return normalizedOrder.map(id => questionMap.get(getQuestionIdKey(id))).filter(Boolean);
+}
+
+function shuffleArray(items) {
+    for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+    }
+    return items;
+}
+
+function shuffleCurrentSet() {
+    const visibleQuestions = ensureVisibleOrder();
+    if (visibleQuestions.length < 2) {
+        showMessage('Na zamíchání nejsou dost otázek.', 'info');
+        return;
+    }
+
+    const scopeState = getCurrentScopeState();
+    scopeState.order = shuffleArray(visibleQuestions.map(q => q.id));
+    currentCardIndex = 0;
+    saveProgress();
+    updateUI();
+    showMessage('Aktuální set byl zamíchán.', 'success');
+}
+
+function setReminder(qId, delay, event) {
+    if (event) event.stopPropagation();
+
+    const scopeState = getCurrentScopeState();
+    const visibleQuestions = ensureVisibleOrder();
+    const qKey = getQuestionIdKey(qId);
+    const removalIndex = scopeState.order.findIndex(id => getQuestionIdKey(id) === qKey);
+    const question = visibleQuestions.find(q => getQuestionIdKey(q.id) === qKey);
+
+    if (!question || removalIndex === -1) {
+        showMessage('Tuto otázku nelze připomenout v aktuálním zobrazení.', 'info');
+        return;
+    }
+
+    scopeState.reminders[qKey] = {
+        remaining: sampleReminderDelay(delay),
+        sequence: ++scopeState.sequence
+    };
+
+    scopeState.order.splice(removalIndex, 1);
+
+    if (removalIndex < currentCardIndex) {
+        currentCardIndex--;
+    }
+
+    if (currentCardIndex >= scopeState.order.length) {
+        currentCardIndex = Math.max(0, scopeState.order.length - 1);
+    }
+
+    saveProgress();
+    updateUI();
+    const window = getReminderWindow(delay);
+    showMessage(`Připomínka nastavena přibližně za ${window.min}-${window.max} karet.`, 'success');
+}
+
+function advanceReminderTimers(scopeState) {
+    const dueReminders = [];
+
+    Object.entries(scopeState.reminders).forEach(([qKey, reminder]) => {
+        reminder.remaining -= 1;
+        if (reminder.remaining <= 0) {
+            dueReminders.push({ qKey, sequence: reminder.sequence });
+        }
+    });
+
+    dueReminders.sort((a, b) => a.sequence - b.sequence);
+
+    let insertOffset = 0;
+    dueReminders.forEach(({ qKey }) => {
+        const question = questions.find(q => getQuestionIdKey(q.id) === qKey);
+        if (question) {
+            const alreadyVisible = scopeState.order.some(id => getQuestionIdKey(id) === qKey);
+            if (!alreadyVisible) {
+                const insertAt = Math.min(currentCardIndex + 1 + insertOffset, scopeState.order.length);
+                scopeState.order.splice(insertAt, 0, question.id);
+                insertOffset += 1;
+            }
+        }
+        delete scopeState.reminders[qKey];
+    });
+}
+
+function getReminderWindow(baseValue) {
+    const min = Math.max(1, Math.floor(baseValue / 2));
+    const max = Math.max(min, Math.ceil(baseValue * 1.5));
+    return { min, max };
+}
+
+function sampleReminderDelay(baseValue) {
+    const window = getReminderWindow(baseValue);
+    return Math.floor(Math.random() * (window.max - window.min + 1)) + window.min;
 }
 
 function populateSubsetFilter() {
@@ -296,6 +464,7 @@ function loadQuestions(data) {
     // Reset internal state
     stats = { correct: 0, wrong: 0, answered: new Set() };
     currentCardIndex = 0;
+    viewStates = {};
     
     // Try to restore progress for this specific subject (Fix issue 2)
     loadProgress();
@@ -386,8 +555,12 @@ function updateUI() {
     const grid = document.getElementById('cardsGrid');
     grid.innerHTML = '';
     
-    const filteredQuestions = getFilteredQuestions();
-    const total = filteredQuestions.length;
+    const visibleQuestions = ensureVisibleOrder();
+    const total = visibleQuestions.length;
+
+    if (total > 0 && currentCardIndex >= total) {
+        currentCardIndex = total - 1;
+    }
     
     if (total === 0) {
         grid.innerHTML = `
@@ -404,7 +577,7 @@ function updateUI() {
     for (let i = 0; i < 3; i++) {
         const index = currentCardIndex + i;
         if (index < total) {
-            const card = createCard(filteredQuestions[index], index, total, i);
+            const card = createCard(visibleQuestions[index], index, total, i);
             grid.appendChild(card);
             
             // Render Math immediately
@@ -443,6 +616,13 @@ function createCard(q, index, total, stackIndex) {
                     <button class="flag-btn ${isFlagged ? 'flagged' : ''}" onclick="toggleFlag(${q.id}, event)">
                         ${isFlagged ? '🚩' : '🏳️'}
                     </button>
+                </div>
+                <div class="card-reminder-actions">
+                    <span class="reminder-label">Připomenout za n otázek:</span>
+                    ${REMINDER_WINDOWS.map(reminder => {
+                        const window = getReminderWindow(reminder.value);
+                        return `<button class="reminder-btn" title="Přibližně za ${window.min}-${window.max} karet" onclick="setReminder(${q.id}, ${reminder.value}, event)">${reminder.value}</button>`;
+                    }).join('')}
                 </div>
             </div>
             
@@ -486,7 +666,7 @@ function createCard(q, index, total, stackIndex) {
             html += `
                 <div class="card-answer ${isAnswered ? 'show' : ''}" id="explanation-${q.id}">
                     <div class="answer-title">Vysvětlení:</div>
-                    <div class="answer-text">${q.explanation}</div>
+                    <div class="answer-text">${formatTextWithLineBreaks(q.explanation)}</div>
                 </div>
             `;
         }
@@ -512,11 +692,16 @@ function buildAnswerContent(parts) {
             const caption = (typeof part.image === 'object' && part.image.caption) ? `<div class="answer-caption">${part.image.caption}</div>` : '';
             content += `<img src="${src}" class="answer-image" alt="Obrázek">${caption}`;
         }
-        if (part.text) content += `<div class="answer-text">${part.text}</div>`;
+        if (part.text) content += `<div class="answer-text">${formatTextWithLineBreaks(part.text)}</div>`;
         if (part.table_data) content += createTable(part.table_data);
         content += `</div>`;
         return content;
     }).join('');
+}
+
+function formatTextWithLineBreaks(text) {
+    if (text === null || text === undefined) return '';
+    return String(text).replace(/\r\n|\r|\n/g, '<br>');
 }
 
 function createTable(data) {
@@ -567,22 +752,50 @@ function revealOpenAnswer(btn) {
 }
 
 function rateOpenAnswer(qId, knewIt) {
-    if (stats.answered.has(qId)) return;
-    if (knewIt) stats.correct++;
-    else stats.wrong++;
-    stats.answered.add(qId);
-    document.querySelector('.card.stack-0').classList.add('answered');
+    if (knewIt) {
+        if (stats.answered.has(qId)) return;
+        stats.correct++;
+        stats.answered.add(qId);
+        document.querySelector('.card.stack-0').classList.add('answered');
+    } else {
+        stats.wrong++;
+    }
     updateStats();
     setTimeout(() => nextCard(), 300);
 }
 
 function nextCard() {
-    const total = getFilteredQuestions().length;
+    const scopeState = getCurrentScopeState();
+    const visibleQuestions = ensureVisibleOrder();
+    const total = visibleQuestions.length;
+
     if (currentCardIndex < total - 1) {
         const currentCard = document.querySelector('.card.stack-0');
         currentCard.classList.add('swipe-left');
+        const currentQuestion = visibleQuestions[currentCardIndex];
         setTimeout(() => {
-            currentCardIndex++;
+            if (currentQuestion) {
+                const currentKey = getQuestionIdKey(currentQuestion.id);
+                const removalIndex = scopeState.order.findIndex(id => getQuestionIdKey(id) === currentKey);
+                if (removalIndex !== -1 && scopeState.reminders[currentKey]) {
+                    scopeState.order.splice(removalIndex, 1);
+                    if (removalIndex < currentCardIndex) {
+                        currentCardIndex--;
+                    }
+                } else {
+                    currentCardIndex++;
+                }
+            } else {
+                currentCardIndex++;
+            }
+
+            advanceReminderTimers(scopeState);
+
+            if (currentCardIndex >= scopeState.order.length) {
+                currentCardIndex = Math.max(0, scopeState.order.length - 1);
+            }
+
+            saveProgress();
             updateUI();
         }, 200);
     }
@@ -660,6 +873,7 @@ function resetProgress() {
         stats = { correct: 0, wrong: 0, answered: new Set() };
         currentCardIndex = 0;
         flaggedQuestions.clear();
+        viewStates = {};
         saveProgress(); // Save the wipe
         updateUI();
     }
@@ -689,6 +903,7 @@ function saveProgress() {
         idx: currentCardIndex,
         subsetPath: selectedSubsetPath,
         flags: Array.from(flaggedQuestions),
+        viewStates,
         stats: {
             correct: stats.correct,
             wrong: stats.wrong,
@@ -712,6 +927,10 @@ function loadProgress() {
             }
             
             if (state.flags) flaggedQuestions = new Set(state.flags);
+
+            if (state.viewStates && typeof state.viewStates === 'object') {
+                viewStates = state.viewStates;
+            }
             
             if (state.stats) {
                 stats.correct = state.stats.correct || 0;
