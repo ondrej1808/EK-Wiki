@@ -51,7 +51,7 @@ header h1{margin:0;font-size:20px}
 .card-row .delete-btn:hover{background:linear-gradient(180deg,#fff5f5,#fee2e2);box-shadow:0 6px 16px rgba(220,38,38,0.15)}
 .creator-editor{min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .creator-preview{min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-form#cardForm{background:var(--panel);padding:16px;border-radius:14px;box-shadow:var(--card-shadow);flex:0 0 auto;overflow:auto;border:1px solid rgba(15,23,42,0.04)}
+form#cardForm{background:var(--panel);padding:16px;border-radius:14px;box-shadow:var(--card-shadow);flex:1 1 auto;min-height:0;overflow:auto;border:1px solid rgba(15,23,42,0.04)}
 label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
 textarea,input[type=text],input[type=search],select{width:100%;padding:10px;border:1px solid #e6edf3;border-radius:6px;background:#fff;font-size:14px}
 textarea{resize:vertical}
@@ -67,6 +67,8 @@ textarea{resize:vertical}
 .answer-part-row-title{font-weight:700;color:#0f172a}
 .answer-part-row-actions{display:flex;gap:8px}
 .answer-part-row-actions button{padding:6px 10px;border:1px solid #d7e0ea;border-radius:8px;background:#fff}
+.answer-part-remove-image-btn{align-self:flex-start;padding:6px 10px;border:1px solid #d7e0ea;border-radius:8px;background:#fff}
+.answer-part-remove-image-btn:disabled{opacity:0.5;cursor:not-allowed}
 .answer-part-image-preview img{max-width:180px;max-height:120px;border-radius:10px;display:block;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
 .subset-section{margin-top:8px;padding:12px;border:1px solid #e6edf3;border-radius:8px;background:#fbfdff}
 .subset-builder{display:flex;flex-direction:column;gap:8px;margin-top:8px}

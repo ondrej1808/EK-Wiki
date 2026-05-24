@@ -142,9 +142,11 @@
     state.imageSrc = imageSrc || '';
     row._answerPartState = state;
     const preview = row.querySelector('.answer-part-image-preview');
+    const removeImageBtn = row.querySelector('.answer-part-remove-image-btn');
     if (preview) {
       preview.innerHTML = imageSrc ? `<img src="${imageSrc}" alt="Answer part image preview">` : '';
     }
+    if (removeImageBtn) removeImageBtn.disabled = !imageSrc;
   }
 
   function createAnswerPartRow(partState = {}){
@@ -226,6 +228,17 @@
     const preview = document.createElement('div');
     preview.className = 'answer-part-image-preview';
 
+    const removeImageBtn = document.createElement('button');
+    removeImageBtn.type = 'button';
+    removeImageBtn.className = 'answer-part-remove-image-btn';
+    removeImageBtn.textContent = 'Remove image';
+    removeImageBtn.title = 'Remove image from this answer part';
+    removeImageBtn.addEventListener('click', ()=>{
+      setAnswerPartImage(row, '');
+      renderPreview();
+      scheduleAutosave();
+    });
+
     imageInput.addEventListener('change', event=>{
       const file = event.target.files && event.target.files[0];
       if (!file) return;
@@ -246,6 +259,7 @@
     row.appendChild(textLabel);
     row.appendChild(imageLabel);
     row.appendChild(preview);
+    row.appendChild(removeImageBtn);
     setAnswerPartImage(row, normalized.imageSrc || '');
     return row;
   }
@@ -396,6 +410,7 @@
     answerText: q('#answerText'),
     imageFile: q('#imageFile'),
     imagePreviewThumb: q('#imagePreviewThumb'),
+    clearImageBtn: q('#clearImageBtn'),
     saveCardBtn: q('#saveCardBtn'),
     deleteCardBtn: q('#deleteCardBtn'),
     clearDraftBtn: q('#clearDraftBtn'),
@@ -460,6 +475,7 @@
     }
     if (els.addAnswerPartBtn) els.addAnswerPartBtn.addEventListener('click', ()=>{ debugLog('event:addAnswerPartBtn'); appendAnswerPart(); syncAnswerPartEmptyState(); renderPreview(); scheduleAutosave(); });
     els.imageFile.addEventListener('change', handleImageFile);
+    if (els.clearImageBtn) els.clearImageBtn.addEventListener('click', ()=>{ debugLog('event:clearImageBtn'); clearCurrentImage(); });
     if(els.subsetPathBuilder) els.subsetPathBuilder.addEventListener('input', ()=>{ debugLog('input:subsetPathBuilder'); syncSubsetHiddenField(); renderPreview(); scheduleAutosave(); });
     window.addEventListener('paste', handleClipboardPaste);
     window.addEventListener('keydown', handleKeyboardShortcuts);
@@ -670,6 +686,7 @@
     if (els.closedAnswer) els.closedAnswer.style.display = t === 'closed' ? 'block' : 'none';
     if (els.openAnswer) els.openAnswer.style.display = t === 'open' ? 'block' : 'none';
     if (els.imageSection) els.imageSection.style.display = t === 'closed' ? 'block' : 'none';
+    if (els.clearImageBtn) els.clearImageBtn.style.display = currentImageData ? 'inline-flex' : 'none';
     renderPreview();
   }
 
@@ -1126,6 +1143,14 @@
 
   function handleImageFile(e){ const f = e.target.files && e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ currentImageData = ev.target.result; renderImageThumb(); renderPreview(); scheduleAutosave(); }; r.readAsDataURL(f); }
 
+  function clearCurrentImage(){
+    currentImageData = null;
+    if (els.imageFile) els.imageFile.value = '';
+    renderImageThumb();
+    renderPreview();
+    scheduleAutosave();
+  }
+
   function handleClipboardPaste(e){
     const items = e.clipboardData && e.clipboardData.items;
     if (!items || !items.length) return;
@@ -1162,6 +1187,7 @@
     } else {
       els.imagePreviewThumb.innerHTML = '';
     }
+    if (els.clearImageBtn) els.clearImageBtn.style.display = currentImageData ? 'inline-flex' : 'none';
   }
 
   function renderPreview(){
