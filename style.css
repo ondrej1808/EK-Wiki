@@ -119,6 +119,69 @@ body {
 .menu-popup h3 { color: var(--card-text); font-size: 22px; margin: 20px 0 15px 0; text-align: center; }
 .menu-popup h3:first-child { margin-top: 0; }
 
+.wrong-answer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(5px);
+    z-index: 2200;
+}
+
+.wrong-answer-overlay.active {
+    display: block;
+}
+
+.wrong-answer-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    width: min(92vw, 520px);
+    padding: 28px;
+    border-radius: 24px;
+    background: var(--header-bg);
+    color: var(--card-text);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    z-index: 2201;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.wrong-answer-popup.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.wrong-answer-popup h3 {
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.wrong-answer-popup p {
+    margin: 0 0 18px 0;
+    text-align: center;
+    color: var(--card-text);
+    opacity: 0.9;
+}
+
+.wrong-answer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wrong-answer-popup .btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 14px 18px;
+    margin-bottom: 0;
+    border-radius: 14px;
+}
+
 /* --- Layout Sections --- */
 .menu-section { height: 25vh; padding: 0 20px; background: transparent; display: flex; flex-direction: column; }
 .cards-section { height: 65vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 0; margin-top: 20px; }

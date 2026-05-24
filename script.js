@@ -12,6 +12,7 @@ let flaggedQuestions = new Set();
 let isFlaggedMode = false;
 let selectedSubsetPath = null;
 let viewStates = {};
+let pendingWrongAnswer = null;
 const CREATOR_HANDOFF_KEY = 'cards_creator_handoff_v1';
 
 const SUBSET_VALUE_SEPARATOR = '||>';
@@ -37,7 +38,7 @@ if (localStorage.getItem('darkMode') === 'true') {
 // === KEYBOARD NAVIGATION (Fix issue 3) ===
 document.addEventListener('keydown', (e) => {
     // Only navigate if no modal is open (menu)
-    if (document.querySelector('.menu-overlay').classList.contains('active')) return;
+    if (isBlockingDialogOpen()) return;
     
     if (e.key === 'ArrowRight') {
         nextCard();
@@ -279,34 +280,11 @@ function shuffleCurrentSet() {
 function setReminder(qId, delay, event) {
     if (event) event.stopPropagation();
 
-    const scopeState = getCurrentScopeState();
-    const visibleQuestions = ensureVisibleOrder();
-    const qKey = getQuestionIdKey(qId);
-    const removalIndex = scopeState.order.findIndex(id => getQuestionIdKey(id) === qKey);
-    const question = visibleQuestions.find(q => getQuestionIdKey(q.id) === qKey);
-
-    if (!question || removalIndex === -1) {
+    const scheduled = scheduleReminderInternal(qId, sampleReminderDelay(delay));
+    if (!scheduled) {
         showMessage('Tuto otázku nelze připomenout v aktuálním zobrazení.', 'info');
         return;
     }
-
-    scopeState.reminders[qKey] = {
-        remaining: sampleReminderDelay(delay),
-        sequence: ++scopeState.sequence
-    };
-
-    scopeState.order.splice(removalIndex, 1);
-
-    if (removalIndex < currentCardIndex) {
-        currentCardIndex--;
-    }
-
-    if (currentCardIndex >= scopeState.order.length) {
-        currentCardIndex = Math.max(0, scopeState.order.length - 1);
-    }
-
-    saveProgress();
-    updateUI();
     const window = getReminderWindow(delay);
     showMessage(`Připomínka nastavena přibližně za ${window.min}-${window.max} karet.`, 'success');
 }
@@ -347,6 +325,84 @@ function getReminderWindow(baseValue) {
 function sampleReminderDelay(baseValue) {
     const window = getReminderWindow(baseValue);
     return Math.floor(Math.random() * (window.max - window.min + 1)) + window.min;
+}
+
+function sampleShuffleDelay() {
+    const window = REMINDER_WINDOWS[Math.floor(Math.random() * REMINDER_WINDOWS.length)];
+    return sampleReminderDelay(window.value);
+}
+
+function scheduleReminderInternal(qId, delay, updateView = true) {
+    const scopeState = getCurrentScopeState();
+    const visibleQuestions = ensureVisibleOrder();
+    const qKey = getQuestionIdKey(qId);
+    const removalIndex = scopeState.order.findIndex(id => getQuestionIdKey(id) === qKey);
+    const question = visibleQuestions.find(q => getQuestionIdKey(q.id) === qKey);
+
+    if (!question || removalIndex === -1) {
+        return false;
+    }
+
+    scopeState.reminders[qKey] = {
+        remaining: delay,
+        sequence: ++scopeState.sequence
+    };
+
+    scopeState.order.splice(removalIndex, 1);
+
+    if (removalIndex < currentCardIndex) {
+        currentCardIndex--;
+    }
+
+    if (currentCardIndex >= scopeState.order.length) {
+        currentCardIndex = Math.max(0, scopeState.order.length - 1);
+    }
+
+    saveProgress();
+    if (updateView) updateUI();
+    return true;
+}
+
+function openWrongAnswerPopup(qId) {
+    pendingWrongAnswer = qId;
+    const overlay = document.getElementById('wrongAnswerOverlay');
+    const popup = document.getElementById('wrongAnswerPopup');
+    if (overlay) overlay.classList.add('active');
+    if (popup) popup.classList.add('active');
+}
+
+function closeWrongAnswerPopup() {
+    pendingWrongAnswer = null;
+    const overlay = document.getElementById('wrongAnswerOverlay');
+    const popup = document.getElementById('wrongAnswerPopup');
+    if (overlay) overlay.classList.remove('active');
+    if (popup) popup.classList.remove('active');
+}
+
+function handleWrongAnswerChoice(action, baseValue = null, event) {
+    if (event) event.stopPropagation();
+    const qId = pendingWrongAnswer;
+    if (qId === null || qId === undefined) return;
+
+    closeWrongAnswerPopup();
+    stats.wrong++;
+
+    let scheduled = false;
+    if (action === 'remind' && baseValue !== null) {
+        scheduled = scheduleReminderInternal(qId, sampleReminderDelay(baseValue), false);
+    } else if (action === 'random') {
+        scheduled = scheduleReminderInternal(qId, sampleShuffleDelay(), false);
+    }
+
+    updateStats();
+
+    if (scheduled) {
+        const currentCardElement = document.querySelector('.card.stack-0');
+        if (currentCardElement) {
+            currentCardElement.classList.add('swipe-left');
+        }
+        setTimeout(() => updateUI(), 200);
+    }
 }
 
 function populateSubsetFilter() {
@@ -465,6 +521,7 @@ function loadQuestions(data) {
     stats = { correct: 0, wrong: 0, answered: new Set() };
     currentCardIndex = 0;
     viewStates = {};
+    closeWrongAnswerPopup();
     
     // Try to restore progress for this specific subject (Fix issue 2)
     loadProgress();
@@ -757,11 +814,11 @@ function rateOpenAnswer(qId, knewIt) {
         stats.correct++;
         stats.answered.add(qId);
         document.querySelector('.card.stack-0').classList.add('answered');
+        updateStats();
+        setTimeout(() => nextCard(), 300);
     } else {
-        stats.wrong++;
+        openWrongAnswerPopup(qId);
     }
-    updateStats();
-    setTimeout(() => nextCard(), 300);
 }
 
 function nextCard() {
@@ -838,7 +895,7 @@ function updateStats() {
     const answeredInCurrentFilter = getFilteredQuestions().filter(q => stats.answered.has(q.id)).length;
     
     // Zjistíme počet skutečně zodpovězených unikátních otázek
-    const totalAnswered = stats.answered.size; 
+    const totalAnswered = stats.correct + stats.wrong; 
     
     const actualRemaining = total - answeredInCurrentFilter;
     const accuracy = totalAnswered === 0 ? 0 : Math.round((stats.correct / totalAnswered) * 100);
@@ -874,6 +931,7 @@ function resetProgress() {
         currentCardIndex = 0;
         flaggedQuestions.clear();
         viewStates = {};
+        closeWrongAnswerPopup();
         saveProgress(); // Save the wipe
         updateUI();
     }
@@ -1049,3 +1107,8 @@ window.addEventListener('load', () => {
         updateUI();
     }
 });
+
+function isBlockingDialogOpen() {
+    return document.querySelector('.menu-overlay')?.classList.contains('active')
+        || document.querySelector('.wrong-answer-overlay')?.classList.contains('active');
+}
