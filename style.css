@@ -447,6 +447,7 @@ body {
 .action-btn.show-answer { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
 .action-btn.correct-self { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; flex: 1; }
 .action-btn.wrong-self { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; flex: 1; }
+.shortcut-hint { display: inline-block; margin-left: 10px; font-size: 0.78em; font-weight: 700; opacity: 0.85; white-space: nowrap; }
 
 .card.answered { background: var(--answered-bg); border: 3px solid var(--answered-border); }
 .card.flagged { border: 4px solid #ff5722; }

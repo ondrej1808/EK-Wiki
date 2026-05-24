@@ -131,6 +131,39 @@ function scrollCurrentCardContent(deltaY) {
     return true;
 }
 
+function getOpenAnswerShortcutChoice(event) {
+    const key = event.key;
+    const code = event.code;
+
+    const choices = [
+        { knewIt: true, keys: ['1', '+'], codes: ['Digit1', 'Numpad1'] },
+        { knewIt: false, keys: ['2', 'ě'], codes: ['Digit2', 'Numpad2'] }
+    ];
+
+    return choices.find(choice => choice.keys.includes(key) || choice.codes.includes(code)) || null;
+}
+
+function handleOpenAnswerShortcut(event) {
+    const choice = getOpenAnswerShortcutChoice(event);
+    if (!choice) return false;
+
+    const card = document.querySelector('.card.stack-0');
+    if (!card) return false;
+
+    const qId = currentQuestionIdFromCard(card);
+    if (qId === null || qId === undefined) return false;
+
+    rateOpenAnswer(qId, choice.knewIt);
+    return true;
+}
+
+function currentQuestionIdFromCard(card) {
+    if (!card) return null;
+
+    const cardIndex = Number.parseInt(card.dataset.questionId, 10);
+    return Number.isNaN(cardIndex) ? null : cardIndex;
+}
+
 document.addEventListener('keydown', (e) => {
     if (isWrongAnswerPopupOpen()) {
         if (handleWrongAnswerShortcut(e)) {
@@ -141,6 +174,11 @@ document.addEventListener('keydown', (e) => {
 
     // Only navigate if no modal is open (menu)
     if (document.querySelector('.menu-overlay').classList.contains('active')) return;
+
+    if (isCurrentCardAnswerVisible() && handleOpenAnswerShortcut(e)) {
+        e.preventDefault();
+        return;
+    }
     
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         if (isCurrentCardAnswerVisible() && scrollCurrentCardContent(e.key === 'ArrowUp' ? -120 : 120)) {
@@ -824,6 +862,7 @@ function updateUI() {
 function createCard(q, index, total, stackIndex) {
     const card = document.createElement('div');
     card.className = `card stack-${stackIndex}`;
+    card.dataset.questionId = String(q.id);
     if (isQuestionResolved(q.id) || hasQuestionAttempt(q.id)) card.classList.add('answered');
     if (flaggedQuestions.has(q.id)) card.classList.add('flagged');
     
@@ -864,10 +903,10 @@ function createCard(q, index, total, stackIndex) {
         const isAnswered = isQuestionResolved(q.id);
         html += `
                 <div class="open-question-actions">
-                    <button class="action-btn show-answer" onclick="revealOpenAnswer(this)">👁️ Zobrazit odpověď</button>
+                    <button class="action-btn show-answer" onclick="revealOpenAnswer(this)">👁️ Zobrazit odpověď <span class="shortcut-hint">⌨ Enter / Mezerník</span></button>
                     <div class="evaluation-buttons">
-                        <button class="action-btn correct-self" onclick="rateOpenAnswer(${q.id}, true)">✅ Věděl jsem</button>
-                        <button class="action-btn wrong-self" onclick="rateOpenAnswer(${q.id}, false)">❌ Nevěděl jsem</button>
+                        <button class="action-btn correct-self" onclick="rateOpenAnswer(${q.id}, true)">✅ Věděl jsem <span class="shortcut-hint">⌨ 1 / +</span></button>
+                        <button class="action-btn wrong-self" onclick="rateOpenAnswer(${q.id}, false)">❌ Nevěděl jsem <span class="shortcut-hint">⌨ 2 / ě</span></button>
                     </div>
                 </div>
                 <div class="open-question-content">
