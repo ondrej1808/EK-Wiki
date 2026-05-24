@@ -110,6 +110,27 @@ if (localStorage.getItem('darkMode') === 'true') {
 }
 
 // === KEYBOARD NAVIGATION (Fix issue 3) ===
+function isCurrentCardAnswerVisible() {
+    const card = document.querySelector('.card.stack-0');
+    if (!card) return false;
+
+    return Boolean(
+        card.querySelector('.open-question-content.visible') ||
+        card.querySelector('.card-answer.show')
+    );
+}
+
+function scrollCurrentCardContent(deltaY) {
+    const card = document.querySelector('.card.stack-0');
+    if (!card) return false;
+
+    const scrollableContent = card.querySelector('.card-scrollable-content');
+    if (!scrollableContent) return false;
+
+    scrollableContent.scrollBy({ top: deltaY, behavior: 'smooth' });
+    return true;
+}
+
 document.addEventListener('keydown', (e) => {
     if (isWrongAnswerPopupOpen()) {
         if (handleWrongAnswerShortcut(e)) {
@@ -121,7 +142,11 @@ document.addEventListener('keydown', (e) => {
     // Only navigate if no modal is open (menu)
     if (document.querySelector('.menu-overlay').classList.contains('active')) return;
     
-    if (e.key === 'ArrowRight') {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        if (isCurrentCardAnswerVisible() && scrollCurrentCardContent(e.key === 'ArrowUp' ? -120 : 120)) {
+            e.preventDefault();
+        }
+    } else if (e.key === 'ArrowRight') {
         nextCard();
     } else if (e.key === 'ArrowLeft') {
         prevCard();
