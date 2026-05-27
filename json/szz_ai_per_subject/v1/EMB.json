@@ -1,0 +1,247 @@
+{
+  "title": "Elektronická měření a přístroje - EMB",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Rozdíl mezi přístroji s označením RMS a True RMS",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření střídavých veličin"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Levnější RMS přístroje pouze upravují naměřenou střední hodnotu konstantou (platí pouze pro harmonické průběhy), zatímco True RMS přístroje reálně měří skutečnou efektivní hodnotu signálu bez ohledu na jeho tvar."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip a zapojení digitálního ampérmetru",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření proudu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Digitální ampérmetr se zapojuje do obvodu sériově a neměří proud přímo. Měří úbytek napětí, který proud způsobí na vestavěném bočníku. Pro přepínání proudových rozsahů se využívá Ayrtonův bočník."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klešťové měřící přístroje a měření stejnosměrného proudu",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření proudu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Umožňují bezkontaktní měření proudu obepnutím vodiče čelistmi. Standardně měří střídavý proud, ale pokud jsou vybaveny Hallovou sondou, dokáží měřit i stejnosměrný proud."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Měření fázoru napětí a přepínání napěťových rozsahů",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření napětí"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro přepínání napěťových rozsahů se používá jednoduchý odporový napěťový dělič. K měření fázoru napětí (amplitudy a fáze) slouží vektorvoltmetr."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Nepřímé metody měření DC výkonu (AV a VA)",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření výkonu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Metoda AV (voltmetr paralelně k zátěži, ampérmetr před ním) je vhodná pro velké výkony. Metoda VA (ampérmetr sériově k zátěži, voltmetr před ním) je vhodná pro malé výkony. U obou metod je nutné provádět korekci chyb způsobených vnitřními odpory přístrojů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Měření střídavého výkonu v jednofázové síti",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření výkonu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kvůli nutnosti znát fázový posuv mezi napětím a proudem se používá wattmetr. Rozlišují se dvě metody zapojení podle toho, zda jsou blíže k zátěži připojeny proudové, nebo napěťové svorky."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Měření kmitočtu",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření kmitočtu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nejběžnějším přístrojem pro měření kmitočtu je číslicový čítač. Kmitočet se určuje jako poměr počtu napočítaných impulsů N za přesně definovanou dobu měření TN podle vztahu fx = N / TN."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metody měření fázového rozdílu osciloskopem",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření fázového rozdílu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "1. V režimu X-Y s referenčním signálem: při shodné fázi vzniká úsečka/kružnice, při rozdílné elipsa (Lissajousovy obrazce).\n2. Na vícekanálovém osciloskopu: přímým odečtením časového posunu z horizontální časové osy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metody a zapojení pro měření odporu",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření odporu"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Využívá se Ohmova metoda (U/I pomocí ampérmetru a voltmetru), aktivní převodníky R na U, nebo vyvážený/linearizovaný Wheatstoneův můstek s operačním zesilovačem. Pro měření velmi malých odporů se kvůli eliminaci vlivu přívodů používá čtyřsvorkové připojení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip číslicového měření indukčnosti a kapacity",
+      "subsetPath": ["EMB", "Elektronická měření a přístroje", "Měření indukčnosti a kapacity"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Měření vychází z určení komplexní impedance prvků. Je založeno na fázorovém principu za použití převodníků impedance na napětí (Z na U) nebo admitance na napětí (G na U). Parametry (Rx, Lx, Cx, Gx) se následně separují pomocí reálné a imaginární složky výstupního napětí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Absolutní a relativní chyba měření",
+      "subsetPath": ["EMB", "Chyby přístrojů a nejistoty měření", "Chyby"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Absolutní chyba: delta X = XM - XS, kde XM je naměřená hodnota a XS je pravá (skutečná) hodnota.\nRelativní chyba: delta_r = delta X / XM (často vyjádřená v procentech)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Standardní nejistota měření typu A",
+      "subsetPath": ["EMB", "Chyby přístrojů a nejistoty měření", "Nejistoty"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Reprezentuje náhodné chyby. Stanovuje se statistickou analýzou ze série opakovaných měření jako směrodatná odchylka výběrového průměru."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Standardní nejistota měření typu B",
+      "subsetPath": ["EMB", "Chyby přístrojů a nejistoty měření", "Nejistoty"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Reprezentuje systematické chyby (způsobené metodou nebo přístrojem). Určuje se z mimostatistických zdrojů – u analogových přístrojů pomocí třídy přesnosti (TP) a rozsahu, u číslicových přístrojů z chyby udávané výrobcem dělené odmocninou ze 3."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kombinovaná a rozšířená nejistota měření",
+      "subsetPath": ["EMB", "Chyby přístrojů a nejistoty měření", "Nejistoty"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kombinovaná nejistota uc je geometrickým součtem nejistot typu A a typu B: uc = odmocnina(uA^2 + uB^2). Rozšířená nejistota U se získá vynásobením kombinované nejistoty koeficientem rozšíření kr (nejčastěji kr = 2 nebo 3) pro zvýšení pravděpodobnosti pokrytí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Funkce vzorkovacího obvodu Sample & Hold (S&H)",
+      "subsetPath": ["EMB", "AD a DA převodníky", "ADC"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zajišťuje diskretizaci analogového signálu v čase. Nabízí nízké zatížení měřeného obvodu, velmi rychlé sejmutí vzorku (Sample) a jeho dostatečně dlouhé podržení (Hold) na stabilní hodnotě pro následnou kvantizaci převodníkem."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Komparační (Flash) AD převodník",
+      "subsetPath": ["EMB", "AD a DA převodníky", "ADC"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Extrémně rychlý a konstrukčně náročný převodník. Obsahuje odporový žebřík pro vytvoření unikátních referenčních úrovní pro soustavu paralelních komparátorů. Výstupní teploměrový kód je následně prioritním dekodérem převeden na binární slovo. Typické použití: osciloskopy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kompenzační (SAR) AD převodník",
+      "subsetPath": ["EMB", "AD a DA převodníky", "ADC"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Využívá metodu postupné aproximace. Interní DA převodník postupně generuje napětí (od nejvýznamnějšího bitu MSB po nejnižší LSB), které komparátor porovnává s měřeným napětím a rozhoduje, zda interní napětí zvětšit, nebo zmenšit, dokud nedosáhne shody."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Integrační AD převodník s dvojitou integrací (Dual-slope)",
+      "subsetPath": ["EMB", "AD a DA převodníky", "ADC"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Využívá aktivní integrační RC článek. V prvním taktu se integrátor nabíjí neznámým napětím po fixní časový úsek. Ve druhém taktu se vybíjí konstantním referenčním napětím opačné polarity. Doba vybíjení je přímo úměrná velikosti neznámého napětí a měří se číslicovým čítačem."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sigma-Delta (Sigma-Delta) AD převodník",
+      "subsetPath": ["EMB", "AD a DA převodníky", "ADC"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Převádí velikost vstupního analogového napětí na střední hodnotu hustoty jednobitového obdélníkového signálu (pulzně hustotní modulace) pomocí integrační zpětné vazby a modulátoru."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip DA převodníků a síť R-2R",
+      "subsetPath": ["EMB", "AD a DA převodníky", "DAC"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Založeny na zpětné kvantizaci, kde se jednotlivým bitům binárního slova přiřadí váhy (od LSB po MSB). Nejčastěji fungují na principu superpozice proudů protékajících odporovou sítí R-2R přes elektronické přepínače, což na výstupu vytvoří napětí odpovídající digitálnímu slovu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip konstrukce číslicových multimetrů",
+      "subsetPath": ["EMB", "Multimetry, osciloskopy", "Multimetry"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Všechny vstupní elektrické veličiny (proud, odpor, frekvence atd.) se nejprve pomocí specializovaných obvodových převodníků interně transformují na stejnosměrné napětí. Toto napětí je následně digitalizováno přesným AD převodníkem (např. typu Sigma-Delta) a zobrazeno."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Požadavky na AD převodník v číslicových osciloskopech",
+      "subsetPath": ["EMB", "Multimetry, osciloskopy", "Osciloskopy"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Slouží k zobrazování rychlých časových průběhů napětí, což vyžaduje zpracování enormního množství dat. Klíčovým požadavkem je extrémní rychlost převodu, nikoliv vysoké bitové rozlišení (přesnost), proto se typicky nasazují paralelní Flash ADC převodníky."
+        }
+      ]
+    }
+  ]
+}

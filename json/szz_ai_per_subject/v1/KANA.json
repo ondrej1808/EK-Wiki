@@ -1,0 +1,280 @@
+{
+  "title": "Created with cards_creator - KANA",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Fourierova transformace \u2013 existence a spojitost",
+      "subsetPath": ["KANA", "Fourierova řady a integrální transformace"],
+      "answer_parts": [
+        {
+          "title": "Věta",
+          "text": "Je-li funkce f: R \u2192 C absolutně integrovatelná na R (tj. leží v L1(R)), potom její Fourierova transformace F: R \u2192 C existuje a je to spojitá funkce na R."
+        },
+        {
+          "title": "Vlastnost v nekonečnu",
+          "text": "Pro každou funkci f \u2208 L1(R) platí lim_{\u03c9\u2192\u00b1\u221e} |F(\u03c9)| = 0."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fourierova transformace \u2013 přímá a zpětná transformace (vztahy)",
+      "subsetPath": ["KANA", "Fourierova řady a integrální transformace"],
+      "answer_parts": [
+        {
+          "title": "Přímá Fourierova transformace (FT)",
+          "text": "F(\u03c9) = F[f(t)](\u03c9) = \u222b_{-\u221e}^{\u221e} f(t) e^{-i\u03c9t} dt"
+        },
+        {
+          "title": "Inverzní Fourierova transformace (IFT)",
+          "text": "f(t) = F^{-1}[F(\u03c9)](t) = 1/(2\u03c0) \u222b_{-\u221e}^{\u221e} F(\u03c9) e^{i\u03c9t} d\u03c9"
+        },
+        {
+          "title": "Převod mezi FT a IFT",
+          "text": "F[f(t)](\u03c9) = 2\u03c0 F^{-1}[f(t)](-\u03c9)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fourierova transformace \u2013 linearita a věty o posunutí",
+      "subsetPath": ["KANA", "Fourierova řady a integrální transformace"],
+      "answer_parts": [
+        {
+          "title": "Linearita",
+          "text": "F[f(t) + a g(t)](\u03c9) = F[f(t)](\u03c9) + a F[g(t)](\u03c9)"
+        },
+        {
+          "title": "Posun v čase",
+          "text": "Pro a \u2208 R: F[f(t - a)](\u03c9) = e^{-i\u03c9a} F[f(t)](\u03c9)"
+        },
+        {
+          "title": "Posun v kmitočtu",
+          "text": "Pro a \u2208 R: F[e^{iat} f(t)](\u03c9) = F[f(t)](\u03c9 - a)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fourierova transformace \u2013 změna měřítka a obraz konvoluce",
+      "subsetPath": ["KANA", "Fourierova řady a integrální transformace"],
+      "answer_parts": [
+        {
+          "title": "Změna měřítka",
+          "text": "Pro a \u2208 R \\ {0}: F[f(at)](\u03c9) = 1/|a| F[f(t)](\u03c9/a)"
+        },
+        {
+          "title": "Obraz konvoluce",
+          "text": "F[f(t) * g(t)](\u03c9) = F(\u03c9) \u22c5 G(\u03c9) (Konvoluce v časové oblasti odpovídá násobení spekter v kmitočtové oblasti)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fourierova transformace \u2013 derivace obrazu a obraz derivace",
+      "subsetPath": ["KANA", "Fourierova řady a integrální transformace"],
+      "answer_parts": [
+        {
+          "title": "Derivace obrazu",
+          "text": "F[t^n f(t)](\u03c9) = i^n d^n/d\u03c9^n F[f(t)](\u03c9)"
+        },
+        {
+          "title": "Obraz derivace",
+          "text": "F[f^{(n)}(t)](\u03c9) = (i\u03c9)^n F[f(t)](\u03c9) (za předpokladu, že f, f', ..., f^{(n)} jsou spojité a leží v L1(R))."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Laplaceova transformace \u2013 definice a třída L0",
+      "subsetPath": ["KANA", "Laplaceova transformace"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Pro komplexní funkci f: [0, \u221e) \u2192 C je Laplaceova transformace L[f] = F definována pro s \u2208 C předpisem: F(s) = \u222b_{0}^{\u221e} f(t) e^{-st} dt"
+        },
+        {
+          "title": "Množina L0",
+          "text": "Značí množinu všech po částech spojitých funkcí na [0, \u221e), které jsou nejvýše exponenciálního řádu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Laplaceova transformace \u2013 Heavisideova funkce a věty o posunu",
+      "subsetPath": ["KANA", "Laplaceova transformace"],
+      "answer_parts": [
+        {
+          "title": "Heavisideova funkce 1(t)",
+          "text": "1(t) = 1 pro t \u2265 0, a 1(t) = 0 pro t < 0."
+        },
+        {
+          "title": "Posun v kmitočtu (tlumení)",
+          "text": "L[e^{at} f(t)](s) = L[f(t)](s - a)"
+        },
+        {
+          "title": "Posun v čase (vzor s jedničkovým skokem)",
+          "text": "L[f(t - a) 1(t - a)](s) = e^{-as} L[f(t)](s) pro a > 0"
+        },
+        {
+          "title": "Posun v čase (nezkrácený vzor)",
+          "text": "L[f(t) 1(t - a)](s) = e^{-as} L[f(t + a)](s)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Laplaceova transformace \u2013 změna měřítka a derivace obrazu",
+      "subsetPath": ["KANA", "Laplaceova transformace"],
+      "answer_parts": [
+        {
+          "title": "Změna měřítka",
+          "text": "L[f(at)](s) = 1/a L[f(t)](s/a) pro a > 0"
+        },
+        {
+          "title": "Derivace obrazu",
+          "text": "L[t f(t)](s) = - d/ds L[f(t)](s)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Laplaceova transformace \u2013 obraz derivace",
+      "subsetPath": ["KANA", "Laplaceova transformace"],
+      "answer_parts": [
+        {
+          "title": "Obecný vzorec",
+          "text": "L[f^{(n)}(t)](s) = s^n L[f(t)](s) - s^{n-1}f(0) - s^{n-2}f'(0) - ... - f^{(n-1)}(0)"
+        },
+        {
+          "title": "1. a 2. derivace",
+          "text": "L[f'(t)](s) = s F(s) - f(0) \nL[f''(t)](s) = s^2 F(s) - s f(0) - f'(0)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Laplaceova transformace \u2013 obraz konvoluce a periodické funkce",
+      "subsetPath": ["KANA", "Laplaceova transformace"],
+      "answer_parts": [
+        {
+          "title": "Obraz konvoluce",
+          "text": "L[(f * g)(t)](s) = L[f(t)](s) \u22c5 L[g(t)](s), kde (f * g)(t) = \u222b_{0}^{t} f(\u03c4)g(t - \u03c4)d\u03c4"
+        },
+        {
+          "title": "Obraz periodické funkce",
+          "text": "Je-li f periodická s periodou T > 0, pak L[f(t)](s) = 1/(1 - e^{-sT}) \u222b_{0}^{T} f(t) e^{-st} dt"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Inverzní Laplaceova transformace (Inverzní integrál)",
+      "subsetPath": ["KANA", "Laplaceova transformace"],
+      "answer_parts": [
+        {
+          "title": "Inverzní integrální tvar",
+          "text": "f(t) = L^{-1}[F(s)](t) = 1/(2\u03c0i) \u222b_{C} F(s) e^{st} ds"
+        },
+        {
+          "title": "Praktické užití",
+          "text": "Nejčastěji se vychází ze slovníků jednoznačně přiřazených vzorů a obrazů a z rozkladu na parciální zlomky."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Z-transformace \u2013 definice a třída Z0",
+      "subsetPath": ["KANA", "Z-transformace"],
+      "answer_parts": [
+        {
+          "title": "Množina Z0",
+          "text": "Množina komplexních posloupností (a_n)_{n=0}^{\u221e} nejvýše exponenciálního řádu, tj. \u2203 \u03b1 \u2208 R, M > 0: |a_n| \u2264 M e^{\u03b1 n} pro \u2200 n \u2208 N0."
+        },
+        {
+          "title": "Definice",
+          "text": "Z-transformace posloupnosti je funkce Z[a_n](z) = F(z) definovaná jako: F(z) = \u2211_{n=0}^{\u221e} a_n / z^n pro z \u2208 U(\u221e)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Z-transformace \u2013 linearita a věty o posunu a měřítku",
+      "subsetPath": ["KANA", "Z-transformace"],
+      "answer_parts": [
+        {
+          "title": "Linearita",
+          "text": "Z[\u03b1 a_n + b_n](z) = \u03b1 Z[a_n](z) + Z[b_n](z)"
+        },
+        {
+          "title": "Změna měřítka",
+          "text": "Z[\u03b1^n a_n](z) = Z[a_n](z/\u03b1)"
+        },
+        {
+          "title": "Derivace obrazu",
+          "text": "Z[n a_n](z) = -z d/dz Z[a_n](z)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Z-transformace \u2013 obraz posunuté posloupnosti (vlevo)",
+      "subsetPath": ["KANA", "Z-transformace"],
+      "answer_parts": [
+        {
+          "title": "Obecný vzorec pro posun vlevo",
+          "text": "Z[a_{n+k}](z) = z^k Z[a_n](z) - a_0 z^k - a_1 z^{k-1} - ... - a_{k-1} z"
+        },
+        {
+          "title": "Posun o 1 a o 2",
+          "text": "Z[a_{n+1}](z) = z F(z) - a_0 z \nZ[a_{n+2}](z) = z^2 F(z) - a_0 z^2 - a_1 z"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Z-transformace \u2013 obraz konvoluce posloupností",
+      "subsetPath": ["KANA", "Z-transformace"],
+      "answer_parts": [
+        {
+          "title": "Definice konvoluce",
+          "text": "Diskrétní konvoluce posloupností a_n a b_n je c_n = \u2211_{k=0}^{n} a_k b_{n-k} pro každé n \u2208 N0."
+        },
+        {
+          "title": "Obraz konvoluce",
+          "text": "Z[a_n * b_n](z) = Z[a_n](z) \u22c5 Z[b_n](z)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Inverzní Z-transformace \u2013 integrální tvar a reziduová metoda",
+      "subsetPath": ["KANA", "Z-transformace"],
+      "answer_parts": [
+        {
+          "title": "Integrální tvar",
+          "text": "a_n = Z^{-1}[F(z)](n) = 1/(2\u03c0i) \u222b_{C} F(z) z^{n-1} dz"
+        },
+        {
+          "title": "Metoda reziduí",
+          "text": "Je-li F \u2208 H\u221e holomorfní na C až na konečně mnoho izolovaných singularit z_j, pak: a_n = \u2211_{z_j} res_{z_j} [F(z) z^{n-1}]"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Aplikace integrálních transformací na diferenciální a diferenční rovnice",
+      "subsetPath": ["KANA", "Aplikace transformací"],
+      "answer_parts": [
+        {
+          "title": "Diferenciální rovnice (Laplace/Fourier)",
+          "text": "Transformace převedou operaci derivování v časové oblasti na algebraické násobení proměnnou s (resp. i\u03c9) v komplexní/frekvenční oblasti. Diferenciální rovnice se tak zjednoduší na rovnici algebraickou."
+        },
+        {
+          "title": "Diferenční rovnice (Z-transformace)",
+          "text": "Transformace převede operaci posunu v diskrétním čase na násobení proměnnou z. Diferenční rovnice se transformuje na algebraickou rovnici, což je výhodné pro výpočet odezev LTI systémů."
+        }
+      ]
+    }
+  ]
+}

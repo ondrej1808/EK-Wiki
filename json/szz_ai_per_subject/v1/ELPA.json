@@ -1,0 +1,203 @@
+{
+  "title": "Created with cards_creator - ELPA",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Mechanismy vzniku proudu v polovodičích",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Proud v polovodičích vzniká dvěma hlavními mechanismy:\n\n1. Drift (unášení) – pohyb elektronů a děr v opačných směrech vyvolaný působením elektrického pole.\n2. Difúze – samovolný pohyb nosičů náboje z oblasti s vyšší koncentrací do oblasti s nižší koncentrací."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozdíl mezi polovodiči typu N a typu P",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Polovodiče se dotují příměsemi za účelem vytvoření vrstev o různé koncentraci elektronů a děr:\n\n* Typ N: Příměsi se nazývají donory (mají o valenční elektron více). Majoritními nosiči náboje jsou elektrony, minoritními jsou díry.\n* Typ P: Příměsi se nazývají akceptory (mají o valenční elektron méně). Majoritními nosiči náboje jsou díry, minoritními jsou elektrony."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fermiho hladina v polovodičích",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Fermiho hladina (Ef) představuje energetickou úroveň, u které je pravděpodobnost obsazení elektronem přesně 50 %. U čistých (intrinsických) polovodičů se nachází uprostřed zakázaného pásma mezi vodivostním (Ec) a valenčním (Ev) pásmem."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Chování PN přechodu v rovnováze a při přiložení napětí",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "PN přechod vzniká na rozhraní polovodičů typu P a N, kde difúzí vznikne vyprázdněná oblast (oblast prostorového náboje) s pevnými ionty.\n\n* Rovnovážný stav: Přechodem neprotéká žádný celkový proud.\n* Propustný směr (+ na P): Hradlová vrstva se ztenčí, energetická bariéra se sníží a přechod vede proud.\n* Závěrný směr (+ na N): Volné nosiče jsou odtaženy od rozhraní, hradlová vrstva se rozšíří, energetická bariéra vzroste a přechod proud nepropouští."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Typy nedestruktivních a destruktivních průrazů PN přechodu",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Při vysokém napětí v závěrném směru dochází k průrazu:\n\n* Lavinový průraz (nedestruktivní): Velká intenzita pole urychlí elektrony natolik, že nárazem uvolňují další nosiče (lavinový efekt).\n* Tunelový / Zenerův průraz (nedestruktivní): U velmi úzkých přechodů elektrony překonávají potenciálovou bariéru díky kvantovému tunelovému jevu.\n* Tepelný průraz (destruktivní): Růst proudu generuje Jouleovo teplo, které excituje další nosiče, což vede k nekontrolovanému lavinovému zahřátí a roztavení struktury."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Přechod kov-polovodič (MS přechod)",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "MS přechod (Metal-Semiconductor) je rozhraní kovu a polovodiče využívané v Schottkyho diodách. Vedení se účastní pouze majoritní nosiče (elektrony přecházejí z polovodiče typu N do kovu), což eliminuje difúzní kapacitu a zajišťuje vynikající vysokofrekvenční vlastnosti. Oproti PN přechodu má nižší prahové napětí (cca 0,25 V), ale vykazuje vyšší závěrný proud."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Struktura MIS",
+      "subsetPath": ["ELPA", "Vlastnosti polovodičů a polovodičové struktury"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Struktura MIS (Metal-Insulator-Semiconductor; kov-izolant-polovodič) využívá tenkou vrstvu izolantu (např. SiO2), která dokonale zamezuje průchodu stejnosměrného proudu mezi kovem (hradlem) a polovodičem. Tvoří základní stavební prvek MOS tranzistorů a CCD prvků."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rezistor – základní vztahy a vlastnosti",
+      "subsetPath": ["ELPA", "Pasivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Rezistor je pasivní prvek vykazující elektrický odpor R. Vztah mezi napětím a proudem definuje Ohmův zákon u(t) = R * i(t). Odpor geometrického tělesa je dán vztahem R = \\rho * (l / S), kde \\rho je měrný odpor, l délka a S průřez. Výkonové zatížení udává maximální tepelný výkon, který prvek dokáže rozptýlit bez poškození."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Induktor – základní vztahy a vlastnosti",
+      "subsetPath": ["ELPA", "Pasivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Induktor (cívka) akumuluje energii do magnetického pole. Indukčnost je definována vztahem L = (N * \\Phi) / I. Dle Faradayova zákona indukuje časová změna toku napětí u = - d\\Phi / dt. V harmonickém ustáleném stavu je impedance Z = j * \\omega * L (kde \\omega = 2 * \\pi * f) a proud je fázově opožděn za napětím o 90°."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kapacitor – základní vztahy a vlastnosti",
+      "subsetPath": ["ELPA", "Pasivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kapacitor je pasivní prvek schopný akumulovat elektrický náboj Q = C * U. Proud prvkem je dán časovou derivací náboje i = dQ / dt. Nepropouští stejnosměrný proud. V harmonickém ustáleném stavu je impedance Z = 1 / (j * \\omega * C) a proud předbíhá napětí o 90°."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Tranzistor MOSFET – princip a rozdělení",
+      "subsetPath": ["ELPA", "Aktivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "MOSFET je polem řízený tranzistor (FET) se strukturou MIS, kde je vodivost kanálu mezi elektrodami Source (S) a Drain (D) řízena elektrickým polem z elektrody Gate (G).\n\nRozdělení:\n* Dle typu polovodiče: NMOS a PMOS.\n* Dle typu kanálu: S indukovaným kanálem (při U_GS = 0 nevodí, prahové napětí U_T > 0) a se zabudovaným kanálem (vodí při U_GS = 0, U_T < 0)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výhody tranzistorů MOSFET v integrovaných obvodech",
+      "subsetPath": ["ELPA", "Aktivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Tranzistory MOSFET se masivně využívají v integrovaných obvodech (CMOS) z následujících důvodů:\n\n1. Izolovaný substrát od elektrod umožňuje extrémně vysokou hustotu integrace.\n2. Vykazují velmi vysoký vstupní odpor hradla.\n3. Mají minimální statickou spotřebu proudu (téměř netopí).\n4. Vyznačují se menší teplotní závislostí ve srovnání s bipolárními tranzistory."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Tranzistor JFET",
+      "subsetPath": ["ELPA", "Aktivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "JFET (Junction Field Effect Transistor) je polem řízený tranzistor s přechodovým hradlem. Na rozdíl od běžného MOSFETu s indukovaným kanálem je JFET při nulovém napětí na hradle (U_GS = 0) maximálně otevřený. Využívá se v zesilovačích, oscilátorech nebo v odporové oblasti jako napětím řízený odpor."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Bipolární tranzistor (BJT) – princip a vlastnosti",
+      "subsetPath": ["ELPA", "Aktivní elektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "BJT je bipolární součástka obsahující dva PN přechody (struktury NPN nebo PNP), která je řízena proudem tekoucím do báze (B). Při otevření tranzistoru je napětí mezi bází a emitorem (E) přibližně 0,7 V. Oproti tranzistorům FET dokáže spínat rychleji a pracovat na vyšších frekvencích, nachází uplatnění v zesilovačích, stabilizátorech a proudových zdrojích."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výkonové spínací součástky (Tyristor, Triak, IGBT)",
+      "subsetPath": ["ELPA", "Výkonové spínací součástky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Výkonové součástky slouží ke spínání velkých proudů a napětí:\n\n* Tyristor: Čtyřvrstvá struktura (P-N-P-N), která se do sepnutého stavu uvádí proudovým impulsem do řídicí elektrody (Gate). Funguje v čistě dvoustavovém režimu (sepnut/vypnut).\n* Triak: Obousměrný spínač střídavého proudu, který zůstává sepnutý po impulsu do Gate, dokud protékající proud neklesne pod hodnotu vratného proudu.\n* IGBT: Kombinuje výhody izolovaného hradla MOSFET (snadné napěťové řízení) a výkonových vlastností BJT. Klíčový prvek pro pohony lokomotiv, tramvají a výkonové měniče."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Optoelektronické prvky (Fotodioda, LED, Optron)",
+      "subsetPath": ["ELPA", "Optoelektronické prvky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Prvky založené na interakci světla a polovodiče (absorpce, spontánní či stimulovaná emise):\n\n* Fotodioda: Využívá absorpci světla na PN přechodu. V závěrném (fotovodivostním) režimu generuje proud úměrný osvětlení. Ve fotovoltaickém režimu funguje jako zdroj energie bez vnějšího napájení.\n* LED: Dioda emitující světlo v důsledku spontánní emise na PN přechodu při průchodu proudu v propustném směru. Barva je určena šířkou zakázaného pásma materiálu.\n* Optron: Integrovaná dvojice LED a fotodiody (nebo fototranzistoru) sloužící ke galvanickému oddělení signálových obvodů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Energeticky závislé paměti (SRAM vs. DRAM)",
+      "subsetPath": ["ELPA", "Logická hradla a paměti"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Energeticky závislé (volatile) paměti RAM ztrácejí data po odpojení napájení. Dělí se na:\n\n* SRAM (Statická RAM): Uchovává data bez nutnosti obnovování, buňku tvoří 6 tranzistorů na bit. Je velmi rychlá, dražší a s nižší hustotou integrace; používá se jako cache.\n* DRAM (Dynamická RAM): Data uchovává v podobě náboje v kondenzátoru (1 tranzistor a 1 kapacitor na bit). Vyžaduje neustálé obnovování (refresh), je levnější a vykazuje vysokou hustotu integrace; používá se jako systémová operační paměť."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Energeticky nezávislé paměti (ROM, EEPROM, FLASH)",
+      "subsetPath": ["ELPA", "Logická hradla a paměti"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Energeticky nezávislé (non-volatile) paměti uchovávají data i po odpojení napájení:\n\n* ROM: Paměť určená výhradně pro čtení dat zapsaných při výrobě.\n* EEPROM: Elektricky vymazatelná paměť po jednotlivých bajtech využívající speciální NMOS tranzistory. Je složitější, dražší a má nižší hustotu integrace.\n* FLASH: Moderní varianta EEPROM organizovaná a přepisovatelná po celých blocích. Poskytuje vysokou hustotu a je základem pro SSD, USB disky a SD karty."
+        }
+      ]
+    }
+  ]
+}
