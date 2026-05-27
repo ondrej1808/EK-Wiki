@@ -7,7 +7,7 @@ Use this guideline when generating or validating loadable JSON files for the `js
 Create cards that match the existing study-card style used by the MA1A, LAGA, ZEOA, and similar sets:
 
 - one card = one concept, one relation, or one comparison
-- questions should be short, precise, and answerable in a single study pass
+- questions should be short, precise, and answerable in a single study pass, but still is a full sentence !
 - open questions should behave like micro-prompts, not like broad essay prompts
 - answers should be structured, compact, and easy to scan
 
@@ -190,3 +190,8 @@ Rewrite it into micro-prompts instead:
 
 When in doubt, make the card smaller.
 The best cards in this repo are precise enough that the learner can answer quickly and move on.
+
+## Technical
+
+- DO NOT USE ** ** markdown highlighting
+- properly use in strings \\ for \ because json does not like \SOME WORD because of the escape characters like \n ....

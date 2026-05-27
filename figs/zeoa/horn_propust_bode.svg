@@ -1,0 +1,164 @@
+<svg width="100%" viewBox="0 0 682.18 520" role="img" style="" xmlns="http://www.w3.org/2000/svg">
+<title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Frekvenční a fázová charakteristika horní propusti RC</title>
+<desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Bodeho diagram horní propusti: amplitudová charakteristika +20 dB/dek pod ω₀, fázová +90° → 0°</desc>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M1 1L9 5L1 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+<mask id="imagine-text-gaps-3pfpcz" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="682.18" height="520" fill="white"/><rect x="46.78333282470703" y="70" width="22.216666221618652" height="19.199999809265137" fill="black" rx="2"/><rect x="53.75" y="130" width="15.25" height="19.199999809265137" fill="black" rx="2"/><rect x="46.633331298828125" y="150" width="22.366666793823242" height="19.199999809265137" fill="black" rx="2"/><rect x="113.65833282470703" y="219.1999969482422" width="36.683332443237305" height="20" fill="black" rx="2"/><rect x="178.6999969482422" y="219.1999969482422" width="26.600000381469727" height="20" fill="black" rx="2"/><rect x="235.0749969482422" y="219.1999969482422" width="33.85000038146973" height="20" fill="black" rx="2"/><rect x="293.82501220703125" y="219.1999969482422" width="52.349998474121094" height="20" fill="black" rx="2"/><rect x="-4.013332194648683" y="3.1999998092651367" width="115.88333129882812" height="20" fill="black" rx="2"/><rect x="101" y="45" width="68.0999984741211" height="19.199999809265137" fill="black" rx="2"/><rect x="101" y="60" width="84.1500015258789" height="19.199999809265137" fill="black" rx="2"/><rect x="24.808330535888672" y="244" width="334.3833312988281" height="19.199999809265137" fill="black" rx="2"/><rect x="373.3333435058594" y="40" width="26.66666603088379" height="19.199999809265137" fill="black" rx="2"/><rect x="372.95001220703125" y="100" width="27.049999237060547" height="19.199999809265137" fill="black" rx="2"/><rect x="384.75" y="140" width="15.25" height="19.199999809265137" fill="black" rx="2"/><rect x="443.6583251953125" y="239.1999969482422" width="36.683332443237305" height="20" fill="black" rx="2"/><rect x="508.70001220703125" y="239.1999969482422" width="26.600000381469727" height="20" fill="black" rx="2"/><rect x="565.0750122070312" y="239.1999969482422" width="33.85000038146973" height="20" fill="black" rx="2"/><rect x="623.8250122070312" y="239.1999969482422" width="52.349998474121094" height="20" fill="black" rx="2"/><rect x="304.3666687011719" y="3.1999998092651367" width="97.63333129882812" height="20" fill="black" rx="2"/><rect x="371.20001220703125" y="256" width="301.6000061035156" height="19.199999809265137" fill="black" rx="2"/><rect x="123.625" y="292.79998779296875" width="432.75" height="23.200000762939453" fill="black" rx="2"/></mask></defs>
+
+<!-- ============ LEVÝ GRAF: Amplitudová charakteristika ============ -->
+<!-- Osy -->
+<line x1="72" y1="20" x2="72" y2="240" stroke="var(--t)" stroke-width="1.2" marker-end="url(#arr)" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:1.2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="52" y1="220" x2="330" y2="220" stroke="var(--t)" stroke-width="1.2" marker-end="url(#arr)" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:1.2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Mřížka vodorovná -->
+<line x1="72" y1="80" x2="325" y2="80" stroke="var(--t)" stroke-width="0.4" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="72" y1="140" x2="325" y2="140" stroke="var(--t)" stroke-width="0.4" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="72" y1="160" x2="325" y2="160" stroke="var(--t)" stroke-width="0.4" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Mřížka svislá -->
+<line x1="132" y1="20" x2="132" y2="220" stroke="var(--t)" stroke-width="0.4" opacity="0.35" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="192" y1="20" x2="192" y2="220" stroke="var(--t)" stroke-width="0.4" opacity="0.35" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="252" y1="20" x2="252" y2="220" stroke="var(--t)" stroke-width="0.4" opacity="0.35" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Popisky osy Y -->
+<text x="65" y="84" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">20</text>
+<text x="65" y="144" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">0</text>
+<text x="65" y="164" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">−3</text>
+
+<!-- Popisky osy X -->
+<text x="132" y="234" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">0.1ω₀</text>
+<text x="192" y="234" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">1ω₀</text>
+<text x="252" y="234" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">10ω₀</text>
+<text x="320" y="234" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">log₁₀(ω)</text>
+
+<!-- Popis osy Y -->
+<text x="107.87" y="18" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">20 log₁₀|H(jω)| [dB]</text>
+
+<!-- ASYMPTOTA (červená): +20dB/dek do ω₀, pak 0 dB -->
+<polyline points="72,220 192,140 312,140" fill="none" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="none" style="fill:none;stroke:rgb(226, 75, 74);color:rgb(251, 251, 254);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- PŘESNÁ KŘIVKA (modrá) -->
+<!-- HP: H = jωRC/(1+jωRC), |H| = ωRC/sqrt(1+(ωRC)²)
+     log scale: x = 72 + (log10(ω/ω₀)+1)*60, y = 140 - 20*log10(|H|)
+     ω/ω₀: 0.01→0.1→1→10→100
+     ω/ω₀=0.01: |H|≈0.01, dB=-40, y=140+40=180... ale y max je 220 dole
+     Mapování: y=140 je 0dB, každých 20dB = 60px
+     ω/ω₀=0.01: dB=-40 → y=140+40*(60/20)=140+120=260 (mimo), cut at y=220 → ω/ω₀≈0.031
+     ω/ω₀=0.03: dB=20*log10(0.03/sqrt(1+0.0009))≈-30.5 → y=140+30.5*3=231.5, nech 220
+     Lepší: ručně klíčové body přesné křivky
+     x = 72 + (log10(u)+1)*60 kde u=ω/ω₀, ω₀ = 192
+     u=0.05: x=72+(log10(0.05)+1)*60=72+(-0.301)*60=72+(-18.06+60)=72+41.9≈114, dB=20*log10(0.05/sqrt(1+0.0025))=-26.0, y=140+78=218
+     u=0.1: x=132, dB=20*log10(0.1/sqrt(1.01))=-20.04, y=140+60.1=200
+     u=0.2: x=72+(-0.699+1)*60=72+18.06=90... wait, x=72+(log10(u)+1)*60
+     log10(0.2)=-0.699, x=72+(-0.699+1)*60=72+18.06=90.06≈90
+     Hmm, toto je špatné. Přepočítám:
+     ω₀ je na x=192. log10(1)=0 → x=192. log10(0.1)=-1 → x=132. log10(10)=1 → x=252.
+     Takže x = 192 + log10(u)*60
+     u=0.03: x=192+(-1.52)*60=192-91.2=100.8≈101, dB=20*log10(0.03/sqrt(1+0.0009))≈-30.4, y=140+91.2=231→220(clip)
+     u=0.05: x=192+(-1.301)*60=192-78=114, dB≈-26.0, y=140+78=218
+     u=0.1:  x=132, dB≈-20.04, y≈200
+     u=0.2:  x=192-42.2=149.8≈150, dB≈-14.0, y=140+42=182
+     u=0.5:  x=192-18.06=173.9≈174, dB≈-7.0, y=140+21=161
+     u=1:    x=192, dB=-3.01, y=140+9=149
+     u=2:    x=192+18.06=210, dB=-1.0, y=140+3=143
+     u=5:    x=192+42=234, dB≈-0.17, y=140+0.5=140.5
+     u=10:   x=252, dB≈-0.04, y≈140
+     u=20:   x=192+78=270, y≈140
+-->
+<polyline points="114,218 132,200 150,182 174,161 192,149 210,143 234,140.5 252,140 270,140 312,140" fill="none" stroke="#378ADD" stroke-width="2" style="fill:none;stroke:rgb(55, 138, 221);color:rgb(251, 251, 254);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Bod -3dB -->
+<circle cx="192" cy="149" r="3" fill="#378ADD" style="fill:rgb(55, 138, 221);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="72" y1="160" x2="192" y2="160" stroke="var(--t)" stroke-width="0.7" stroke-dasharray="4 3" opacity="0.5" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.7px;stroke-dasharray:4px, 3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="192" y1="160" x2="192" y2="220" stroke="var(--t)" stroke-width="0.7" stroke-dasharray="4 3" opacity="0.5" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.7px;stroke-dasharray:4px, 3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Legenda -->
+<line x1="80" y1="55" x2="100" y2="55" stroke="#E24B4A" stroke-width="1.5" style="fill:rgb(0, 0, 0);stroke:rgb(226, 75, 74);color:rgb(251, 251, 254);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="105" y="59" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">asymptota</text>
+<line x1="80" y1="70" x2="100" y2="70" stroke="#378ADD" stroke-width="2" style="fill:rgb(0, 0, 0);stroke:rgb(55, 138, 221);color:rgb(251, 251, 254);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="105" y="74" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">přesná křivka</text>
+
+<!-- Popis grafu -->
+<text x="192" y="258" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Obrázek 3: Amplitudová charakteristika horní propusti RC.</text>
+
+
+<!-- ============ PRAVÝ GRAF: Fázová charakteristika ============ -->
+<line x1="402" y1="20" x2="402" y2="240" stroke="var(--t)" stroke-width="1.2" marker-end="url(#arr)" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:1.2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="382" y1="50" x2="660" y2="50" stroke="var(--t)" stroke-width="1.2" marker-end="url(#arr)" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:1.2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Vodorovná mřížka -->
+<line x1="402" y1="50" x2="655" y2="50" stroke="var(--t)" stroke-width="0.4" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="402" y1="110" x2="655" y2="110" stroke="var(--t)" stroke-width="0.4" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="402" y1="150" x2="655" y2="150" stroke="var(--t)" stroke-width="0.4" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Svislá mřížka -->
+<line x1="462" y1="20" x2="462" y2="240" stroke="var(--t)" stroke-width="0.4" opacity="0.35" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="522" y1="20" x2="522" y2="240" stroke="var(--t)" stroke-width="0.4" opacity="0.35" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="582" y1="20" x2="582" y2="240" stroke="var(--t)" stroke-width="0.4" opacity="0.35" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.4px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Popisky osy Y (fáze) -->
+<text x="396" y="54" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">π/2</text>
+<text x="396" y="114" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">π/4</text>
+<text x="396" y="154" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">0</text>
+
+<!-- Popisky osy X -->
+<text x="462" y="254" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">0.1ω₀</text>
+<text x="522" y="254" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">1ω₀</text>
+<text x="582" y="254" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">10ω₀</text>
+<text x="650" y="254" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">log₁₀(ω)</text>
+
+<!-- Popis osy Y -->
+<text x="398" y="18" text-anchor="end" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:end;dominant-baseline:auto">arg(H(jω)) [rad]</text>
+
+<!-- ASYMPTOTA (červená): HP fáze
+     Asymptota: 0 pro ω < ω₀/10, lineárně +90°→0° od ω₀/10 do 10ω₀, pak 0°
+     x pro ω₀/10 = 462, x pro 10ω₀ = 582
+     y pro +90° = 50 (max), y pro 0° = 150
+     Od ω=ω₀/10 (x=462) do ω=10ω₀ (x=582): y jde od 50 do 150
+     Před x=462: y=50 (fáze +90°)
+     Po x=582: y=150 (fáze 0°)
+-->
+<polyline points="402,50 462,50 582,150 640,150" fill="none" stroke="#E24B4A" stroke-width="1.5" style="fill:none;stroke:rgb(226, 75, 74);color:rgb(251, 251, 254);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- PŘESNÁ KŘIVKA (modrá)
+     arg(H) = arctan(1/(ω/ω₀)) → pro HP: H=jω/(1+jω) → arg = π/2 - arctan(ω/ω₀)
+     u=ω/ω₀, arg = 90° - arctan(u)
+     y = 150 - (arg_rad)*(100/(π/2)) = 150 - arg_rad*63.66
+     u=0.02: arg=90-1.15=88.85°=1.551rad, y=150-98.7=51.3
+     u=0.05: arg=90-2.86=87.14°=1.521rad, y=150-96.8=53.2
+     u=0.1:  arg=90-5.71=84.29°=1.471rad, y=150-93.6=56.4
+     u=0.2:  arg=90-11.31=78.69°=1.373rad, y=150-87.3=62.7
+     u=0.5:  arg=90-26.57=63.43°=1.107rad, y=150-70.5=79.5
+     u=1:    arg=45°=0.785rad, y=150-50=100
+     u=2:    arg=90-63.43=26.57°=0.464rad, y=150-29.5=120.5
+     u=5:    arg=90-78.69=11.31°=0.197rad, y=150-12.5=137.5
+     u=10:   arg=90-84.29=5.71°=0.0997rad, y=150-6.3=143.7
+     u=20:   arg≈2.86°, y≈148
+     x = 522 + log10(u)*60
+     u=0.02: x=522-84=438
+     u=0.05: x=522-78=444
+     u=0.1:  x=462
+     u=0.2:  x=522-42.2=480
+     u=0.5:  x=522-18.06=504
+     u=1:    x=522
+     u=2:    x=522+18=540
+     u=5:    x=522+42=564
+     u=10:   x=582
+     u=20:   x=600
+-->
+<polyline points="402,51 438,51.3 444,53.2 462,56.4 480,62.7 504,79.5 522,100 540,120.5 564,137.5 582,143.7 600,148 640,149.5" fill="none" stroke="#378ADD" stroke-width="2" style="fill:none;stroke:rgb(55, 138, 221);color:rgb(251, 251, 254);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Bod ω₀ se fází π/4 -->
+<circle cx="522" cy="100" r="3" fill="#378ADD" style="fill:rgb(55, 138, 221);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="402" y1="110" x2="522" y2="110" stroke="var(--t)" stroke-width="0.7" stroke-dasharray="4 3" opacity="0.5" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.7px;stroke-dasharray:4px, 3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<line x1="522" y1="110" x2="522" y2="240" stroke="var(--t)" stroke-width="0.7" stroke-dasharray="4 3" opacity="0.5" mask="url(#imagine-text-gaps-3pfpcz)" style="fill:rgb(0, 0, 0);stroke:rgb(156, 154, 146);color:rgb(251, 251, 254);stroke-width:0.7px;stroke-dasharray:4px, 3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+<!-- Popis grafu -->
+<text x="522" y="270" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Obrázek 4: Fázová charakteristika horní propusti RC.</text>
+
+<!-- Nadpis -->
+<text x="340" y="310" text-anchor="middle" style="fill:rgb(250, 249, 245);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:auto">Horní propust RC — přenosová funkce: H(jω) = jωRC / (1 + jωRC)</text>
+
+</svg>
