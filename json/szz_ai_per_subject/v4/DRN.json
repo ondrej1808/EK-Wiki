@@ -1,0 +1,523 @@
+{
+  "title": "$Created with cards_creator - DRN$",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Co je to obyčejná diferenciální rovnice?\nCo je řešením?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Definice}$ Obyčejná diferenciální rovnice řádu $n$ je rovnice tvaru\n$$y^{(n)} = \\\\ =F(x, y, y', \\dots, y^{(n-1)}),$$\n\nkde $F$ je funkce $n + 1$ proměnných. Řešení této rovnice na (otevřeném) intervalu $I$ je libovolná funkce $y = y(x)$ na intervalu $I$, která má derivace až do řádu $n$ a pro všechna $x \\in I$ platí\n$$y^{(n)}(x) = F(x, y(x), y'(x),\\dots \\\\ \\dots, y^{(n-1)}(x)).$$\n\nLidsky: Diferenciální rovnice je rovnice, ve které nehledáme neznámé číslo, ale neznámou funkci $y(x)$. V této rovnici se kromě samotné funkce vyskytují i její derivace. Řád rovnice určuje nejvyšší derivace, která se v ní nachází. Najít řešení znamená najít takovou funkci, kterou když i s jejími derivacemi dosadíme do rovnice, tak rovnost platí pro všechny body z daného intervalu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaký je rozdíl mezi obecným a partikulárním řešením ODR a co je Cauchyho úloha?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Definice}$ Jestliže se dá množina všech řešení dané ODR vyjádřit jedním vzorcem s parametry, značí se toto řešení jako $\\textit{obecné řešení}$ dané ODR. Jedno konkrétní řešení dané rovnice se nazývá $\\textit{partikulární řešení}$.\n\nŘešení diferenciálních rovnic není jednoznačné bez udání konkrétních počátečních podmínek $y(x_0) = y_0, \\dots, y^{n-1}(x_0) = y_{n-1}$. Úloha, v níž je diferenciální rovnice zadaná s počátečními podmínkami se nazývá $\\textit{Cauchyho úloha}$.\n\nLidsky: Obecné řešení v sobě obsahuje integrační konstanty (např. $C$), takže představuje celou rodinu možných křivek. Když za tyto konstanty dosadíme konkrétní čísla, dostaneme jedno partikulární řešení. \n\nCauchyho úloha (neboli počáteční problém) je situace, kdy hledáme právě jedno konkrétní řešení, které prochází zadaným bodem a má v něm požadovaný směr (podmínky)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je separovatelná ODR 1. řádu, kdy má zaručenou existenci řešení a jak se aplikuje na parciální rovnice?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Definice}$ Separovatelná obyčejná diferenciální rovnice 1. řádu je ODR zapsatelná ve tvaru:\n$$y' = g(x)h(y)$$\npro nějaké funkce $g, h$.\n\n$\\textbf{Věta (Existence)}$ Uvažujeme separovatelnou ODR 1. řádu $y' = g(x)h(y)$. Předpokládejme, že $g$ je spojitá na nějakém otevřeném intervalu $I \\subset D(g)$ a $h$ je spojitá na nějakém otevřeném intervalu $J \\subset D(h)$. Jestliže $h \\neq 0$ na $J$, pak existuje řešení dané rovnice na $I$.\n\n- Separace proměnných u parciálních rovnic: \nSeparace proměnných lze rozšířit i na parciální diferenciální rovnice. Při řešení předpokládáme tvar hledané funkce $F(x,y,z) = X(x)Y(y)Z(z)$. Tímto způsobem lze například hledat řešení Helmholtzovy rovnice:\n$$(\\nabla^2 + k^2)F(x) = 0$$\nLidsky: U separovatelné rovnice dokážeme „oddělit“ proměnné tak, že všechna $y$ přesuneme (včetně $\\mathrm{d}y$) na jednu stranu a všechna $x$ (včetně $\\mathrm{d}x$) na stranu druhou, a pak obě strany nezávisle zintegrujeme. U parciálních diferenciálních rovnic (kde hledáme funkci více proměnných) tato metoda spočívá v předpokladu, že celkové řešení je součinem samostatných funkcí, z nichž každá závisí jen na jedné jediné proměnné."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je lineární ODR řádu n (homogenní a nehomogenní) a jakou strukturu má její řešení?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Definice}$ Lineární obyčejná diferenciální rovnice řádu $n$ je ODR zapsaná ve tvaru:\n$$\\sum_{j=0}^{n} a_j y^{(j)}(x) = b(x)$$\n\nTato rovnice se nazývá $\\textit{homogenní}$, jestliže $b(x) = 0$. Ve druhém případě definujeme $\\textit{přidruženou homogenní rovnici}$ jako $\\sum_{j=0}^{n} a_j y^{(j)} = 0$.\n\nVěta (O existenci a jednoznačnosti pro lineární ODR\n\nUvažujeme lineární ODR $a_j(x)y^{(j)} = b(x)$. Jsou-li $a_j(x), b(x)$ spojité na otevřeném intervalu $I$, pak pro všechna $x_0 \\in I$ a všechny počáteční podmínky $y_j \\in \\mathbb{R}$ existuje řešení Cauchyho úlohy na $I$ a je na tomto intervalu jednoznačné.\n\nVěta (O struktuře množiny řešení homogenní lineární ODR) \n\nUvažujeme homogenní lineární ODR $a_j y^{(j)}$ řádu $n$ na otevřeném intervalu $I$, pak je množina všech řešení této rovnice na $I$ $\\textit{vektorový prostor dimenze } n$.\n\nLidsky: Lineární rovnice znamenají, že neznámá funkce $y$ ani její derivace nikde nevystupují v mocninách, v součinu mezi sebou, ani uvnitř jiných funkcí (např. jako $\\sin(y)$). Pokud je pravá strana $b(x)$ nulová (homogenní rovnice), řešení tvoří čistý vektorový prostor – to znamená, že lineární kombinace (součet nebo násobek konstantou) jakýchkoliv řešení je opět platným řešením. Dimenze $n$ říká, kolik lineárně nezávislých základních řešení (fundamentální systém) musíme najít, abychom popsali úplně všechna řešení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definován fundamentální systém lineární obyčejné diferenciální rovnice (ODR)?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Předpokládejme, že koeficienty $a_j$ jsou spojité na otevřeném intervalu $I$. $\\textit{Fundamentální systém}$ lineární ODR tvaru $a_j(x)y^{(j)} = b(x)$ je libovolná báze prostoru řešení její přidružené homogenní rovnice.\n\nLidsky: Když máš lineární diferenciální rovnici a její koeficienty jsou na určitém intervalu pěkně spojité, tak fundamentální systém je vlastně základní sada stavebních kamenů pro řešení. Přesněji je to jakákoliv báze prostoru všech řešení pro variantu rovnice, kde je na pravé straně nula (tedy pro přidruženou homogenní rovnici). Každé další homogenní řešení pak poskládáš jako kombinaci prvků z této báze."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definována charakteristická rovnice pro lineární ODR s konstantními koeficienty?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Uvažujme lineární ODR s konstantními koeficienty ($a_j(x) = a_j$) tvaru $a_j y^{(j)} = b(x)$. $\\textit{Charakteristickou rovnici}$ této ODR definujeme jako:\n$$a_n \\lambda^n + a_{n-1} \\lambda^{n-1} \\dots + a_1 \\lambda + a_0 = 0$$\n\nLidsky: Když máš rovnici s konstantními koeficienty, můžeš si pomoct tím, že derivace nahradíš mocninami neznámé proměnné (obvykle se značí jako lambda). Vznikne ti klasická algebraická rovnice, ze které se derivace úplně vytratí a dá se snadno řešit."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co jsou to vlastní čísla dané ODR a jak vypadá řešení pro jednoduché reálné vlastní číslo $\\lambda_j$?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Řešením charakteristické rovnice se nazývají $\\textit{vlastní čísla}$ dané ODR. Řešení k danému reálnému jednoduchému vlastním číslu $\\lambda_j$ má tvar:\n$$y_j(x) = e^{\\lambda_j x}$$\nVšechna tato řešení $y_j(x)$ definují lineárně nezávislou množinu řešení $\\{e^{\\lambda_j x}\\}$.\n\nLidsky: Vlastní čísla jsou jednoduše kořeny té charakteristické rovnice, kterou jsme si popsali před chvílí. Pokud ti jako kořen vyjde jedno obyčejné reálné číslo $\\lambda_j$, tak jemu odpovídající řešení má elegantní tvar čisté exponenciály. Když takhle najdeš řešení pro všechna vlastní čísla, vytvoří ti nezávislou množinu, ze které pak stavíš celkové řešení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaký tvar má řešení ODR, pokud je vlastní číslo $\\lambda_j$ násobnosti $m$?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Je-li vlastní číslo $\\lambda_j$ násobnosti $m$, pak dané řešení má tvar:\n$$y_j(x) = e^{\\lambda_j x}, x e^{\\lambda_j x}, \\dots, x^{m-1} e^{\\lambda_j x}$$\n\nLidsky: Když ti jeden kořen (vlastní číslo $\\lambda_j$) vyjde v charakteristické rovnici vícenásobně (konkrétně $m$-krát), nemůžeš použít pořád dokola to samé exponenciální řešení, protože bys neměl nezávislé funkce. Vyřešíš to tak, že tu základní exponenciálu začneš postupně násobit ikskem. Dostaneš sadu různých řešení, která ti pokryje celou násobnost."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak vypadá řešení ODR v případě komplexně sdružených vlastních čísel?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Platí-li, že vlastní čísla jsou komplexně sdružená ve tvaru $\\lambda_j = \\alpha \\pm i\\beta$, kde $\\beta \\neq 0$, pak má řešení tvar:\n$$y_j(x) = e^{\\alpha x} (\\cos(\\beta x) \\pm i\\sin(\\beta x))$$\n\nLidsky: Když ti kořeny vyjdou jako komplexní čísla (která se u reálných rovnic vyskytují vždycky v páru jako komplexně sdružená), řešení se kvůli Eulerovu vzorci přepíše pomocí sinusů a kosinusů. Reálná část $\\alpha$ ti určí rychlost růstu nebo poklesu exponenciály a imaginární část $\\beta$ zase frekvenci kmitání (vlnění)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co říká věta o struktuře řešení lineární ODR?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Věta (O struktuře řešení lineární ODR).\n\nNechť $y_p$ je nějaké partikulární řešení dané lineární ODR na otevřeném intervalu $I$. Funkce $y(x)$ je řešením této rovnice na $I$ právě tehdy, pokud:\n$$y = y_h + y_p$$\nkde $y_h$ je nějaké přidružené homogenní řešení na $I$. Z čehož vyplývá, že je-li $y_h$ nějaké obecné řešení přidružené homogenní rovnice na $I$, pak $y = y_h + y_p$ je obecné řešení dané rovnice na $I$.\n\nLidsky: Tahle věta ti v podstatě dává návod, jak poskládat kompletní řešení rovnice, která má na pravé straně nějakou funkci (ne nulu). Říká, že ti stačí najít jedno jediné konkrétní řešení pro tu pravou stranu (tzv. partikulární řešení $y_p$) a k němu přičíst obecné řešení verze s nulou na pravé straně ($y_h$). Spojením těchto dvou světů získáš kompletní a obecné řešení původní rovnice."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak zní věta o odhadu řešení pro speciální pravou stranu?",
+      "subsetPath": [
+        "DRN",
+        "Lineární diferenciální rovnice vyšších řádů"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Věta (O odhadu řešení pro speciální pravou stranu).}Uvažujeme lineární ODR řádu $n$ s konstantními koeficienty, kde pravá strana $b(x)$ má speciální tvar:\n$$a_j y^{(j)} = e^{\\alpha x} (P(x) \\cos(\\beta x) + \\\\ Q(x) \\sin(\\beta x))$$\npro polynomy $P(x)$, $Q(x)$. Označme $d = \\max(\\text{ord}(P), \\text{ord}(Q))$, kde $\\text{ord}()$ značí stupeň polynomu. Nechť $m \\ge 1$ je násobnost vlastního čísla $\\lambda_j = \\alpha \\pm i\\beta$. Pak existují polynomy $p(x)$ a $q(x)$ stupně nejvýše $d$ takové, že:\n$$y(x) = x^m e^{\\alpha x} (p(x) \\cos(\\beta x) +\\\\ q(x) \\sin(\\beta x))$$\nje řešení dané rovnice na $\\mathbb{R}$.\n\nLidsky: Když máš na pravé straně kombinaci exponenciály, polynomů a sinů či kosinusů, nemusíš řešení složitě odhadovat naslepo, protože víš, že bude mít velmi podobnou strukturu jako samotná pravá strana. Podíváš se na polynomy $P(x)$ a $Q(x)$ a vezmeš ten, který má vyšší stupeň (označme ho $d$). \n\nZároveň zkontroluješ, jestli číslo vytvořené z pravé strany ($\\alpha \\pm i\\beta$) není náhodou kořenem tvé charakteristické rovnice. Pokud ano a je $m$-násobným kořenem (dochází k rezonanci), musíš celý odhad ještě vynásobit $x^m$. \n\nVěta ti pak zaručuje, že partikulární řešení bude mít tento přesný tvar, kde ti stačí už jen dopočítat koeficienty nových polynomů $p(x)$ a $q(x)$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaké jsou nejčastější druhy chyb v numerických výpočtech a jak jsou matematicky definovány absolutní a relativní chyba včetně jejich odhadu?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Odpověď: Při numerických výpočtech se vyskytují různé druhy chyb. Nejčastější jsou chyby ve vstupních datech, chyby metody nebo chyby výpočtu. \n\n$\\textit{Absolutní chyba}$ a $\\textit{relativní chyba}$ jsou definovány následovně: Nechť $x$ je přesné číslo a $\\widehat{x}$ je jeho odhad (přibližné číslo). Pak absolutní chyba je definována jako:\n$$E_x = x - \\widehat{x}$$\na relativní chyba jako:\n$$\\varepsilon_x = \\frac{|x - \\widehat{x}|}{|x|}$$\nLibovolné číslo $e_x$ splňující $|E_x| \\le e_x$ se nazývá $\\textit{odhad chyby}$.\n\nLidsky: Když něco počítáš na počítači, výsledek skoro nikdy není úplně dokonalý. Buď máš nepřesná data už na začátku, nebo tvoje matematická metoda používá zjednodušení, anebo počítač čísla zaokrouhlil. \nAbsolutní chyba $E_x$ ti řekne čistý rozdíl – o kolik přesně se tvůj odhad seknul (např. o $10 \\pm 0,1\\text{ mm}$, což je super, když chceš vědět, v jakém rozmezí se výsledek reálně nachází). Relativní chyba $\\varepsilon_x$ ti tenhle rozdíl podělí velikostí samotného čísla. Tím získáš představu o procentuální chybě, která ti upřímně řekne, jak moc můžeš výsledku věřit – je totiž rozdíl seknout se o milimetr při měření délky mravence, nebo při měření vzdálenosti na Měsíc."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definována asymptotická velká O notace pro chybu úlohy a co vyjadřuje v kontextu přesnosti metod?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Uvažujme číslo $a \\in \\overline{\\mathbb{R}}$ a nechť $f, g$ jsou dvě funkce definované na nějakém (prstencovém) okolí bodu $a$. Řekneme, že $f \\in O(g)$ pro $x \\rightarrow a$, jestliže existuje nějaká konstanta $C$ na prstencovém okolí $P$ bodu $a$ taková, že:\n$$|f| \\le C|g| \\text{ na } P$$\nČíslo $O(h)$ značí $\\textit{chybu úlohy}$ pro $h \\rightarrow 0$. Čím vyšší mocnina $h$ se ve výrazu vyskytuje, tím je metoda přesnější.\n\nLidsky: Velké $O$ (tzv. „omikron“ notace) je matematický způsob, jak popsat, jak rychle se chyba zmenšuje, když se s krokem výpočtu $h$ blížíme k nule. Pokud ti vyjde, že chyba metody je například $O(h^2)$, znamená to, že když zmenšíš krok $h$ na polovinu, chyba neklesne na polovinu, ale na čtvrtinu (protože dvě na druhou jsou čtyři). Zkrátka, čím větší mocninu u toho háčka ($h$) máš, tím rychleji se chyba při zjemňování výpočtu vytrácí a tím je celá metoda přesnější a kvalitnější."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je hlavním cílem Gaussovy eliminační metody (GEM) a jaké operace tento algoritmus povoluje?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Všeobecně nejznámější metodou numerického řešení je $\\textit{Gaussova eliminační metoda}$. Hlavním cílem metody je převést matici $\\mathbf{A}$ do horního trojúhelníkového tvaru a skrz zpětnou substituci získat řešení soustavy. Číslům na diagonále se říká $\\textit{pivot}$. Nejvýhodnější je mít na první pozici nejvíce dominujícího pivota. Algoritmus dovoluje násobit řádky skalárem, prohazovat řádky v matici a řádky navzájem sčítat.\n\nLidsky: Představ si, že máš velkou tabulku čísel (matici) ze soustavy rovnic a chceš v ní udělat pořádek, abys mohl snadno spočítat výsledek. Gaussova eliminace ti dává sadu povolených triků – můžeš celé řádky násobit čísly, měnit jejich pořadí nebo je sčítat mezi sebou. Tvým cílem je pomocí těchto kroků vyrobit pod hlavní úhlopříčkou (diagonálou) samé nuly. Tím ti vznikne jakýsi schodovitý „trojúhelník“ a ze spodního řádku už hned uvidíš řešení pro první neznámou. To pak začneš dosazovat směrem nahoru (tzv. zpětná substituce), dokud nerozklíčuješ celou skládačku. Číslům na schodech, podle kterých nuluješ zbytek sloupce, se říká pivoty – a je fajn, když jsou to ta nejvýraznější, největší čísla, protože se s nimi počítači počítá nejpřesněji."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaká je výpočetní náročnost Gaussovy eliminační metody a následného dosazení?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Platí následující dvě tvrzení ($\\textit{Fakt}$):\nJestliže aplikujeme GEM na matice velikosti $n \\times (n + b)$, kde $b$ je konstanta nezávislá na $n$, pak výpočetní náročnost je rovna:\n$$\\frac{2}{3}n^3 + O(n^2)$$\nDále platí, že zpětné a dopředné dosazení má výpočetní náročnost $n^2$.\n\nLidsky: Když počítač řeší obrovskou soustavu o velikosti $n$ (třeba tisíc rovnic o tisíci neznámých), tahle věta ti říká, jak moc se u toho zapotí. Samotné řezání matice do trojúhelníku (eliminace) je zdaleka nejtěžší práce – její náročnost roste se třetí mocninou velikosti matice ($n^3$). To znamená, že když zvětšíš soustavu na dvojnásobek, počítač bude muset udělat zhruba osmkrát víc operací! Oproti tomu to finální dopočítávání na konci (zpětné a dopředné dosazení) už je pro něj hračka – jeho náročnost roste jen s druhou mocninou ($n^2$), takže ve srovnání s tou obří třetí mocninou z eliminace už celkový čas skoro neovlivní."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je Gauss-Jordanova metoda, jaká je její výpočetní náročnost a k čemu všemu ji lze využít?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Gauss-Jordanova metoda}$ je jednoduchá modifikace Gaussovy eliminační metody (GEM), při které se směřuje k diagonální matici tak, že při výpočtu se nulují i prvky nad diagonálou a pivoty jsou na konci algoritmu rovni jedné. Výpočetní náročnost této metody je:\n$$n^3 + O(n^2)$$\nMetoda nepotřebuje již použití zpětného (resp. dopředného) dosazení. Pravá strana je přímo rovna hledanému řešení. Pomocí Gauss-Jordanovy eliminace lze hledat i inverzní matice. Tato metoda lze použít i pro hledání řešení soustav, jejichž matice mají více sloupců než řádků. Pro výpočet inverzní matice platí schéma:\n$$(\\mathbf{A}|\\mathbf{E}_n) \\Rightarrow (\\mathbf{E}_n|\\mathbf{A}^{-1})$$\n\nLidsky: Gauss-Jordanova metoda je vlastně Gaussova eliminace dotažená do absolutního konce. Místo toho, abys pod schody z čísel vyrobil nuly a pak složitě dopočítával zbytek odspodu nahoru, nuluješ čísla rovnou jak pod diagonálou, tak nad ní. Na samém konci navíc celé řádky podělíš tak, aby na hlavní úhlopříčce zůstaly samé jedničky. Tím pádem se ti matice promění na jednotkovou a na pravé straně rovnou bez jakéhokoliv dalšího počítání vidíš hotový výsledek. Stojí to ale o něco víc úsilí – náročnost stoupne na celých $n^3$. Obrovská výhoda je, že když vedle své matice napíšeš matici jednotkovou a spustíš tenhle proces, na konci se ti původní matice promění na jednotkovou a z té jednotkové se stane hledaná inverzní matice."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak se definuje reziduum a jak se provádí zkouška řešení soustavy rovnic?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zkoušku řešení lze provést skrz $\\textit{reziduum}$ $\\mathbf{r}$, které vyjadřuje odchylku mezi pravou stranou a získaným přibližným řešením. Platí vztah:\n$$\\mathbf{r} = \\mathbf{A}\\cdot\\mathbf{x}_0 - \\mathbf{A}\\cdot\\mathbf{x} = \\\\ =\\mathbf{A}\\cdot\\mathbf{E}_x \\Rightarrow \\mathbf{E}_x = \\mathbf{A}^{-1}\\mathbf{r}$$\nkde $\\mathbf{x}_0$ je přesné řešení, $\\mathbf{x}$ je vypočtené přibližné řešení a $\\mathbf{E}_x$ je chyba řešení.\n\nLidsky: Když ti počítač vyplivne nějaké řešení soustavy rovnic $\\mathbf{x}$, chceš vědět, jak moc je přesné. Reziduum $\\mathbf{r}$ je v podstatě „zbytek po dosazení“. Vezmeš tvoje spočítané řešení, vynásobíš ho maticí soustavy a odečteš od toho to, co mělo vyjít na pravé straně. Kdyby byl výpočet naprosto dokonalý, vyjde ti nulový vektor. Čím víc se reziduum liší od nuly, tím větší je chyba, kterou v sobě výsledek kvůli zaokrouhlování na počítači nese."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definován LUP rozklad čtvercové matice?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Uvažujme $n \\times n$ matici $\\mathbf{A}$ reálných čísel. Řekneme, že $n \\times n$ matice $\\mathbf{L}$, $\\mathbf{U}$, $\\mathbf{P}$ jsou jejím $\\textit{LUP rozkladem}$, jestliže $\\mathbf{P}$ je permutační matice, $\\mathbf{U}$ je horní trojúhelníková matice, $\\mathbf{L}$ je dolní trojúhelníková matice s jedničkami na diagonále a platí:\n$$\\mathbf{P}\\cdot\\mathbf{A} = \\mathbf{L}\\cdot\\mathbf{U}$$\nPro každou čtvercovou matici existuje LUP rozklad.\n\nLidsky: LUP rozklad je způsob, jak vzít jednu složitou čtvercovou matici a rozebrat ji na tři jednodušší součástky jako stavebnici. Matice $\\mathbf{U}$ (Upper) má čísla jen v horním trojúhelníku, matice $\\mathbf{L}$ (Lower) zase jen v dolním trojúhelníku a na diagonále má jedničky. Matice $\\mathbf{P}$ (Permutation) tam je od toho, aby případně prohodila řádky, kdyby to bylo při dělení potřeba. Když pak potřebuješ vyřešit rovnici s takhle rozloženou maticí, je to pro počítač neskutečně rychlé, protože trojúhelníkové matice se řeší pouhým postupným dosazováním."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co jsou to iterační metody pro řešení soustav, jaké jsou nejznámější a kdy zaručeně konvergují?",
+      "subsetPath": [
+        "DRN",
+        "Numerické metody řešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Druhou možností řešení soustav rovnic je použití $\\textit{iteračních metod}$. Dvěma nejznámějšími metodami jsou $\\textit{Jacobiho iterace}$ a $\\textit{Gauss-Seidelova metoda}$. Iterace se provádějí do doby, dokud řešení nesplní toleranci $\\varepsilon$. Možnou iterační metodou je i $\\textit{superrelaxační metoda}$, kde se zavádí parametr $\\lambda \\in \\mathbb{R}$.\n\nMatice $\\mathbf{A}$ velikosti $n \\times n$ se nazývá $\\textit{ostře diagonálně dominantní}$, jestliže pro všechna $j = 1,\\dots,n$ platí:\n$$|a_{j,j}| > \\sum_{j \\neq k} |a_{j,k}|$$\n$\\textbf{Věta.}$ Jestliže je $\\mathbf{A}$ ostře diagonálně dominantní, pak Jacobiho iterace i Gauss-Seidelova metoda konvergují pro libovolnou počáteční volbu vektoru. U všech zmíněných metod je nutné zvážit možnost, zdali není matice $\\mathbf{A}$ singulární.\n\nLidsky: Na rozdíl od přímých metod (jako je Gaussova eliminace), které ti dají výsledek po přesném počtu kroků, na to jdou iterační metody od lesa. Plácneš nějaký náhodný odhad výsledku a pak ho v nekonečné smyčce (v iteracích) neustále zpřesňuješ a vylepšuješ. Tento proces stopneš ve chvíli, kdy se dvě po sobě jdoucí odpovědi liší už jen o nepatrné mini-číslo (toleranci $\\varepsilon$). Nejznámější jsou Jacobiho a Gauss-Seidelova metoda. Aby tohle neustálé zpřesňování vůbec fungovalo a blížilo se ke správnému cíli (konvergovalo), ideálním stavem je, když je matice tzv. ostře diagonálně dominantní. To znamená, že v každém řádku je číslo na hlavní úhlopříčce v absolutní hodnotě větší než součet všech ostatních čísel v tom samém řádku dohromady. Pak máš stoprocentní jistotu, že se k výsledku úspěšně dopracuješ z jakéhokoliv startovního tipu. U všech metod si ale musíme dát pozor, aby matice nebyla singulární (tedy aby soustava měla vůbec jednoznačné řešení)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definován řád konvergence (případně R-řád konvergence) pro iterační metody hledání kořenů?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení nelineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Uvažujme určitou iterační metodu pro hledání kořene $r$ funkce $f$, která splňuje $f(r) = 0$. Řekneme, že je to $\\textit{metoda řádu } q$ nebo že má $\\textit{chybu řádu } q$ (kde $q > 0$), jestliže splňuje jednu z následujících podmínek:\n* Pro každou posloupnost $\\{x_k\\}$ generovanou touto metodou konvergující ke kořeni $r$ existuje $K > 0$ takové, že platí:\n$$|r - x_{k+1}| \\le K |r - x_k|^q \\\\ \\quad \\text{pro dostatečně velká } k$$\n* Pro každou posloupnost $\\{x_k\\}$ generovanou touto metodou konvergující ke kořeni $r$ existuje horní odhad $e_k$ pro $|r - x_k|$ a $K > 0$ takové, že platí $e_{k+1} \\le K e_k^q$ pro dostatečně velká $k$. Tomuto pojmu se říká $\\textit{R-řád konvergence}$.\n\nLidsky: Když hledáš kořen rovnice pomocí opakovaných pokusů (iterací), řád konvergence $q$ ti říká, jak bleskově se s každým krokem přibližuješ k cíli. Pokud má metoda řád $q = 1$ (lineární konvergence), chyba klesá stabilně o pevný násobek. Pokud má ale řád $q = 2$ (kvadratická konvergence), chyba v příštím kroku se zmenší zhruba na druhou mocninu chyby předchozí. V praxi to znamená, že se ti s každým krokem přibližně zdvojnásobí počet správných desetinných míst, což je neskutečně rychlé."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Na jakém principu funguje metoda bisekce (půlení intervalu) a jaký je její řád konvergence?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení nelineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Metoda bisekce je založena na následujícím tvrzení ($\\textit{Fakt}$): Nechť $f$ je spojitá funkce na intervalu $[a, b]$. Jestliže $f(a) \\cdot f(b) < 0$, pak $f$ musí mít v intervalu $[a, b]$ řešení.\nTohoto se využívá v algoritmu, kdy se postupně podle aktuální změny znaménka posouvají meze intervalu $a_k$ a $b_k$. Nové přiblížení se získá jako střed intervalu:\n$$m_k = \\frac{a_k + b_k}{2}$$\nPodle této mezihodnoty se určuje, která mez intervalu se posune. V dalším běhu je jedna z mezí rovná právě této mezihodnotě a algoritmus se provádí znovu. Řešení je rovno $r = m_k$ při dosažení chtěné přesnosti. $\\textit{Metoda bisekce je lineárního řádu}$ ($q = 1$).\n\nLidsky: Představ si, že hraješ hru, kde si myslím číslo od 1 do 100 a ty ho máš uhodnout, přičemž ti říkám jen „přihořívá/přestřelil jsi“. Pokud je funkce spojitá a na jednom konci intervalu ti dává kladný výsledek a na druhém záporný, je jasné, že někde uprostřed musí protnout nulu. Metoda bisekce jednoduše vezme střed tohoto intervalu $m_k$ a zkontroluje znaménko. Tím škrtne celou polovinu intervalu, kde kořen určitě neleží. Tento postup opakuje tak dlouho, dokud se interval nesmrští na mini-kousíček. Je to naprosto spolehlivá „tanková“ metoda, která tě do cíle vždycky doveze, ale jelikož v každém kroku zmenšíš chybu jen na polovinu, její rychlost (řád) je pouze lineární."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definována metoda sečen a za jakých podmínek je zaručena její konvergence?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení nelineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Metoda sečen}$ je iterační metoda pro hledání kořene spojité funkce $f$ s tolerancí $\\varepsilon$. Algoritmus probíhá následovně:\n1. Zvolíme dva počáteční body $x_0, x_1$ a nastavíme krok $k = 1$.\n2. Spočteme nové přiblížení podle vztahu:\n$$x_{k+1} = \\frac{x_{k-1}f(x_k) - x_k f(x_{k-1})}{f(x_k) - f(x_{k-1})}$$\nJestliže $|x_{k+1} - x_k| < \\varepsilon$ nebo $|f(x_{k+1})| < \\varepsilon$, algoritmus končí a výstup je $x_{k+1}$. Jinak zvýšíme $k$ o jedničku a jdeme zpět na krok 2.\n\nVěta (O konvergenci metody sečen).\nJestliže je kořen $r$ jednoduchý, pak existují konstanty $K$ a $N \\in \\mathbb{N}$ takové, že $|r - x_{k+1}| \\le K |r - x_k|^\\alpha$ pro $k \\ge N$, kde $\\alpha = \\frac{1 + \\sqrt{5}}{2} \\approx 1{,}618$. Jestliže má kořen $r$ vyšší násobnost, pak je konvergence lineární.\n\nVěta (O konvergenci pro konvexní/konkávní funkce)\nNechť $f$ je funkce spojitá na intervalu $[a, b]$, pro kterou platí $f(a)f(b) < 0$. Předpokládejme, že je konvexní či konkávní na $[a, b]$. Pak pro libovolné hodnoty $x_0, x_1$ zvolené tak, aby $f(x_0) > 0, f(x_1) > 0$ pro konvexní případ a $f(x_0), f(x_1) < 0$ pro konkávní případ, posloupnost $\\{x_k\\}$ generovaná metodou sečen konverguje ke kořeni $r \\in (a, b)$ funkce $f$.\n\nLidsky: Na rozdíl od bisekce nepotřebuje metoda sečen držet kořen pevně v kleštích mezi dvěma mezemi. Vezme dva body na grafu funkce, propojí je přímou čarou (sečnou) a podívá se, kde tato čára protne osu $x$. To je tvůj nový odhad $x_{k+1}$. Z něj a z předchozího bodu uděláš novou sečnu a takhle „skáčeš“ blíž a blíž ke kořeni. Pokud je funkce rozumně prohnutá (konvexní nebo konkávní) a správně odstartuješ, metoda začne velmi rychle konvergovat. Její rychlost $\\alpha \\approx 1{,}618$ odpovídá magickému zlatému řezu. Je tedy o dost rychlejší než bisekce, ale pokud by byl kořen vícenásobný (graf by se osy $x$ jen líně dotýkal), rychlost spadne na obyčejnou lineární."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak funguje Newtonova metoda (metoda tečen) a jaké jsou podmínky pro její kvadratickou konvergenci?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení nelineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Newtonova metoda}$ (metoda tečen) pro hledání kořene diferencovatelné funkce $f$ s tolerancí $\\varepsilon$ pracuje s následujícím algoritmem:\n1. Zvolíme počáteční bod $x_0$ a nastavíme $k = 0$.\n2. Spočteme další bod pomocí derivace funkce:\n$$x_{k+1} = x_k - \\frac{f(x_k)}{f'(x_k)}$$\nJestliže $|x_{k+1} - x_k| < \\varepsilon$ nebo $|f(x_{k+1})| < \\varepsilon$, algoritmus končí a výstup je $x_{k+1}$. Jinak zvýšíme $k$ o jedničku a opakujeme krok 2.\n\nVěta (O konvergenci Newtonovy metody)\nNechť $f$ je funkce spojitá na intervalu $[a, b]$ taková, že $f(a) \\cdot f(b) < 0$. Předpokládejme, že $f$ je na intervalu $(a, b)$ dvakrát spojitě diferencovatelná a $f' \\neq 0, f'' \\neq 0$ na $(a, b)$. Jestliže je $x_0 \\in (a, b)$ zvoleno tak, aby $f(x_0) \\cdot f''(x_0) > 0$, pak posloupnost $\\{x_n\\}$ generovaná Newtonovou metodou konverguje k nějakému kořeni $r \\in [a, b]$ funkce $f$ kvadraticky ($q = 2$).\n\nLidsky: Newtonova metoda je skutečný rychlíkový šampión mezi metodami. Místo propojování dvou bodů jako u sečen jí stačí bod jeden ($x_k$). V tomto bodě spočítá směrnici grafu (derivaci $f'(x_k)$) a vztyčí tečnu. Tam, kde tato tečna protne osu $x$, leží tvůj nový, dramaticky lepší odhad $x_{k+1}$. Aby tato metoda běžela jako hodinky a vykazovala úžasnou kvadratickou konvergenci (kdy se ti v každém kroku zdvojnásobí počet přesných desetinných míst), musíš splnit Fourierovu podmínku: tvůj startovní bod $x_0$ musí mít stejné znaménko jako druhá derivace funkce (což geometricky znamená, že startuješ na té straně, kde se graf funkce zvedá směrem od osy pryč). Pokud navíc funkce v kořeni nemá nulovou derivaci (graf neprobíhá vodorovně), jsi v cíli extrémně rychle."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je to pevný bod funkce, jaká je jeho iterační metoda a jak zní Banachova věta, která zaručuje její úspěch?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení nelineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Je-li dána funkce $\\varphi$, pak jejím $\\textit{pevným bodem}$ rozumíme libovolné číslo $x_f$ splňující:\n$$\\varphi(x_f) = x_f$$\n$\\textit{Iterační metoda pro hledání pevného bodu}$ funguje tak, že zvolíme počáteční odhad $x_0$, nastavíme $k = 0$ a provádíme předpis:\n$$x_{k+1} = \\varphi(x_k)$$\n\n$\\textbf{Definice (Kontrakce).}$ Nechť $\\varphi$ je funkce na intervalu $I$. Řekneme, že je tam kontraktivní nebo že je to $\\textit{kontrakce}$, jestliže existuje konstanta $q < 1$ taková, že pro všechna $x, y \\in I$ platí:\n$$|\\varphi(x) - \\varphi(y)| \\le q \\cdot |x - y|$$\n$\\textbf{Věta (Banachova o pevném bodě).}$ Nechť $\\varphi$ je kontraktivní funkce na intervalu $[a, b]$ s koeficientem $q$ taková, že $\\varphi(I) \\subset I$. Pak v $I$ existuje právě jedno řešení $x_f$ rovnice $\\varphi(x) = x$, přičemž pro všechny volby $x_0 \\in I$ posloupnost $x_{k+1} = \\varphi(x_k)$ konverguje k $x_f$ a platí:\n$$|x_f - x_{k+1}| \\le q |x_f - x_k|$$\n\nLidsky: Pevný bod je takové magické číslo, které když hodíš do funkce, vyjde ti úplně to samé číslo, které jsi do ní vložil (funkce s ním nic neudělá). Hledá se tak, že vezmeš startovní číslo $x_0$, spočítáš jeho funkční hodnotu a tu vezmeš jako nové startovní číslo pro další kolo. Celé to funguje díky Banachově větě. Ta říká, že pokud funkce funguje jako „kontrakce“ – což znamená, že k sobě jakékoliv dva body po zobrazení přiblíží blíž, než byly původně (vzdálenost se smrští s koeficientem $q < 1$) – a zároveň ti výsledky neutíkají mimo tvůj interval, pak tě tenhle kolotoč iterací stoprocentně dotáhne k jednomu jedinému pevnému bodu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Na jakém principu funguje metoda relaxace pro hledání pevného bodu a kdy je metoda obecně považována za konvergentní a stabilní?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení nelineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Metoda relaxace pro hledání pevného bodu}$ upravuje původní iterační funkci $\\varphi$ pomocí relaxačního parametru $\\lambda \\in \\mathbb{R}$. Zavedeme novou funkci:\n$$\\varphi_\\lambda(x) = \\lambda \\varphi(x) + (1 - \\lambda)x$$\nZvolíme počáteční hodnotu pro $\\lambda$ (typicky $0 < \\lambda \\le 1$) a aplikujeme klasickou iterační metodu na příslušnou funkci $\\varphi_\\lambda(x)$. Pokud nejsme s průběhem iterace spokojeni, dokončíme ji a najdeme aproximaci $x_k$ pevného bodu $x_f$. Jinak zopakujeme proces s jiným $\\lambda$.\n\nV kontextu numerického chování platí:\n* Metoda se nazývá $\\textit{konvergentní}$, jestliže se při zvyšování počtu kroků $n$ blížíme s body $y_j$ ke skutečnému řešení.\n* Metoda je $\\textit{stabilní}$, pokud chyby, které se při výpočtech objeví (např. zaokrouhlovací chyby), se v průběhu dalších kroků neposilují (nerostou).\n\nLidsky: Někdy se stane, že klasická metoda pevného bodu divoce skáče sem a tam, nebo dokonce od cíle utíká, protože funkce není dostatečně kontraktivní. V tu chvíli přichází na řadu relaxace. Pomocí parametru $\\lambda$ namícháš mix mezi čistým krokem funkce a původní pozicí. V podstatě tím divoké skoky metody „přibrzdíš“ a zjemníš (zrelaxuješ), aby se proces uklidnil a bezpečně našel správný výsledek. \nObecně v numerické matematice vždycky chceme, aby metoda dělala dvě věci: byla konvergentní (aby s přibývajícími kroky skutečně směřovala ke správnému výsledku) a byla stabilní (aby se drobná zaokrouhlení, kterých v počítači vznikají miliony, nezačala nabalovat jako sněhová koule a na konci ti totálně nezničila výsledek)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak funguje Eulerova metoda pro numerické řešení diferenciálních rovnic?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení diferenciálních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Algoritmus (Eulerova metoda).}$ Eulerova metoda používá aproximaci tečny v okolí $x_j$. Je zadána rovnice $y' = f(x,y)$ na intervalu $[x_0, x_0 + T]$, počáteční podmínka $y_0$ a $n \\in \\mathbb{N}$. Algoritmus probíhá následovně:\n* Nastavíme krok $h = \\frac{T}{n}$ a uzlové body $x_j = x_0 + jh$ pro $j = 1, \\dots, n$.\n* Hodnota $y_0$ je získána ze zadání.\n* Pro $j = 0, \\dots, n - 1$ definujeme další krok předpisem:\n$$y_{j+1} = y_j + f(x_j, y_j) \\cdot h$$\n\nLidsky: Když neumíš diferenciální rovnici vyřešit přesně na papíře, Eulerova metoda ti nabídne nejjednodušší způsob, jak její řešení aspoň přibližně nakreslit krok za krokem na počítači. Představ si, že stojíš na startu v bodě $[x_0, y_0]$ a rovnice $y' = f(x,y)$ ti říká, jakým směrem (pod jakým úhlem) máš vyrazit. Uděláš malý krok o délce $h$ rovně ve směru této tečny a ocitneš se v novém bodě. Tam se znovu podíváš do rovnice, kam máš odbočit, a uděláš další krok. Tímto lineárním „skákáním“ poskládáš z malých úseček přibližný graf celého řešení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kdy je numerická metoda pro řešení Cauchyho úloh považována za konvergentní?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení diferenciálních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Definice (Konvergence metody).}$ Uvažujme nějakou metodu pro řešení Cauchyho úloh na intervalu $[x_0, x_0 + T]$ s přesným řešením $y(x)$. Pro každé zadané $n \\in \\mathbb{N}$ nechť metoda generuje odhady $\\{y_j\\}$ v bodech příslušné sítě $\\{x_j\\}$. Označme globální chybu jako:\n$$E_n = \\max_j |y(x_j) - y_j|$$\nMetoda je $\\textit{konvergentní}$, pokud pro všechny úlohy s Lipschitzovskou funkcí $f$ příslušná chyba splňuje:\n$$\\lim_{n \\to \\infty} E_n = 0$$\n\nLidsky: Konvergence ti dává jistotu, že tvoje numerické snažení má smysl. Říká totiž, že když začneš krok výpočtu $h$ zmenšovat k nule (takže počet kroků $n$ pošleš do nekonečna), tvoje přibližné řešení poskládané z úseček se bude dokonale přimykat k tomu skutečnému, reálnému řešení. Globální chyba $E_n$ je ta vůbec největší odchylka, které ses po cestě dopustil – a u konvergentní metody tato chyba při zjemňování sítě úplně zmizí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak se definuje konzistence a řád numerické metody u diferenciálních rovnic?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení diferenciálních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Definice (Konzistence a řád metody).\nUvažujme jednokrokovou metodu pro řešení Cauchyho úlohy s řešením $y$, dané $n \\in \\mathbb{N}$ s odpovídajícím krokem metody $h$. Pro všechna $j = 1, \\dots, n$ definujeme $\\textit{lokální chybu metody}$ jako $d_j(h) = y(x_j) - y_j$, kde $y_j$ bylo spočítáno metodou s použitím skutečné hodnoty $y(x_{j-1})$ namísto $y_{j-1}$. \nŘekneme, že metoda je $\\textit{konzistentní}$, jestliže pro všechny úlohy platí, že odpovídající lokální chyby splňují:\n$$\\lim_{h \\to 0+} \\left( \\frac{d_j(h)}{h} \\right) = 0$$\nŘekneme, že metoda je $\\textit{řádu } p$ (popř. že má chybu řádu $p$), jestliže platí:\n$$d_j(h) = O(h^{p+1}) \\quad \\text{pro } h \\rightarrow 0$$\n\nLidsky: Lokální chyba $d_j(h)$ je chyba, kterou metoda spáchá během jednoho jediného kroku, i kdyby až do té chvíle měla stoprocentně přesná data. Konzistence znamená, že tato jednokroková chyba padá k nule rychleji než samotná délka kroku $h$. Řád metody $p$ ti pak přesně měří, jak kvalitní ten jeden krok je. Pokud uděláš v jednom kroku chybu, která se chová jako $O(h^{p+1})$, tak po nasčítání přes všechny kroky (kterých je zhruba $\\frac{1}{h}$) bude celková globální chyba metody řádu $p$, tedy $O(h^p)$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaké jsou vlastnosti Eulerovy metody z hlediska konvergence a řádu?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení diferenciálních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Věta (O konvergenci Eulerovy metody)\nEulerova metoda konverguje a je $\\textit{řádu 1}$ pro počáteční úlohy, které mají Lipschitzovskou funkci $f$ a dvakrát spojitě diferencovatelné řešení.\n\nLidsky: Eulerova metoda sice bezpečně konverguje, ale její řád je pouhá 1. To v praxi znamená, že je poměrně pomalá a nepřesná. Když budeš chtít mít výsledek desetkrát přesnější, budeš muset zmenšit krok $h$ na desetinu, což znamená desetkrát víc počítání pro počítač. Naštěstí ale slouží jako skvělý základ pro pokročilejší metody.\n\n---\n\n* **5) Jaké existují modifikace a vylepšení základní Eulerovy metody a co jsou metody Runge-Kutta?**\nOdpověď: V numerické praxi se uplatňují tyto pokročilejší přístupy a $\\textit{metody Runge-Kutta}$:\n* $\\textit{Implicitní Eulerova metoda}$: V algoritmu se na rozdíl od explicitní metody bere funkční hodnota v budoucím bodě $j + 1$.\n* $\\textit{Heunova metoda}$: Vylepšení, které používá odhad $y_{j+1}$ z obyčejné Eulerovy metody a tento odhad v následujících krocích zpřesňuje. Tato metoda je $\\textit{druhého řádu}$ ($p = 2$).\n* $\\textit{Metody Runge-Kutta (RK)}$: Soubor vysoce přesných metod. Využívají stejný princip s aproximací tečny, avšak tato tečna je nejprve v $N$ odhadech předpočítána. Metody jsou běžně druhého řádu (RK2) a čtvrtého řádu (RK4).\n\nLidsky: Obyčejná Eulerova metoda je sice fajn, ale v praxi se kvůli nízké přesnosti moc nepoužívá. Proto lidé vymysleli zlepšováky. Implicitní Eulerova metoda se dívá na sklon grafu ne v bodě, kde stojí, ale v bodě, kam teprve dorazí (musíš kvůli tomu řešit rovnici, ale metoda je extrémně stabilní). Heunova metoda udělá krok dopředu, podívá se na tamní sklon, a pak vezme průměr ze sklonu na začátku a na konci kroku – tím vyskočí na přesnější druhý řád. No a absolutní špičkou jsou metody Runge-Kutta. Ty si v rámci jednoho kroku udělají několik „průzkumných“ polokroků dopředu a do stran, z nich nasbírají informace o tom, jak se graf kroutí, a nakonec udělají jeden fantasticky přesný krok. Nejpopulárnější verze RK4 má řád 4, což znamená, že když zmenšíš krok na polovinu, chyba klesne na skvělou šestnáctinu!"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definována charakteristická rovnice pro lineární ODR s konstantními koeficienty a jaká řešení odpovídají jejím vlastním číslům?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Uvažujme lineární ODR s konstantními koeficienty ($a_j(x) = a_j$) tvaru $a_j y^{(j)} = b(x)$. Její $\\textit{charakteristickou rovnici}$ definujeme jako:\n$$a_n \\lambda^n + a_{n-1} \\lambda^{n-1} \\dots + a_1 \\lambda + a_0 = 0$$\nŘešením této rovnice $\\lambda_j$ se nazývají $\\textit{vlastní čísla}$ dané ODR. \n* Pro jednoduché reálné vlastní číslo $\\lambda_j$ má řešení tvar $y_j(x) = e^{\\lambda_j x}$ a tato řešení definují lineárně nezávislou množinu $\\{e^{\\lambda_j x}\\}$.\n* Je-li vlastní číslo $\\lambda_j$ násobnosti $m$, pak má řešení tvar:\n$$y_j(x) = e^{\\lambda_j x}, x e^{\\lambda_j x}, \\dots, x^{m-1} e^{\\lambda_j x}$$\n* Platí-li, že vlastní čísla jsou komplexně sdružená ve tvaru $\\lambda_j = \\alpha \\pm i\\beta$ (kde $\\beta \\neq 0$), pak má řešení tvar:\n$$y_j(x) = e^{\\alpha x} (\\cos(\\beta x) \\pm i\\sin(\\beta x))$$\n\nLidsky: Když máš rovnici s konstantními koeficienty, můžeš derivace nahradit mocninami neznámé proměnné $\\lambda$. Vznikne ti klasická algebraická rovnice, jejíž kořeny jsou tzv. vlastní čísla. Pokud ti vyjde jedno reálné číslo, řešením je čistá exponenciála. Pokud ti vyjde jeden kořen vícenásobně, nemůžeš mít v sadě stejné funkce, a tak každou další exponenciálu jednoduše pronásobíš ikskem ($x, x^2$ atd.). A když ti vyjdou komplexní čísla, řešení se kvůli Eulerovu vzorci přepíše pomocí sinusů a kosinusů, kde reálná část říká, jak rychle funkce roste či tlumí, a imaginární část určuje rychlost kmitání."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co říká věta o struktuře řešení lineární ODR?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Věta (O struktuře řešení lineární ODR). Nechť $y_p$ je nějaké partikulární řešení dané lineární ODR na otevřeném intervalu $I$. Funkce $y(x)$ je řešením této rovnice na $I$ právě tehdy, pokud:\n$$y = y_h + y_p$$\nkde $y_h$ je nějaké přidružené homogenní řešení na $I$. Z čehož vyplývá, že je-li $y_h$ nějaké obecné řešení přidružené homogenní rovnice na $I$, pak $y = y_h + y_p$ je obecné řešení dané rovnice na $I$.\n\nLidsky: Tahle věta ti dává návod, jak poskládat kompletní řešení rovnice, která má na pravé straně nějakou nenulovou funkci. Říká, že ti stačí najít jedno jediné konkrétní řešení pro tu pravou stranu (partikulární řešení $y_p$) a k němu přičíst obecné řešení verze s nulou na pravé straně ($y_h$). Spojením těchto dvou částí získáš kompletní a obecné řešení původní rovnice."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak zní věta o odhadu řešení pro speciální pravou stranu?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Věta (O odhadu řešení pro speciální pravou stranu).\nUvažujeme lineární ODR řádu $n$ s konstantními koeficienty, kde pravá strana $b(x)$ má speciální tvar:\n$$a_j y^{(j)} = e^{\\alpha x} (P(x) \\cos(\\beta x) + Q(x) \\sin(\\beta x))$$\npro polynomy $P(x)$, $Q(x)$. Označme $d = \\max(\\text{ord}(P), \\text{ord}(Q))$, kde $\\text{ord}()$ značí stupeň polynomu. Nechť $m \\ge 1$ je násobnost vlastního čísla $\\lambda_j = \\alpha \\pm i\\beta$. Pak existují polynomy $p(x)$ a $q(x)$ stupně nejvýše $d$ takové, že:\n$$y(x) = x^m e^{\\alpha x} (p(x) \\cos(\\beta x) + q(x) \\sin(\\beta x))$$\nje řešení dané rovnice na $\\mathbb{R}$.\n\nLidsky: Když máš na pravé straně kombinaci exponenciály, polynomů a goniometrických funkcí, nemusíš řešení složitě hádat. Bude mít totiž velmi podobnou strukturu jako samotná pravá strana. Podíváš se na polynomy $P(x)$ a $Q(x)$ a vezmeš ten, který má vyšší stupeň ($d$). Zároveň zkontroluješ, jestli číslo vytvořené z pravé strany ($\\alpha \\pm i\\beta$) není kořenem charakteristické rovnice. Pokud ano a je $m$-násobným kořenem (dochází k rezonanci), musíte celý odhad ještě vynásobit $x^m$. Věta ti zaručuje, že partikulární řešení bude mít tento přesný tvar, kde ti pak stačí už jen dopočítat koeficienty nových polynomů $p(x)$ a $q(x)$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definována soustava lineárních ODR 1. řádu s konstantními koeficienty a jaký je její vztah k jedné ODR vyššího řádu?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Soustava lineárních ODR 1. řádu s konstantními koeficienty}$ je soustava tvaru:\n$$\\begin{pmatrix} y_1' \\\\ \\vdots \\\\ y_n' \\end{pmatrix} = \\begin{pmatrix} a_{11} & a_{12} & \\dots & a_{1s} \\\\ a_{21} & a_{22} & \\dots & a_{2s} \\\\ \\vdots & & \\ddots & \\vdots \\\\ a_{r1} & a_{r2} & \\dots & a_{rs} \\end{pmatrix} \\begin{pmatrix} y_1(x) \\\\ \\vdots \\\\ y_n(x) \\end{pmatrix} + \\begin{pmatrix} b_1(x) \\\\ \\vdots \\\\ b_n(x) \\end{pmatrix}$$\nzkráceně zapsáno jako $\\mathbf{y}' = \\mathbf{A}\\mathbf{y}(x) + \\mathbf{b}(x)$, kde zpravidla $r = s$, $a_{jk} \\in \\mathbb{R}$ a $b_j(x)$ jsou pravé strany. Soustava je homogenní, pokud $\\mathbf{b}(x) = \\mathbf{o}$.\nPlatí následující $\\textit{Fakt}$: Každou soustavu $n$ lineárních rovnic 1. řádu lze eliminací převést ekvivalentně na jednu lineární ODR řádu $n$ a obráceně.\n\nLidsky: Místo jedné rovnice máš celou skupinu rovnic, kde se navzájem míchají derivace různých neznámých funkcí, což se dá zapsat pomocí matic a vektorů. Pokud jsou na pravé straně samé nuly, je soustava homogenní. Ukazuje se, že mít víc provázaných rovnic jen s prvními derivacemi vyjde matematicky nastejno, jako mít jednu složitější rovnici s vysokou ($n$-tou) derivací. Pomocí dosazování a vyjadřování (eliminace) můžeš mezi těmito dvěma světy libovolně přecházet."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co říká věta o existenci a jednoznačnosti a jaká je struktura řešení pro homogenní i nehomogenní soustavy?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Věta (O existenci a jednoznačnosti pro soustavy).}$ Uvažujme soustavu lineárních ODR 1. řádu. Jsou-li funkce $b_j(x)$ spojité na otevřeném intervalu $I$, pak pro každé $x_0 \\in I$ a všechna $y_{0,j} \\in \\mathbb{R}$ existuje řešení příslušné Cauchyho úlohy na intervalu $I$ a je jednoznačné.\n\n$\\textbf{Věta (O struktuře množiny řešení pro homogenní soustavy).}$ Množina všech řešení soustavy $\\mathbf{y}' = \\mathbf{A}\\mathbf{y}$ (kde $\\mathbf{A} : \\mathbb{R}^n \\longrightarrow \\mathbb{R}^n$) na otevřeném intervalu $I$ tvoří vektorový prostor dimenze $n$. Libovolná báze tohoto prostoru se nazývá $\\textit{fundamentální systém řešení}$ a matice vytvořená z těchto sloupcových řešení je $\\textit{fundamentální matice}$ $\\mathbf{Y}(x) = (\\mathbf{y}_1 \\ \\dots \\ \\mathbf{y}_n)$. Obecné homogenní řešení je pak $\\mathbf{y}_h(x) = \\mathbf{Y} \\cdot \\mathbf{c}$, pro $\\mathbf{c} \\in \\mathbb{R}^n$.\n\n$\\textbf{Věta (O struktuře řešení pro soustavy).}$ Je-li $\\mathbf{y}_p$ nějaké partikulární řešení nehomogenní soustavy $\\mathbf{y}' = \\mathbf{A}\\mathbf{y}(x) + \\mathbf{b}(x)$ na intervalu $I$, pak množina všech jejích řešení na $I$ je ve tvaru $\\{\\mathbf{y}_p + \\mathbf{y}_h\\}$, kde $\\mathbf{y}_h$ je řešením homogenní soustavy $\\mathbf{y}' = \\mathbf{A}\\mathbf{y}$.\n\nLidsky: Pokud jsou pravé strany spojité, máš garantováno, že pro jakékoliv počáteční podmínky existuje přesně jedno správné řešení. U homogenní soustavy (bez pravé strany) tvoří řešení čistý vektorový prostor, který drží pohromadě přesně $n$ základních nezávislých řešení. Když je dáš vedle sebe do matice $\\mathbf{Y}(x)$, obecné řešení získáš pouhým vynásobením této matice vektorem konstant. U nehomogenní soustavy (s pravou stranou) je princip stejný jako dřív: najdeš jedno konkrétní řešení pro pravou stranu ($\\mathbf{y}_p$) a k němu přičteš obecné řešení verze s nulou ($\\mathbf{y}_h$)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak se konstruuje řešení homogenní soustavy pomocí vlastních čísel a vlastních vektorů matice $\\mathbf{A}$?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textbf{Věta.}$ Uvažujme soustavu lineárních ODR $\\mathbf{y}' = \\mathbf{A}\\mathbf{y}$, kde $\\mathbf{A} : \\mathbb{R}^n \\longrightarrow \\mathbb{R}^n$ je matice. Jestliže $\\lambda$ je vlastní číslo matice $\\mathbf{A}$ s vlastním vektorem $\\mathbf{v}$, pak:\n$$\\mathbf{y}_j = \\mathbf{v}e^{\\lambda x}$$\nje řešením dané soustavy na $\\mathbb{R}$. Jsou-li $\\lambda_j$ různá čísla, pak odpovídající řešení tvoří lineárně nezávislou množinu.\n\nLidsky: Hledání řešení soustavy se dá elegantně převést na čistou maticovou algebru. Najdeš vlastní čísla $\\lambda$ a k nim příslušné vlastní vektory $\\mathbf{v}$ matice koeficientů $\\mathbf{A}$. Každá taková dvojice ti okamžitě vyrobí jedno řešení ve tvaru vektoru vynásobeného exponenciálou. Pokud máš štěstí a získáš dostatek různých vlastních čísel, poskládáš z nich celý fundamentální systém."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Na jakém principu fungují Newtonovy-Cotesovy metody numerické integrace a jaké jsou základní typy?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Newtonovy-Cotesovy metody}$ numerické integrace jsou založeny na aproximaci funkce pomocí polynomů a využívají ekvidistantní (rovnoměrné) rozvržení uzlových bodů. Existují dva hlavní druhy metod, otevřené a uzavřené, v závislosti na zahrnutí krajních bodů do integrace. Základem uzavřených metod je volba parametru $n \\in \\mathbb{N}$. Interval $[a,b]$ se rozdělí na $n$ stejných úseků o velikosti $h = \\frac{b - a}{n}$, což je $\\textit{krok metody}$.\n\n* $\\textit{Obdélníková metoda}$ (nahrazení funkcí konstantou): Na každém intervalu $[x_{j-1}, x_j]$ nahradíme funkci vhodně zvolenou konstantou vybranou podle $f$ v rámci tohoto intervalu (např. spodní nebo horní hranice). Obě jsou lineárního řádu chyb:\n$$I = h \\sum_{j=0}^{n-1} f(a + hj) + O(h)$$\n* $\\textit{Lichoběžníková metoda}$ (aproximace úsečkou): Vede z krajních bodů intervalů a její chyba je řádu $O(h^2)$:\n$$I = h \\left( \\frac{n-1}{\\sum_{j=0}} f(x_j) + \\frac{n}{\\sum_{j=1}} f(x_j) \\right) + O(h^2)$$\n\nLidsky: Když neumíš integrovat funkci analyticky, Newtonovy-Cotesovy metody ti dovolí spočítat obsah plochy pod grafem tak, že interval rozdělíš na stejně široké proužky (o šířce $h$). U obdélníkové metody ten proužek nahoře zarovnáš do rovné přímky (konstanty) a spočítáš obsah obyčejného obdélníku. Je to jednoduché, ale méně přesné (chyba klesá jen lineárně s $h$). U lichoběžníkové metody propojíš krajní body proužku šikmou úsečkou, čímž vznikne lichoběžník, který mnohem lépe kopíruje prohnutý graf, a přesnost výpočtu rázem vyskočí na druhou mocninu ($O(h^2)$)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je to Simpsonova metoda a jak se liší Gaussova metoda numerické integrace?",
+      "subsetPath": [
+        "DRN",
+        "Numerické řešení integrace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$\\textit{Simpsonova metoda}$ je pokročilejší řešení pro numerickou integraci, kde pokud je $n$ sudé, lze aproximovat dvojici intervalů za pomocí paraboly. Tato metoda má řád chyby $O(h^4)$. Modifikací tohoto způsobu je $\\textit{Simpsonovo 3/8 pravidlo}$, které používá aproximaci přes tři intervaly neboli čtyři body pomocí kubické křivky.\n\n$\\textit{Gaussova metoda}$ je založena na neekvidistantním (nerovnoměrném) dělení intervalu. Členy v sumaci jsou váhovány váhovými koeficienty $w_n$ a rozdělení bodů se bere podle kořenů zvolených polynomů (Legendrovy polynomy, Čebyševovy polynomy atd.). Hlavní výhoda těchto metod je možnost použití menšího počtu bodů k dosažení dobrých výsledků než u předchozích metod.\n\nLidsky: Simpsonova metoda jde ještě dál než lichoběžníky. Místo propojování bodů přímkami prokládá body ladné křivky – paraboly (pro dva intervaly) nebo kubické křivky (u 3/8 pravidla). Díky tomu, že perfektně sedí na zaoblené grafy, dosahuje fantastické přesnosti s chybou $O(h^4)$. \nVšechny předchozí metody dělily interval striktně na stejně široké kousky. Gaussova metoda na to jde chytřeji: body si na intervalu rozestaví schválně nerovnoměrně (podle speciálních matematických polynomů) tam, kde je to pro výpočet nejefektivnější. Každému bodu pak dá jinou váhu (důležitost). Výsledkem je, že ti stačí mnohem méně bodů a méně počítání k tomu, abys dostal neuvěřitelně přesný výsledek."
+        }
+      ]
+    }
+  ]
+}

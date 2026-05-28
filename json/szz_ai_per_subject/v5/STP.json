@@ -1,0 +1,187 @@
+{
+  "title": "Statistika a pravděpodobnost (STP)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Náhodná veličina",
+      "subsetPath": [
+        "STP",
+        "Náhodná veličina a náhodný vektor"
+      ],
+      "answer_parts": [
+        {
+          "text": "Náhodná veličina $X$ je měřitelné zobrazení $X: (\\Omega, \\mathcal{A}) \\to (\\mathbb{R}, \\mathcal{B})$, které náhodnému jevu přiřazuje reálné číslo."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Distribuční funkce náhodné veličiny",
+      "subsetPath": [
+        "STP",
+        "Náhodná veličina a náhodný vektor"
+      ],
+      "answer_parts": [
+        {
+          "text": "Reálná funkce $F_X(x) = P(X \\le x)$ definovaná pro $x \\in \\mathbb{R}$. Je neklesající, zprava spojitá a platí $\\lim_{x \\to -\\infty} F_X(x) = 0$ a $\\lim_{x \\to \\infty} F_X(x) = 1$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozptyl náhodné veličiny",
+      "subsetPath": [
+        "STP",
+        "Číselné charakteristiky"
+      ],
+      "answer_parts": [
+        {
+          "text": "Druhý centrální moment definovaný jako $\\mathrm{var}(X) = E(X^2) - (EX)^2 = \\sigma^2$. Vyjadřuje míru variability náhodné veličiny."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Korelace náhodných veličin",
+      "subsetPath": [
+        "STP",
+        "Náhodný vektor"
+      ],
+      "answer_parts": [
+        {
+          "text": "Korelační matice s prvky $\\mathrm{corr}(X_j, X_k) = \\dfrac{\\mathrm{cov}(X_j, X_k)}{\\sqrt{\\mathrm{var}\\,X_j \\cdot \\mathrm{var}\\,X_k}}$ představuje normovanou kovarianci. Hodnoty nabývá v intervalu $[-1, 1]$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Centrální limitní věta",
+      "subsetPath": [
+        "STP",
+        "Statistické věty"
+      ],
+      "answer_parts": [
+        {
+          "text": "Tvrzení, že náhodná veličina vzniklá jako součet velkého počtu nezávislých, stejně rozdělených náhodných veličin má asymptoticky normální rozdělení $N(\\mu, \\sigma^2)$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metoda maximální věrohodnosti",
+      "subsetPath": [
+        "STP",
+        "Statistické odhady"
+      ],
+      "answer_parts": [
+        {
+          "text": "Metoda odhadu parametru $\\theta$ na základě věrohodnostní funkce $L(\\theta) = \\prod P(X_i = x_i)$. Parametr $\\theta$ se získá jako řešení rovnice $\\dfrac{d}{d\\theta}(\\ln L(\\theta)) = 0$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Chí-kvadrát test dobré shody",
+      "subsetPath": [
+        "STP",
+        "Testování hypotéz"
+      ],
+      "answer_parts": [
+        {
+          "text": "Testuje shodu skutečných četností s očekávanými pravděpodobnostmi. Vypočte se hodnota $\\chi^2 = \\sum \\dfrac{(X_j - n\\,p_j)^2}{n\\,p_j}$. Pokud $\\chi^2 > \\chi^2_{1-\\alpha,\\, k-1}$, hypotézu $H_0$ zamítáme."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastnosti distribuční funkce",
+      "subsetPath": [
+        "STP",
+        "Náhodná veličina a náhodný vektor"
+      ],
+      "answer_parts": [
+        {
+          "text": "Distribuční funkce $F_X(x)$ je neklesající, zprava spojitá, $\\lim_{x \\to -\\infty} F_X(x) = 0$ a $\\lim_{x \\to \\infty} F_X(x) = 1$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hustota pravděpodobnosti spojité náhodné veličiny",
+      "subsetPath": [
+        "STP",
+        "Náhodná veličina a náhodný vektor"
+      ],
+      "answer_parts": [
+        {
+          "text": "Nezáporná integrovatelná funkce $f_X$, pro kterou platí $F_X(x) = \\int_{-\\infty}^{x} f_X(t)\\, dt$ a $\\int_{-\\infty}^{\\infty} f_X(x)\\, dx = 1$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Střední hodnota náhodné veličiny",
+      "subsetPath": [
+        "STP",
+        "Číselné charakteristiky"
+      ],
+      "answer_parts": [
+        {
+          "text": "Definována jako $EX = \\int_{-\\infty}^{\\infty} x\\, f_X(x)\\, dx$ (pro spojité rozdělení)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kovariační matice",
+      "subsetPath": [
+        "STP",
+        "Náhodný vektor"
+      ],
+      "answer_parts": [
+        {
+          "text": "Matice $n \\times n$, kde na diagonále jsou variance jednotlivých veličin a prvky mimo diagonálu jsou $\\mathrm{cov}(X_j, X_k) = E[(X_j - EX_j)(X_k - EX_k)]$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výběrový průměr a výběrový rozptyl",
+      "subsetPath": [
+        "STP",
+        "Statistické odhady"
+      ],
+      "answer_parts": [
+        {
+          "text": "Výběrový průměr $\\bar{X}_n = \\dfrac{1}{n} \\sum X_j$ a výběrový rozptyl $S_n^2 = \\dfrac{1}{n-1} \\sum (X_j - \\bar{X}_n)^2$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Studentovo t-rozdělení",
+      "subsetPath": [
+        "STP",
+        "Statistické testování"
+      ],
+      "answer_parts": [
+        {
+          "text": "Náhodná veličina $Z = X / \\sqrt{Y/n}$, kde $X$ má rozdělení $N(0,1)$ a $Y$ má rozdělení $\\chi^2$ o $n$ stupních volnosti."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jednovýběrový t-test",
+      "subsetPath": [
+        "STP",
+        "Testování hypotéz"
+      ],
+      "answer_parts": [
+        {
+          "text": "Testuje hypotézu $H_0: \\mu = \\mu_0$. Vypočte se $T_0 = (\\bar{X}_n - \\mu_0) / (S_n / \\sqrt{n})$. Pokud $T_0 \\ge t_{1-\\alpha,\\, n-1}$, hypotézu $H_0$ zamítáme."
+        }
+      ]
+    }
+  ]
+}

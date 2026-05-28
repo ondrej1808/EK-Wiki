@@ -1,0 +1,1013 @@
+{
+  "title": "$Created with cards_creator - FY1$",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Co je to hmotný bod?",
+      "subsetPath": [
+        "FY1",
+        "Kinematika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice hmotného bodu",
+          "text": "Je to idealizovaný objekt, u kterého zanedbáváme jeho skutečné rozměry a tvar, ale ponecháváme mu jeho hmotnost.\n\nTento model můžeme použít v situacích, kdy jsou rozměry tělesa zanedbatelné vzhledem ke vzdálenostem, které urazí, nebo vzhledem k rozměrům prostoru, ve kterém se pohybuje (např. Země obíhající kolem Slunce se chová jako hmotný bod, přestože je obrovská).",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definován polohový vektor a jaké jsou jeho složky v kartézské soustavě?",
+      "subsetPath": [
+        "FY1",
+        "Kinematika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "Polohový vektor a jeho složky",
+          "text": "Polohový vektor $\\vec{r}$ určuje polohu hmotného bodu v prostoru vzhledem k vybranému počátku souřadnicové soustavy.\n\nV kartézské soustavě souřadnic ho zapisujeme ve tvaru:\n$$$\\vec${r} = x$\\vec${i} + y$\\vec${j} + z$\\vec${k} = (x, y, z)$$\n\nKde:\n- $x(t), y(t), z(t)$ jsou časově závislé souřadnice bodu\n- $\\vec{i}, \\vec{j}, \\vec{k}$ jsou jednotkové vektory ve směru souřadnicových os $x, y, z$",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definován vektor okamžité rychlosti a jaký má směr vůči trajektorii?",
+      "subsetPath": [
+        "FY1",
+        "Kinematika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "Okamžitá rychlost",
+          "text": "Okamžitá rychlost $\\vec{v}$ je definována jako první časová derivace polohového vektoru $\\vec{r}$ podle času $t$:\n$$$\\vec${v} = $\\frac${$\\mathrm${d}$\\vec${r}}{$\\mathrm${d}t} = $\\dot${$\\vec${r}}$$\n\nVlastnosti:\n- Je to vektorová veličina vyjadřující rychlost změny polohy.\n- Směr vektoru okamžité rychlosti je v každém bodě **vždy tečný k trajektorii** pohybu a orientovaný ve směru pohybu.",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak je definováno okamžité zrychlení a na jaké dvě základní složky ho rozkládáme?",
+      "subsetPath": [
+        "FY1",
+        "Kinematika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "Okamžité zrychlení a jeho složky",
+          "text": "Okamžité zrychlení $\\vec{a}$ je definováno jako první časová derivace rychlosti $\\vec{v}$ (nebo druhá časová derivace polohového vektoru $\\vec{r}$):\n$$$\\vec${a} = $\\frac${$\\mathrm${d}$\\vec${v}}{$\\mathrm${d}t} = $\\frac${$\\mathrm${d}^2$\\vec${r}}{$\\mathrm${d}$t^2}$ = $\\ddot${$\\vec${r}}$$\n\nRozkládáme ho na:\n- **Tečné zrychlení ($a_t$):** $\\vec{a}_t = \\frac{\\mathrm{d}v}{\\mathrm{d}t}\\vec{\\tau}$ (mění pouze *velikost* rychlosti, leží v tečně k trajektorii)\n- **Normálové zrychlení ($a_n$):** $\\vec{a}_n = \\frac{v^2}{R}\\vec{n}$ (mění pouze *směr* rychlosti, směřuje do středu křivosti trajektorie o poloměru $R$)",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaký je rozdíl mezi dráhou hmotného bodu a jeho posunutím?",
+      "subsetPath": [
+        "FY1",
+        "Kinematika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "Srovnání dráhy a posunutí",
+          "text": "- **Dráha ($s$):**\n  - Skalární veličina vyjadřující celkovou délku trajektorie, kterou bod urazil.\n  - V čase je monotónně neklesající ($s \\ge 0$).\n\n- **Posunutí ($\\Delta \\vec{r}$):**\n  - Vektorová veličina definovaná jako rozdíl koncového a počátečního polohového vektoru: $\\Delta \\vec{r} = \\vec{r}_2 - \\vec{r}_1$\n  - Závisí pouze na počáteční a koncové poloze, nikoliv na reálném tvaru dráhy mezi nimi.",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak zní 1. Newtonův pohybový zákon a za jakých podmínek platí?",
+      "subsetPath": [
+        "FY1",
+        "Dynamika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "1. Newtonův zákon (Zákon setrvačnosti)",
+          "text": "Každé těleso setrvává v klidu nebo v rovnoměrném přímočarém pohybu, pokud není nuceno vnějšími silami tento stav změnit.\n\n$$$\\sum$ $\\vec${F} = 0 $\\implies$ $\\vec${v} = $\\text${konst.}$$ \n\n**Klíčové aspekty:**\n- Definuje **inerciální vztažné soustavy**, ve kterých tento zákon platí.\n- Tělesa mají vlastnost zvanou **setrvačnost**, což je odpor tělesa vůči změně jeho pohybového stavu. Mírou této setrvačnosti je hmotnost $m$.",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak zní 2. Newtonův pohybový zákon a jak definuje vztah mezi silou a hybností?",
+      "subsetPath": [
+        "FY1",
+        "Dynamika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "2. Newtonův zákon (Zákon síly)",
+          "text": "Časová změna hybnosti tělesa je úměrná výsledné působící síle a má s ní stejný směr.\n\n$$$\\vec${F} = $\\frac${$\\mathrm${d}$\\vec${p}}{$\\mathrm${d}t}$$\n\nPokud je hmotnost tělesa konstantní ($m = \\text{konst.}$), zákon přechází do známého tvaru:\n$$$\\vec${F} = m $\\frac${$\\mathrm${d}$\\vec${v}}{$\\mathrm${d}t} = m$\\vec${a}$$\n\n**Klíčové aspekty:**\n- Síla $\\vec{F}$ je příčinou zrychlení $\\vec{a}$, nikoliv pohybu samotného.\n- Jednotkou síly je Newton: $[F] = \\mathrm{kg \\cdot m \\cdot s^{-2}} = \\mathrm{N}$.",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak zní 3. Newtonův pohybový zákon a jaké jsou vlastnosti dvojice sil akce a reakce?",
+      "subsetPath": [
+        "FY1",
+        "Dynamika hmotného bodu"
+      ],
+      "answer_parts": [
+        {
+          "title": "3. Newtonův zákon (Zákon akce a reakce)",
+          "text": "Dvě tělesa na sebe působí stejně velkými silami opačného směru. Působení těles je vždy vzájemné.\n\n$$$\\vec${F}_{12} = -$\\vec${F}_{21}$$\n\n**Vlastnosti akce a reakce:**\n- Vznikají a zanikají **současně**.\n- Mají stejnou fyzikální podstatu.\n- **Neruší se**, protože každá z těchto sil působí na **jiné těleso** (nelze je tedy sčítat do jednoho výsledného bodu).",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "",
+            "imageSrc": null,
+            "raw": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mechanická práce",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Mechanická práce je definována jako integrál síly po křivce pohybu:\n\n$$A = $\\int$_{$\\gamma$} $\\mathbf${F} $\\cdot$ d$\\mathbf${l} = $\\int$ (F_x dx + F_y dy + F_z dz)$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vztah potenciální energie a síly v konzervativním poli",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "V konzervativním poli lze sílu vyjádřit jako záporný gradient potenciální energie:\n\n$$$\\mathbf${F} = -$\\nabla$ W_p$$\n\nIntegrál síly závisí pouze na krajních bodech a integrál po uzavřené křivce je nulový."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kinetická energie",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kinetická energie hmotného bodu je definována vztahem:\n\n$$W_k = $\\frac${1}{2}m$v^2$$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zákon zachování mechanické energie",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "V konzervativním poli platí, že součet kinetické a potenciální energie se zachovává (je konstantní):\n\n$$W_k + W_p = $\\text${const.}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hybnost a její zákon zachování",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Hybnost je definována jako součin hmotnosti a rychlosti:\n$$$\\mathbf${p} = m$\\mathbf${v}$$\n\nPohybová rovnice vyjádřená pomocí hybnosti:\n$$$\\frac${d$\\mathbf${p}}{dt} = $\\mathbf${F}$$\n\n**Zákon zachování:** V izolované soustavě (bez vnějších sil) se celková hybnost zachovává."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Moment síly",
+      "subsetPath": [
+        "FY1",
+        "Rotační pohyb a tuhé těleso"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Moment síly vyjadřuje otáčivý účinek síly vzhledem k bodu nebo ose. Je definován jako vektorový součin polohového vektoru a působící síly:\n\n$$$\\mathbf${M} = $\\mathbf${r} $\\times$ $\\mathbf${F}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Moment hybnosti",
+      "subsetPath": [
+        "FY1",
+        "Rotační pohyb a tuhé těleso"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Moment hybnosti charakterizuje rotační pohybový stav tělesa. \n\nDefinační vztah:\n$$$\\mathbf${L} = $\\mathbf${r} $\\times$ m$\\mathbf${v}$$\n\nPohybová rovnice pro rotaci (změna momentu hybnosti v čase):\n$$$\\frac${d$\\mathbf${L}}{dt} = $\\mathbf${M}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zákon zachování momentu hybnosti",
+      "subsetPath": [
+        "FY1",
+        "Rotační pohyb a tuhé těleso"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Je-li výsledný moment vnějších sil působících na soustavu nulový ($\\mathbf{M} = 0$), celkový moment hybnosti se zachovává ($\\mathbf{L} = \\text{const.}$).\n\n**Důsledek:** Odtud plyne Keplerův zákon ploch – průvodič tělesa opíše za stejné časy stejné plochy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Moment setrvačnosti a rotační rovnice",
+      "subsetPath": [
+        "FY1",
+        "Rotační pohyb a tuhé těleso"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Moment setrvačnosti $I$ představuje analogii hmotnosti pro rotační pohyb.\n\nVýpočet pro soustavu hmotných bodů:\n$$I = $\\sum$_{i} m_i r_$i^2$$$\n\nKinetická energie rotačního pohybu:\n$$E_$k^{$$\\text${rot}} = $\\frac${1}{2}I$\\omega$^2$$\n\nPohybová rovnice rotace (analogie $F = ma$):\n$$M = I$\\alpha$$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Tlumené kmity",
+      "subsetPath": [
+        "FY1",
+        "Rotační pohyb a tuhé těleso"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Mechanické kmitání, u kterého dochází ke ztrátám energie vlivem odporu prostředí.\n\nČasový průběh výchylky:\n$$$x(t)$ = A_0 $e^{$-$\\delta$ t} $\\cos$($\\omega$ t)$$\nAmplituda výchylky klesá exponenciálně.\n\nPokles celkové energie v čase:\n$$$E(t)$ = E_0 $e^{$-2$\\delta$ t}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zobecněné souřadnice",
+      "subsetPath": [
+        "FY1",
+        "Analytická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zobecněné souřadnice jsou jakékoli parametry popisující stav systému (např. úhly, vzdálenosti, plochy).\n\nOznačení:\n$$$\\mathbf${q} = (q_1, $\\dots$, q_f)$$\nkde $f$ představuje počet stupňů volnosti.\n\n**Výhoda:** Na rozdíl od Newtonových rovnic vázaných na kartézské souřadnice umožňuje analytická mechanika formulovat pohyb v libovolných souřadnicích a automaticky respektuje vazby."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hamiltonův princip nejmenší akce",
+      "subsetPath": [
+        "FY1",
+        "Analytická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Globální pohled na mechaniku, podle kterého se ze všech myslitelných trajektorií v přírodě realizuje ta, pro kterou je integrál akce extremální:\n\n$$$S(t_A, t_B)$ = $\\int$_{t_A}^{t_B} $L(t, \\mathbf{q}, \\dot{\\mathbf{q}})$ \\, dt = $\\text${extrém}$$\n\nkde $L$ je Lagrangeova funkce (lagranžián)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lagrangeovy rovnice druhého druhu",
+      "subsetPath": [
+        "FY1",
+        "Analytická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Konkrétní pohybové rovnice plynoucí z Hamiltonova principu (jedna rovnice pro každou zobecněnou souřadnici). Pro mechanický systém platí:\n\n$$$\\frac${d}{dt} $\\left$( $\\frac${$\\partial$ L}{$\\partial$ $\\dot${q}_k} $\\right$) - $\\frac${$\\partial$ L}{$\\partial$ q_k} = 0, $\\quad$ k = 1, $\\dots$, N$$\n\nkde $L = T - V$ (rozdíl kinetické a potenciální energie).\n\n*Poznámka:* V kartézských souřadnicích tyto rovnice přejdou přímo do Newtonových pohybových rovnic."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lagrangeův popis matematického kyvadla",
+      "subsetPath": [
+        "FY1",
+        "Analytická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Příklad aplikace Lagrangeových rovnic pro matematické kyvadlo se zobecněnou souřadnicí $q = \\varphi$:\n\n- **Kinetická energie:** $T = \\frac{1}{2}m l^2 \\dot{\\varphi}^2$\n- **Potenciální energie:** $V = mgl(1 - \\cos\\varphi)$\n\nVýsledná **Lagrangeova pohybová rovnice**:\n$$$\\ddot${$\\varphi$} + $\\frac${g}{l}$\\sin$$\\varphi$ = 0$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Postuláty speciální teorie relativity",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Speciální teorie relativity (STR) stojí na dvou základních pilířích:\n\n1. **Konstantní rychlost světla:** Rychlost světla ve vakuu je ve všech inerciálních soustavách stejná:\n   $$c = $\\frac${1}{$\\sqrt${$\\varepsilon$_0$\\mu$_0}}$$\n2. **Princip relativity:** Ve všech inerciálních soustavách probíhají fyzikální děje stejně – platí pro ně stejné fyzikální zákony."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lorentzův faktor",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kvantitativní koeficient vyjadřující míru relativistických změn (dilatace času, kontrakce délek) v závislosti na rychlosti $v$:\n\n$$$\\gamma$ = $\\frac${1}{$\\sqrt${1 - $v^2$/$c^2}}$$$\n\n*Poznámka:* Pro běžné nízké rychlosti ($v \\ll c$) platí $\\gamma \\approx 1$, čímž se relativistické vztahy redukují zpět na klasickou mechaniku."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Relativistické skládání rychlostí",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Klasické skládání $u' = u \\pm v$ v STR neplatí a nahrazuje se relativistickým vztahem:\n\n$$u' = $\\frac${u $\\pm$ v}{1 $\\pm$ $\\frac${uv}{$c^2}}$$$\n\n**Důsledek:** Pokud dosadíme $u = v = c$, výsledkem je opět $c$. Rychlost světla ve vakuu nelze překročit."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lorentzova transformace",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Transformační vztahy pro souřadnice událostí mezi inerciální soustavou $S$ a soustavou $\\bar{S}$, která se vůči $S$ pohybuje rychlostí $v$ podél osy $x$:\n\n$$$\\bar${x} = $\\gamma$(x - vt)$$\n$$$\\bar${t} = $\\gamma$$\\left$(t - $\\frac${vx}{$c^2}$$\\right$)$$\n$$$\\bar${y} = y, $\\quad$ $\\bar${z} = z$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Dilatace času",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Relativistický jev, při kterém hodiny pohybující se vzhledem k pozorovateli jdou pomaleji než hodiny, které jsou vůči němu v klidu.\n\nVe vlastní soustavě plyne čas nejpomaleji:\n\n$$$\\Delta$ t = $\\gamma$ $\\Delta$ t_0$$\n\nkde $\\Delta t_0$ je vlastní čas (měřený v klidové soustavě události) a $\\Delta t$ je čas měřený v pohybující se soustavě."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kontrakce délek",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Relativistický jev, při kterém se délka tělesa ve směru jeho pohybu zkracuje vzhledem k pozorovateli, vůči němuž se těleso pohybuje. Těleso je nejdelší ve vlastní soustavě.\n\nVztah pro kontrakci délek:\n$$l = $\\frac${l_0}{$\\gamma$}$$\n\n**Příklad:** Vlak o vlastní délce $l_0 = 100\\text{ m}$ jedoucí rychlostí $v = 0{,}6c$ (kde Lorentzův faktor $\\gamma = 1{,}25$) se statickému pozorovateli jeví zkrácený na $l = 80\\text{ m}$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Časoprostorový interval a jeho invariance",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Časoprostorový interval $\\Delta s^2$ vyjadřuje geometrickou vzdálenost mezi dvěma událostmi v časoprostoru. Je invariantní, což znamená, že má stejnou hodnotu ve všech inerciálních soustavách.\n\nMatematické vyjádření:\n$$$\\Delta$ $s^2$ = -$c^2$$\\Delta$ $t^2$ + $\\Delta$ $x^2$ + $\\Delta$ $y^2$ + $\\Delta$ $z^2$$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kauzální klasifikace časoprostorových intervalů",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Podle znaménka časoprostorového intervalu $\\Delta s^2$ dělíme vztahy mezi událostmi na tři typy:\n\n* **$\\Delta s^2 < 0$ (Časového charakteru – Kauzálně spojené):** Příčina předchází následku ve všech inerciálních soustavách.\n* **$\\Delta s^2 = 0$ (Světelného charakteru – Spojené světlem):** Informace mezi událostmi se šíří právě rychlostí světla $c$.\n* **$\\Delta s^2 > 0$ (Prostorového charakteru – Nekauzální):** Události jsou prostorově oddělené, žádná nemůže způsobit druhou."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Relativistická hmotnost a energie",
+      "subsetPath": [
+        "FY1",
+        "Relativistická mechanika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Základní energetické vztahy v relativistické mechanice:\n\n* **Relativistická hmotnost:** $m = \\gamma m_0$ (závisí na rychlosti, $m_0$ je klidová hmotnost).\n* **Celková energie:** Vyjádřená pomocí hybnosti $p$ splňuje vztah $E^2 = m_0^2 c^4 + p^2 c^2$.\n* **Kinetická energie:** Je dána rozdílem celkové a klidové energie:\n    $$W_k = m $c^2$ - m_0 $c^2$$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rovnice rovnováhy kontinua",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kontinuum (pevná látka, tekutina) je v rovnováze, pokud je v rovnováze každá jeho část. To vede na diferenciální podmínku pro rozložení napětí uvnitř tělesa:\n\n$$$\\frac${$\\partial$$\\sigma$_{ij}}{$\\partial$ x_j} + G_i = 0$$\n\n* $\\sigma_{ij}$ – tenzor mechanického napětí (matice $3 \\times 3$, popisuje sílu ve směru $i$ působící na plochu s normálou ve směru $j$)\n* $G_i$ – složky objemové síly působící na každý element objemu (např. gravitace $G_i = \\rho g_i$)\n* $x_j$ – složky vektoru polohy; sumace přes $j$ se řídí Einsteinovým sumačním pravidlem"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní tvar Hookeova zákona",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Popisuje pružnou deformaci materiálu v jednom směru (např. tah tyče):\n\n$$$\\sigma$ = E $\\varepsilon$$$\n\n* $\\sigma = F/S$ je normálové napětí\n* $\\varepsilon = \\Delta l/l$ je relativní prodloužení\n* $E$ je Youngův modul pružnosti"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zobecněný Hookeův zákon",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Lineární vztah mezi tenzorem napětí a tenzorem deformací vyjádřený pomocí Einsteinova sumačního pravidla:\n\n$$$\\sigma$_{ij} = C_{ijkl} \\, e_{kl}$$\n\nPro **izotropní látku** (vlastnosti nezávisí na směru) se vztah redukuje pomocí Laméových koeficientů $\\lambda$ a $\\mu$ na tvar:\n\n$$$\\sigma$_{ij} = $\\lambda$ $\\delta$_{ij} e_I + 2$\\mu$ e_{ij}$$\n\nkde $e_I = e_{11} + e_{22} + e_{33}$ je relativní změna objemu a $\\delta_{ij}$ je Kroneckerovo delta."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Pohybové rovnice kontinua",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Představují zobecnění Newtonova 2. zákona na kontinuum. Popisují dynamiku kontinua, tedy jak se těleso pohybuje pod vlivem sil:\n\n$$$\\frac${$\\partial$$\\sigma$_{ij}}{$\\partial$ x_j} + G_i = $\\rho$ $\\frac${$d^2$ u_i}{d$t^2}$$$\n\n* $\\sigma_{ij}$ – tenzor napětí\n* $G_i$ – složky objemové síly (gravitace, elektromagnetické pole apod.)\n* $\\rho$ – hustota materiálu $[\\text{kg m}^{-3}]$\n* $u_i$ – složky vektoru posunutí (vzdálenost přemístění bodu)\n\n*Poznámka:* Pro statický případ (rovnováhu) je pravá strana nulová a dostaneme rovnici rovnováhy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Stacionární vs. nestacionární proudění",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Rozdělení proudění podle časové závislosti rychlosti:\n\n* **Stacionární proudění:** Rychlost se v každém místě v čase nemění. Proudnice jsou pevné a neměnné.\n* **Nestacionární proudění:** Rychlost v daném místě se v průběhu času mění."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Laminární vs. turbulentní proudění",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Rozdělení proudění podle charakteru pohybu částic:\n\n* **Laminární proudění:** Nastává při malých rychlostech. Vrstvy kapaliny se po sobě klidně posouvají, proudnice jsou rovnoběžné a nemíchají se.\n* **Turbulentní proudění:** Nastává při velkých rychlostech. Proudnice se rozpadají a víří, chování tekutiny je chaotické."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Reynoldslo číslo",
+      "subsetPath": [
+        "FY1",
+        "Mechanika kontinua"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Bezrozměrné číslo, které určuje přechod mezi laminárním a turbulentním prouděním:\n\n$$Re = $\\frac${$\\rho$ v d}{$\\eta$}$$\n\n* $\\rho$ – hustota tekutiny\n* $v$ – rychlost proudění\n* $d$ – průměr trubice\n* $\\eta$ – dynamická viskozita\n\n**Kritické hodnoty pro větvení proudění:**\n* pro $Re < 2300$ je proudění **laminární**\n* pro $Re > 4000$ je proudění **turbulentní**"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hydrostatický tlak",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Tlak způsobený vlastní tíhou kapaliny, který slouží jako základ pro výpočet tlaku v nádržích, jezerech či podmořských hloubkách.\n\nMatematické vyjádření:\n$$p = h$\\rho$ g$$\n\n* $h$ – hloubka pod povrchem\n* $\\rho$ – hustota kapaliny\n* $g$ – tíhové zrychlení\n\n*Poznámka:* Tlak roste lineárně s hloubkou."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rovnice kontinuity (středoškolský tvar)",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Představuje zákon zachování hmoty pro proudící tekutinu (co přiteče, musí odtéct). Popisuje, jak se mění rychlost proudění při změně průřezu trubice.\n\nTvar pro nestlačitelnou kapalinu:\n$$Sv = $\\text${const.}$$\n\n**Důsledek:** V zúženém místě musí kapalina téct rychleji."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Obecná rovnice kontinuity",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Diferenciální vyjádření zákona zachování veličiny v prostoru a čase:\n\n$$$\\frac${$\\partial$$\\rho$}{$\\partial$ t} + $\\nabla$ $\\cdot$ $\\mathbf${j} = s$$\n\n* $\\rho$ – prostorová hustota zachovávané veličiny (např. hustota kapaliny)\n* $\\mathbf{j}$ – hustota toku (vektor udávající množství veličiny, které projde za jednotku času jednotkovou plochou kolmou ke směru průchodu)\n* $s$ – zdrojový člen (rychlost přibývání veličiny v objemové jednotce z vnějších zdrojů; pro uzavřený systém bez zdrojů je $s = 0$)\n\n*Poznámka:* Pro stlačitelnou tekutinu platí zachování hmotnostního toku ve tvaru $Q_m = S \\cdot v \\cdot \\rho = \\text{const.}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Bernoulliho rovnice",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vyjádření zákona zachování energie pro proudící kapalinu, které slouží jako základ pro aerodynamiku, hydrauliku a měření průtoku:\n\n$$$\\frac${1}{2}$\\rho$ $v^2$ + p + $\\rho$ g h = $\\text${const.}$$\n\nRovnice se skládá ze tří členů:\n1. $\\frac{1}{2}\\rho v^2$ – dynamický tlak (hustota kinetické energie)\n2. $p$ – statický tlak\n3. $\\rho g h$ – hydrostatická tlaková energie\n\n**Podmínka platnosti:** Platí pro ustálené proudění ideální (nestlačitelné, neviskózní) kapaliny podél proudnice."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hydrodynamický paradox",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Jev pramenící z Bernoulliho rovnice: v místě se zúženým průřezem teče kapalina rychleji (podle rovnice kontinuity), což zapříčiní, že tam tlak poklesne.\n\nMatematické vyjádření:\n$$S_1 v_1 = S_2 v_2, $\\quad$ S_2 < S_1 $\\implies$ v_2 > v_1 $\\implies$ p_2 < p_1$$\n\n**Praktické aplikace:** Vodní vývěvy, rozprašovače, karburátory, vztlaková síla křídel, aerodynamický paradox (dva listy papíru se při foukání mezi ně přitahují)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Archimedův zákon",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Těleso ponořené do tekutiny je nadlehčováno silou rovnou tíze tekutiny tělesem vytlačené. Slouží pro výpočet vztlakové síly (lodě, balóny, ponorky, měření hustoty těles).\n\nMatematické vyjádření:\n$$F = V$\\rho$ g$$\n\nkde $V$ je objem ponořené části a $\\rho$ hustota kapaliny. Pokud je hustota tělesa menší než hustota kapaliny, těleso plave."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Pascalův zákon",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Tlak přiložený na uzavřenou kapalinu se přenáší beze změny do všech míst. Slouží jako základ hydraulických zařízení pro přenos tlaku (hydraulický lis, brzdy aut, jeřáby).\n\nVztah pro hydraulické zařízení:\n$$$\\frac${F_1}{S_1} = $\\frac${F_2}{S_2}$$\n\n**Princip:** Malou silou na malém pístu lze vyvodit velkou sílu na velkém pístu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Eulerova pohybová rovnice",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pohybová rovnice pro ideální tekutinu (bez viskozity, nestlačitelná), kde se uvažuje pouze tlakové napětí ($\\sigma_{ij} = -\\delta_{ij}p$). Popisuje, jak tlakový gradient a vnější síly způsobují zrychlení tekutiny:\n\n$$$\\frac${$\\partial$ v_i}{$\\partial$ t} + v_j $\\frac${$\\partial$ v_i}{$\\partial$ x_j} = f_i - $\\frac${1}{$\\rho$} $\\frac${$\\partial$ p}{$\\partial$ x_i}$$\n\n* $\\frac{\\partial v_i}{\\partial t}$ – lokální zrychlení (změna rychlosti v pevném místě)\n* $v_j \\frac{\\partial v_i}{\\partial x_j}$ – konvektivní zrychlení (způsobené prouděním do místa s jinou rychlostí)\n* $f_i = G_i/\\rho$ – intenzita vnějšího silového pole (např. tíhové zrychlení $g$)\n* $\\frac{1}{\\rho} \\frac{\\partial p}{\\partial x_i}$ – tlakový gradient dělený hustotou (hnací síla z míst vyššího tlaku do nižšího)\n\n**Struktura:** Levá strana vyjadřuje celkové zrychlení tekutiny, pravá strana obsahuje příčiny (vnější síla mínus tlakový gradient)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Barometrická formule",
+      "subsetPath": [
+        "FY1",
+        "Mechanika tekutin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Popisuje tlak stlačitelných plynů v atmosféře, který s rostoucí výškou klesá exponenciálně (na rozdíl od kapalin, kde klesá lineárně):\n\n$$$p(h)$ = p_0 $\\exp$$\\left$(-$\\frac${$\\rho$_0 g h}{p_0}$\\right$)$$\n\n* $p_0$ – tlak na referenční výšce (např. hladina moře) $[\\text{Pa}]$\n* $\\rho_0$ – hustota vzduchu na referenční výšce $[\\text{kg m}^{-3}]$\n* $g$ – tíhové zrychlení $[\\text{m s}^{-2}]$\n* $h$ – výška nad referenční rovinou $[\\text{m}]$\n\n*Poznámka:* Stejný exponenciální pokles platí i pro hustotu vzduchu: $\\rho(h) = \\rho_0 e^{-\\rho_0 gh / p_0}$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Coulombův zákon a elektrický potenciál",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Coulombův zákon popisuje silové působení elektrických nábojů v klidu (odpudivá síla pro stejná znaménka, přitažlivá pro různá).\n\n* **Coulombova síla:** $F = \\frac{qQ}{4\\pi\\varepsilon_0 r^2}$\n* **Potenciální energie:** $W_p = \\frac{qQ}{4\\pi\\varepsilon_0 r}$\n* **Permitivita vakua:** $\\varepsilon_0 = 8{,}85 \\times 10^{-12}\\text{ F/m}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Potenciál a intenzita elektrického pole",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vztahy definující veličiny elektrostatického pole vztažené na jednotkový náboj:\n\n* **Elektrický potenciál:** $\\varphi_E = \\frac{W_p}{q}$\n* **Intenzita elektrického pole:** $\\mathbf{E} = \\frac{\\mathbf{F}_E}{q} \\implies \\mathbf{F}_E = q\\mathbf{E}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Elektrický dipól",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Soustava dvou opačných nábojů $+Q$ a $-Q$ vzdálených o vektor $\\mathbf{l}$.\n\n* **Elektrický dipólový moment:** $\\mathbf{p}_E = Q\\mathbf{l}$\n* **Potenciál dipólu:** $\\varphi = \\frac{\\mathbf{p}_E \\cdot \\mathbf{r}}{4\\pi\\varepsilon_0 r^3}$\n* **Energie dipólu ve vnějším poli $\\mathbf{E}$:** $W_p = -\\mathbf{p}_E \\cdot \\mathbf{E}$\n* **Moment síly působící na dipól:** $\\mathbf{M} = \\mathbf{p}_E \\times \\mathbf{E}$\n\n*Poznámka:* Dipól se v elektrickém poli natáčí do směru vektoru $\\mathbf{E}$, čímž minimalizuje svou energii."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vektor polarizace",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vektor polarizace $\\mathbf{P}$ vyjadřuje objemovou hustotu elektrického dipólového momentu v dielektriku:\n\n$$$\\mathbf${P} = $\\lim$_{$\\Delta$ V $\\to$ 0} $\\frac${$\\Delta$ $\\mathbf${p}_E}{$\\Delta$ V}$$\n\n* **Vázaný náboj na povrchu:** $\\mathbf{P} \\cdot \\mathbf{n} = \\sigma$\n* **Vztah pro lineární izotropní prostředí:** $\\mathbf{P} = \\varkappa \\varepsilon_0 \\mathbf{E}$, kde $\\varkappa$ je elektrická susceptibilita.\n\n*Poznámka:* Silnější pole způsobuje větší polarizaci, což vede k většímu množství vázaného náboje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Gaussova věta elektrostatiky",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Tok elektrické indukce $\\mathbf{D}$ libovolnou uzavřenou plochou $S$ je roven celkovému volnému náboji uzavřenému uvnitř této plochy:\n\n$$$\\iint$_S $\\mathbf${D} $\\cdot$ d$\\mathbf${S} = Q$$\n\n* **Materiálový vztah:** $\\mathbf{D} = \\varepsilon\\mathbf{E} + \\mathbf{P} = \\varepsilon_0\\varepsilon_r\\mathbf{E}$\n* **Diferenciální tvar:** $\\nabla \\cdot \\mathbf{D} = \\rho_q$\n\n**Využití:** Slouží k výpočtu intenzity $\\mathbf{E}$ u symetrických uspořádání (koule, válec, deska) bez nutnosti složitého integrování přes Coulombův zákon. Výsledný vektor $\\mathbf{D}$ nezávisí na materiálu, zatímco $\\mathbf{E}$ ano."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Energie elektrického pole",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vyjadřuje energii uloženou v nabitém kondenzátoru nebo obecně v elektrickém poli.\n\n* **Celková energie:** $W = \\frac{1}{2}\\frac{Q^2}{C} = \\frac{1}{2}CU^2 = \\frac{1}{2}QU$\n* **Objemová hustota energie:** $w_E = \\frac{1}{2}\\mathbf{E} \\cdot \\mathbf{D}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lorentzova síla a pohyb náboje v magnetickém poli",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Popisuje sílu působící na nabitou částici s nábojem $q$ pohybující se rychlostí $\\mathbf{v}$ v magnetickém poli o indukci $\\mathbf{B}$:\n\n$$$\\mathbf${F} = q$\\mathbf${v} $\\times$ $\\mathbf${B}$$\n\n* **Vlastnosti:** Síla je kolmá na rychlost $\\mathbf{v}$, tudíž nemění velikost rychlosti, pouze její směr, a částice koná kruhový pohyb.\n* **Larmorův poloměr:** $R_L = \\frac{mv}{qB}$\n* **Cyklotronová frekvence:** $\\omega_c = \\frac{qB}{m}$\n\n*Poznámka:* Má-li částice složku rychlosti rovnoběžnou se siločárami, pohybuje se po šroubovici. Celková Lorentzova síla v přítomnosti elektrického i magnetického pole je $\\mathbf{F} = q\\mathbf{E} + q\\mathbf{v} \\times \\mathbf{B}$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Gaussova věta magnetismu",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Celkový tok magnetické indukce $\\mathbf{B}$ libovolnou uzavřenou plochou $S$ je roven nule:\n\n$$$\\iint$_S $\\mathbf${B} $\\cdot$ d$\\mathbf${S} = 0$$\n\n* **Diferenciální tvar:** $\\text{div } \\mathbf{B} = 0$\n\n**Fyzikální důsledek:** Magnetické monopóly neexistují. Siločáry magnetického pole jsou vždy uzavřené smyčky."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Maxwellovy rovnice a elektromagnetické pole",
+      "subsetPath": [
+        "FY1",
+        "Elektrostatické a stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Soustava čtyř rovnic plně popisujících elektromagnetické pole. Z těchto rovnic přímo plyne existence elektromagnetických vln a rychlost světla ve vakuu:\n\n$$c = $\\frac${1}{$\\sqrt${$\\varepsilon$_0$\\mu$_0}}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Divergence a rotace",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Základní diferenciální operátory pro popis vlastností vektorových polí:\n\n* **Divergence ($\\nabla \\cdot \\mathbf{F}$):** Skalár vyjadřující, kolik pole v daném bodě „vytéká“. Kladná hodnota znamená zřídlo (zdroj), záporná představuje noru (propad) a nulová značí, že siločáry jsou uzavřené a pole nemá zdroj.\n* **Rotace ($\\nabla \\times \\mathbf{F}$):** Vektor udávající, jak moc pole „rotuje“ kolem daného bodu. Nenulová rotace znamená, že pole tvoří vířivé smyčky a není konzervativní."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "1. Maxwellova rovnice (Gaussovým zákon elektrostatiky)",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Určuje zřídlovost elektrického pole a říká, že elektrické siločáry začínají a končí na nábojích, které jsou přímým zdrojem pole.\n\n$$$\\text${div } $\\mathbf${D} = $\\rho$_Q $\\quad$ $\\left$( $\\iint$_S $\\mathbf${D} $\\cdot$ d$\\mathbf${S} = Q $\\right$)$$\n\n* $\\text{div } \\mathbf{D}$ – divergence vektoru elektrické indukce $\\mathbf{D}$\n* $\\rho_Q$ – objemová hustota volného elektrického náboje"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "2. Maxwellova rovnice (Gaussovým zákon magnetismu)",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Říká, že magnetické pole je nezřídlové (čistě vířivé). Siločáry tvoří uzavřené smyčky, což znamená, že neexistují magnetické monopóly.\n\n$$$\\text${div } $\\mathbf${B} = 0 $\\quad$ $\\left$( $\\iint$_S $\\mathbf${B} $\\cdot$ d$\\mathbf${S} = 0 $\\right$)$$\n\n* $\\mathbf{B}$ – vektor magnetické indukce\n* Pravá strana rovná nule značí absenci magnetických nábojů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "3. Maxwellova rovnice (Faradayův zákon indukce)",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Popisuje elektromagnetickou indukci: časová změna magnetického pole generuje v prostoru vířivé elektrické pole.\n\n$$$\\text${rot } $\\mathbf${E} = -$\\frac${$\\partial$ $\\mathbf${B}}{$\\partial$ t}$$\n\n* $\\text{rot } \\mathbf{E}$ – rotace (vířivost) intenzity elektrického pole $\\mathbf{E}$\n* $\\frac{\\partial \\mathbf{B}}{\\partial t}$ – časová změna magnetické indukce\n\n*Poznámka:* Znaménko mínus matematicky vyjadřuje Lenzovo pravidlo."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "4. Maxwellova rovnice (Ampérův-Maxwellův zákon)",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Říká, že zdrojem vířivého magnetického pole je buď tekoucí elektrický proud, nebo časově proměnné elektrické pole (posuvný proud).\n\n$$$\\text${rot } $\\mathbf${H} = $\\mathbf${j}_Q + $\\frac${$\\partial$ $\\mathbf${D}}{$\\partial$ t}$$\n\n* $\\text{rot } \\mathbf{H}$ – rotace (vířivost) intenzity magnetického pole $\\mathbf{H}$\n* $\\mathbf{j}_Q$ – hustota vodivostního elektrického proudu\n* $\\frac{\\partial \\mathbf{D}}{\\partial t}$ – hustota Maxwellova posuvného proudu (změna elektrické indukce v čase)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Materiálové vztahy elektromagnetického pole",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Doplňují soustavu Maxwellových rovnic a propojují vektory polí v materiálovém prostředí:\n\n$$$\\mathbf${D} = $\\varepsilon$_0 $\\mathbf${E} + $\\mathbf${P}$$\n$$$\\mathbf${B} = $\\mu$_0 ($\\mathbf${H} + $\\mathbf${M})$$\n\n* $\\mathbf{P}$ – vektor polarizace dielektrika\n* $\\mathbf{M}$ – vektor magnetizace prostředí"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mechanická práce",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Mechanická práce je definována jako křivkový integrál síly podél dráhy pohybu:\n\n$$A = $\\int$_{$\\gamma$} $\\mathbf${F} $\\cdot$ d$\\mathbf${l} = $\\int$ (F_x \\, dx + F_y \\, dy + F_z \\, dz)$$\n\n**Význam:** Umožňuje čistě energetické řešení mnoha fyzikálních úloh namísto přímého integrování pohybových rovnic."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Potenciální energie a konzervativní pole",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "V konzervativním silovém poli lze sílu vyjádřit jako záporný gradient potenciální energie:\n\n$$$\\mathbf${F} = -$\\nabla$ W_p$$\n\n**Vlastnosti:**\n* Integrál síly (práce) závisí pouze na krajních bodech trajektorie.\n* Práce po libovolné uzavřené křivce je nulová."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zákon zachování mechanické energie",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "V konzervativním poli se celková mechanická energie (součet kinetické a potenciální energie) v čase nemění:\n\n$$W_k + W_p = $\\text${const.}$$\n\nkde kinetická energie hmotného bodu je dávána vztahem $W_k = \\frac{1}{2}mv^2$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hybnost a její zákon zachování",
+      "subsetPath": [
+        "FY1",
+        "Práce, energie a zákony zachování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Hybnost $\\mathbf{p}$ je definována jako součin hmotnosti a rychlosti tělesa, přičemž její časová změna odpovídá působící síle:\n\n$$$\\mathbf${p} = m$\\mathbf${v}, $\\quad$ $\\frac${d$\\mathbf${p}}{dt} = $\\mathbf${F}$$\n\n**Zákon zachování:** V izolované soustavě (kde je výslednice vnějších sil nulová) se celková hybnost zachovává."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Poyntingův vektor",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vektor $\\mathbf{S}$ udává směr a hustotu toku elektromagnetické energie prostorem (kolik výkonu proteče jednotkovou plochou) s jednotkou $[\\text{W/m}^2]$:\n\n$$$\\mathbf${S} = $\\mathbf${E} $\\times$ $\\mathbf${H}$$\n\nObjemová hustota energie elektromagnetického pole je pak dána vztahem:\n$$w = $\\frac${1}{2}($\\mathbf${E} $\\cdot$ $\\mathbf${D} + $\\mathbf${H} $\\cdot$ $\\mathbf${B})$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ampérův zákon (integrální tvar s posuvným proudem)",
+      "subsetPath": [
+        "FY1",
+        "Elektrodynamika a Maxwellovy rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Cirkulace intenzity magnetického pole $\\mathbf{H}$ po uzavřené křivce je rovna součtu celkového procházejícího vodivostního proudu a Maxwellova posuvného proudu:\n\n$$$\\oint$ $\\mathbf${H} $\\cdot$ d$\\mathbf${l} = I + $\\int$ $\\frac${$\\partial$ $\\mathbf${D}}{$\\partial$ t} $\\cdot$ d$\\mathbf${S}$$\n\n**Význam:** Člen $\\frac{\\partial \\mathbf{D}}{\\partial t}$ představuje klíčový Maxwellův přídavek, bez kterého by rovnice nebyly konzistentní a elektromagnetické vlny by nemohly existovat. (Pro dlouhý přímý vodič platí $B = \\frac{\\mu_0 I}{2\\pi r}$)."
+        }
+      ]
+    }
+  ]
+}

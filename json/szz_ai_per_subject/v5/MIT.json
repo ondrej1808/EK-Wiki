@@ -1,0 +1,237 @@
+{
+  "title": "Mikroelektronika a technologie (MIT)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Moorův zákon a rozměry tranzistorů",
+      "subsetPath": [
+        "MIT",
+        "Integrované obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Moorův zákon předpovídal zdvojnásobení počtu tranzistorů na čipu každých 18 měsíců při konstantní ceně (dnes zpomalení na cca 1.5násobek). Označení procesů (např. 2 nm od TSMC) je dnes spíše marketingový název a neodpovídá skutečné fyzické délce kanálu mezi drainem a sourcem."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výhody a nevýhody integrace obvodů",
+      "subsetPath": [
+        "MIT",
+        "Integrované obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Výhody: Vyšší výkon, nižší výkonové ztráty při zachování rozměrů, miniaturizace pomocí SoC (System on Chip) integrujících více funkcí a periferií na jeden čip. Nevýhody: Extrémně složitý a drahý vývoj, vysoká proudová hustota, problémy s chlazením nad cca 5 GHz a větší vliv přechodového odporu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Architektury IO podle struktury paměti",
+      "subsetPath": [
+        "MIT",
+        "Integrované obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "Von Neumannova architektura",
+          "text": "Společná paměť pro data i program. Výhodou je jednodušší návrh, nevýhodou úzké hrdlo (Von Neumann bottleneck) při přenosu mezi CPU a pamětí."
+        },
+        {
+          "title": "Harvardská architektura",
+          "text": "Oddělená paměť pro data a program, což umožňuje paralelní přístup k instrukcím i datům zároveň. Modifikovaná verze kombinuje vlastnosti obou přístupů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Architektury IO podle instrukční sady",
+      "subsetPath": [
+        "MIT",
+        "Integrované obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "CISC",
+          "text": "Complex Instruction Set Computer. Robustní instrukční sada (200+ instrukcí), menší počet registrů, více adresních režimů, složitější implementace, ale dobrá zpětná kompatibilita."
+        },
+        {
+          "title": "RISC",
+          "text": "Reduced Instruction Set Computer. Redukovaná, jednoduchá a pravidelná sada instrukcí umožňující rychlé provádění. Vyžaduje však složitější kompilátory."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metody návrhu aplikačně specifických IO (ASIC)",
+      "subsetPath": [
+        "MIT",
+        "Metody návrhu"
+      ],
+      "answer_parts": [
+        {
+          "title": "Plně zákaznický návrh",
+          "text": "Návrh kompletní topologie všech vrstev od jednotlivých tranzistorů. Maximální flexibilita, rychlost a efektivní využití plochy čipu. Velmi drahý a zdlouhavý vývoj, vyplatí se pouze pro obrovské série."
+        },
+        {
+          "title": "Semi-zákaznické a programovatelné přístupy",
+          "text": "Využití předdefinovaných struktur: Hradlová pole (prefabrikované tranzistorové sítě propojené metalizací), standardní buňky (knihovny hotových funkčních bloků) nebo programovatelné obvody (FPGA - zákaznická konfigurace logických bloků bez nutnosti výroby nových masek)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kroky návrhu digitálních integrovaných obvodů",
+      "subsetPath": [
+        "MIT",
+        "Metody návrhu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "1. Logický (behaviorální) návrh v HDL jazyce (VHDL, Verilog) a RTL simulace.\n2. Syntéza: Převod popisu na netlist (zapojení hradel), formální verifikace a statická časová analýza (STA).\n3. Umístění a propojení (Floorplan, Place & Route).\n4. Detailní fyzický layout (formát GDSII), koncová verifikace a generování drahých masek pro výrobu. Při chybě v libovolném kroku následuje návrat zpět."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kroky návrhu analogových integrovaných obvodů",
+      "subsetPath": [
+        "MIT",
+        "Metody návrhu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Postup je typicky přímočařejší než u digitálního návrhu: Tvorba schématu -> Elektrická simulace -> Manuální tvorba fyzické topologie (Layout) -> Metalizace (návrh propojení) -> Vygenerování podkladů pro výrobu fotolitografických masek."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Aktivní a pasivní prvky v mikroelektronice",
+      "subsetPath": [
+        "MIT",
+        "Prvky a komponenty"
+      ],
+      "answer_parts": [
+        {
+          "title": "Aktivní prvky",
+          "text": "Tranzistory (unipolární MOSFET, bipolární BJT), diody a integrované operační zesilovače. Představují základ logických i analogových podsystémů."
+        },
+        {
+          "title": "Pasivní prvky na čipu",
+          "text": "Rezistory (velké hodnoty tvořeny meandry, malé/střední simulovány pomocí MOSFETů), kondenzátory (strukturou prstů či desek nad sebou) a integrované cívky (spirály pro VF filtry nebo oddělovací transformátory). Integrovaná pasivní komponenta se označuje jako IPD."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Litografické metody výroby čipů",
+      "subsetPath": [
+        "MIT",
+        "Technologie"
+      ],
+      "answer_parts": [
+        {
+          "title": "Fotolitografie",
+          "text": "Nanesení fotorezistu, osvícení UV světlem přes masku, vyvolání a odleptání. Nejrozšířenější metoda. Moderní high-end produkce využívá extrémní UV (EUV) s vlnovou délkou 13.5 nm."
+        },
+        {
+          "title": "Elektronová a rentgenová litografie",
+          "text": "Elektronová litografie používá svazek elektronů s extrémně krátkou vlnovou délkou (1 nm až 1 pm). Nabízí špičkové rozlišení, ale je pomalá (exponuje po pixelech), proto se využívá pro výrobu masek a výzkum. Rentgenová litografie používá záření pod 1 nm, je ale technologicky velmi náročná a komerčně se neprosadila."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metody depozice, implantace a leptání u IO",
+      "subsetPath": [
+        "MIT",
+        "Technologie"
+      ],
+      "answer_parts": [
+        {
+          "title": "Nanášení a dopování",
+          "text": "Epitaxe (růst monokrystalických vrstev), difuze (tepelný rozptyl příměsí), CVD (chemická depozice z plynné fáze), magnetronové naprašování, napařování ve vakuu, iontová implantace (střílení iontů fosforu pro typ N nebo boru pro typ P) a ALD (přesný růst po jednotlivých atomárních vrstvách)."
+        },
+        {
+          "title": "Leptání",
+          "text": "Odebírání materiálu. Provádí se buď mokrou cestou (chemicky pomocí kyselin), nebo suchou cestou (reaktivní iontové leptání v plazmatu)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Technologie MEMS",
+      "subsetPath": [
+        "MIT",
+        "MEMS a nanoelektronika"
+      ],
+      "answer_parts": [
+        {
+          "title": "Princip a výroba",
+          "text": "Mikro-elektro-mechanické systémy spojují mechanické součásti s elektronikou na jednom křemíkovém čipu. Volně pohyblivé struktury (nosníky, mosty, membrány) se vyrábějí nanesením na podpůrnou obětovanou vrstvu, která se v závěru selektivně odleptá."
+        },
+        {
+          "title": "Aplikace",
+          "text": "Senzory (akcelerometry, gyroskopy, mikrofony) a aktuátory (mikrozrcátka v projektorech, mikročerpadla pro mikrofluidiku)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Nanoelektronika a pokročilé struktury tranzistorů",
+      "subsetPath": [
+        "MIT",
+        "MEMS a nanoelektronika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zabývá se strukturami pod 100 nm, kde se projevují kvantové jevy a limity prahového napětí tranzistorů. Pro zvýšení hustoty a překonání limitů klasických MOSFETů se využívají prostorové struktury Gate-all-around (GAA, kde hradlo obklopuje kanál ze všech stran) a vertikální vrstvení (např. PMOS a NMOS přímo nad sebou)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Optické integrované obvody",
+      "subsetPath": [
+        "MIT",
+        "Optické IO"
+      ],
+      "answer_parts": [
+        {
+          "title": "Komponenty a princip",
+          "text": "Integrování prvků jako jsou vlnovody, lasery, detektory, modulátory a filtry na jednom substrátu pro práci s fotony. Světlo je vedeno na principu totálního odrazu ve vlnovodu, jehož jádro musí mít vyšší index lomu než plášť."
+        },
+        {
+          "title": "Materiály a vlnové délky",
+          "text": "Používají se vlnové délky 1550 nm (minimální útlum v optických vláknech) a 1310 nm (minimální disperze). Typické materiály tvoří substrát křemíku s vrstvami SiO2 (n = 1.4 až 1.5), Al2O3 (n = 1.6 až 1.8) či Si3N4 (n = 2 až 2.1). Protože samotný křemík špatně emituje světlo, integrují se externí lasery na bázi fosfidu india (InP)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Testování a diagnostika elektronických systémů",
+      "subsetPath": [
+        "MIT",
+        "Testování"
+      ],
+      "answer_parts": [
+        {
+          "title": "Automatizovaná kontrola",
+          "text": "Během hromadné výroby musí testování probíhat extrémně rychle. Využívají se metody jako létající jehla (flying probe) pro mechanické testování kontaktů a simulační/verifikační nástroje na různých úrovních návrhu."
+        },
+        {
+          "title": "Návrhové kontroly (Fyzická verifikace)",
+          "text": "DRC (Design Rule Check) - kontrola dodržení geometrických a topologických pravidel výroby.\nLVS (Layout Versus Schematic) - ověření, zda výsledný fyzický layout přesně odpovídá původnímu elektrickému schématu.\nERC (Electrical Rules Check) - kontrola elektrických pravidel (např. zkraty, plovoucí uzly) včetně dynamické časové analýzy a analýzy spotřeby."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,471 @@
+{
+  "title": "$Created with cards_creator - AVT$",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Průchod světla okem na sítnici",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Světlo prochází postupně přes: Rohovka -> komorový mok -> vstupní pupila -> čočka -> sklivec -> obraz na sítnici (který je vzhůru nohama)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Tyčinky v lidském oku",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Fotoreceptory zodpovědné za skotopické černobílé vidění. Mají rychlou časovou odezvu, zajišťují periferní a noční vidění, a člověk jich má asi 120 milionů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Čípky v lidském oku",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Fotoreceptory zodpovědné za fotopické barevné vidění. Odezva je pomalá a existují 3 typy: L (Long), M (Medium), S (Short) podle zachycované vlnové délky (RGB). Člověk jich má cca 7 milionů, nejvíce ve žluté skvrně."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metamerismus",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Stav, kdy se dvě barvy s různými spektry jeví lidskému zraku jako stejné, protože vyvolají u fotoreceptorů (čípků) shodnou odezvu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Oponentní teorie vnímání barev",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Teorie popisující, že barvy jsou už v oku převáděny z trichromatického vnímání (RGB) do oponentních dvojic: černá-bílá, červená-zelená a modrá-žlutá."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Weber-Fechnerův zákon (jas)",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Lidské vnímání intenzity jasu neroste lineárně, ale logaritmicky podle vztahu $\\Delta S = \\frac{\\Delta L}{L}$, kde $\\Delta S$ je změna vnímané intenzity a $\\Delta L$ je procentuální rozdíl od intenzity $L$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Prahový kontrast lidského oka",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie vidění"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nejmenší rozdíl mezi dvěma jasovými úrovněmi, které člověk dokáže rozeznat. Vychází na $\\frac{\\Delta L}{L} = 2 \\%$; menší změnu jasu člověk nezaregistruje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip snímače CMOS",
+      "subsetPath": [
+        "AVT",
+        "Snímání a reprodukce obrazu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Funguje na principu akumulačního snímání. Každý pixel má vlastní obvod s kapacitou, která se v cyklu nabije. Fotorezistor v závislosti na dopadajícím světle mění svůj odpor a vybíjí kapacitor; výsledná kapacita na konci cyklu určuje hodnotu pixelu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Prostorový vzorkovací kmitočet obrazových snímačů",
+      "subsetPath": [
+        "AVT",
+        "Snímání a reprodukce obrazu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Podmínka je 0,5 cyklu na pixel (maximálně půlka sinusovky na pixel). Při jejím porušení vzniká aliasing, čemuž se před senzorem předchází filtrem dolní propusti, který obraz mírně rozmaže."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Aditivní vs. subtraktivní míšení barev",
+      "subsetPath": [
+        "AVT",
+        "Snímání a reprodukce obrazu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Aditivní: využívá složky RGB, jejich součet dává bílou barvu (displeje). Subtraktivní: využívá složky YMC (Yellow, Magenta, Cyan), jejich součet dává černou barvu (tiskárny)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip LCD zobrazovače",
+      "subsetPath": [
+        "AVT",
+        "Snímání a reprodukce obrazu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nepřímo vyzařující zobrazovač. Využívá externí podsvícení, jehož světlo blokuje nebo propouští vrstva tekutých krystalů. Elektrody u každého RGB subpixelu otáčejí krystaly, čímž mění polarizaci a regulují průchod světla polarizační vrstvou."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip OLED zobrazovače",
+      "subsetPath": [
+        "AVT",
+        "Snímání a reprodukce obrazu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Přímo vyzařující zobrazovač. Každý barevný pixel je samostatným zdrojem světla, které se vyzařuje na PN přechodu organické vrstvy při průchodu elektrického proudu. Nabízí nekonečný kontrast a široké pozorovací úhly."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vzorkovací formáty videa (J:a:b)",
+      "subsetPath": [
+        "AVT",
+        "Zdrojové kódování obrazové informace a přenosové video systémy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Schéma pro snížení datového toku redukcí barevného rozlišení (oko je citlivější na jas). J je jasová složka (vždy 4), 'a' je počet barevných složek v prvním řádku a 'b' je počet barevných složek ve druhém řádku (např. 4:2:0)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Huffmanovo kódování v kompresi",
+      "subsetPath": [
+        "AVT",
+        "Zdrojové kódování obrazové informace a přenosové video sys-témy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Matematicky bezeztrátová komprese, která přiřazuje nejkratší binární kód (nejméně bitů) hodnotám s nejpravděpodobnějším výskytem. Délka kódu se blíží teoretické entropii zdroje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kroky ztrátové komprese JPEG",
+      "subsetPath": [
+        "AVT",
+        "Zdrojové kódování obrazové informace a přenosové video systémy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "1. Vycentrování jasu kolem nuly. 2. Rozdělení na bloky 8x8 pixelů. 3. Aplikace 2D DCT do frekvenční oblasti. 4. Kvantizace dělením kvantizační maticí a zaokrouhlením (zde dochází ke ztrátě informací, hlavně vysokých frekvencí vpravo dole). 5. Klikaté (zig-zag) vyčtení koeficientů plné nul a uložení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Časová redundance ve videu",
+      "subsetPath": [
+        "AVT",
+        "Zdrojové kódování obrazové informace a přenosové video systémy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kompresní metoda využívající podobnosti mezi sousedními snímky. Přenáší se buď jen mezisnímkový rozdíl (pokud je scéna statická), nebo se aplikuje odhad pohybu (Motion Estimation) pomocí pohybových vektorů (MV) pro bloky pixelů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Bayerova maska",
+      "subsetPath": [
+        "AVT",
+        "Digitální fotografie, metody předzpracování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Barevná mozaika filtrů nad obrazovým snímačem. Obsahuje 2x více bodů propouštějících zelenou barvu než červenou nebo modrou, protože zelená barva nejvíce odpovídá citlivosti lidského oka na jas."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metoda šedého světa (vyvážení bílé)",
+      "subsetPath": [
+        "AVT",
+        "Digitální fotografie, metody předzpracování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Algoritmus pro vyvážení bílé, který upravuje barvy tak, aby se průměrný jas barevných složek R, G a B v celém obrazu rovnal ($Y_r = Y_g = Y_b$), čímž kompenzuje barevnou teplotu osvětlení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Anatomie vnějšího ucha",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie slyšení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Skládá se z boltce (směřování vln, lokalizace) a zvukovodu (délka 24-27 mm, funguje jako rezonátor pro frekvence 1-4 kHz lidské řeči). Končí bubínkem, který provádí akusto-mechanický převod tlaku na pohyb."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Anatomie a funkce středního ucha",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie slyšení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Obsahuje kůstky (kladívko, kovadlinka, třmínek), které zajišťují impedanční transformaci zvyšující akustický tlak z bubínku cca 19x do oválného okénka. Eustachova trubice vyrovnává tlak a svaly mohou reflexivně tlumit dlouhodobé vysoké hlasitosti."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Funkce hlemýždě (vnitřní ucho)",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie slyšení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Oválné okénko rozkmitá kapalinu uvnitř hlemýždě. Basilární membrána v něm rezonuje v různých místech podle frekvence kmitů. Tento pohyb excituje vláskové buňky (Cortiho orgán), které mechanický pohyb převedou na elektrický signál pro zrakový/sluchový nerv."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sluchové maskování",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie slyšení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Jev, kdy jeden zvuk činí jiný zvuk neslyšitelným. Rozlišuje se frekvenční maskování (překrytí hlasitějším tónem v blízké frekvenci) a časové maskování (dopředné a zpětné maskování v těsném časovém okolí silného impulsu)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mechanizmy lokalizace zvuku člověkem",
+      "subsetPath": [
+        "AVT",
+        "Fyziologie a anatomie slyšení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Směr a poloha zdroje se určují pomocí: 1. Časového rozdílu dorazivšího signálu mezi levým a pravým uchem. 2. Frekvenčního útlumu hlavy (stínový efekt). 3. Směrové filtrace boltce. 4. Vzdálenost se odhaduje podle známé hlasitosti."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Elektrodynamický měnič (princip mikrofonu)",
+      "subsetPath": [
+        "AVT",
+        "Elektrodynamický a elektrostatický měnič"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Akustický tlak rozkmitá membránu s připevněnou cívkou. Cívka se pohybuje v poli permanentního magnetu, čímž se na ní podle indukčního zákona ($u = -\\frac{\\partial \\phi}{\\partial t}$) indukuje elektrické napětí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Elektrodynamický měnič (princip reproduktoru)",
+      "subsetPath": [
+        "AVT",
+        "Elektrodynamický a elektrostatický měnič"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Do cívky umístěné v magnetickém poli permanentního magnetu se přivádí střídavé elektrické napětí. Na vodič s proudem působí Lorentzova síla $\\vec F = q(\\vec v \\times \\vec B)$, která pohybuje cívkou a s ní spojenou membránou, čímž vzniká akustický tlak."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Elektrostatický měnič",
+      "subsetPath": [
+        "AVT",
+        "Elektrodynamický a elektrostatický měnič"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Využívá elektrické pole mezi dvěma destičkami (jedna je pevná, druhá jako vibrující membrána) tvořícími kondenzátor. Vyžaduje trvalé napájení (phantom) pro vytvoření náboje $q = uC$. Pohybem membrány se mění kapacita a tím i napětí (mikrofon), případně přiložené napětí vyvolá elektrostatickou sílu $F = \\frac{\\epsilon_0 S u^2}{2 d^2}$ (reproduktor)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vzorkovací podmínka pro audio",
+      "subsetPath": [
+        "AVT",
+        "Vzorkování, kvantování a zdrojové kódování zvuku"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vzorkovací frekvence musí být minimálně dvojnásobkem nejvyšší frekvence v signálu, aby nedošlo k aliasingu. Protože člověk slyší do 20 kHz, je minimum 40 kHz, v praxi se standardně používá 44,1 kHz nebo 48 kHz."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kvantování zvuku",
+      "subsetPath": [
+        "AVT",
+        "Vzorkování, kvantování a zdrojové kódování zvuku"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Převod nekonečného množství úrovní analogového signálu na konečný digitální počet kroků. Pro dostatečné potlačení kvantizačního šumu slyšitelného člověkem se nejčastěji používá bitová hloubka 16 bitů (CD kvalita) nebo 24 bitů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zdrojové kódování zvuku",
+      "subsetPath": [
+        "AVT",
+        "Vzorkování, kvantování a zdrojové kódování zvuku"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Metoda komprese dat audio signálu. Ztrátové komprese (MP3, AAC) využívají psychoakustické modely (odstraňují frekvence pod prahem slyšení a zvuky maskované jinými hlasitějšími signály). Bezeztrátovou kompresi představuje např. FLAC."
+        }
+      ]
+    },
+    {
+      "type": "closed",
+      "question": "Která struktura lidského oka je zodpovědná za skotopické (černobílé) vidění za tmy?",
+      "options": [
+        "Čípky",
+        "Tyčinky",
+        "Žlutá skvrna",
+        "Ciliární svaly"
+      ],
+      "correctIndex": 1,
+      "explanation": "Tyčinky mají rychlou časovou odezvu, vysokou citlivost na světlo a zajišťují černobílé vidění ve tmě, zatímco čípky zprostředkovávají barevné vidění."
+    },
+    {
+      "type": "closed",
+      "question": "Jaká je minimální hodnota prahového kontrastu jasu, kterou lidské oko dokáže rozlišit?",
+      "options": [
+        "0.5 %",
+        "1 %",
+        "2 %",
+        "5 %"
+      ],
+      "correctIndex": 2,
+      "explanation": "Podle Weber-Fechnerova zákona je prahový kontrast lidského oka přibližně 2 %. Jakýkoliv menší rozdíl jasů oko nezaregistruje."
+    },
+    {
+      "type": "closed",
+      "question": "Jaký matematický princip využívá ztrátová komprese JPEG k převodu obrazu do frekvenční domény?",
+      "options": [
+        "2D Diskrétní vlnková transformace (DWT)",
+        "2D Diskrétní kosinová transformace (DCT)",
+        "Rychlá Fourierova transformace (FFT)",
+        "Huffmanovo kódování"
+      ],
+      "correctIndex": 1,
+      "explanation": "JPEG rozděluje obraz na bloky 8x8 a transformuje je pomocí 2D Discrete Cosine Transform (DCT) do frekvenční oblasti, kde následně probíhá kvantizace."
+    },
+    {
+      "type": "closed",
+      "question": "Která část lidského ucha zajišťuje impedanční transformaci a zesílení akustického tlaku z bubínku?",
+      "options": [
+        "Zvukovod ve vnějším uchu",
+        "Sluchové kůstky ve středním uchu",
+        "Hlemýžď ve vnitřním uchu",
+        "Eustachova trubice"
+      ],
+      "correctIndex": 1,
+      "explanation": "Sluchové kůstky (kladívko, kovadlinka, třmínek) ve středním uchu fungují jako mechanický transformátor, který zvyšuje tlak z bubínku přibližně 19-krát před vstupem do oválného okénka."
+    },
+    {
+      "type": "closed",
+      "question": "Jak funguje elektrostatický měnič v režimu mikrofonu?",
+      "options": [
+        "Kmitající cívka v magnetickém poli indukuje napětí na základě indukčního zákona.",
+        "Pohybem vodivé destičky se mění kapacita kondenzátoru, což vyvolá změnu napětí.",
+        "Akustický tlak deformuje piezoelektrický krystal, který generuje náboj.",
+        "Změna teploty odporového drátu mění protékající proud."
+      ],
+      "correctIndex": 2,
+      "explanation": "Elektrostatický (kondenzátorový) měnič mění akustický pohyb kovové membrány na změnu kapacity kondenzátoru, což se při konstantním náboji (zajištěném phantomovým napájením) projeví jako změna napětí."
+    }
+  ]
+}

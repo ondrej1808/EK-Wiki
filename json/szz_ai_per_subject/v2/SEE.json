@@ -1,0 +1,161 @@
+{
+  "title": "Senzory a mikrosystémy (SEE)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Energetické domény senzorů",
+      "subsetPath": [
+        "SEE",
+        "Základy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Domény schopné produkovat energii přeměnitelnou na elektrický signál: 1. elektrické, 2. mechanické, 3. teplotní, 4. magnetické, 5. chemické, 6. záření."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozdíl mezi senzorem a mikroaktuátorem",
+      "subsetPath": [
+        "SEE",
+        "Základy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Senzor převádí signál z energetické domény na elektrický signál. Mikroaktuátor funguje opačně – převádí elektrický signál na fyzikální projev v dané doméně (např. pohyb, vibrace, zobrazení)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "MEMS (mikroelektronicko-mechanické systémy)",
+      "subsetPath": [
+        "SEE",
+        "Základy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Mechanické systémy vyrobené technologiemi podobnými výrobě integrovaných obvodů, využívající principy více energetických domén."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vyhodnocovací obvody pro senzory se změnou odporu",
+      "subsetPath": [
+        "SEE",
+        "Zpracování signálů"
+      ],
+      "answer_parts": [
+        {
+          "text": "Používají se Wheatstoneovy můstky. Na rozváženém můstku se měří napětí na diagonále; často se využívá diferenciální zapojení pro redukci vnějších vlivů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Piezoodporový jev",
+      "subsetPath": [
+        "SEE",
+        "Fyzikální principy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Změna elektrického odporu tělesa vlivem mechanického namáhání (tlaku, síly). V kovech je tento jev označován jako tenzometrický, v polovodičích je mnohonásobně výraznější díky změně pohyblivosti nosičů náboje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Piezoelektrický jev",
+      "subsetPath": [
+        "SEE",
+        "Fyzikální principy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Vznik elektrického náboje na povrchu dielektrika při jeho mechanické deformaci vlivem vnější síly (deformace dipólů). Existuje i inverzní piezoelektrický jev."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hallův jev",
+      "subsetPath": [
+        "SEE",
+        "Fyzikální principy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Vznik napětí (Hallovo napětí) na bočních stěnách tělesa, kterým protéká proud, pokud se nachází v magnetickém poli působícím kolmo na směr proudu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Seebeckův jev",
+      "subsetPath": [
+        "SEE",
+        "Fyzikální principy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Vznik elektromotorického napětí na přechodu dvou různých kovů, pokud mají tyto spoje odlišnou teplotu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Odporové kovové senzory teploty",
+      "subsetPath": [
+        "SEE",
+        "Senzory teploty"
+      ],
+      "answer_parts": [
+        {
+          "text": "Tvořeny čistými kovy (Pt, Ni, Cu) s téměř lineární teplotní závislostí. Charakteristika: malý odpor (typicky 100 Ω), široký teplotní rozsah, dobrá přesnost a citlivost."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozdíl mezi PTC a NTC termistory",
+      "subsetPath": [
+        "SEE",
+        "Senzory teploty"
+      ],
+      "answer_parts": [
+        {
+          "text": "PTC (pozistory) mají kladný teplotní koeficient odporu, NTC (negistory) mají záporný. Jejich teplotní závislost není lineární a vyžaduje linearizaci."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip měření průtoku tlakovým gradientním senzorem",
+      "subsetPath": [
+        "SEE",
+        "Senzory průtoku"
+      ],
+      "answer_parts": [
+        {
+          "text": "Využívá Bernoulliho rovnici. Do potrubí je zařazen zúžený úsek (s odporem) a měří se rozdíl tlaků před a za tímto segmentem."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ultrazvukové senzory průtoku (Dopplerovy)",
+      "subsetPath": [
+        "SEE",
+        "Senzory průtoku"
+      ],
+      "answer_parts": [
+        {
+          "text": "Využívají odlišnou rychlost šíření ultrazvuku v kapalině a měří rozdílovou frekvenci (nebo fázový posun), která přímo odpovídá rychlosti průtoku. Výhodou je bezkontaktní měření."
+        }
+      ]
+    }
+  ]
+}

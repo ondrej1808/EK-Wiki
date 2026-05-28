@@ -1,0 +1,1036 @@
+{
+  "title": "Created with cards_creator - FY2",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Jaké jsou druhy vln a vlnění?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Vlnová rovnice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Druhy vln:\n- rovinné vlnoplochy (konstantní amplituda)\n- kruhové vlnoplochy\n\nVlnění:\n(a) podélné – kmitání ve směru šíření (např. zvuková vlna)\n(b) příčné – kmitání kolmé na směr šíření (např. elektromagnetická vlna)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Teplo a tepelná kapacita",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Teplo představuje chaotickou složku energie molekul. Závisí na integrační cestě, což znamená, že není úplným diferenciálem.\n\n* **Tepelná kapacita podél cesty $\\gamma$:** $C_{\\gamma} = \\left(\\frac{\\partial Q}{\\partial T}\\right)_{\\gamma}$\n* **Měrná tepelná kapacita:** $c = \\frac{C}{m}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mayerův vztah a Poissonova konstanta",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vztahy charakterizující tepelné kapacity plynů při konstantním tlaku ($C_p$) a konstantním objemu ($C_V$):\n\n* **Mayerův vztah:** $C_p = C_V + R$\n* **Poissonova konstanta:** $\\kappa = \\frac{C_p}{C_V} = \\frac{f + 2}{f}$\n\nkde $f$ představuje počet stupňů volnosti částice ($f = 3$ pro jednoatomovou molekulu, $f = 5$ pro dvouatomovou molekulu)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Boltzmannova konstanta a ekvipartiční teorém",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Boltzmannova konstanta $k_B$ spojuje energii jedné molekuly s teplotou:\n\n$$k_B = 1{,}38 \\times 10^{-23}\\text{ J/K}, \\quad R = N_A \\cdot k_B$$\n\n* **Ekvipartiční teorém:** Střední hodnota energie připadající na jeden stupeň volnosti částice je dána vztahem:\n$$\\langle E \\rangle = \\frac{1}{2}k_B T$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Stavová rovnice ideálního plynu",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Základní vztah mezi stavovými veličinami ideálního plynu, který slouží pro popis tepelných strojů a přenosů tepla:\n\n$$pV = N k_B T = n R T$$\n\nkde $R = 8{,}314\\text{ J/(mol}\\cdot\\text{K)}$ je univerzální plynová konstanta a $n$ je látkové množství v molech.\n\n*Poznámka:* Všechny základní izoprocesy (děje) vycházejí z obecnějšího polytropního vztahu $pV^\\gamma = \\text{const.}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní děje v ideálním plynu",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Přehled izoprocesů vycházejících ze stavové rovnice:\n\n* **Izochorický děj ($V = \\text{konst.}$):** Vztah $p/T = \\text{konst.}$, při kterém roste tlak i teplota.\n* **Izobarický děj ($p = \\text{konst.}$):** Vztah $V/T = \\text{konst.}$, plyn se při zahřívání roztahuje.\n* **Izotermický děj ($T = \\text{konst.}$):** Vztah $pV = \\text{konst.}$, plyn se stlačuje nebo rozšiřuje za stálé teploty.\n* **Adiabatický děj ($Q = 0$):** Vztah $pV^{\\kappa} = \\text{konst.}$, probíhá bez tepelné výměny s okolím."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "0. a I. termodynamický zákon",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* **0. zákon:** Jsou-li tělesa A a B v tepelné rovnováze s tělesem C, jsou v rovnováze i navzájem. Definovaný smysl má veličina teplota.\n* **I. zákon (Zákon zachování energie):** Teplo přijaté systémem se spotřebuje na zvýšení vnitřní energie a na vykonanou práci:\n\n$$dQ = dU + dA$$\n\nkde $dA = p \\, dV$ a $dU = m c_V \\, dT$. Vyplývá z něj, že *perpetuum mobile 1. druhu neexistuje*."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "II. a III. termodynamický zákon",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* **II. zákon:** Teplo samovolně neteče z chladnějšího tělesa na teplejší. Entropie $S$ izolovaného systému může jen růst ($\\Delta S \\ge 0$):\n\n$$dS = \\frac{dQ_{\\text{rev}}}{T} \\implies dU = T \\, dS - p \\, dV$$\n\nEntropie představuje „opravené teplo“, roste s chaosem a plyne z ní, že *perpetuum mobile 2. druhu neexistuje*.\n\n* **III. zákon (Nernstův):** Při přiblížení teploty k absolutní nule konverguje entropie k nule ($S \\to 0$ pro $T \\to 0\\text{ K}$). *Absolutní nuly nelze nikdy dosáhnout*."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Carnotův cyklus",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Ideální tepelný stroj, který udává horní mez účinnosti $\\mu$ jakéhokoliv reálného stroje pracujícího mezi teplotami $T_1$ (horký zdroj) a $T_2$ (studený zdroj):\n\n$$\\mu = \\frac{T_1 - T_2}{T_1} = 1 - \\frac{T_2}{T_1}$$\n\n**4 fáze cyklu:**\n1. **Izotermická expanze ($T_1 = \\text{konst.}$):** Plyn přijme teplo $Q_1$ z horkého zdroje a koná práci (roztahuje se).\n2. **Adiabatická expanze ($Q = 0$):** Plyn se dále roztahuje, koná práci a ochlazuje se z $T_1$ na $T_2$.\n3. **Izotermická komprese ($T_2 = \\text{konst.}$):** Plyn odevzdá teplo $Q_2$ studenému zdroji, práce se koná na plynu.\n4. **Adiabatická komprese ($Q = 0$):** Plyn se stlačuje a zahřívá zpět z $T_2$ na $T_1$ bez výměny tepla."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Trojný bod a kritický bod",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Charakteristické body fázových diagramů látek:\n\n* **Trojný bod vody:** Bod, ve kterém koexistují všechna tři skupenství (tuhá, kapalná i plynná fáze) současně v rovnováze.\n  * *Hodnoty:* $0{,}01^\\circ\\text{C}$ a $611{,}7\\text{ Pa}$.\n* **Kritický bod vody:** Bod, nad jehož teplotou již neexistuje kapalná fáze jako oddělená od plynné fáze (látka přechází v superkritickou tekutinu).\n  * *Hodnoty:* $374^\\circ\\text{C}$ a $22\\text{ MPa}$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fourierův zákon vedení tepla",
+      "subsetPath": [
+        "FY2",
+        "Termodynamika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Slouží k výpočtu přenosu tepla vedením (kondukcí) skrze stěny, izolace či chladiče. Tepelný tok je úměrný teplotnímu gradientu a míří z míst s vyšší teplotou do míst s nižší teplotou:\n\n$$\\vec{q} = -\\lambda \\nabla T$$\n\n**Praktický tvar pro jednorozměrný případ:**\n$$\\Delta Q = \\frac{\\lambda \\cdot S \\cdot \\Delta T}{l}$$\n\n* $\\lambda$ – tepelná vodivost materiálu $[\\text{W}/(\\text{m}\\cdot\\text{K})]$\n* $S$ – plocha průřezu, kterým teplo protéká\n* $l$ – délka tělesa (tloušťka stěny)\n* $\\Delta T$ – rozdíl teplot mezi oběma stranami"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní pojmy vlnění",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Společný jazyk pro popis všech vlnění (zvuk, světlo, elektromagnetické vlny):\n\n* **Vlnoplocha:** Plocha konstantní fáze, jejíž všechny body kmitají stejně. V rovině tvoří roviny, u kulové vlny kulové plochy.\n* **Paprsek:** Kolmice na vlnoplochu, která ukazuje směr šíření energie.\n* **Úhlová frekvence:** Změna fáze s časem: $\\omega = -\\frac{\\partial\\varphi}{\\partial t} = \\frac{2\\pi}{T}$.\n* **Vlnový vektor:** Změna fáze s prostorem, ukazuje směr šíření: $\\mathbf{k} = -\\nabla\\varphi = \\frac{2\\pi}{\\lambda}$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlnová funkce",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Komplexní funkce popisující libovolné vlnění, kde veličina $\\psi$ může představovat například teplotu, tlak, výchylku nebo elektrické pole:\n\n$$\\psi(t, \\mathbf{x}) = A(t, \\mathbf{x}) e^{i\\varphi(t, \\mathbf{x})}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fázová a grupová rychlost",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Dva odlišné pohledy na rychlost šíření vlnového procesu:\n\n* **Fázová rychlost ($v_f$):** Rychlost šíření vlnoplochy (konstantní fáze). Může být i nadsvětelná a nesouvisí se skutečným pohybem částic:\n$$v_f = \\frac{\\omega}{k}$$\n* **Grupová rychlost ($v_g$):** Rychlost přenášení energie („balíku“ vln). Musí být vždy podsvětelná:\n$$v_g = \\frac{\\partial\\omega}{\\partial k}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klasická vlnová rovnice",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Jednotný popis vlnění v akustice, optice a elektromagnetismu. d'Alembertova vlnová rovnice má tvar:\n\n$$\\frac{\\partial^2\\psi}{\\partial x^2} + \\frac{\\partial^2\\psi}{\\partial y^2} + \\frac{\\partial^2\\psi}{\\partial z^2} - \\frac{1}{c^2}\\frac{\\partial^2\\psi}{\\partial t^2} = 0 \\quad \\iff \\quad \\Delta\\psi - \\frac{1}{c^2}\\frac{\\partial^2\\psi}{\\partial t^2} = 0$$\n\nkde $c$ je rychlost šíření vlny v daném prostředí.\n\n**Obecné řešení:** Lze zapsat ve tvaru $\\psi(x, t) = f(x - ct) + g(x + ct)$, což představuje součet vlny běžící dopředu a dozadu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlnová rovnice pro elektrické pole",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vychází přímo z Maxwellových rovnic a popisuje šíření elektromagnetických vln prostředím:\n\n$$\\Delta\\mathbf{E} - \\mu\\varepsilon\\frac{\\partial^2\\mathbf{E}}{\\partial t^2} = 0$$\n\nRychlost šíření elektromagnetické vlny v daném prostředí s permitivitou $\\varepsilon$ a permeabilitou $\\mu$ je:\n$$c = \\frac{1}{\\sqrt{\\mu\\varepsilon}}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaké jsou základní postuláty geometrické optiky?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Geometrická optika je mezním případem vlnové optiky pro $\\lambda \\to 0$. Stojí na těchto principech:\n\n* **Přímočaré šíření světla:** V homogenním prostředí se světlo šíří po přímkách (paprscích).\n* **Nezávislost světelných paprsků:** Paprsky se sice mohou křížit, ale navzájem se neovlivňují.\n* **Fermatův princip nejmenšího času:** Světlo se mezi dvěma body šíří po takové dráze, kterou urazí za extrémní (zpravidla nejkratší) čas:\n  $$\\tau = \\int_{A}^{B} \\frac{dl}{v} = \\frac{1}{c} \\int_{A}^{B} n \\, dl = \\text{extrém}$$\n* **Zákon odrazu a lomu:** Určují chování paprsku na rozhraní dvou prostředí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jak zní zákon odrazu a zákon lomu (Snellův zákon)?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Popisují chování světelného paprsku na rozhraní dvou optických prostředí:\n\n* **Zákon odrazu:** Úhel odrazu $\\alpha'$ se rovná úhlu dopadu $\\alpha$:\n  $$\\alpha' = \\alpha$$\n  Odražený paprsek zůstává v rovině dopadu.\n* **Zákon lomu (Snellův zákon):** Poměr sinusů úhlu dopadu a lomu je roven obrácenému poměru indexů lomu:\n  $$n_1 \\sin\\alpha = n_2 \\sin\\beta$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je to totální reflexe (úplný odraz) a jak se spočítá mezní úhel?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Jev, ke kterému dochází při přechodu světla z opticky hustšího prostředí do opticky řidšího ($n_1 > n_2$). \n\nPokud úhel dopadu překročí **mezní úhel $\\alpha_m$**, paprsek se již neláme do druhého prostředí, ale kompletně se odráží zpět.\n\nVýpočet mezního úhlu (pro $\\beta = 90^\\circ$):\n$$\\sin\\alpha_m = \\frac{n_2}{n_1}$$\n\n**Využití:** Optická vlákna (vlastní vedení světla bez úniku do pláště), reflexní hranoly v dalekohledech."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jaké jsou základní vlastnosti indexu lomu?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Index lomu $n$ je bezrozměrná veličina charakterizující optické prostředí:\n\n* **Definační vztah:** Poměr rychlosti světla ve vakuu a v daném prostředí:\n  $$n = \\frac{c}{v} = \\sqrt{\\varepsilon_r \\mu_r}$$\n* **Disperze:** Index lomu závisí na vlnové délce světla ($n = n(\\lambda)$). Pro optické sklo platí, že s kratší vlnovou délkou index lomu roste (modré světlo se láme více než červené).\n* Pro vakuum je $n = 1$, pro vzduch $n \\approx 1{,}0003$, pro vodu $n \\approx 1{,}33$ a pro sklo $n \\approx 1{,}5$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Koherence vlnění",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Koherence je vlastnost vlnění, která vyjadřuje stálost fázového vztahu mezi dvěma nebo více vlnami v čase a prostoru. Je nezbytnou podmínkou pro vznik stabilního interferenčního obrazce.\n\n* **Časová koherence:** Souvisí s monochromačnostní vlnění (stálost frekvence v čase). Udává ji koherenční čas $\\tau_c$ a koherenční délka $l_c = c \\tau_c$, což je délka vlnového balíku.\n* **Prostorová koherence:** Vyjadřuje stálost fázových vztahů v různých místech vlnoplochy kolmo na směr šíření."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Interference světla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Interference je superpozice (skládání) dvou a více koherentních světelných vln, která vede k prostorovému přerozdělení intenzity světla.\n\n* **Konstruktivní interference (maximum):** Vlny se potkávají ve fázi – dráhový rozdíl $\\Delta l$ je roven sudému počtu půlvln:\n  $$\\Delta l = k\\lambda$$\n* **Destruktivní interference (minimum):** Vlny se potkávají v protifázi – dráhový rozdíl $\\Delta l$ je roven lichému počtu půlvln:\n  $$\\Delta l = (2k + 1)\\frac{\\lambda}{2}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Interference na tenké vrstvě",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "K jevu dochází skládáním vln odražených od horního a dolního rozhraní tenké vrstvy (např. olejová skvrna, mýdlová bublina, AR vrstvy optiky).\n\n* **Dráhový rozdíl při kolmém dopadu:** $\\Delta l = 2nd$\n* **Fázový posun odrazem:** Při odrazu na opticky hustším prostředí se vlna odráží s opačnou fází (skok o $\\pi$), což odpovídá dráhovému rozdílu $\\frac{\\lambda}{2}$.\n\n**Podmínka pro reflexní maximum (při odrazu se skokem):**\n$$2nd + \\frac{\\lambda}{2} = k\\lambda$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Difrakce (ohyb) světla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Ohyb světla je odchylka od přímočarého šíření na překážkách nebo štěrbinách s rozměry srovnatelnými s vlnovou délkou $\\lambda$ (světlo vniká i do geometrického stínu).\n\n* **Huygensův-Fresnelův princip:** Každý bod vlnoplochy, kam vlnění dospělo, je zdrojem sekundárního kulového vlnění. Výsledná vlna je interferencí těchto sekundárních vln.\n* **Optická mřížka:** Soustava periodicky uspořádaných štěrbin s mřížkovou konstantou (periodou) $b$. Podmínka pro hlavní maxima na mřížce zní:\n  $$b \\sin\\alpha = k\\lambda$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Polarizace světla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Polarizace je vlastnost příčného vlnění (např. elektromagnetického), která popisuje prostorovou orientaci kmitů vektoru elektrické intenzity $\\mathbf{E}$.\n\n* **Přirozené (nepolarizované) světlo:** Vektor $\\mathbf{E}$ kmitá ve všech směrech kolmých na směr šíření.\n* **Lineární polarizace:** Vektor $\\mathbf{E}$ kmitá pouze v jedné přímce.\n* **Polarizace odrazem (Brewsterův úhel):** Při dopadu nepolarizovaného světla pod Brewsterovým úhlem $\\alpha_B$ je odražené světlo zcela lineárně polarizované (rovnoběžně s rozhraním). Platí:\n  $$\\tan\\alpha_B = \\frac{n_2}{n_1}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Disperze světla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Disperze je závislost indexu lomu materiálu na vlnové délce (frekvenci) procházejícího světla: $n = n(\\lambda)$.\n\n* **Normální disperze:** Index lomu klesá s rostoucí vlnovou délkou (červené světlo se láme nejméně, fialové nejvíce). Platí pro většinu průhledných materiálů v oblasti viditelného světla.\n* **Anomální disperze:** Index lomu s rostoucí vlnovou délkou roste. Nastává v oblastech silné absorpce světla daným materiálem.\n\n**Projev:** Rozklad bílého světla na spektrální složky při průchodu hranolem (vznik duhy)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Absorpce a rozptyl světla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Dva základní jevy doprovázející průchod světla hmotným prostředím:\n\n* **Absorpce (pohlcování):** Světelná energie se při průchodu látkou mění v jiné druhy energie (např. teplo). Pokles intenzity $I$ s dráhou $x$ popisuje **Bouguerův-Lambertův zákon**:\n  $$I(x) = I_0 e^{-\\alpha x}$$\n  kde $\\alpha$ je koeficient absorpce.\n* **Rozptyl (disperze do prostorových úhlů):** Světlo mění směr šíření v důsledku nehomogenit v materiálu. \n  * *Rayleighův rozptyl:* Nastává na částicích mnohem menších než $\\lambda$. Intenzita rozptýleného světla je nepřímo úměrná čtvrté mocnině vlnové délky ($I \\sim \\lambda^{-4}$), což zapříčiňuje modrou barvu oblohy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní veličiny fotometrie",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Fotometrie kvantifikuje elektromagnetické záření z hlediska lidského oka (respektuje spektrální citlivost oka):\n\n* **Světelný tok ($\\Phi$):** Celkový světelný výkon vyzářený do všech směrů. Jednotka: **lumen [lm]**.\n* **Svítivost ($I$):** Světelný tok vysílaný zdrojem do jednotkového prostorového úhlu $\\Omega$. Jednotka: **kandela [cd]** (základní jednotka SI):\n  $$I = \\frac{d\\Phi}{d\\Omega}$$\n* **Osvětlení / Intenzita osvětlení ($E$):** Světelný tok dopadající na jednotkovou plochu $S$. Jednotka: **lux [lx]**:\n  $$E = \\frac{d\\Phi}{dS}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Osvětlení plochy bodovým zdrojem",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Osvětlení $E$ plochy vyvolané bodovým zdrojem o svítivosti $I$ klesá s druhou mocninou vzdálenosti $r$ a závisí na úhlu dopadu $\\alpha$ (úhel mezi paprskem a normálou plochy):\n\n$$E = \\frac{I}{r^2} \\cos\\alpha$$\n\n**Důsledek:** Největší osvětlení dosáhneme při kolmém dopadu světla ($\\alpha = 0 \\implies \\cos\\alpha = 1$)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lambertův zákon (dokonale rozptylové plochy)",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Popisuje chování ideálně matných, tzv. lambertovských povrchů, které rozptylují světlo do všech směrů tak, že jejich jas je nezávislý na směru pozorování.\n\nSvítivost $I_\\alpha$ elementu plochy v daném směru závisí na úhlu $\\alpha$ od normály podle vztahu:\n$$I_\\alpha = I_0 \\cos\\alpha$$\n\nkde $I_0$ je svítivost ve směru normály.\n\n**Důsledek:** Přestože svítivost s úhlem klesá, zdánlivá velikost plochy pro pozorovatele klesá se stejným kosinovým faktorem. Výsledný jas povrchu ($L = dI / (dS \\cos\\alpha)$) je proto konstantní ze všech úhlů (např. Slunce nebo matný papír se nám jeví stejně jasný u okrajů jako uprostřed)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zobrazovací rovnice kulového zrcadla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Základní vztah paraxiální optiky pro výpočet polohy obrazu vytvořeného kulovým zrcadlem:\n\n$$\\frac{1}{a} + \\frac{1}{a'} = \\frac{1}{f} = \\frac{2}{r}$$\n\n* $a$ – vzdálenost předmětu od vrcholu zrcadla\n* $a'$ – vzdálenost obrazu od vrcholu zrcadla\n* $f$ – ohnisková vzdálenost ($f = r/2$)\n* $r$ – poloměr křivosti zrcadla\n\n**Znaménková konvence:** Prostor před zrcadlem je reálný (veličiny $a, a', f, r$ jsou kladné). Pokud obraz vznikne za zrcadlem, je zdánlivý a $a'$ je záporné (u vypuklého zrcadla jsou $f$ a $r$ vždy záporné)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Příčné zvětšení kulového zrcadla",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Poměr výšky obrazu $y'$ a výšky předmětu $y$ vyjádřený pomocí polohových vzdáleností:\n\n$$m = \\frac{y'}{y} = -\\frac{a'}{a}$$\n\n**Interpretace výsledku:**\n* $m > 0$ – obraz je vzpřímený (přímý)\n* $m < 0$ – obraz je převrácený\n* $|m| > 1$ – obraz je zvětšený\n* $|m| < 1$ – obraz je zmenšený"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zobrazovací rovnice tenké čočky",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Základní vztah paraxiální optiky pro výpočet polohy obrazu vytvořeného tenkou čočkou:\n\n$$\\frac{1}{a} + \\frac{1}{a'} = \\frac{1}{f}$$\n\n* $a$ – předmětová vzdálenost (od čočky k předmětu)\n* $a'$ – obrazová vzdálenost (od čočky k obrazu)\n* $f$ – ohnisková vzdálenost čočky\n\n**Znaménková konvence:** Předmětový prostor před čočkou je reálný ($a > 0$). Obrazový prostor za čočkou je pro paprsky reálný ($a' > 0$). Pokud obraz vznikne před čočkou, je zdánlivý a $a'$ je záporné. Pro spojku je $f > 0$, pro rozptylku je $f < 0$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Příčné zvětšení tenké čočky",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Poměr výšky obrazu $y'$ a výšky předmětu $y$ vyjádřený pomocí polohových vzdáleností u čoček:\n\n$$m = \\frac{y'}{y} = -\\frac{a'}{a}$$\n\n**Vlastnosti obrazu:**\n* $m > 0$ – obraz je vzpřímený (přímý a vždy zdánlivý)\n* $m < 0$ – obraz je převrácený (a vždy reálný)\n* $|m| > 1$ – obraz je zvětšený\n* $|m| < 1$ – obraz je zmenšený"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Optická mohutnost čočky",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Veličina charakterizující přeostřovací schopnost čočky. Je definována jako převrácená hodnota ohniskové vzdálenosti:\n\n$$\\Phi = \\frac{1}{f}$$\n\n* Jednotkou je **dioptrie [m$^{-1}$ / dpt]**.\n* **Spojné čočky:** $\\Phi > 0$\n* **Rozptylné čočky:** $\\Phi < 0$\n\n*Poznámka:* U tenkých čoček těsně u sebe se celková optická mohutnost soustavy sčítá: $\\Phi_{\\text{celk}} = \\Phi_1 + \\Phi_2$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výpočet ohniskové vzdálenosti čočky (Rovnice pro výrobce čoček)",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Umožňuje spočítat ohniskovou vzdálenost $f$ čočky na základě indexu lomu materiálu $n_2$, indexu lomu okolního prostředí $n_1$ a poloměrů křivosti $R_1, R_2$ obou povrchů čočky:\n\n$$\\frac{1}{f} = \\left(\\frac{n_2}{n_1} - 1\\right) \\left(\\frac{1}{R_1} - \\frac{1}{R_2}\\right)$$\n\n**Znaménková konvence pro poloměry:**\n* Povrch vypuklý (střed křivosti leží za rozhraním ve směru postupu světla): $R > 0$\n* Povrch vydutý (střed křivosti leží před rozhraním): $R < 0$\n* Rovinný povrch: $R \\to \\infty \\implies \\frac{1}{R} = 0$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Záření absolutně černého tělesa a fotoefekt",
+      "subsetPath": [
+        "FY2",
+        "Základy kvantové mechaniky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "**Absolutně černé těleso (AČT):** Ideální těleso pohlcující veškeré záření (pohltivost $a = 1$, odrazivost $R = 0$), zároveň je ideálním zářičem. Platí $a + R = 1$ a $a = \\varepsilon$ (emisivita).\n* **Planckův zákon:** Přesně popisuje spektrum záření AČT. Planck musel předpokládat kvantování energie:\n  $$\\frac{dI}{d\\omega} = \\frac{\\hbar}{\\pi^2 c^2} \\frac{\\omega^3}{e^{\\hbar\\omega/k_B T} - 1}$$\n* **Wienův posunovací zákon:** Vlnová délka maxima vyzařování se s rostoucí teplotou snižuje:\n  $$\\lambda_{\\text{max}} = \\frac{C_a}{T}, \\quad \\nu_{\\text{max}} = C_v T$$\n* **Stefanův–Boltzmannův zákon:** Celková intenzita vyzařování AČT roste se čtvrtou mocninou teploty: $I = \\sigma T^4$ ($I = \\varepsilon\\sigma T^4$ pro obecné těleso).\n\n**Fotoelektrický jev:** Po dopadu světla na povrch látky jsou elektrony vytrhávány z obalu atomu a emitovány z látky. Energie elektronu nezávisí na intenzitě světla, pouze na jeho frekvenci $\\to$ důkaz kvantové povahy světla (fotonů).\n* **Einsteinova rovnice pro fotoefekt:**\n  $$\\hbar\\omega = E_0 + \\frac{1}{2}m_e v^2$$\n  energie fotonu = mezní energie (rozbití vazby) + kinetická energie elektronu.\n* Dualita světla – foton má hybnost i energii: $p = \\frac{h}{\\lambda} = \\hbar k$, $E = \\hbar\\omega$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Comptonův jev a de Broglicova vlnová délka",
+      "subsetPath": [
+        "FY2",
+        "Základy kvantové mechaniky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "**Comptonův jev:** Při interakci fotonu s atomem se změní vlnová délka záření – foton předá část své energie elektronu. Potvrzení, že fotony se chovají jako částice s hybností. Comptonova rovnice:\n$$\\Delta\\lambda = \\lambda' - \\lambda_0 = \\frac{h}{m_0 c}(1 - \\cos\\theta)$$\nkde $\\lambda_0$ je vlnová délka dopadajícího záření, $\\lambda'$ je vlnová délka rozptýleného záření, $\\theta$ je rozptylový úhel, $m_0$ je klidová hmotnost elektronu.\n\n**De Broglicova vlnová délka:** Každá hmotná částice se chová i jako vlna – základ elektronové mikroskopie, tunelového jevu a Schrödingerovy rovnice.\n$$\\lambda = \\frac{h}{p} = \\frac{h}{mv}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Schrödingerova rovnice a princip neurčitosti",
+      "subsetPath": [
+        "FY2",
+        "Základy kvantové mechaniky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "**Schrödingerova rovnice:** Základní rovnice kvantové mechaniky popisující, jak se kvantová částice (elektron, atom) chová v prostoru a čase.\n* *Nestacionární (časově závislá) – 1D:*\n  $$-\\frac{\\hbar^2}{2m}\\frac{\\partial^2\\psi(x,t)}{\\partial x^2} + U(x,t)\\psi(x,t) = j\\hbar\\frac{\\partial\\psi(x,t)}{\\partial t}$$\n* *Stacionární – speciální případ (pro $U$ nezávislé na čase):*\n  $$-\\frac{\\hbar^2}{2m}\\frac{\\partial^2\\phi(x)}{\\partial x^2} + U(x)\\phi(x) = E\\phi(x)$$\nkde $\\psi(x,t) = \\phi(x) \\cdot e^{-j\\omega t}$ je vlnová funkce, $U$ potenciální energie, $E$ celková energie. Statická interpretace: $|\\psi(x,t)|^2$ je hustota pravděpodobnosti výskytu částice. Normalizační podmínka: $\\int_{-\\infty}^{\\infty} |\\psi|^2 dx = 1$.\n\n**Heisenbergův princip neurčitosti:** Nelze současně přesně změřit polohu a hybnost – fundamentální omezení, nikoliv technické. Vysvětluje stabilitu atomů a tunelové jevy.\n$$\\Delta x \\cdot \\Delta p_x \\ge \\frac{\\hbar}{2}, \\quad \\Delta E \\cdot \\Delta t \\ge \\frac{\\hbar}{2}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Tunelový jev a pásová teorie pevných látek",
+      "subsetPath": [
+        "FY2",
+        "Pásová teorie a kvantové jevy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "**Tunelový jev:** Klasicky nemůže částice s energií $E < E_0$ projít potenciálovou bariérou. V kvantové mechanice existuje nenulová pravděpodobnost průchodu – základ tunelové diody, STM mikroskopu a alfa-rozpadu. Pravděpodobnost průchodu klesá exponenciálně s šířkou a výškou bariéry:\n$$T \\propto e^{-2\\kappa d}, \\quad \\kappa = \\sqrt{\\frac{2m(E_0 - E)}{\\hbar^2}}$$\n\n**Pásová teorie pevných látek:** Vysvětluje, proč jsou kovy vodiče, křemík polovodič a sklo izolant – základ pro celou elektroniku. Energetické pásy vznikají překryvem hladin mnoha atomů. Tři pásy:\n* **Valenční pás** – nejvýše plně obsazený pás.\n* **Zakázaný pás $E_g$** – oblasti energií, kde elektrony nemohou existovat.\n* **Vodivostní pás** – nad valenčním; elektrony sem mohou přejít."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip laseru",
+      "subsetPath": [
+        "FY2",
+        "Laser"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "**LASER** = Light Amplification by Stimulated Emission of Radiation. Zdroj koherentního (stejná fáze, směr, frekvence) a monochromatického záření.\n\n* **Spontánní emise:** atom samovolně přejde do nižšího stavu: $A^* \\to A + h\\nu$ (náhodný směr a fáze).\n* **Stimulovaná emise:** dopadající foton stimuluje přechod, vyzářený foton je koherentní s dopadajícím: $A^* + h\\nu \\to A + 2h\\nu$.\n\n**Princip fungování:**\n1. Elektrony se excitují dopadajícím světlem (čerpání energie).\n2. Rychlým přechodem dosáhnou **metastabilní hladiny** a vydrží tam déle $\\to$ vznikne **inverzní populace** (více excitovaných než neexcitovaných atomů).\n3. Stimulační foton vybudí lavinovou stimulovanou emisi.\n4. Proces se opakuje – laser svítí.\n\nSoučásti laseru: aktivní prostředí + optický rezonátor (částečně propustná zrcadla) + zdroj budící energie.\n* *Tříhladinový laser (impulsní, např. rubínový laser):* Čerpání do $E_2$, rychlý přechod na metastabilní $E_1$, stimulovaná emise $E_1 \\to E_0$. Inverzní populace mezi $E_1$ a $E_0$. Obtížněji udržitelá, protože dolní laserová hladina $E_0$ je základní stav.\n* *Čtyřhladinový laser (spojitý, např. He-Ne laser):* Čerpání do $E_3$, rychlý přechod na metastabilní $E_2$, stimulovaná emise $E_2 \\to E_1$, rychlý přechod $E_1 \\to E_0$. Inverzní populace snáze udržitelná – dolní laserová hladina $E_1$ je prázdná (rychle se vyprazdňuje)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klasifikace materiálů podle šířky zakázaného pásma $E_g$",
+      "subsetPath": [
+        "FY2",
+        "Pevné látky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "• **Vodič:** Pásy se překrývají ($E_g = 0$). Volný přechod, vysoká vodivost.\n• **Polovodič:** Malá $E_g$ (~1 eV, Si: 1,1 eV). Tepelnou excitací přejde elektron.\n• **Izolant:** Velká $E_g$ (>5 eV). Elektrony nemohou přejít."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fermiho hladina $E_F$",
+      "subsetPath": [
+        "FY2",
+        "Pevné látky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Energie, při níž je pravděpodobnost obsazení 50 %. U polovodičů leží v zakázaném pásmu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní popis jádra atomu",
+      "subsetPath": [
+        "FY2",
+        "Úvod do jaderné fyziky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Jádro atomu $_Z^AX$:\n• $A$ = nukleonové číslo\n• $Z$ = protonové číslo\n• $N$ = neutronové číslo\n• Vztah: $A = Z + N$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Čtyři základní síly v jádře a částicích",
+      "subsetPath": [
+        "FY2",
+        "Úvod do jaderné fyziky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "• **Elektromagnetická**\n• **Gravitační**\n• **Slabá jaderná** (působí na částice)\n• **Silná jaderná** (v jádře atomu)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klasifikace částic: Leptony vs. Hadrony",
+      "subsetPath": [
+        "FY2",
+        "Úvod do jaderné fyziky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "• **Leptony:** Nepodstupují silnou interakci (elektron, neutrino, mion...).\n• **Hadrony:** Podstupují silnou interakci, mají vnitřní strukturu z kvarků."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozdělení hadronů (Mezony a Baryony)",
+      "subsetPath": [
+        "FY2",
+        "Úvod do jaderné fyziky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "• **Mezony (bosony):** piony, kaony.\n• **Baryony (fermiony):** protony, neutrony (= nukleony)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vazebná energie jádra $E_v$ a hmotnostní úbytek $\\Delta m$",
+      "subsetPath": [
+        "FY2",
+        "Úvod do jaderné fyziky"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice a vzorce",
+          "text": "Energie potřebná k rozbití jádra na nukleony.\n$$\\Delta m = Zm_p + Nm_n - m_j$$\n$$E_v = \\Delta m c^2$$"
+        },
+        {
+          "title": "Maximum",
+          "text": "Maximum vazebné energie na nukleon je u středně těžkých jader (okolí železa)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Radioaktivita a rozpadová konstanta $\\lambda$",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "• **Radioaktivita:** Spontánní přeměna radionuklidů – jaderná přeměna, při níž dochází ke změně složení jádra.\n• **Rozpadová konstanta $\\lambda$:** Pravděpodobnost rozpadu za jednotku času.\n• **Zákon rozpadu:** $N(t) = N_0 e^{-\\lambda t}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Aktivita $R$ [Bq]",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "$$R = -\\frac{dN}{dt} = R_0 e^{-\\lambda t} = \\lambda N(t)$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Poločas rozpadu $T_{1/2}$ a střední doba životnosti $\\tau$",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Poločas rozpadu $T_{1/2}$",
+          "text": "Doba, za kterou klesne aktivita na polovinu:\n$$T_{1/2} = \\frac{\\ln 2}{\\lambda}$$"
+        },
+        {
+          "title": "Střední doba životnosti $\\tau$",
+          "text": "$$\\tau = \\frac{1}{\\lambda}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\alpha$-záření",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Vyzáření jádra helia z jádra. Má nízkou pronikavost (zastaví list papíru) a vysokou ionizační schopnost."
+        },
+        {
+          "title": "Schéma přeměny",
+          "text": "$$_Z^A X \\rightarrow _{Z-2}^{A-4} Y + \\alpha (_2^4\\text{He})$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\beta^-$-záření",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Přeměna neutronů/protonů. Konkrétně u $\\beta^-$ jde o rozpad neutronu na proton a elektron."
+        },
+        {
+          "title": "Schéma přeměny",
+          "text": "$$n^0 \\rightarrow p^+ + e^-$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\alpha$-záření",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Vyzáření jádra helia z mateřského jádra."
+        },
+        {
+          "title": "Schéma přeměny",
+          "text": "$$_{Z}^{A}X \\rightarrow _{Z-2}^{A-4}Y + \\alpha\\,(_{2}^{4}\\text{He})$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\alpha$-záření: vlastnosti",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Pronikavost a ionizace",
+          "text": "Nízká pronikavost (zastaví ji list papíru), ale vysoká ionizační schopnost."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\beta^-$-záření",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Přeměna neutronů/protonů. Konkrétně u $\\beta^-$ jde o rozpad neutronu na proton a elektron."
+        },
+        {
+          "title": "Schéma přeměny",
+          "text": "$$n^0 \\rightarrow p^+ + e^-$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\beta^+$-záření",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Rozpad protonu na neutron a pozitron."
+        },
+        {
+          "title": "Schéma přeměny",
+          "text": "$$p^+ \\rightarrow n^0 + e^+$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Elektronový záchyt",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Jádro se zbavuje přebytečných protonů pohlcením elektronu z obalu."
+        },
+        {
+          "title": "Schéma přeměny",
+          "text": "$$p^+ + e^- \\rightarrow n^0$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\beta$-záření: vlastnosti",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Pronikavost",
+          "text": "Střední pronikavost (záření zastaví hliníková fólie)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\gamma$-záření",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Vyzáření fotonu $\\gamma$. Jde o vedlejší produkt ostatních přeměn, kdy jádro přechází do nižšího energetického stavu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "$\\gamma$-záření: vlastnosti",
+      "subsetPath": [
+        "FY2",
+        "Radioaktivita"
+      ],
+      "answer_parts": [
+        {
+          "title": "Pronikavost a ionizace",
+          "text": "Vysoká pronikavost (zastaví ji jen silná vrstva olova nebo betonu), nízká ionizační schopnost."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je disperze a jaké jsou její druhy?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Disperze"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Disperze = závislost fázové rychlosti na frekvenci: $\\omega = \\omega(k)$, nebo $k = k(\\omega)$\n\nDisperzní relace: $D(\\omega, k) = 0$\n\nPříklad: duha – rozklad světla, díky různým frekvencím bude různá fázová rychlost\n\nDruhy disperze:\n$C_F = C_G$ ... bezdisperzní prostředí\n$C_F > C_G$ ... normální disperze\n$C_F < C_G$ ... anomální disperze"
+        }
+      ],
+      "originalIndex": 5,
+      "id": 5,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co je disipace vln?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Disipace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Disipace je způsobena disipativními silami (např. třecí síla).\n\n- při jejich působení dochází ke ztrátě energie\n- dochází k utlumení vlnění → kvaziperiodický děj\n- snižuje se entropie"
+        }
+      ],
+      "originalIndex": 6,
+      "id": 6,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co je interference vln (skládání vln)?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Skládání vln – interference"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Interference = vzájemné ovlivňování vln\n\n(a) konstruktivní interference – dvě vlny ve fázi → zesílení vln\n(b) destruktivní interference – dvě vlny v protifázi → zánik vln\n\nPozorovatelná interference je pouze pokud jsou vlny koherentní\n→ jejich fázový rozdíl se s časem nemění\n\nVýsledek interference = složené vlnění\n\nYoungův pokus:\n- důkaz, že světlo se chová jako vlna\n- interference na dvou štěrbinách\n- poloha interferenčních maxim: $y_{max} = \\frac{n\\lambda d}{2a}$\n- poloha interferenčních minim: $y_{min} = \\frac{(2n+1)\\lambda d}{4a}$, kde $n = 1,2,3,\\ldots$\n\nInterference na tenké vrstvě ⟹ reflexní a antireflexní vrstvy"
+        }
+      ],
+      "originalIndex": 7,
+      "id": 7,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co je difrakce vln a jaké jsou její druhy?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Difrakce vln"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Difrakce = ohyb vlnění za překážkou\n- vlnění se dostane do geometrického stínu\n\nHuygensův princip:\n- každý bod čela vlny se stává zdrojem sekundárních kulových vln\n\nDruhy difrakce:\n(a) Fresnelova – skládání kulových vlnoploch\n   - je nutné brát v úvahu křivost čela vlny\n(b) Fraunhoferova – skládání rovinných vlnoploch\n   - vlnu považujeme za rovinu"
+        }
+      ],
+      "originalIndex": 8,
+      "id": 8,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co je vlnová a geometrická optika?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Vlnová a geometrická optika"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vlnová optika:\n- studium jevů založených na vlnové povaze světla (interference, polarizace, difrakce, disperze)\n- studium jevů při průchodu světla prostředím (absorbce, rozptyl, rozklad světla)\n\nGeometrická optika (paprskova):\n- zanedbává vlnovou povahu světla\n- světlo se šíří přímočaře → paprsky\n- podmínka: objekty jsou mnohem větší než vlnová délka světla"
+        }
+      ],
+      "originalIndex": 9,
+      "id": 9,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co je Fermatův princip a jak z něj plyne zákon odrazu a lomu?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Fermatův princip"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Fermatův princip: světlo se mezi dvěma body šíří po takové dráze, která je časově nejkratší.\n\nZákon odrazu: $d_1 = d_2$\n\nOdvození (minimalizace času $t(x)$):\n$$t = \\frac{|AP|}{c} + \\frac{|PB|}{c} = \\frac{\\sqrt{x^2+h_1^2}}{c} + \\frac{\\sqrt{(s-x)^2+h_2^2}}{c}$$\n$$\\frac{dt}{dx} = \\frac{x}{c\\sqrt{x^2+h_1^2}} - \\frac{s-x}{c\\sqrt{(s-x)^2+h_2^2}} = 0$$\n$$\\Rightarrow \\sin d_1 = \\sin d_2 \\Rightarrow d_1 = d_2$$\n\nZákon lomu (Snellův zákon): $n_1 \\sin\\alpha = n_2 \\sin\\beta$\n\n$$C_1 = \\frac{C_0}{n_1}, \\quad C_2 = \\frac{C_0}{n_2}$$\n$$\\frac{\\sin\\alpha}{C_1} = \\frac{\\sin\\beta}{C_2} \\Rightarrow n_1\\sin\\alpha = n_2\\sin\\beta$$"
+        }
+      ],
+      "originalIndex": 10,
+      "id": 10,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co je Dopplerův jev?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Dopplerův jev"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Dopplerův jev – změna frekvence vnímaná pozorovatelem při pohybu zdroje nebo pozorovatele.\n\n$k_0$ ... vlnový vektor v klidovém prostředí\n$\\omega_P / \\omega_Z$ ... úhlová frekvence pozorovatele / zdroje\n$v_P / v_Z$ ... rychlost pozorovatele / zdroje\n\n(a) pozorovatel se pohybuje:\n$$\\omega_P = \\omega_Z\\left(1 - \\frac{k_0 \\cdot v_P}{c}\\right)$$\n\n(b) zdroj se pohybuje:\n$$\\omega_P = \\frac{\\omega_Z}{1 - \\frac{k_0 \\cdot v_Z}{c}}$$\n\n(c) oba se pohybují:\n$$\\omega_P = \\omega_Z \\frac{1 - \\frac{k_0 \\cdot v_P}{c}}{1 - \\frac{k_0 \\cdot v_Z}{c}} = \\omega_Z \\frac{c - k_0 v_P}{c - k_0 v_Z}$$"
+        }
+      ],
+      "originalIndex": 11,
+      "id": 11,
+      "category": "FY2"
+    },
+    {
+      "type": "open",
+      "question": "Co jsou tenké čočky a jaký je jejich základní vzorec?",
+      "subsetPath": [
+        "FY2",
+        "Základy teorie vln a optika",
+        "Tenké čočky"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Čočka = soustava dvou centrovaných ploch\nTenká čočka – tloušťka čočky je malá\n\nLensmakerova rovnice:\n$$\\frac{1}{s_o} + \\frac{1}{s_i} = (n-1)\\left(\\frac{1}{R_1} + \\frac{1}{R_2}\\right)$$\n\nZákladní rovnice čočky:\n$$\\frac{1}{s_o} + \\frac{1}{s_i} = \\frac{1}{f}$$\n\n$s_o$ ... předmětová vzdálenost\n$s_i$ ... obrazová vzdálenost\n$R$ ... poloměr křivosti\n$f$ ... ohnisková vzdálenost\n$y_o$ ... předmětová velikost\n$y_i$ ... obrazová velikost\n\nOptická mohutnost: $\\varphi = \\frac{1}{f}$ (dioptrie)\n\nPříčné zvětšení: $M = \\frac{y_i}{y_o}$\n\nSpojka – $f > 0$, ohnisko před čočkou na výstupní straně\nRozptylka – $f < 0$, virtuální ohnisko"
+        }
+      ],
+      "originalIndex": 12,
+      "id": 12,
+      "category": "FY2"
+    }
+  ]
+}

@@ -1,0 +1,397 @@
+{
+  "title": "Datová komunikace a sítě (DATA)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Vrstvové modely datové komunikace - princip",
+      "subsetPath": [
+        "DATA",
+        "Vrstvové modely datové komunikace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Funkcionality jsou rozděleny do samostatných vrstev. Každá vrstva komunikuje pouze se svými bezprostředními sousedy (nad/pod) a v protilehlém uzlu komunikuje výhradně se stejnou vrstvou."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Referenční model ISO/OSI",
+      "subsetPath": [
+        "DATA",
+        "Vrstvové modely datové komunikace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Univerzální síťová architektura složená ze 7 vrstev, vyvinutá jako reakce na proprietární standardy. Je vhodná jako síťový model bez protokolů, které byly vyvíjeny dodatečně."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fyzická vrstva RM OSI",
+      "subsetPath": [
+        "DATA",
+        "Vrstvové modely datové komunikace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zajišťuje přenos bitových posloupností fyzikálním prostředím. Řeší kódování, časování, synchronizaci, případně modulaci."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Spojová vrstva RM OSI",
+      "subsetPath": [
+        "DATA",
+        "Vrstvové modely datové komunikace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Definuje rámec (blok dat), topologii sítě a fyzickou adresu. Zajišťuje zabezpečený a spolehlivý přenos rámců, detekci/korekci chyb (parita, CRC, FCS), řízení přístupu k médiu a synchronizaci na úrovni rámců."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Síťová vrstva RM OSI",
+      "subsetPath": [
+        "DATA",
+        "Vrstvové modely datové komunikace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zajišťuje doručení paketů k adresátovi a nalezení optimální cesty přes mezilehlé uzly (směrování/routing). Zajišťuje označení uzlů logickými adresami (např. IP adresa, X.25 adresa)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mesh topologie sítě",
+      "subsetPath": [
+        "DATA",
+        "Topologie sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Každé zařízení je spojené s jiným zařízením vlastním kanálem. Výhodou je velmi rychlá komunikace a robustnost (chybu na spoji lze snadno obejít). Nevýhodou je velký počet spojů, což znamená drahou instalaci a údržbu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Star (hvězdicová) topologie sítě",
+      "subsetPath": [
+        "DATA",
+        "Topologie sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Všechny body jsou spojeny s jedním centrálním bodem (hub). Výhodou je jednoduchá realizace a snadná detekce poruch. Nevýhodou je centrální bod poruchy (single point of failure), který limituje výkon a může znefunkčnit celou síť."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Bus (sběrnicová) topologie sítě",
+      "subsetPath": [
+        "DATA",
+        "Topologie sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Obousměrné vícebodové vedení, kde jsou všechna zařízení připojena k jednomu centrálnímu kabelu (např. starý Ethernet přes koaxiální kabely). Nevýhodou je, že při přerušení kabelu se síť rozpadne na více podsítí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ring (kruhová) topologie sítě",
+      "subsetPath": [
+        "DATA",
+        "Topologie sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Každé zařízení je spojeno se dvěma sousedními zařízeními do kruhu. Umožňuje velké přenosové rychlosti s malou pravděpodobností kolize. Jednosměrný kruh se při přerušení spoje přeruší celý, obousměrný kruh nabízí záložní cestu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hierarchical (stromová) topologie sítě",
+      "subsetPath": [
+        "DATA",
+        "Topologie sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Síť se postupně větví od jednoho kořenového prvku. Umožňuje propojit velké množství zařízení a oddělit koncové body pro zvýšení bezpečnosti. Hlavní nevýhodou je přítomnost centrálního bodu poruchy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hub (rozbočovač) a Repeater (opakovač)",
+      "subsetPath": [
+        "DATA",
+        "Lokální datové sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zařízení pracující na fyzické vrstvě OSI modelu. Hub funguje jako impedančně přizpůsobená rozbočka kabelů, která signál z jednoho portu replikuje na všechny ostatní. Repeater je v podstatě dvouportový hub."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Switches (přepínače)",
+      "subsetPath": [
+        "DATA",
+        "Lokální datové sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zařízení pracující na druhé (spojové) vrstvě OSI modelu. Přijímají rámce na portech a podle jejich záhlaví (zdrojová a cílová adresa) je přeposílají. Samotná data jsou pro přepínač transparentní. Metody přeposílání: Store and Forward, Cut Through, Fragment Free."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "VLAN (Virtuální LAN) a typy portů",
+      "subsetPath": [
+        "DATA",
+        "Lokální datové sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Logicky segmentuje přepínanou síť a odděluje logickou topologii od fyzické. Spoj mezi přepínači nesoucí více VLAN je trunk. Porty dělíme na untagged (pro koncová zařízení, rámce odcházejí bez VLAN hlavičky) a tagged (odesílají rámce s VLAN hlavičkou)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Směrovače (router) v LAN",
+      "subsetPath": [
+        "DATA",
+        "Lokální datové sítě"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Fungují na třetí (síťové) vrstvě OSI modelu a využívají IP adresy pro směrování paketů. Většinou zajišťují také mechanismus NAT (Network Address Translation), který překládá adresy a umožňuje více zařízením sdílet jednu veřejnou IP adresu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Proč řídit přístup k médiu?",
+      "subsetPath": [
+        "DATA",
+        "Metody přístupu k médiu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Protože existuje jeden společně sdílený přenosový kanál, ale více prostorově oddělených stanic, přičemž v jeden okamžik může vysílat pouze jedna stanice (jinak nastane kolize). Problém se týká pouze vysílání u vícebodových technologií (LAN), implementuje ho podvrstva MAC."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Doména soupeření vs. Předávání tokenu",
+      "subsetPath": [
+        "DATA",
+        "Metody přístupu k médiu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Doména soupeření: Decentralizované řízení (např. Ethernet). Stanice soupeří o přístup, vysílá při detekci klidu, což přináší riziko kolize. Předávání tokenu: Centralizované řízení (např. Token Ring). Krátký paket (token) cyklicky koluje a vysílat smí jen stanice, která jej aktuálně vlastní."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metoda CSMA/CD",
+      "subsetPath": [
+        "DATA",
+        "Metody přístupu k médiu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Carrier Sense (uzel ověřuje klid na médiu před vysíláním), Multiple Access (společný přístup, uzly slyší ostatní), Collision Detection (detekce kolize při současném vysílání více stanic - uzel vysílání přeruší, chvíli počká a zkusí to znovu)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Maskování nad IP adresou (IPv4)",
+      "subsetPath": [
+        "DATA",
+        "Binární aritmetika a maskování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Maska podsítě určí pomocí bitového logického součinu (IP adresa AND maska) hranici mezi síťovou částí (NET ID, jedničky v masce) a hostitelskou částí (HOST ID, nuly v masce), která identifikuje konkrétní zařízení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Třídy adres v IP síti",
+      "subsetPath": [
+        "DATA",
+        "Binární aritmetika a maskování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Síťová adresa: První adresa v síti/podsiti, identifikuje síť. Broadcastová adresa: Poslední adresa v síti/podsiti, slouží k hromadnému adresování více zařízení. Loopback adresa: Adresa určená pro testování (127.x.x.x)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základy směrování v IP sítích",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Proces nalezení optimální cesty v síti na 3. vrstvě RM OSI pomocí cílové IP adresy v záhlaví paketu. IP je nespojovaný protokol, směrovače se rozhodují nezávisle. Znalost cesty tam nic neříká o cestě pro komunikaci v opačném směru."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výchozí brána (Default Route)",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Směrovač, kterému jsou předány pakety, pro jejichž cílovou síť neexistuje specifický záznam ve směrovací tabulce. Pokud výchozí brána ani záznam neexistují, je paket zahozen."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Statické vs. Dynamické směrování",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Statické: Záznamy se zadávají ručně. Výhodou je přesné chování a nízká režie, nevýhodou neschopnost reagovat na změny topologie a složitá správa u velkých sítí. Dynamické: Záznamy se spravují automaticky pomocí protokolů. Výhodou je reakce na změny a loadbalancing, nevýhodou vyšší nároky na CPU, RAM a šířku pásma."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Autonomní systém (AS) a Metrika",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Autonomní systém: Množina směrovačů pod jednotnou správou a politikou, identifikovaná globálně jedinečným 16/32bitovým AS číslem. Metrika: Číselný parametr kvality cesty (počet routerů, rychlost, zpoždění, zatížení, spolehlivost). Využije se cesta s nejnižší metrikou."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Konvergence sítě",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Stav, kdy mají všechny směrovače v síti správné, konzistentní a kompletní informace o celé topologii. Doba konvergence je čas potřebný k výměně informací a aktualizaci tabulek. Čím je tato doba kratší, tím je protokol lepší."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Směrovací protokoly typu Distance Vector (DV)",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Směrovače periodicky posílají kompletní směrovací tabulky přímým sousedům. Zná topologii jen zprostředkovaně přes sousedy, cesty ohlašuje jako vektory vzdálenosti a směru. Nevýhodou je pomalá konvergence a riziko vzniku směrovacích smyček."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Směrovací protokoly typu Link-State (LS)",
+      "subsetPath": [
+        "DATA",
+        "Základy směrování"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Každý uzel zná kompletní topologii sítě (shodná topologická databáze). Informace o stavu linek (LSP) se zaplavují všem uzlům při inicializaci nebo změně (event-driven/triggered). Má rychlou konvergenci, ale vyšší nároky na CPU a paměť (SPF strom)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Charakteristika M2M komunikace v IoT",
+      "subsetPath": [
+        "DATA",
+        "Internet věcí a M2M"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vzájemná komunikace mezi zařízeními (nikoli s člověkem). Na rozdíl od souvislých lidských přenosů vyžaduje nahodilé, krátké zprávy, využívá nízké přenosové rychlosti a klade vysoký důraz na nízkou energetickou náročnost."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Telekomunikační technologie pro IoT (Mobilní vs. Lokální)",
+      "subsetPath": [
+        "DATA",
+        "Internet věcí a M2M"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Mobilní (celulární/veřejné): NB-IoT, LTE-M (standardy 3GPP v rámci LTE), GSM, 3G, 4G, 5G. Lokální/LPWAN: WiFi (rozšířená, energeticky náročná), Bluetooth Low Energy, Zigbee, LoRa (velký dosah v řádu kilometrů), SIGFOX."
+        }
+      ]
+    }
+  ]
+}

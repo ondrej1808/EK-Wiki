@@ -1,0 +1,453 @@
+{
+  "title": "Elektromagnetické vlny a vedení (ELD)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Maxwellovy rovnice v integrálním tvaru",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Formulace",
+          "text": "Soustava čtyř rovnic popisujících elektromagnetické pole:\n1) Gaussův zákon elektrostatiky: $\\oint \\mathbf{D} \\cdot d\\mathbf{S} = Q$\n2) Gaussův zákon magnetismu: $\\oint \\mathbf{B} \\cdot d\\mathbf{S} = 0$\n3) Ampérův zákon: $\\oint \\mathbf{H} \\cdot d\\mathbf{l} = I + \\int \\dfrac{\\partial \\mathbf{D}}{\\partial t} \\cdot d\\mathbf{S}$\n4) Faradayův zákon: $\\oint \\mathbf{E} \\cdot d\\mathbf{l} = -\\int \\dfrac{\\partial \\mathbf{B}}{\\partial t} \\cdot d\\mathbf{S}$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Maxwellovy rovnice v diferenciálním tvaru",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Formulace",
+          "text": "Vztahy odvozené pomocí integrálních vět pro pole s rozptýlenými parametry:\n$1) ∇ · D = ρ_Q$\n$2) ∇ · B = 0$\n$3) ∇ × H = J_Q + ∂D/∂t$\n$4) ∇ × E = -∂B/∂t$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Materiálové vztahy a rovnice kontinuity",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vztahy",
+          "text": "Doplňují Maxwellovy rovnice pro popis prostředí:\n$D = ε_0 E + P$\n$B = μ_0 (H + M)$\n$Rovnice kontinuity vyjadřující zákon zachování náboje: ∂ρ_Q/∂t + ∇ · J_Q = 0$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Poyntingův teorém a Poyntingův vektor",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice a bilance",
+          "text": "Poyntingův teorém: $\\dfrac{\\partial \\rho_W}{\\partial t} + \\nabla \\cdot \\mathbf{S} = -\\mathbf{J} \\cdot \\mathbf{E}$\n$\\rho_W$ je hustota energie pole: $\\dfrac{1}{2}(\\mathbf{E} \\cdot \\mathbf{D} + \\mathbf{H} \\cdot \\mathbf{B})$\n$\\mathbf{S}$ je Poyntingův vektor: $\\mathbf{S} = \\mathbf{E} \\times \\mathbf{H}$ (vyjadřuje plošnou hustotu výkonu).\nČlen $\\mathbf{J} \\cdot \\mathbf{E}$ představuje Jouleův výkon přeměněný v teplo."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlnová rovnice pro elektrickou intenzitu ve vakuu",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Tvar rovnice",
+          "text": "$Odvozuje se aplikací rotace na Faradayův zákon při nulových zdrojích (ρ_Q = 0, J_Q = 0):$\n$∇^2 E - (1/c^2) * (∂^2 E/∂t^2) = 0$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastnosti elektromagnetické rovinné harmonické vlny",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Ortogonalita a disperze",
+          "text": "Vektory E, B a vlnový vektor k tvoří pravoúhlý souřadný systém (jsou na sebe kolmé).\n$Disperzní relace pro vakuum je ω = c * ||k||.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Konstanta šíření v obecném ztrátovém prostředí",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "$Komplexní číslo k vyjádřené jako k^2 = -iωμ(iωε + σ) = β - iα.$\n$β je fázová konstanta, α je měrný útlum.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlnová impedance obecného prostředí",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vztah",
+          "text": "$Vyjadřuje poměr mezi elektrickou a magnetickou intenzitou: Z = √(iωμ / (iωε + σ)).$\n$Pro vakuum nabývá hodnoty Z_0 = 120π Ω.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Skinová hloubka",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice a vzorec",
+          "text": "$Vzdálenost, na které se amplituda vlny utlumí na e^(-1) své původní hodnoty.$\n$V dobře vodivém prostředí (ωε << σ) je δ = 1/α = √(2 / (ωμσ)).$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Evanescentní vlna v neomezeném prostředí",
+      "subsetPath": [
+        "ELD",
+        "Maxwellovy rovnice a vlna v neomezeném prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Podmínka vzniku",
+          "text": "$Nastává, pokud prostorové frekvence složek splňují k^2 < k_x^2 + k_y^2.$\n$Vlnové číslo k_z se stává imaginárním a vlna ve směru osy z se nešíří, nýbrž exponenciálně klesá.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rovinná vlna",
+      "subsetPath": [
+        "ELD",
+        "Vlna rovinná, válcová, sférická a Gaussův svazek"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Vlna, která má na rovinné ploše konstantní fázi.\n$Skalární řešení je úměrné e^(i x · k). Amplituda je s rostoucí vzdáleností konstantní.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Válcová vlna",
+      "subsetPath": [
+        "ELD",
+        "Vlna rovinná, válcová, sférická a Gaussův svazek"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Vlna s konstantní fází na válcové ploše.\n$Řešení v cylindrických souřadnicích je popsáno pomocí Hankelovy funkce druhého druhu H_m^(2)(k_ρ * ρ).$\n$Ve vzdáleném poli klesá její amplituda s rostoucí vzdáleností jako 1/√ρ.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sférická (kulová) vlna",
+      "subsetPath": [
+        "ELD",
+        "Vlna rovinná, válcová, sférická a Gaussův svazek"
+      ],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Vlna s konstantní fází na sféře.\n$Řešení je vyjádřeno pomocí sférické Hankelovy funkce druhého druhu h_m^(2)(kr) a sférických harmonik Y_mn(ψ,θ).$\n$Ve velké vzdálenosti od počátku klesá amplituda jako 1/r a řešení lze aproximovat jako e^(-ikr)/r.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Gaussův svazek",
+      "subsetPath": [
+        "ELD",
+        "Vlna rovinná, válcová, sférická a Gaussův svazek"
+      ],
+      "answer_parts": [
+        {
+          "title": "Popis",
+          "text": "Vlna s Gaussovým rozložením energie, rotačně symetrickou strukturou a malou rozbíhavostí ve směru šíření z.\n$Ze začátku se chová jako rovinná vlna, od Rayleighovy vzdálenosti z_R se projevuje jako kulová vlna s výrazným útlumem v radiálním směru.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rayleighova vzdálenost Gaussova svazku",
+      "subsetPath": [
+        "ELD",
+        "Vlna rovinná, válcová, sférická a Gaussův svazek"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "$Vzdálenost z_R = 1/2 * k * w_0^2 = (π * w_0^2) / λ, kde w_0 je apertura svazku.$\nUrčuje bod, od kterého se paprsek začíná výrazněji rozbíhat a měnit z rovinného charakteru na kulový."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Paprsková divergence Gaussova svazku",
+      "subsetPath": [
+        "ELD",
+        "Vlna rovinná, válcová, sférická a Gaussův svazek"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vztah",
+          "text": "$\\theta = \\lambda / (\\pi w_0)$. Představuje úhel mezi asymptotickými přímkami svazku ve vzdáleném poli."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Polarizace p a s na rozhraní dvou prostředí",
+      "subsetPath": [
+        "ELD",
+        "Vlna na rozhraní, totální odraz a polarizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Rozlišuje se podle orientace polí vůči rovině dopadu:\np-polarizace (rovnoběžná): vektor E je rovnoběžný s rovinou dopadu.\ns-polarizace (kolmá): vektor H je rovnoběžný s rovinou dopadu (vektor E je na ni kolmý)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Snellův zákon lomu a zákon odrazu",
+      "subsetPath": [
+        "ELD",
+        "Vlna na rozhraní, totální odraz a polarizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "Zákony",
+          "text": "$Zákon odrazu: θ_I = θ_R (úhel dopadu se rovná úhlu odrazu).$\n$Snellův zákon lomu: n_1 * sin(θ_1) = n_2 * sin(θ_2), kde n_1, n_2 jsou indexy lomu prostředí.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Totální odraz a kritický úhel",
+      "subsetPath": [
+        "ELD",
+        "Vlna na rozhraní, totální odraz a polarizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "Podmínka",
+          "text": "Jev, kdy se do druhého média nepřenáší žádný reálný výkon a vše se odrazí.\n$Nastává při přechodu z opticky hustšího do opticky redšího prostředí (n_1 > n_2) pro úhel lomu θ_2 = π/2.$\n$Kritický úhel splňuje vztah: sin(θ_C) = n_2 / n_1.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Evanescentní vlna na rozhraní",
+      "subsetPath": [
+        "ELD",
+        "Vlna na rozhraní, totální odraz a polarizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vlastnosti",
+          "text": "$Vzniká při totálním odrazu (dopad pod úhlem θ_1 > θ_C).$\nVlna se šíří podél rozhraní a zajišťuje splnění spojitostních podmínek na rozhraní, přičemž její amplituda exponenciálně klesá se vzdáleností od rozhraní do vnitřku druhého prostředí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Polarizace vlny odrazem",
+      "subsetPath": [
+        "ELD",
+        "Vlna na rozhraní, totální odraz a polarizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "Princip",
+          "text": "$Při dopadu nepolarizované vlny na rozhraní se činitelé odrazu R_p a R_s liší.$\nZa určitých podmínek se jedna složka odrazí více a druhá méně (případně projde), čímž dochází k polarizaci odražené vlny."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Typy polarizace elektromagnetické vlny",
+      "subsetPath": [
+        "ELD",
+        "Vlna na rozhraní, totální odraz a polarizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "Klasifikace",
+          "text": "Určuje se podle prostorového chování vektoru E:\n$1) Lineární: složky intenzity nemají vůči sobě fázový posun (φ = 0).$\n$2) Kruhová: fázový posun mezi složkami je π/2 a mají stejnou amplitudu.$\n3) Eliptická: obecný případ s libovolným fázovým posunem či rozdílnými amplitudami."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Podmínky pro vedení vln ve vlnovodech",
+      "subsetPath": [
+        "ELD",
+        "Vedené vlny a mody ve vlnovodech"
+      ],
+      "answer_parts": [
+        {
+          "title": "Předpoklady geometrie",
+          "text": "Při analýze vlnovodů se standardně předpokládá, že vedení je:\n1) Homogenní kolem podélné osy $z$.\n2) Nekonečně dlouhé.\n3) Tvořeno dokonalým vodičem (hraniční podmínka $\\hat{n} \\times \\mathbf{E} = 0$ na stěnách)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mody TE a TM",
+      "subsetPath": [
+        "ELD",
+        "Vedené vlny a mody ve vlnovodech"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "$TE (Transverzálně Elektrické): podélná složka elektrického pole je nulová (E_z = 0). Elektrická intenzita má pouze složky kolmé na směr šíření.$\n$TM (Transverzálně Magnetické): podélná složka magnetického pole je nulová (H_z = 0). Magnetická intenzita má pouze složky kolmé na směr šíření.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Mezní frekvence v obdélníkovém vlnovodu",
+      "subsetPath": [
+        "ELD",
+        "Vedené vlny a mody ve vlnovodech"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vztah",
+          "text": "$ω_c,mn = (c / ·√(μ_r * ε_r)) * √((mπ/a)^2 + (nπ/b)^2), kde a, b jsou rozměry vlnovodu.$\n$Mod TE_mn nebo TM_mn se vybudí a šíří pouze tehdy, pokud je pracovní frekvence vyšší než mezní (ω > ω_c,mn).$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "TEM vlny",
+      "subsetPath": [
+        "ELD",
+        "Vedené vlny a mody ve vlnovodech"
+      ],
+      "answer_parts": [
+        {
+          "title": "Podmínka existence",
+          "text": "$Transverzálně-elektromagnetické vlny, kde jsou obě podélné složky nulové (E_z = 0, H_z = 0).$\nPro jejich existenci jsou vyžadována alespoň dva oddělené vodiče (např. koaxiální kabel, symetrický pár).\n$Na rozdíl od TE/TM vln se mohou šířit již od nulové frekvence (ω_c = 0).$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Telegrafní rovnice pro napěťové vlny na homogenním vedení",
+      "subsetPath": [
+        "ELD",
+        "Vedení s rozprostřenými parametry"
+      ],
+      "answer_parts": [
+        {
+          "title": "Diferenciální tvar",
+          "text": "Odvozeno z náhradního modelu s parametry R, L, G, C:\n$d^2 U(z) / dz^2 - (R + iωL)(G + iωC) * U(z) = 0$\n$Řešení má tvar U(z) = C_1 * e^(-γz) + C_2 * e^(γz), kde γ je konstanta šíření vedení.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Charakteristická impedance homogenního vedení",
+      "subsetPath": [
+        "ELD",
+        "Vedení s rozprostřenými parametry"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vzorec",
+          "text": "$Z_0 = √((R + iωL) / (G + iωC)).$\n$Pro bezeztrátové vedení (R = 0, G = 0) se zjednodušuje na Z_0 = √(L / C).$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Činitel stojatého vlnění (SWR) a komplexní činitel odrazu na vedení",
+      "subsetPath": [
+        "ELD",
+        "Vedení s rozprostřenými parametry"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "$Činitel odrazu na konci vedení: Γ = (Z_K - Z_0) / (Z_K + Z_0), kde Z_K je zátěž.$\n$Činitel stojatého vlnění: SWR = (1 + ||Γ||) / (1 - ||Γ||).$\n$Ideální stav (přizpůsobení) nastává pro Z_K = Z_0, kdy Γ = 0 a SWR = 1.$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Impedance vlnovodu pro mody TE a TM",
+      "subsetPath": [
+        "ELD",
+        "Vlastnosti vln"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vztahy",
+          "text": "$Z_TE = √(μ/ε) * (1 / √(1 - (ω_c/ω)^2))$\n$Z_TM = √(μ/ε) * √(1 - (ω_c/ω)^2)$\nVyjadřují vlnovou impedanci v závislosti na pracovní frekvenci vůči mezní frekvenci daného modu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fázová a grupová rychlost ve vlnovodu",
+      "subsetPath": [
+        "ELD",
+        "Vlastnosti vln"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice a relace",
+          "text": "$Fázová rychlost v_f = ω/β vyjadřuje rychlost postupu vlnoplochy s konstantní fází (může být větší než c).$\n$Grupová rychlost v_g = ∂ω/∂β vyjadřuje rychlost přenosu energie či vlnového balíku (vždy menší než c).$\n$Pro TE a TM mody platí součinový vztah: v_f * v_g = c^2 / (μ_r * ε_r).$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlny v anizotropním prostředí",
+      "subsetPath": [
+        "ELD",
+        "Vlny v anizotropním prostředí"
+      ],
+      "answer_parts": [
+        {
+          "title": "Popis",
+          "text": "Prostředí, kde materiálové vlastnosti závisí na směru. Permitivita a permeabilita již nejsou skalární konstanty, ale zavedou se jako tenzory.\n$Materiálové vztahy pak mají tvar D(r) = ε(r)E(r) a B(r) = μ(r)H(r).$"
+        }
+      ]
+    }
+  ]
+}

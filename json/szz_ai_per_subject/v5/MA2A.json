@@ -1,0 +1,905 @@
+{
+  "title": "$Created with cards_creator - MA2A$",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Funkce více proměnných (definice a limita)",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Funkce více proměnných se označuje jako zobrazení $f : M \\rightarrow \\mathbb{R}$, kde $M \\subset \\mathbb{R}^n$ je definiční obor. Zobecněním je vektorové pole, z nichž každá složka může být funkcí $n$ proměnných."
+        },
+        {
+          "title": "Limita v izolovaném bodě",
+          "text": "Funkce $f : M \\rightarrow \\mathbb{R}$ je spojitá v bodě $x_0 \\in M$, pokud je $x_0$ izolovaný bod množiny $M$, nebo pokud existuje limita $\\lim_{x \\rightarrow x_0} f(x) = f(x_0)$. V jednom bodě nelze spojitost přerušit, takže musí být spojitá."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si to jako kopcovitou krajinu, kde tvoje poloha na mapě (souřadnice $x$ a $y$) určuje nadmořskou výšku (hodnotu funkce). Spojitost znamená, že v té krajině nejsou žádné nekonečné propasti ani skoky – když se krůček po krůčku blížíš k nějakému místu, tvoje výška hladce směřuje přesně k výšce tohoto cílového bodu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Stejnoměrná spojitost funkce více proměnných",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Funkce $f$ je spojitá, pokud je spojitá v každém bodě svého definičního oboru. Je stejnoměrně spojitá, pokud pro každé $\\varepsilon > 0$ existuje $\\delta > 0$ tak, že pro všechna $x, y \\in M$ platí:\n$$|$f(x)$ - $f(y)$| < $\\varepsilon$, $\\quad$ $\\text${kdykoliv } \\|x - y\\| $\\le$ $\\delta$$$"
+        },
+        {
+          "title": "Vlastnost na uzavřené množině",
+          "text": "Každá funkce spojitá na uzavřené omezené množině v euklidovském prostoru je stejnoměrně spojitá (v $\\mathbb{R}^2, \\mathbb{R}^3$ umíme měřit vzdálenost a úhly tak, jak jsme zvyklí z geometrie)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "U obyčejné spojitosti ti pro zaručení malé změny výšky (v mezích $\\varepsilon$) stačí udělat malý krok $\\delta$, jenže v prudkých svazích musí být ten krok mnohem titěrnější než v rovině. Stejnoměrná spojitost je super-vlastnost, která říká, že celá krajina má své svahy pod kontrolou a existuje jedno univerzální $\\delta$ (jeden bezpečný krok), které ti zaručí stabilitu úplně kdekoli, bez ohledu na to, jestli stojíš v údolí nebo na vrcholu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Směrová derivace",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Nechť $f : M \\rightarrow \\mathbb{R}$, kde $M \\subset \\mathbb{R}^n$ je otevřená množina. Směrovou derivací v bodě $x_0 \\in M$ ve směru vektoru $h$ nazýváme limitu:\n$$$f(x_0, h)$ = $\\lim$_{t $\\rightarrow$ 0} $\\frac${$f(x_0 + th)$ - $f(x_0)$}{t}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když stojíš na svahu hory, záleží na tom, kam se otočíš. Pokud se vydáš přímo vzhůru, stoupáš prudce, pokud půjdeš po vrstevnici, jseš na rovině. Směrová derivace ti přesně spočítá, jak moc budeš stoupat nebo klesat, když v daném místě uděláš krok konkrétním vybraným směrem (vektorem $h$)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Parciální derivace",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Nechť $f : M \\rightarrow \\mathbb{R}$, kde $M \\subset \\mathbb{R}^n$ je otevřená množina. Parciální derivace $f$ v bodě $x \\in M$ podle $x_j$ (pro $j=1,\\dots,n$) je směrová derivace ve směru jednotkového vektoru $e_j$. Značí se:\n$$$\\frac${$\\partial$ $f(x)$}{$\\partial$ x_j}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Je to speciální případ směrové derivace, kdy tě zajímá pohyb čistě jen podél hlavních os mapy. Parciální derivace podle $x$ ti říká, jak se mění výška krajiny, když jdeš přesně na východ (a severní souřadnici ignoruješ a bereš jako konstantu), zatímco parciální derivace podle $y$ tě sleduje při cestě čistě na sever."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Gradient funkce",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Gradient funkce $f$ je definován jako vektor:\n$$$\\nabla$ $f(x)$ = $\\left$( $\\frac${$\\partial$ $f(x)$}{$\\partial$ x_1} $\\dots$ $\\frac${$\\partial$ $f(x)$}{$\\partial$ x_n} $\\right$)^T$$"
+        },
+        {
+          "title": "Vlastnosti a význam",
+          "text": "Gradient značí směr největšího růstu funkce. Gradient lze dále použít pro počítání směrových derivací podle vztahu:\n$$$\\partial$_h $f(x)$ = h $\\cdot$ $\\nabla$ $f(x)$$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Gradient je šipka na mapě, kterou když ti kompas ukáže, tak víš, že směřuješ do toho nejprudšího kopce. Když do něj navíc promítneš jakýkoliv jiný směr (pomocí skalárního součinu s $h$), okamžitě zjistíš, jak moc budeš stoupat v tomto alternativním směru."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Totální diferenciál",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Nechť $f : M \\rightarrow \\mathbb{R}$, kde $M \\subset \\mathbb{R}^n$ je otevřená množina. Lineární zobrazení $L : \\mathbb{R}^n \\rightarrow \\mathbb{R}$ nazveme totálním diferenciálem funkce $f$ v bodě $x_0 \\in M$, pokud platí:\n$$$\\lim$_{h $\\rightarrow$ 0} $\\frac${$f(x_0 + h)$ - $f(x_0)$ - $L(h)$}{\\|h\\|} = 0$$"
+        },
+        {
+          "title": "Zápis a diferencovatelnost",
+          "text": "Zobrazení, které má v bodě $x_0$ diferenciál, nazýváme diferencovatelné. Diferenciál funkce $f$ v bodě $x_0$ značíme $df(x_0)$ a jeho hodnotu vektorového argumentu $h$ značíme $df(x_0)[h]$. Pro funkci $f$ s $n$ proměnnými platí zjednodušený zápis:\n$$df = $\\frac${$\\partial$ f}{$\\partial$ x_1} dx_1 + $\\dots$ + $\\frac${$\\partial$ f}{$\\partial$ x_n} dx_n$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Totální diferenciál ti dovolí nahradit složitě prohnutý povrch v těsném okolí jednoho bodu dokonale rovnou tečnou rovinou. Zápis $df$ ti pak jednoduše říká: 'Když se v jednotlivých směrech posuneš o kousíčky $dx_1, dx_2...$, celková výška se na téhle pomocné rovině změní o lineární součet těchto příspěvků'."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Složená derivace funkce více proměnných",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Věta",
+          "text": "Nechť $(a, b) \\subset \\mathbb{R}$ je interval and $x_1(t), \\dots, x_n(t)$ jsou diferencovatelné na $(a, b)$. Nechť $f : \\mathbb{R}^n \\rightarrow \\mathbb{R}$ má diferenciál. Potom složená funkce $t \\rightarrow f(x_1(t), \\dots, x_n(t))$ je diferencovatelná a platí:\n$$$\\frac${d}{dt} $f(x_1, \\dots, x_n)$ = $\\frac${$\\partial$ f}{$\\partial$ x_1} $\\frac${dx_1}{dt} + $\\dots$ + $\\frac${$\\partial$ f}{$\\partial$ x_n} $\\frac${dx_n}{dt}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že jedeš autem po zvlněné krajině a tvoje souřadnice na mapě závisí na čase $t$. Tohle pravidlo (řetízkové pravidlo) ti spočítá, jak rychle se mění tvoje nadmořská výška za sekundu. Výsledek získáš tak, že zkombinuješ, jak moc se mění samotný terén v daném směru (parciální derivace) s tím, jak bleskově se v tom směru pohybuje tvoje auto (derivace souřadnic podle času)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Záměnnost smíšených parciálních derivací",
+      "subsetPath": [
+        "MA2A",
+        "Funkce více proměnných"
+      ],
+      "answer_parts": [
+        {
+          "title": "Věta o záměnnosti",
+          "text": "Nechť $M \\subset \\mathbb{R}^n$ je otevřená množina a $f : M \\rightarrow \\mathbb{R}$ má spojité smíšené parciální derivace podle $x_j$ a $x_k$ v bodě $x \\in M$. Potom platí:\n$$$\\frac${$\\partial$^2 f}{$\\partial$ x_j $\\partial$ x_k} = $\\frac${$\\partial$^2 f}{$\\partial$ x_k $\\partial$ x_j}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Smíšená derivace znamená, že zkoumáš zakřivení terénu postupným derivováním podle více různých souřadnic (např. nejdřív podle $x$ a pak podle $y$). Tato věta ti dává skvělou svobodu – říká, že pokud je funkce matematicky rozumná a hladká (derivace jsou spojité), vyjde ti finální zakřivení úplně nastejno, ať už se rozhodneš pro jakékoliv pořadí os."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lokální extrém funkce více proměnných (definice)",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Funkce $f : \\mathbb{R}^n \\to \\mathbb{R}$ má v bodě $\\boldsymbol{x} \\in \\mathbb{R}^n$ **lokální minimum**, pokud existuje okolí $U$ bodu $\\boldsymbol{x}$ takové, že pro všechna $\\boldsymbol{y} \\in U$ platí:\n$$$f(\\boldsymbol{x})$ $\\le$ $f(\\boldsymbol{y})$$$\nPro **lokální maximum** platí obrácená nerovnost: $f(\\boldsymbol{x}) \\ge f(\\boldsymbol{y})$."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že stojíš v krajině se zavázanýma očima. Pokud se ve svém nejbližším okolí můžeš vydat jakýmkoliv směrem a pokaždé půjdeš jen do kopce, našel jsi lokální minimum (jsi na dně dolíku). Pokud bys naopak ze svého místa mohl jít všemi směry už jen dolů, stojíš na lokálním maximu (na vrcholku kopce). Nemusí to být nejvyšší hora světa, stačí, že jsi králem svého bezprostředního okolí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Nutná podmínka existence lokálního extrému",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $M \\subset \\mathbb{R}^n$ je otevřená množina a $f : M \\to \\mathbb{R}$ je třídy $C^1$. Pokud $f$ nabývá v bodě $\\boldsymbol{x} \\in M$ lokálního extrému, pak platí:\n$$$\\partial$_i $f(\\boldsymbol{x})$ = 0 $\\quad$ $\\forall$ i = 1, $\\dots$, n$$\nBodu $\\boldsymbol{x}$, ve kterém je první derivace (gradient) nulová, říkáme **stacionární bod**."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když se ocitneš na samotném vrcholu hory nebo na nejnižším dně údolí, země pod tvými nohami je v tom konkrétním bodě dokonale rovná. Tahle podmínka říká, že pokud v nějakém směru terén stále stoupá nebo klesá (parciální derivace není nula), pak tam stoprocentně nemůže být vrchol ani dno. Aby tam mohl být extrém, musí se sklon krajiny ve všech směrech os na okamžik úplně vynulovat."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Postačující podmínka pro lokální extrém (druhá diferenciální forma)",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $\\boldsymbol{x}$ je stacionární bod funkce $f$ třídy $C^2$. O existenci extrému rozhoduje kvadratická forma $d^2f(\\boldsymbol{x})[\\boldsymbol{h}, \\boldsymbol{h}]$:\n\n* **pozitivně definitní** $\\implies$ v $\\boldsymbol{x}$ je ostré lokální minimum\n* **negativně definitní** $\\implies$ v $\\boldsymbol{x}$ je ostré lokální maximum\n* **indefinitní** $\\implies$ v $\\boldsymbol{x}$ extrém nenastává (**sedlový bod**)"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Samotná rovinka (stacionární bod) ti neprozradí, na čem stojíš. Druhá diferenciální forma zkoumá, jak se ta rovinka hned za tvými zády ohýbá. Pokud se ve všech směrech zvedá nahoru (pozitivní), stojíš v dolíku. Pokud padá dolů (negativní), jsi na vrcholu. A pokud v jednom směru stoupá a v druhém klesá (indefinitní), jsi v horském sedle – odpředu dozadu stoupáš do průsmyku, ale zleva doprava padáš do údolí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hessova matice v $\\mathbb{R}^2$",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro funkce dvou proměnných $f(x,y)$ má Hessova matice tvar:\n$$$H(x, y)$ = $\\begin${pmatrix} $\\frac${$\\partial$^2 f}{$\\partial$ $x^2}$(x,y) & $\\frac${$\\partial$^2 f}{$\\partial$ x $\\partial$ y}(x,y) \\\\ $\\frac${$\\partial$^2 f}{$\\partial$ y $\\partial$ x}(x,y) & $\\frac${$\\partial$^2 f}{$\\partial$ $y^2}$(x,y) $\\end${pmatrix}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si Hessovu matici jako 'katalog zakřivení' terénu v daném místě. Prvky na hlavní diagonále ti říkají, jak moc je krajina prohnutá, když se díváš čistě na východ ($x$) nebo čistě na sever ($y$). Prvky mimo diagonálu (smíšené derivace) pak doplňují informaci o tom, jak moc se ten svah kroutí do úhlopříčných směrů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sylvestrovo kritérium (pozitivní definitnost)",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kvadratická forma matice $\\mathbf{A}$ je **pozitivně definitní**, jestliže všechny hlavní subdeterminanty matice $\\mathbf{A}$ jsou kladné:\n$$a_{11} > 0, $\\quad$ $\\det$ $\\begin${pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} $\\end${pmatrix} > 0, $\\quad$ $\\dots$, $\\quad$ $\\det$ $\\mathbf${A} > 0$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Je to matematický semafor pro bezpečné ověření, že jsi v dolíku (minimmu). Kritérium testuje submatice od té nejmenší (jednorozměrné) až po celou matici. Když ti na každém kroku vyjde kladné číslo (všechny subdeterminanty > 0), máš jistotu, že se terén chová spořádaně a zvedá se nahoru ve všech myslitelných směrech."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sylvestrovo kritérium (negativní definitnost)",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kvadratická forma matice $\\mathbf{A}$ je **negativně definitní**, jestliže hlavní subdeterminanty střídají znaménka počínaje záporným:\n$$a_{11} < 0, $\\quad$ $\\det$ $\\begin${pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} $\\end${pmatrix} > 0, $\\quad$ $\\dots$, $\\quad$ (-1)^n $\\det$ $\\mathbf${A} > 0$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Tenhle semafor hlídá, jestli stojíš na vrcholu kopce (maximum). Schéma je trochu záludnější, protože znaménka musí pravidelně blikat: mínus, plus, mínus, plus... Začíná to záporným prohnutím v prvním směru, ale jakmile přibereš další rozměry, násobením záporných hodnot se determinanty musí překlopit do kladu a tak pořád dokola."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sylvestrovo kritérium (indefinitnost)",
+      "subsetPath": [
+        "MA2A",
+        "Extrémy funkcí"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kvadratická forma matice $\\mathbf{A}$ je **indefinitní**, jestliže $\\det \\mathbf{A} \\neq 0$ a přitom neplatí pravidlo pro pozitivní ani negativní definitnost (hlavní subdeterminanty netvoří ani jednu z požadovaných řad znamének)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když ti subdeterminanty hážou chaos, který neodpovídá ani samým plusům (minimum), ani střídavému blikání (maximum), znamená to jediné: krajina je v jednom směru prohnutá nahoru a v jiném dolů. Gratuluji, našel jsi sedlový bod a žádný jednoznačný extrém se nekoná."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lagrangeova funkce pro vázané extrémy",
+      "subsetPath": [
+        "MA2A",
+        "Vázané extrémy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro minimalizaci/maximalizaci funkce $f(\\boldsymbol{x})$ vzhledem k $p$ vazbám $g_i(\\boldsymbol{x}) = 0$ definujeme **Lagrangeovu funkci** tvaru:\n$$L = $f(\\boldsymbol{x})$ - $\\sum$_{i=1}^{p} $\\lambda$_i $g_i(\\boldsymbol{x})$$$\nkde $\\lambda_1, \\dots, \\lambda_p \\in \\mathbb{R}$ jsou Lagrangeovy multiplikátory."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že hledáš nejvyšší bod v krajině ($f$), ale nesmíš chodit kdekoli – musíš se držet výhradně na vyznačené turistické pěšině ($g = 0$). Lagrangeova funkce je matematický trik, který slepí krajinu i pravidla pěšiny do jedné pomocné funkce. Multiplikátory $\\lambda$ fungují jako 'pokutové body', které tě drtivou silou potrestají a srazí dolů, jakmile bys chtěl z téhle předepsané cesty vykročit vedle."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Nutná podmínka pro vázaný extrém",
+      "subsetPath": [
+        "MA2A",
+        "Vázané extrémy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $\\boldsymbol{x}_0$ je bodem lokálního vázaného extrému funkce $f$ při vazbách $g_i(\\boldsymbol{x}) = 0$ (přičemž gradienty vazeb zijn lineárně nezávislé). Pak $\\boldsymbol{x}_0$ musí být **stacionárním bodem Lagrangeovy funkce**, tj. platí:\n$$$\\nabla$ L = $\\vec${0}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když kráčíš po své vázané cestě (pěšině) a dosáhneš na ní nejvyššího bodu, samotný svah hory kolem tebe klidně může dál stoupat kolmo nahoru. Finta je v tom, že v tomto bodě se směr nejprudšího stoupání hory (gradient $f$) musí dokonale krýt se směrem, kterým tě ze stezky vytlačuje její mantinel (gradient $vazby$). Síly se vyrovnají a gradient celého Lagrangeova slepence se vynuluje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Postačující podmínka pro vázaný extrém",
+      "subsetPath": [
+        "MA2A",
+        "Vázané extrémy"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zkoumá se kvadratická forma $d^2L(\\boldsymbol{x}_0)[\\boldsymbol{h}, \\boldsymbol{h}]$, ale **pouze pro vektory $\\boldsymbol{h}$ z tečného prostoru $T$ k vazbám**, tj. splňující:\n$$$\\boldsymbol${h} $\\perp$ $\\nabla$ $g_j(\\boldsymbol{x}_0)$ $\\quad$ $\\forall$ j=1, $\\dots$, p$$\n\n* **pozitivně definitní** vzhledem k $T \\implies$ ostré lokální vázané minimum\n* **negativně definitní** vzhledem k $T \\implies$ ostré lokální vázané maximum\n* **indefinitní** vzhledem k $T \\implies$ extrém nenastává"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Při zkoumání zakřivení tě vůbec nezajímá, co se děje v místech, kam nesmíš šlápnout. Sleduješ chování druhé derivace výhradně ve směru, kterým ta pěšina pokračuje (tečný prostor $T$). Pokud se pomocná funkce Lagrange zvedá nahoru ve směru chodníku, máš vyhráno – stojíš na vázaném dně, i kdyby hned o metr vedle za plotem zela hluboká propast."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Axiomy objemu geometrického tělesa pod grafem funkce",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zobrazení přiřazující tělesu $M(f,T)$ nezáporné číslo $V(f,T)$ (objem) must splňovat dva základní axiomy:\n\n* **Aditivita:** $V(f, T_1) + V(f, T_2) = V(f, T_1 \\cup T_2)$ pro dvě nepřekrývající se oblasti.\n* **Monotonie:** $\\min_T(f) \\cdot \\text{obsah}(T) \\le V(f,T) \\le \\max_T(f) \\cdot \\text{obsah}(T)$ (objem leží mezi objemy vepsaného a opsaného kvádru)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Tyto axiomy říkají, že objem pod kopcem se chová selským rozumem. Aditivita znamená, že když kopec rozřízneš napůl, celkový objem hlíny bude prostým součtem obou polovin. Monotonie ti dává mantinely: objem pod zvlněným kopcem bude určitě větší, než kdybys celý vrchol uřízl v nejnižším bodě (vepsaný kvádr), ale menší, než kdybys nad ním postavil obří krabici sahající až k nejvyššímu vrcholku (opsaný kvádr)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fubiniho věta pro obdélníkovou oblast",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $f$ je spojitá na uzavřeném obdélníku $T = [a_1, a_2] \\times [b_1, b_2]$. Pak dvojnásobný integrál vyhovuje axiomům aditivity a monotonie a hodnota nezávisí na pořadí integrace:\n$$$\\iint$_T $f(x,y)$ \\, dxdy = $\\int$_{a_1}^{a_2} $\\left$( $\\int$_{b_1}^{b_2} $f(x,y)$ \\, dy $\\right$) dx = $\\int$_{b_1}^{b_2} $\\left$( $\\int$_{a_1}^{a_2} $f(x,y)$ \\, dx $\\right$) dy$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že chceš spočítat celkový objem vody v obdélníkovém bazénu se zvlněným dnem. Fubiniho věta ti dovoluje rozřezat bazén na tenké plátky. Je úplně jedno, jestli ho nejdřív rozkrájíš podélně (podél osy $x$) na proužky a ty pak sečteš, nebo jestli zvolíš příčné řezy (podél osy $y$). Pokud je dno spojité, oba postupy tě dovedou ke stejnému litráži vody."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Dvojný integrál na elementární (základní) oblasti",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Je-li základní oblast $T \\in \\mathbb{R}^2$ vymezena souřadnicemi $x \\in [a_1, a_2]$ a funkcemi $y \\in [s_1(x), s_2(x)]$, pak dvojný integrál přepíšeme na do sebe vnComponentěné integrály:\n$$$\\iint$_T f \\, dT = $\\int$_{a_1}^{a_2} $\\int$_{$s_1(x)$}^{$s_2(x)$} $f(x,y)$ \\, dydx$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Co když tvůj bazén nemá tvar čistého obdélníku, ale z boku ho ohraničují zakřivené zdi? Na ose $x$ si určíš pevný začátek a konec (od $a_1$ do $a_2$). Když pak v libovolném místě $x$ uděláš řez, délka tohoto řezu už není konstantní, ale mění se 'od nevidím do nevidím' – přesně podle toho, jak zrovna hradby $s_1(x)$ a $s_2(x)$ ustupují nebo vystupují."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vliv afinního zobrazení na obsah oblasti",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $\\Psi : \\mathbb{R}^2 \\to \\mathbb{R}^2$ je afinní zobrazení a $T$ je základní oblast. Pro obsah transformované oblasti platí:\n$$$\\text${obsah}($\\Psi$(T)) = |$\\det$($\\Psi$)| $\\cdot$ $\\text${obsah}(T)$$\nIntegrálně zapsáno:\n$$$\\int$_{$\\Psi$(T)} 1 \\, dT = $\\int$_T |$\\det$($\\Psi$)| \\, dT$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když vezmeš gumovou mapu a rovnoměrně ji roztáhneš, zkroutíš nebo překlopíš (afinní zobrazení), všechny nakreslené tvary změní svou velikost. Determinant transformace $\\Psi$ ti dává univerzální koeficient nafouknutí. Říká ti: 'Každý čtvereční centimetr původní mapy se po protažení změnil na $|\\det(\\Psi)|$ centimetrů na mapě nové'."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jacobiho matice a jakobián zobrazení",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro zobrazení $\\boldsymbol{\\psi}(x_1, \\dots, x_n) = (\\psi_1, \\dots, \\psi_n)$ třídy $C^1$ je **Jacobiho matice** definována jako:\n$$$\\mathbf${J}_{$\\boldsymbol${$\\psi$}} = $\\begin${pmatrix} $\\frac${$\\partial$ $\\psi$_1}{$\\partial$ x_1} & $\\dots$ & $\\frac${$\\partial$ $\\psi$_1}{$\\partial$ x_n} \\\\ $\\vdots$ & $\\ddots$ & $\\vdots$ \\\\ $\\frac${$\\partial$ $\\psi$_n}{$\\partial$ x_1} & $\\dots$ & $\\frac${$\\partial$ $\\psi$_n}{$\\partial$ x_n} $\\end${pmatrix}$$\nDeterminant této matice $\\Delta_{\\boldsymbol{\\psi}}(\\boldsymbol{x}) = \\det(\\mathbf{J}_{\\boldsymbol{\\psi}})$ se nazývá **jakobián**."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když deformuješ prostor nelineárně (např. ohýbáš rovinu do polárních souřadnic), deformace není všude stejná – někde se mapa smrskává a jinde natahuje. Jacobiho matice ti v každém bodě ukáže, jak se lokálně mění souřadné osy. Její determinant (jakobián) je pak lokální měřítko změny plochy nebo objemu v daném milimetru mapy."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Věta o substituci v dvojném integrálu",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $\\boldsymbol{\\psi} : T \\to \\mathbb{R}^2$ je zobrazení třídy $C^1$, které je prosté na $T \\subset \\mathbb{R}^2$, a $f$ je spojitá na $\\boldsymbol{\\psi}(T)$. Pak platí:\n$$$\\iint$_{$\\boldsymbol${$\\psi$}(T)} $f(x,y)$ \\, dxdy = $\\iint$_T $f(\\boldsymbol{\\psi}(u,v)$) $\\cdot$ |$\\Delta$_{$\\boldsymbol${$\\psi$}}(u,v)| \\, dudv$$\nkde $|\\Delta_{\\boldsymbol{\\psi}}|$ je absolutní hodnota jakobiánu."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Počítat integrál na kruhové ploše pomocí běžných souřadnic $x$ a $y$ je za trest. Substituce ti dovolí přepnout se do pohodlnějších souřadnic (třeba polárních). Protože se ale mřížka křiví a čtverečky se mění na kruhové výseče, musíš vnitřek integrálu vynásobit jakobiánem $|\\Delta_{\\boldsymbol{\\psi}}|$. To je kurzovní lístek, který přepočítává měřítko deformované plochy zpátky na standardní jednotky."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výpočet souřadnic těžiště rovinné desky",
+      "subsetPath": [
+        "MA2A",
+        "Dvojný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro základní oblast $M$ s plošnou hustotou $\\rho(x,y)$ určíme souřadnice těžiště $[x_t, y_t]$ jako podíl statických momentů a celkové hmotnosti:\n$$x_t = $\\frac${$\\iint$_M x $\\cdot$ $\\rho$ \\, dxdy}{$\\iint$_M $\\rho$ \\, dxdy}, $\\quad$ y_t = $\\frac${$\\iint$_M y $\\cdot$ $\\rho$ \\, dxdy}{$\\iint$_M $\\rho$ \\, dxdy}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že máš kovovou desku nepravidelného tvaru a na některých místech je tlustší nebo z těžšího materiálu (hustota $\\rho$). Těžiště je bod, na který kdybys položil špičku jehly, deska zůstane dokonale vyvážená. Integrál jmenovatele spočítá celkovou váhu desky, zatímco čitatel váží hmotu vynásobenou její vzdáleností od osy – dává ti průměrnou pozici, kde se veškerá váha koncentruje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sférické souřadnice (převodní vztahy)",
+      "subsetPath": [
+        "MA2A",
+        "Substituce v trojném integrálu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Převod ze sférických souřadnic $(r, \\varphi, \\theta)$ do kartézských $(x, y, z)$ je dán vztahy:\n$$$\\begin${aligned} x &= r $\\cos$($\\varphi$) $\\sin$($\\theta$) \\\\ y &= r $\\sin$($\\varphi$) $\\sin$($\\theta$) \\\\ z &= r $\\cos$($\\theta$) $\\end${aligned}$$\nkde obvyklý rozsah úhlů pro celou sféru je $\\varphi \\in [0, 2\\pi]$ a $\\theta \\in [0, \\pi]$ (pozn.: ve skriptech uveden rozsah $\\theta \\in [0, \\frac{\\pi}{2}]$ pro polosféru)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Místo popisu bodu pomocí pravoúhlých kroků dopředu, doprava a nahoru $(x,y,z)$ na to jdeš jako kapitán ponorky nebo astronom. Bod popíšeš tak, že řekneš, jak daleko je od středu Země (poloměr $r$), pod jakým azimutem se k němu otočíš na kompasu (úhel $\\varphi$) a jak moc musíš zaklonit nebo sklonit hlavu od svislé osy (úhel $\\theta$)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jakobián sférických souřadnic",
+      "subsetPath": [
+        "MA2A",
+        "Substituce v trojném integrálu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Determinant Jacobiho matice přechodu do sférických souřadnic je:\n$$$\\Delta$_{$\\vec${r}} = $\\det$ $\\begin${pmatrix} $\\cos$($\\varphi$)$\\sin$($\\theta$) & -r$\\sin$($\\varphi$)$\\sin$($\\theta$) & r$\\cos$($\\varphi$)$\\cos$($\\theta$) \\\\ $\\sin$($\\varphi$)$\\sin$($\\theta$) & r$\\cos$($\\varphi$)$\\sin$($\\theta$) & r$\\sin$($\\varphi$)$\\cos$($\\theta$) \\\\ $\\cos$($\\theta$) & 0 & -r$\\sin$($\\theta$) $\\end${pmatrix} = -$r^2$ $\\sin$($\\theta$)$$\nV integrálu pak po absolutní hodnotě vystupuje prvek: $|\\Delta_{\\vec{r}}| = r^2 \\sin(\\theta)$."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že loupeš pomeranč. Kousky kůry blízko rovníku jsou obrovské a široké, ale jak se blížíš k pólům (úhel $\\theta$ jde k nule), ty samé úhlové kousíčky se drasticky zužují a scvrkávají. Člen $r^2 \\sin(\\theta)$ je korekční faktor, který integrálu vysvětluje, že prostorové buňky se s rostoucí vzdáleností od středu zvětšují a směrem k pólům naopak zužují."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Element plochy dS and objemu dV (polární a válcové s.)",
+      "subsetPath": [
+        "MA2A",
+        "Substituce"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* **Polární souřadnice:**\n  * Transformace: $x = r \\cos(\\phi)$, $y = r \\sin(\\phi)$\n  * Element plochy: $dS = r \\, dS[r, \\varphi] \\implies dxdy = r \\, dr d\\varphi$\n\n* **Válcové (cylindrické) souřadnice:**\n  * Transformace: $x = r \\cos(\\varphi)$, $y = r \\sin(\\varphi)$, $z = z$\n  * Element objemu: $dV = dV[z, r, \\varphi] \\implies dxdydz = r \\, dz dr d\\varphi$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když integruješ v polárních nebo válcových souřadnicích, tvoje síť není tvořená čtverečky, ale výsečemi pavučiny. Čím dál jsi od středu (větší $r$), tím je každé políčko pavučiny při stejném úhlu širší. Proto se do vzorce vloudí to osamocené písmeno $r$ ($r \\, dr d\\varphi$) – hlídá, aby integrál věděl, že u okraje pavučiny kousky plochy váží víc než uprostřed."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Element plochy dS and objemu dV (sférické s.)",
+      "subsetPath": [
+        "MA2A",
+        "Substituce"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Při použití sférických souřadnic $(r, \\varphi, \\theta)$ platí:\n\n* **Element plochy (na sféře):** $dS = r \\, dS[\\varphi, \\theta] \\implies dS = r \\, d\\varphi d\\theta$\n* **Element objemu:** $dV = r^2 \\sin(\\theta) \\, dV[r, \\varphi, \\theta] \\implies dxdydz = r^2 \\sin(\\theta) \\, dr d\\varphi d\\theta$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Tohle je přesné vyjádření toho, jak se mění velikost '3D kostičky' prostoru, když se pohybuješ po zeměkouli. Objem narůstá s kvadrátem vzdálenosti od středu ($r^2$), protože se sféra nafukuje, a zároveň se mění podle zeměpisné šířky (přes $\\sin(\\theta)$), protože u pólů se všechny poledníky sbíhají do jednoho bodu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Geometrický význam determinantu v $\\mathbb{R}^2$ a $\\mathbb{R}^3$",
+      "subsetPath": [
+        "MA2A",
+        "Geometrický význam determinantu"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Absolutní hodnota determinantu vyjadřuje změnu měřítka (resp. transformaci velikosti elementu):\n\n* V $\\mathbb{R}^2$ determinant odpovídá **obsahu** rovnoběžníku:\n  $$$\\text${obsah } R = $\\left$| $\\det$ $\\begin${pmatrix} a_1 & b_1 \\\\ a_2 & b_2 $\\end${pmatrix} $\\right$|$$\n* V $\\mathbb{R}^3$ determinant odpovídá **objemu** rovnoběžnostěnu."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Determinant matice není jen suché číslo. Když vezmeš základní jednotkový čtverec (nebo kostku v 3D) a zdeformuješ ho pomocí lineární transformace (zkroutíš ho na rovnoběžník), absolutní hodnota determinantu ti přesně řekne, kolikrát se zvětšila nebo zmenšila jeho plocha či objem. Je to v podstatě 'koeficient prostorové expanze'."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Definice oblouku v $\\mathbb{R}^n$",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Množina $\\mathscr{C} \\subset \\mathbb{R}^n$ se nazývá **oblouk**, jestliže existuje spojité zobrazení (parametrizace) $\\varphi : [a, b] \\to \\mathscr{C}$ splňující:\n\n* $\\varphi$ je **prosté** na $[a, b]$ s jedinou možnou výjimkou koncových bodů (přímka se nikde neprotíná, „oblouk prostě narovnáš“).\n* Derivace $\\varphi'$ je **spojitá** na $(a,b)$ s existencí jednostranných derivací v krajních bodech a platí $\\varphi'(t) \\neq 0$."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Oblouk je matematicky dokonale 'slušný' kus provázku natažený v prostoru. Podmínka, že je zobrazení prosté, garantuje, že provázek nikde nezauzluješ a neprotne sám sebe. Druhá podmínka o nenulové a spojité derivaci zajišťuje, že provázek nikde ostře nezlomíš do špičatého rohu a že se tvoje pomyslná tužka při jeho kreslení nikde nezastaví."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Definice křivky v $\\mathbb{R}^n$",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Množina $\\mathscr{C} \\subset \\mathbb{R}^n$ se nazývá **křivka**, jestliže existuje spojité zobrazení $\\varphi : [a, b] \\to \\mathscr{C}$ a dělení $\\mathscr{D}$ intervalu $[a, b]$ takové, že na každém podintervalu $I \\in \\mathscr{D}$ jsou splněny podmínky pro **oblouk** (křivka je složena z konečného počtu hladkých oblouků)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Zatímco oblouk musel být dokonale hladký, obecná křivka povoluje víc svobody. Můžeš si ji představit jako drát, který sice smíš na několika místech ostře ohnout (vytvořit hroty a rohy), ale nesmíš ho přestřihnout. Je to řetězec několika hladkých oblouků spojených koncemi k sobě."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Délka oblouku (vzorec)",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zobrazení splňující axiomy aditivity a monotonie přiřadí oblouku $\\mathscr{C}$ jeho **délku** $l(\\mathscr{C})$ podle vzorce:\n$$$l(\\mathscr{C})$ = $\\int$_{a}^{b} \\|$\\varphi$'(t)\\| \\, dt$$\nFyzikálně vyjadřuje postupné sčítání všech malých kousků křivky přes velikost rychlostního vektoru parametrizace."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že jedeš autem po klikaté silnici. Hodnota $\\|\\varphi'(t)\\|$ je jednoduše okamžitá rychlost na tvém tachometru v čase $t$. Když tuhle rychlost integruješ (sčítáš) sekundu po sekundě po celou dobu jízdy od $a$ do $b$, výsledek ti neřekne nic jiného, než kolik kilometrů ujelo tvoje auto celkem – tedy přesnou délku projeté trajektorie."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Křivkový integrál 1. druhu (skalární)",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro spojitou skalární funkci $f$ definovanou na oblouku $\\mathscr{C}$ s parametrizací $\\varphi : [a, b] \\to \\mathscr{C}$ je **křivkový integrál 1. druhu** roven:\n$$$\\int$_{$\\mathscr${C}} f \\, dl = $\\int$_{a}^{b} $f(\\varphi(t)$) $\\cdot$ \\|$\\varphi$'(t)\\| \\, dt$$\nHodnota integrálu **nezávisí** na orientaci křivky."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si ohnutý drát, který má v různých místech proměnlivou hustotu (funkce $f$). Když chceš spočítat jeho celkovou hmotnost, projdeš ho od jednoho konce ke druhému a sčítáš hmotnosti maličkých kousků ($f \\cdot dl$). Je úplně jedno, jestli ten drát vážíš zleva doprava, nebo zprava doleva – výsledná hmotnost na vahách vyjde pokaždé stejná, orientace nehraje roli."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jednotkové tečné vektorové pole křivky",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $\\mathscr{C}$ je křivka s parametrizací $\\varphi : [a, b] \\to \\mathscr{C}$ splňující $\\varphi'(t) \\neq 0$. Vektorové pole $\\tau$ definované v každém bodě křivky předpisem:\n$$$\\tau$($\\varphi$(t)) = $\\frac${$\\varphi$'(t)}{\\|$\\varphi$'(t)\\|}$$\nse nazývá **jednotkové tečné vektorové pole** křivky $\\mathscr{C}$."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když jedeš autem po klikaté dráze, v každém okamžiku svítí přední světlomety auta přesně ve směru tečny. Vektor $\\varphi'(t)$ ukazuje tento směr a jeho délka odpovídá rychlosti. Tím, že ho vydělíš jeho vlastní délkou, zahodíš informaci o rychlosti a zbude ti čistá, unifikovaná šipka o délce 1, která říká jediné: 'Teď jedeme přesně tudy'."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Křivkový integrál 2. druhu (vektorový)",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro orientovanou křivku $(\\mathscr{C}, \\tau)$ and spojité vektorové pole $\\mathbf{F}$ je **křivkový integrál 2. druhu** definován jako integrál ze skalárního součinu pole a tečného vektoru:\n$$$\\int$_{$\\mathscr${C}} $\\mathbf${F} \\, d$\\mathbf${l} = $\\int$_{$\\mathscr${C}} ($\\mathbf${F} $\\cdot$ $\\tau$) \\, dl = $\\int$_{a}^{b} $\\mathbf${F}($\\varphi$(t)) $\\cdot$ $\\varphi$'(t) \\, dt$$\nHodnota integrálu při změně orientace křivky **mění znaménko**."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Tenhle integrál měří, jak moc ti vnější síly (třeba vítr nebo proud řeky $\\mathbf{F}$) pomáhají nebo škodí při pohybu podél křivky. Skalární součin vyfiltruje jen tu složku větru, která fouká přímo do tvých zad (nebo proti tobě). Pokud se otočíš a půjdeš opačným směrem (změna orientace), z větru do zad se stane vítr do tváře a celkový výsledek (vykonaná práce) změní znaménko na záporné."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Fyzikální aplikace křivkového integrálu 2. druhu (práce a průtok)",
+      "subsetPath": [
+        "MA2A",
+        "Křivkový integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* **Práce síly podél křivky:**\n  $$A = $\\int$_{$\\mathscr${C}} $\\vec${F} \\, d$\\vec${s} = -mg $\\int$_{$\\mathscr${C}} $\\vec${h} \\, d$\\vec${s}$$\n* **Průtok vektorového pole (ve 2D):** Integrál přes normálovou složku pole $\\vec{V}$ s normálou $\\vec{n} = (\\tau_2, -\\tau_1)$:\n  $$$P(\\vec{V}, \\mathscr{C})$ = $\\int$_{$\\mathscr${C}} ($\\vec${V} $\\cdot$ $\\vec${n}) \\, ds = $\\int$_{$\\mathscr${C}} (-V_2, V_1) \\, d$\\vec${s}$$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Práce ti říká, kolik energie spotřebuješ (nebo získáš), když tlačíš těleso silovým polem (např. v gravitačním poli sčítáš překonanou výšku $\\vec{h}$). Průtok ve 2D si představ jako plot postavený v proudící řece – místo tečny tě zajímá normála $\\vec{n}$ (vektor kolmý k plotu). Integrál pak sčítá pouze tu vodu, která plotem skutečně proteče skrz, zatímco vodu tekoucí souběžně podél plotu ignoruje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Definice elementární plochy v $\\mathbb{R}^3$",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Množina $M \\subset \\mathbb{R}^3$ se nazývá **elementární plochou**, pokud ji lze vyjádřit jako graf spojité funkce (případně její permutace proměnných):\n$$M = \\{(x,y,z) $\\mid$ z = $g(x,y)$, \\, (x,y) $\\in$ D\\}$$\nkde $g(x,y)$ je spojitá na základní oblasti $D \\subset \\mathbb{R}^2$ a třídy $C^1$ na vnitřku $D$ („koukáš na plochu 3D tělesa v xy“)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Elementární plocha je takový kus 3D povrchu, který se dá krásně promítnout na rovnou podlahu ($D$). Klíčové je, že když se podíváš zvrchu, nad každým bodem podlahy najdeš přesně jeden bod té plochy. Žádné jeskyně, převisy ani záhyby, kde by povrch stál sám nad sebou – je to prostě jeden hladký, čistý plát terénu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Obsah elementární plochy (explicitní zadání)",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro elementární plochu $M = M(g,T)$ danou funkcí $z = g(x,y)$ na oblasti $T$ se obsah $S(g,T)$ spočítá jako:\n$$$\\text${obsah}(M) = $\\iint$_T $\\sqrt${1 + $\\left$($\\frac${$\\partial$ g}{$\\partial$ x}$\\right$)^2 + $\\left$($\\frac${$\\partial$ g}{$\\partial$ y}$\\right$)^2} \\, dxdy$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že kupuješ koberec na zvlněný kopec. Pokud bys koupil jen tolik metrů, kolik činí plocha stínu kopce na mapě ($dxdy$), koberec by ti nestačil, protože svahy plochu natahují. Ten odmocninový člen pod integrálem je geometrický 'přirážkový faktor'. Čím prudší jsou parciální derivace (svahy), tím větší číslo z odmocniny vyleze a tím víc skutečného materiálu je na pokrytí kopce potřeba."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Definice plochy a jejího rozkladu v $\\mathbb{R}^3$",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Souvislá množina $M \\subset \\mathbb{R}^3$ se nazývá **plocha**, jestliže existuje konečný počet elementárních ploch $M_1, M_2, \\dots, M_k$ (jejichž množina tvoří **rozklad plochy $M$**) takových, že:\n\n* $M = M_1 \\cup M_2 \\cup \\dots \\cup M_k$\n* Průnik libovolných dvou částí $M_i \\cap M_j$ pro $i \\neq j$ je buďto prázdná množina, křivka, nebo nekonečná množina nacházející se na hranici."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Celá uzavřená sféra (třeba nafukovací míč) nebo krychle se nedá vyjádřit jako jeden jednoduchý graf bez převisů. Proto ji musíš rozřezat na menší kousky (jako fotbalový míč se sešívá ze záplat). Každá jednotlivá záplata ($M_i$) už je matematicky jednoduchá elementární plocha a dohromady se dotýkají pouze podél svých švů (hranic)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Obsah plochy z parametrického zadání",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Máme-li spojitou parametrizaci $\\boldsymbol{\\Psi} = (\\Psi_1, \\Psi_2, \\Psi_3) : T \\to \\mathbb{R}^3$ třídy $C^1$ na ploše $M$, přičemž zobrazení do rovinné oblasti $\\varepsilon = (\\Psi_1, \\Psi_2) : T \\to D$ je prosté a má nenulový jakobián $\\Delta_{\\varepsilon}$, pak:\n$$$\\text${obsah}(M) = $\\iint$_T $\\left$\\| $\\frac${$\\partial$ $\\boldsymbol${$\\Psi$}}{$\\partial$ s} $\\times$ $\\frac${$\\partial$ $\\boldsymbol${$\\Psi$}}{$\\partial$ t} $\\right$\\| \\, dsdt$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Když plochu popisuješ pomocí dvou nezávislých parametrů $s$ a $t$ (jako zeměpisná šířka a délka), derivace podle nich ti v každém bodě dají dva tečné vektory. Jejich vektorový součin ($\\|\\dots \\times \\dots\\|$) spočítá obsah malinkatého rovnoběžníku, který tyto dva vektory na ploše vytyčují. Integrál pak tyhle miniaturní kousky mozaiky posčítá z celého povrchu dohromady."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Plošný integrál 1. druhu (skalární)",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro spojitou skalární funkci $f$ na elementární ploše $M$ zadané jako $z = g(x,y)$ na oblasti $T$ je **plošný integrál 1. druhu** definován vztahem:\n$$$P(f,M)$ = $\\iint$_M f \\, dS = $\\iint$_T $f(x, y, g(x,y)$) $\\sqrt${1 + $\\left$($\\frac${$\\partial$ g}{$\\partial$ x}$\\right$)^2 + $\\left$($\\frac${$\\partial$ g}{$\\partial$ y}$\\right$)^2} \\, dxdy$$\nFyzikálně vyjadřuje kvantitu (hmotnost, náboj) plochy při zadané plošné hustotě $f$."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si zakřivený plech, který má na sobě nanesenou vrstvu barvy s proměnlivou tloušťkou (funkce $f$ udává hustotu náboje nebo hmotnosti). Tento integrál vezme hodnotu z každého milimetru plechu, vynásobí ji skutečnou pokřivenou velikostí plošky ($dS$) a sečte to. Výsledkem je celková váha barvy nebo celkový elektrický náboj na plechu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jednotkové normálové vektorové pole plochy",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro elementární plochu danou explicitně jako $z = g(x,y)$ určuje směr kolmý k ploše v každém bodě **jednotkový normálový vektor** $\\vec{n}(x,y,z)$:\n$$$\\vec${n}(x,y,z) = $\\frac${$\\left$($\\frac${$\\partial$ g}{$\\partial$ x}, $\\frac${$\\partial$ g}{$\\partial$ y}, -1$\\right$)}{$\\left$\\|$\\left$($\\frac${$\\partial$ g}{$\\partial$ x}, $\\frac${$\\partial$ g}{$\\partial$ y}, -1$\\right$)$\\right$\\|}$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si, že na zakřivený kopec stavíš v každém bodě dokonale kolmou anténu. Směr, kterým ta anténa míří do nebe (nebo do země), ti udávají parciální derivace povrchu. Podělením celou délkou zajistíš, že všechny tyhle šipky (antény) budou mít jednotnou délku přesně 1 metr, bez ohledu na to, jak strmý je pod nimi svah."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Plošný integrál 2. druhu (vektorový)",
+      "subsetPath": [
+        "MA2A",
+        "Plošný integrál"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro orientovanou plochu $(M)$ s jednotkovým normálovým polem $\\vec{n}$ a spojité vektorové pole $\\vec{F}$ je **plošný integrál 2. druhu** definován jako integrál ze skalárního součinu pole a normály přes jednotlivé komponenty rozkladu plochy:\n$$$\\iint$_{(M)} $\\vec${F} \\, d$\\vec${$\\mathbf${S}} = $\\iint$_{(M)} ($\\vec${F} $\\cdot$ $\\vec${n}) \\, dS = $\\iint$_{M_1} $\\vec${F} $\\cdot$ $\\vec${n}_1 \\, dS_1 + $\\dots$ + $\\iint$_{M_k} $\\vec${F} $\\cdot$ $\\vec${n}_k \\, dS_k$$\n(„Plošný integrál orientované plochy je plošný integrál vektorového pole normál“)."
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Tohle je rovnice pro výpočet toku fluid. Představ si rybářskou síť roztaženou v proudící řece (nebo magnetické pole procházející cívkou). Vektorový plošný integrál sčítá množství vody (vektorové pole $\\vec{F}$), které každou vteřinou proteče skrz otvory sítě kolmo na její povrch ($\\vec{n}$). Voda, která teče podél sítě a nepropadne skrz, do celkového toku nepřispěje."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní diferenciální operátory (gradient, divergence, rotace)",
+      "subsetPath": [
+        "MA2A",
+        "Integrální věty"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Symbol $\\nabla$ (nabla) označuje vektorový operátor parciálních derivací. Pro vektorové pole $\\vec{F}$ definujeme:\n\n* **Gradient:** $\\nabla f \\implies$ vektorový operátor aplikovaný na skalární funkci\n* **Divergence:** $\\nabla \\cdot \\vec{F} \\implies$ skalární součin (vyjadřuje vydatnost zdrojů/norů pole)\n* **Rotace:** $\\nabla \\times \\vec{F} = \\text{rot } \\vec{F} \\implies$ vektorový součin (vyjadřuje míru vířivosti pole)"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si nablu ($\\nabla$) jako švýcarský nůž pro analýzu polí. **Gradient** vytáhne z mapy výšek šipku ukazující nejprudší kopec. **Divergence** zkoumá proudění vody a hlásí kladné číslo tam, kde vyvěrá pramen (zdroj), a záporné tam, kde se voda vsakuje do kanálu (nor). **Rotace** ti řekne, jestli proud vody dokáže roztočit malé vodní kolo (vír) a kolem jaké osy se bude točit."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Gaussova věta (divergenční)",
+      "subsetPath": [
+        "MA2A",
+        "Integrální věty"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Převádí plošný integrál 2. druhu přes uzavřenou plochu $S = \\partial P$ na trojný integrál přes objem tělesa $V$ (resp. $P$). Za předpokladu orientace vnější normálou platí:\n$$$\\iint$_{S} $\\mathbf${F} $\\cdot$ $\\mathbf${n} \\, dS = $\\iiint$_{V} ($\\nabla$ $\\cdot$ $\\mathbf${F}) \\, dV = $\\iiint$_{V} $\\left$( $\\frac${$\\partial$ F_x}{$\\partial$ x} + $\\frac${$\\partial$ F_y}{$\\partial$ y} + $\\frac${$\\partial$ F_z}{$\\partial$ z} $\\right$) dx dy dz$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si uzavřenou krabici, ve které jsou schované tisíce malých prskavek produkujících plyn. Gaussova věta říká, že celkové množství plynu, které každou sekundu vyfoukne ven skrz stěny krabice (plošný tok), se musí přesně rovnat součtu sil všech prskavek schovaných uvnitř celého objemu (integrál z divergence)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Greenova věta",
+      "subsetPath": [
+        "MA2A",
+        "Integrální věty"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Převádí křivkový integrál 2. druhu podél kladně orientované uzavřené křivky $C = \\partial T$ na dvojný integrál přes rovinnou oblast $T \\subset \\mathbb{R}^2$:\n$$$\\oint$_{C} (F_x \\, dx + F_y \\, dy) = $\\iint$_{T} $\\left$( $\\frac${$\\partial$ F_y}{$\\partial$ x} - $\\frac${$\\partial$ F_x}{$\\partial$ y} $\\right$) dx dy$$\nAlternativní zápis s označením složek pole $F = (F_1, F_2)$:\n$$$\\int$_{$\\partial$ T} $\\vec${F} \\, d$\\vec${s} = $\\iint$_{T} $\\left$( $\\frac${$\\partial$ F_2}{$\\partial$ x} - $\\frac${$\\partial$ F_1}{$\\partial$ y} $\\right$) dx dy$$"
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Představ si ohrazený taneční parket plný divokých mikro-vírů (rotací). Greenova věta říká, že když spočítáš, jak moc tě proud unáší podél vnějšího plotu celého parketu (křivkový integrál), vyjde to úplně nastejno, jako kdybys sečetl sílu všech těch malých rotací uvnitř na ploše. Všechny vnitřní víry se totiž na svých dotykových hranicích navzájem vyruší a přežije jen to, co se točí na samotném okraji."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Stokesova věta",
+      "subsetPath": [
+        "MA2A",
+        "Integrální věty"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Převádí křivkový integrál 2. druhu podél uzavřené křivky $C = K(M)$ na plošný integrál 2. druhu z rotace pole přes plochu $M$. Při souhlasné orientaci plochy a její hraniční křivky platí:\n$$$\\int$_{($\\partial$ M)} $\\mathbf${F} $\\cdot$ d$\\mathbf${l} = $\\iint$_{(M)} ($\\nabla$ $\\times$ $\\mathbf${F}) $\\cdot$ d$\\mathbf${$\\mathbf${S}}$$\nZápis s explicitním operátorem rotace:\n$$$\\int$_{(C)} $\\vec${F} \\, d$\\vec${s} = $\\iint$_{(M)} $\\text${rot } $\\vec${F} \\, d$\\vec${S}$$\n",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "Převádí křivkový integrál 2. druhu podél uzavřené křivky $C = K(M)$ na plošný integrál 2. druhu z rotace pole přes plochu $M$. Při souhlasné orientaci plochy a její hraniční křivky platí:\n$$\\int_{(\\partial M)} \\mathbf{F} \\cdot d\\mathbf{l} = \\iint_{(M)} (\\nabla \\times \\mathbf{F}) \\cdot d\\mathbf{\\mathbf{S}}$$\nZápis s explicitním operátorem rotace:\n$$\\int_{(C)} \\vec{F} \\, d\\vec{s} = \\iint_{(M)} \\text{rot } \\vec{F} \\, d\\vec{S}$$\n",
+            "imageSrc": null,
+            "raw": {
+              "title": "",
+              "text": "Převádí křivkový integrál 2. druhu podél uzavřené křivky $C = K(M)$ na plošný integrál 2. druhu z rotace pole přes plochu $M$. Při souhlasné orientaci plochy a její hraniční křivky platí:\n$$\\int_{(\\partial M)} \\mathbf{F} \\cdot d\\mathbf{l} = \\iint_{(M)} (\\nabla \\times \\mathbf{F}) \\cdot d\\mathbf{\\mathbf{S}}$$\nZápis s explicitním operátorem rotace:\n$$\\int_{(C)} \\vec{F} \\, d\\vec{s} = \\iint_{(M)} \\text{rot } \\vec{F} \\, d\\vec{S}$$\n"
+            }
+          }
+        },
+        {
+          "title": "Lidské vysvětlení",
+          "text": "Je to 3D zobecnění Greenovy věty. Představ si motýlí síťku chycenou v hurikánu. Stokesova věta tvrdí, že cirkulace vzduchu podél pevného kovového ráfku síťky (křivkový integrál) je naprosto stejná jako součet všech vírů větru, které se opírají a propadávají skrz samotnou látku síťky (plošný integrál rotace). Látku síťky přitom můžeš v prostoru nafouknout jakkoliv chceš – dokud drží na stejném ráfku, výsledek se nezmění.",
+          "imageSrc": null,
+          "raw": {
+            "title": "Lidské vysvětlení",
+            "text": "Je to 3D zobecnění Greenovy věty. Představ si motýlí síťku chycenou v hurikánu. Stokesova věta tvrdí, že cirkulace vzduchu podél pevného kovového ráfku síťky (křivkový integrál) je naprosto stejná jako součet všech vírů větru, které se opírají a propadávají skrz samotnou látku síťky (plošný integrál rotace). Látku síťky přitom můžeš v prostoru nafouknout jakkoliv chceš – dokud drží na stejném ráfku, výsledek se nezmění.",
+            "imageSrc": null,
+            "raw": {
+              "title": "Lidské vysvětlení",
+              "text": "Je to 3D zobecnění Greenovy věty. Představ si motýlí síťku chycenou v hurikánu. Stokesova věta tvrdí, že cirkulace vzduchu podél pevného kovového ráfku síťky (křivkový integrál) je naprosto stejná jako součet všech vírů větru, které se opírají a propadávají skrz samotnou látku síťky (plošný integrál rotace). Látku síťky přitom můžeš v prostoru nafouknout jakkoliv chceš – dokud drží na stejném ráfku, výsledek se nezmění."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

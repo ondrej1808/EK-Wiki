@@ -1,0 +1,181 @@
+{
+  "title": "TSI: Telefonní a mobilní sítě (rozšířená sada)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Shannon-Hartleyův teorém",
+      "subsetPath": [
+        "TSI",
+        "Teoretický základ"
+      ],
+      "answer_parts": [
+        {
+          "text": "Určuje teoretickou mez kapacity komunikačního kanálu $C$ v závislosti na šířce pásma $B$ a poměru výkonů signálu a šumu $S/N$:"
+        },
+        {
+          "text": "$$C = B \\log_2 \\left(1 + \\frac{S}{N}\\right)$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Veličiny propustnosti telekomunikačního kanálu",
+      "subsetPath": [
+        "TSI",
+        "Teoretický základ"
+      ],
+      "answer_parts": [
+        {
+          "text": "Vlastnosti kanálu jsou definovány těmito veličinami:"
+        },
+        {
+          "text": "* **Dynamický rozsah ($D_k$):** rozsah amplitudy signálu.\n* **Šířka kanálu ($B_k$):** frekvenční rozsah přenášeného signálu.\n* **Minimální doba trvání prvku ($T_k$):** nejkratší signálový prvek, který lze kanálem přenést."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Operace při digitalizaci telefonního signálu (PCM)",
+      "subsetPath": [
+        "TSI",
+        "Telefonní komunikace"
+      ],
+      "answer_parts": [
+        {
+          "text": "Analogový signál prochází před multiplexováním těmito kroky:"
+        },
+        {
+          "text": "1. **Vzorkování:** vytvoření signálu diskrétního v čase.\n2. **Kvantování:** vytvoření signálu diskrétního v čase i amplitudě.\n3. **Kódování:** převedení do výsledného formátu PCM."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Funkce účastnické sady (BORSCHT)",
+      "subsetPath": [
+        "TSI",
+        "Digitální spojovací systémy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Základní funkce účastnické sady jsou:"
+        },
+        {
+          "text": "* **B:** napájení\n* **O:** ochrana proti přepětí\n* **R:** vyzvánění\n* **S:** dohled\n* **C:** kódování\n* **H:** vidlice\n* **T:** diagnostika"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Srovnání hierarchií PDH a SDH",
+      "subsetPath": [
+        "TSI",
+        "Digitální přenosové systémy"
+      ],
+      "answer_parts": [
+        {
+          "text": "Hlavní rozdíly mezi těmito systémy:"
+        },
+        {
+          "text": "* **PDH:** zastaralá, signály nemají jednoznačný časový vztah, využívá bitový stuffing.\n* **SDH:** synchronní multiplexování po celých bytech, využití virtuálních kontejnerů a kruhové topologie."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip buňkové sítě",
+      "subsetPath": [
+        "TSI",
+        "Buňkové sítě"
+      ],
+      "answer_parts": [
+        {
+          "text": "Komunikace je zajištěna množstvím základnových stanic, které vytvářejí soustavu překrývajících se buněk."
+        },
+        {
+          "text": "Výhody zahrnují: větší kapacitu, menší potřebný vysílací výkon, větší oblast pokrytí a možnost opakovaného využití frekvencí."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metody mnohonásobného přístupu v mobilních sítích",
+      "subsetPath": [
+        "TSI",
+        "Buňkové sítě"
+      ],
+      "answer_parts": [
+        {
+          "text": "Techniky pro sdílení média:"
+        },
+        {
+          "text": "* **FDMA:** frekvenční dělení (každý kanál má svou frekvenci).\n* **TDMA:** časové dělení (každý kanál má svůj čas).\n* **CDMA:** kódové dělení (každý kanál má svůj kód).\n* **OFDMA:** ortogonální FDMA, využití více nosných vln."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Modulační techniky v mobilních sítích",
+      "subsetPath": [
+        "TSI",
+        "Buňkové sítě"
+      ],
+      "answer_parts": [
+        {
+          "text": "Příklady použití modulací v generacích sítí:"
+        },
+        {
+          "text": "* **GSM (2G):** GMSK.\n* **EDGE (2.75G):** GMSK společně s 8PSK.\n* **HSDPA (3GPP):** 64QAM.\n* **LTE (4G):** OFDM (downlink) a jednofrekvenční síť pro uplink."
+        }
+      ]
+    },
+    {
+      "type": "closed",
+      "question": "Jaká je šířka pásma standardního telefonního kanálu?",
+      "options": [
+        "8 kHz",
+        "3100 Hz",
+        "64 kHz",
+        "300 Hz"
+      ],
+      "correctIndex": 1,
+      "explanation": "Telefonní kanál je definován rozsahem 300 Hz až 3400 Hz, což dává šířku pásma 3100 Hz."
+    },
+    {
+      "type": "closed",
+      "question": "Jaká vzorkovací frekvence se používá pro vzorkování telefonního signálu?",
+      "options": [
+        "3100 Hz",
+        "8000 Hz",
+        "64000 Hz",
+        "44100 Hz"
+      ],
+      "correctIndex": 1,
+      "explanation": "Podle Shannonova-Kotělnikovova teorému byla pro vzorkování telefonního signálu stanovena frekvence 8000 Hz."
+    },
+    {
+      "type": "closed",
+      "question": "Co představuje zkratka TDD v mobilních sítích?",
+      "options": [
+        "Time Division Duplex",
+        "Total Digital Data",
+        "Telecommunication Digital Device",
+        "Technical Data Distribution"
+      ],
+      "correctIndex": 0,
+      "explanation": "TDD znamená Time Division Duplex, což je jeden z módů přenosu dat v uplink a downlink směru."
+    },
+    {
+      "type": "closed",
+      "question": "Jaká je přenosová rychlost základního telefonního kanálu?",
+      "options": [
+        "2 Mbit/s",
+        "64 kbit/s",
+        "128 kbit/s",
+        "300 bit/s"
+      ],
+      "correctIndex": 1,
+      "explanation": "Standardní přenosová rychlost telefonního kanálu po digitalizaci je 64 kbit/s (8 bitů * 8000 Hz)."
+    }
+  ]
+}
