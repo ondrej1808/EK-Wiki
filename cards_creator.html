@@ -28,6 +28,11 @@
       </div>
       <div class="toolbar-row toolbar-row-secondary">
         <label class="small">Filename: <input id="exportFilename" placeholder="my_cards.json" value="cards_export.json" class="filename-input"></label>
+        <label class="small">Předmět: 
+          <select id="listFilterSelect" class="list-filter-select">
+            <option value="">Všechny předměty</option>
+          </select>
+        </label>
       </div>
       <div id="cardsList"></div>
       <input type="file" id="importFile" accept="application/json" style="display:none">

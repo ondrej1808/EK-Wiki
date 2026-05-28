@@ -12,6 +12,7 @@ let questionStates = {};
 let flaggedQuestions = new Set();
 let isFlaggedMode = false;
 let selectedSubsetPath = null;
+let selectedSubjectPath = null;
 let viewStates = {};
 let pendingWrongAnswer = null;
 const CREATOR_HANDOFF_KEY = 'cards_creator_handoff_v1';
@@ -227,12 +228,31 @@ function toggleMenu() {
         const clonedSelect = originalSelect.cloneNode(true);
         clonedSelect.id = 'mobileSubjectSelect';
         clonedSelect.style.width = '100%';
+        clonedSelect.value = originalSelect.value;
         clonedSelect.onchange = (e) => {
             changeSubject(e.target.value);
             toggleMenu();
         };
         selectContainer.appendChild(clonedSelect);
         menuContent.appendChild(selectContainer);
+
+        const originalSubjectFilter = document.getElementById('subjectFilterSelect');
+        if (originalSubjectFilter) {
+            const subjectFilterContainer = document.createElement('div');
+            subjectFilterContainer.className = 'select-wrapper';
+            subjectFilterContainer.style.marginBottom = '12px';
+
+            const clonedSubjectFilter = originalSubjectFilter.cloneNode(true);
+            clonedSubjectFilter.id = 'mobileSubjectFilterSelect';
+            clonedSubjectFilter.style.width = '100%';
+            clonedSubjectFilter.value = originalSubjectFilter.value;
+            clonedSubjectFilter.onchange = (e) => {
+                changeSubjectFilter(e.target.value);
+                toggleMenu();
+            };
+            subjectFilterContainer.appendChild(clonedSubjectFilter);
+            menuContent.appendChild(subjectFilterContainer);
+        }
 
         const originalSubsetSelect = document.getElementById('subsetSelect');
         if (originalSubsetSelect) {
@@ -243,6 +263,7 @@ function toggleMenu() {
             const clonedSubsetSelect = originalSubsetSelect.cloneNode(true);
             clonedSubsetSelect.id = 'mobileSubsetSelect';
             clonedSubsetSelect.style.width = '100%';
+            clonedSubsetSelect.value = originalSubsetSelect.value;
             clonedSubsetSelect.onchange = (e) => {
                 changeSubsetFilter(e.target.value);
                 toggleMenu();
@@ -307,6 +328,27 @@ function normalizeSubsetPath(question) {
     return [];
 }
 
+function getSubjectPath(question) {
+    if (!question || typeof question !== 'object') return '';
+    if (Array.isArray(question.subsetPath) && question.subsetPath.length > 0) {
+        return String(question.subsetPath[0] || '').trim();
+    }
+    return '';
+}
+
+function getAvailableSubjectPaths() {
+    const subjects = [];
+    const seen = new Set();
+    questions.forEach(q => {
+        const subject = getSubjectPath(q);
+        if (subject && !seen.has(subject)) {
+            seen.add(subject);
+            subjects.push(subject);
+        }
+    });
+    return subjects;
+}
+
 function encodeSubsetPath(pathArray) {
     if (!Array.isArray(pathArray) || pathArray.length === 0) return '';
     return pathArray.join(SUBSET_VALUE_SEPARATOR);
@@ -335,13 +377,22 @@ function syncSubsetSelects() {
     if (mobile) mobile.value = value;
 }
 
+function syncSubjectFilterSelects() {
+    const value = selectedSubjectPath || '';
+    const desktop = document.getElementById('subjectFilterSelect');
+    const mobile = document.getElementById('mobileSubjectFilterSelect');
+    if (desktop) desktop.value = value;
+    if (mobile) mobile.value = value;
+}
+
 function getQuestionIdKey(qId) {
     return String(qId);
 }
 
 function getCurrentScopeKey() {
     const subsetKey = encodeSubsetPath(selectedSubsetPath || []);
-    return `${subsetKey || '__all__'}::${isFlaggedMode ? 'flagged' : 'all'}`;
+    const subjectKey = selectedSubjectPath ? `subject:${selectedSubjectPath}` : 'subject:__all__';
+    return `${subjectKey}::${subsetKey || '__all__'}::${isFlaggedMode ? 'flagged' : 'all'}`;
 }
 
 function getCurrentScopeState(createIfMissing = true) {
@@ -566,14 +617,24 @@ function populateSubsetFilter() {
     const nodes = new Map();
     questions.forEach(q => {
         const path = Array.isArray(q.subsetPath) ? q.subsetPath : [];
-        for (let i = 1; i <= path.length; i++) {
+        if (selectedSubjectPath && path[0] !== selectedSubjectPath) {
+            return;
+        }
+        const startIndex = selectedSubjectPath ? 2 : 1;
+        for (let i = startIndex; i <= path.length; i++) {
             const nodePath = path.slice(0, i);
             const key = encodeSubsetPath(nodePath);
             if (!nodes.has(key)) {
                 nodes.set(key, {
                     path: nodePath,
-                    count: 0
+                    count: 0,
+                    firstIndex: typeof q.originalIndex === 'number' ? q.originalIndex : 0
                 });
+            } else {
+                const node = nodes.get(key);
+                if (node && typeof q.originalIndex === 'number') {
+                    node.firstIndex = Math.min(node.firstIndex, q.originalIndex);
+                }
             }
         }
     });
@@ -587,17 +648,17 @@ function populateSubsetFilter() {
     });
 
     const sorted = Array.from(nodes.values()).sort((a, b) => {
-        const aKey = a.path.join(' / ').toLowerCase();
-        const bKey = b.path.join(' / ').toLowerCase();
-        return aKey.localeCompare(bKey, 'cs');
+        if (a.firstIndex !== b.firstIndex) return a.firstIndex - b.firstIndex;
+        return a.path.length - b.path.length;
     });
 
     sorted.forEach(node => {
         const option = document.createElement('option');
-        const depth = node.path.length;
+        const labelPath = selectedSubjectPath ? node.path.slice(1) : node.path;
+        const depth = labelPath.length;
         const indent = depth > 1 ? `${' '.repeat((depth - 1) * 2)}↳ ` : '';
         option.value = encodeSubsetPath(node.path);
-        option.textContent = `${indent}${node.path[node.path.length - 1]} (${node.count}/${node.total})`;
+        option.textContent = `${indent}${labelPath[labelPath.length - 1]} (${node.count}/${node.total})`;
         option.title = `Správně: ${node.count}, špatně: ${node.wrong}, celkem: ${node.total}`;
         subsetSelect.appendChild(option);
     });
@@ -612,12 +673,51 @@ function populateSubsetFilter() {
     syncSubsetSelects();
 }
 
+function populateSubjectFilter() {
+    const subjectSelect = document.getElementById('subjectFilterSelect');
+    if (!subjectSelect) return;
+
+    const prevValue = selectedSubjectPath || '';
+    subjectSelect.innerHTML = '<option value="">📚 Vybrat předmět...</option>';
+
+    const subjects = getAvailableSubjectPaths();
+    subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        subjectSelect.appendChild(option);
+    });
+
+    if (prevValue && subjects.includes(prevValue)) {
+        selectedSubjectPath = prevValue;
+        subjectSelect.value = prevValue;
+    } else {
+        selectedSubjectPath = null;
+        subjectSelect.value = '';
+    }
+
+    subjectSelect.disabled = subjects.length === 0;
+    syncSubjectFilterSelects();
+}
+
 function changeSubsetFilter(encodedPath) {
     persistCurrentScopeState();
     selectedSubsetPath = decodeSubsetPath(encodedPath);
     const scopeState = getCurrentScopeState();
     currentCardIndex = scopeState ? scopeState.currentCardIndex || 0 : 0;
     syncSubsetSelects();
+    updateUI();
+}
+
+function changeSubjectFilter(value) {
+    persistCurrentScopeState();
+    selectedSubjectPath = value || null;
+    selectedSubsetPath = null;
+    const scopeState = getCurrentScopeState();
+    currentCardIndex = scopeState ? scopeState.currentCardIndex || 0 : 0;
+    populateSubsetFilter();
+    syncSubsetSelects();
+    syncSubjectFilterSelects();
     updateUI();
 }
 
@@ -694,10 +794,13 @@ function loadQuestions(data) {
     questionStates = {};
     currentCardIndex = 0;
     viewStates = {};
+    selectedSubsetPath = null;
+    selectedSubjectPath = null;
     closeWrongAnswerPopup();
     
     // Try to restore progress for this specific subject (Fix issue 2)
     loadProgress();
+    populateSubjectFilter();
     populateSubsetFilter();
     
     updateUI();
@@ -781,6 +884,10 @@ function openCurrentSetInEditor() {
 
 function getFilteredQuestions() {
     let filtered = questions;
+
+    if (selectedSubjectPath) {
+        filtered = filtered.filter(q => Array.isArray(q.subsetPath) && q.subsetPath[0] === selectedSubjectPath);
+    }
 
     if (selectedSubsetPath && selectedSubsetPath.length > 0) {
         filtered = filtered.filter(q => isPathPrefix(selectedSubsetPath, q.subsetPath || []));
@@ -1210,6 +1317,7 @@ function clearAppCache() {
     flaggedQuestions.clear();
     isFlaggedMode = false;
     selectedSubsetPath = null;
+    selectedSubjectPath = null;
     viewStates = {};
     pendingWrongAnswer = null;
 
@@ -1241,6 +1349,7 @@ function saveProgress() {
     const state = {
         version: 2,
         idx: currentCardIndex,
+        subjectPath: selectedSubjectPath,
         subsetPath: selectedSubsetPath,
         flags: Array.from(flaggedQuestions),
         viewStates,
@@ -1270,6 +1379,10 @@ function loadProgress() {
             if (Array.isArray(state.subsetPath)) {
                 selectedSubsetPath = state.subsetPath;
             }
+
+            if (typeof state.subjectPath === 'string' && state.subjectPath.trim()) {
+                selectedSubjectPath = state.subjectPath;
+            }
             
             if (state.flags) flaggedQuestions = new Set(state.flags);
 
@@ -1285,6 +1398,7 @@ function loadProgress() {
     }
 
     syncSubsetSelects();
+    syncSubjectFilterSelects();
 }
 
 function attachSwipeListeners() {

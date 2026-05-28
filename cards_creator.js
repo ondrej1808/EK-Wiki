@@ -12,6 +12,7 @@
   let restoredFormState = null;
   let autosaveTimer = null;
   let draggedCardIndex = null;
+  let listSubjectFilter = '';
 
   const q = sel => document.querySelector(sel);
   const qa = sel => document.querySelectorAll(sel);
@@ -42,6 +43,29 @@
   }
   function getCardId(card){
     return card && card[CREATOR_ID_KEY] ? card[CREATOR_ID_KEY] : null;
+  }
+  function getCardSubject(card){
+    if (!card || typeof card !== 'object') return '';
+    if (Array.isArray(card.subsetPath) && card.subsetPath.length > 0) {
+      return String(card.subsetPath[0] || '').trim();
+    }
+    if (typeof card.subsetPath === 'string') {
+      const normalized = normalizeSubsetPathInput(card.subsetPath);
+      return normalized[0] || '';
+    }
+    return '';
+  }
+  function getAvailableSubjects(){
+    const subjects = [];
+    const seen = new Set();
+    cards.forEach(card => {
+      const subject = getCardSubject(card);
+      if (subject && !seen.has(subject)) {
+        seen.add(subject);
+        subjects.push(subject);
+      }
+    });
+    return subjects;
   }
   function clampEditingIndex(index, totalCards){
     if (!Number.isInteger(index)) return totalCards > 0 ? 0 : -1;
@@ -397,6 +421,7 @@
     saveSessionBtn: q('#saveSessionBtn'),
     openInCardsBtn: q('#openInCardsBtn'),
     exportFilename: q('#exportFilename'),
+    listFilterSelect: q('#listFilterSelect'),
     importFile: q('#importFile'),
     cardsList: q('#cardsList'),
     cardType: q('#cardType'),
@@ -453,6 +478,7 @@
     els.exportBtn.addEventListener('click', ()=>{ debugLog('event:exportBtn'); exportJSON(); });
     if(els.saveSessionBtn) els.saveSessionBtn.addEventListener('click', saveSessionAsUrl);
     if(els.openInCardsBtn) els.openInCardsBtn.addEventListener('click', openInCards);
+    if(els.listFilterSelect) els.listFilterSelect.addEventListener('change', ()=>{ listSubjectFilter = els.listFilterSelect.value || ''; renderList(); });
     els.cardType.addEventListener('change', ()=>{ debugLog('event:cardType change', { value: els.cardType.value }); toggleType(); });
     els.addOptionBtn.addEventListener('click', ()=>{ debugLog('event:addOptionBtn'); addOptionField(); });
     els.saveCardBtn.addEventListener('click', ()=>{ debugLog('event:saveCardBtn'); saveCardFromForm(); });
@@ -867,8 +893,17 @@
 
   function renderList(){
     debugLog('renderList:start', { cards: cards.length, editingIndex });
+    populateListFilterOptions();
+    const visibleCards = getVisibleCards();
     const previousRects = captureCardRects();
     els.cardsList.innerHTML = '';
+
+    const getInsertIndexForPosition = (position) => {
+      if (!visibleCards.length) return 0;
+      if (position <= 0) return visibleCards[0].index;
+      if (position >= visibleCards.length) return cards.length;
+      return visibleCards[position].index;
+    };
 
     function createDropSlot(insertIndex, label){
       const slot = document.createElement('div');
@@ -901,8 +936,15 @@
       return slot;
     }
 
-    els.cardsList.appendChild(createDropSlot(0, 'Before first'));
-    cards.forEach((c,i)=>{
+    if (!visibleCards.length) {
+      animateCardMoves(previousRects);
+      return;
+    }
+
+    els.cardsList.appendChild(createDropSlot(getInsertIndexForPosition(0), 'Before first'));
+    visibleCards.forEach((entry, visibleIndex)=>{
+      const c = entry.card;
+      const i = entry.index;
       if (!c) {
         debugLog('renderList:skipNullCard', { index: i, cardsSnapshot: cards.length });
         return;
@@ -942,10 +984,41 @@
         Array.from(els.cardsList.querySelectorAll('.card-drop-slot')).forEach(slot => slot.classList.remove('active'));
       });
 
-      els.cardsList.appendChild(createDropSlot(i + 1, i === cards.length - 1 ? 'After last' : 'Between cards'));
+      const nextInsertIndex = getInsertIndexForPosition(visibleIndex + 1);
+      els.cardsList.appendChild(createDropSlot(nextInsertIndex, visibleIndex === visibleCards.length - 1 ? 'After last' : 'Between cards'));
     });
 
     animateCardMoves(previousRects);
+  }
+
+  function populateListFilterOptions(){
+    if (!els.listFilterSelect) return;
+    const subjects = getAvailableSubjects();
+    const prevValue = listSubjectFilter;
+    els.listFilterSelect.innerHTML = '<option value="">Všechny předměty</option>';
+    subjects.forEach(subject => {
+      const option = document.createElement('option');
+      option.value = subject;
+      option.textContent = subject;
+      els.listFilterSelect.appendChild(option);
+    });
+    if (prevValue && subjects.includes(prevValue)) {
+      listSubjectFilter = prevValue;
+      els.listFilterSelect.value = prevValue;
+    } else {
+      listSubjectFilter = '';
+      els.listFilterSelect.value = '';
+    }
+    els.listFilterSelect.disabled = subjects.length === 0;
+  }
+
+  function getVisibleCards(){
+    if (!listSubjectFilter) {
+      return cards.map((card, index) => ({ card, index }));
+    }
+    return cards
+      .map((card, index) => ({ card, index }))
+      .filter(entry => getCardSubject(entry.card) === listSubjectFilter);
   }
 
   function moveCardToIndex(fromIndex, insertIndex){
