@@ -518,7 +518,7 @@
     if (type === 'pdf') {
       /* PDF: show iframe + new-tab link */
       const enc = encodePath(src);
-      targets.docBody.className = '';
+      targets.docBody.classList.remove('status');
       targets.docBody.innerHTML =
         `<div class="pdf-toolbar">` +
           `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
@@ -529,7 +529,7 @@
 
     if (type === 'cards') {
       /* CARDS: embed the flashcard app pre-filtered to this subject */
-      targets.docBody.className = '';
+      targets.docBody.classList.remove('status');
       targets.docBody.innerHTML =
         `<iframe src="cards.html?subject=${encodeURIComponent(src)}" class="cards-frame" title="${esc(label)}"></iframe>`;
       return;
@@ -537,7 +537,7 @@
 
     /* Markdown */
     targets.docBody.innerHTML = '';
-    targets.docBody.className = 'status';
+    targets.docBody.classList.add('status');
     targets.docBody.textContent = 'Načítám…';
     try {
       const res = await fetch(encodePath(src), { cache: 'no-cache' });
@@ -551,7 +551,7 @@
       // Grab tikz placeholders BEFORE appending (so we have refs to them)
       const tikzPlaceholders = [...rendered.querySelectorAll('.tikz-loading')];
 
-      targets.docBody.className = '';
+      targets.docBody.classList.remove('status');
       targets.docBody.innerHTML = '';
       targets.docBody.appendChild(rendered);
 
@@ -571,7 +571,7 @@
       // Resolve TikZ placeholders → pre-rendered SVGs (or source fallback)
       resolveTikzPlaceholders(tikzPlaceholders);
     } catch (err) {
-      targets.docBody.className = 'status';
+      targets.docBody.classList.add('status');
       targets.docBody.textContent = `Nepodařilo se načíst „${src}": ${err.message}`;
     }
   }
@@ -960,6 +960,7 @@
     if (on && isMobile()) return; // no multi-view on mobile
     mcMode = on;
     els.multiToggleBtn.classList.toggle('active', on);
+    document.querySelector('.content').classList.toggle('mc-active', on);
     els.mcWrap.hidden = !on;
     els.docTitle.style.display = on ? 'none' : '';
     els.docMeta.style.display  = on ? 'none' : '';
