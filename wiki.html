@@ -37,6 +37,11 @@
     .panel h1{margin:0 0 4px;font-size:18px;color:var(--text)}
     .panel .sub{margin:0 0 10px;font-size:12px;color:var(--muted)}
     .back{display:inline-block;margin-bottom:10px;color:#1d4ed8;text-decoration:none;font-weight:600;font-size:13px}
+    .sidebar-toggle{position:absolute;top:14px;right:14px;width:28px;height:28px;
+                    border:1px solid var(--line);border-radius:8px;background:#f8fafc;
+                    color:#475569;cursor:pointer;font-size:13px;line-height:1;
+                    display:flex;align-items:center;justify-content:center;z-index:5}
+    .sidebar-toggle:hover{background:#eff6ff;color:#1d4ed8}
     #topicFilter{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;font-size:13px}
     #topicList{overflow-y:auto;overflow-x:hidden;padding-right:2px;flex:1}
 
@@ -80,6 +85,14 @@
     #docMeta{margin:0 0 18px;color:#64748b;font-size:12px;word-break:break-all}
 
     /* PDF viewer */
+    /* Content toolbar (multi-content toggle) */
+    .content-toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:6px}
+    .mc-toggle-btn,.mc-close-btn{display:inline-flex;align-items:center;gap:6px;
+      padding:6px 12px;border:1px solid #e2e8f0;border-radius:9px;background:#f8fafc;
+      color:#1d4ed8;font-size:12px;font-weight:600;cursor:pointer}
+    .mc-toggle-btn:hover,.mc-close-btn:hover{background:#eff6ff}
+    .mc-toggle-btn.active{background:#dbeafe;border-color:#93c5fd}
+
     .pdf-toolbar{margin-bottom:10px}
     .pdf-newtab{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;
                 border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;
@@ -90,6 +103,52 @@
                box-shadow:0 2px 12px rgba(15,23,42,.08)}
     .cards-frame{width:100%;flex:1;min-height:calc(100vh - 200px);border:none;border-radius:10px;
                box-shadow:0 2px 12px rgba(15,23,42,.08)}
+
+    /* ── Multi content (split panes + tabs) ── */
+    .mc-wrap{display:flex;flex-direction:column;flex:1;min-height:0}
+    .mc-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .mc-layout-picker{display:flex;gap:4px}
+    .mc-layout-picker button{width:30px;height:28px;border:1px solid #e2e8f0;border-radius:7px;
+      background:#f8fafc;color:#475569;cursor:pointer;font-size:14px;line-height:1}
+    .mc-layout-picker button:hover{background:#eff6ff;color:#1d4ed8}
+    .mc-layout-picker button.active{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8}
+
+    .mc-tabbar{display:flex;gap:4px;flex-wrap:wrap;padding:4px 0 8px;
+               border-bottom:1px solid #e2e8f0;margin-bottom:8px;min-height:36px}
+    .mc-tab{display:flex;align-items:center;gap:6px;max-width:220px;
+            padding:5px 8px;border:1px solid #e2e8f0;border-radius:8px 8px 0 0;
+            background:#f8fafc;cursor:grab;font-size:11px;color:#374151}
+    .mc-tab.active{background:#fff;border-color:#93c5fd;border-bottom-color:#fff;
+                   box-shadow:0 -2px 6px rgba(15,23,42,.05)}
+    .mc-tab .res-tag{flex-shrink:0}
+    .mc-tab-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mc-tab-close{flex-shrink:0;border:none;background:none;color:#94a3b8;cursor:pointer;
+                  font-size:13px;line-height:1;padding:0 2px;border-radius:4px}
+    .mc-tab-close:hover{color:#dc2626;background:#fee2e2}
+    .mc-tab.drag-over{outline:2px dashed #2563eb;outline-offset:1px}
+
+    .mc-grid{flex:1;display:grid;gap:10px;min-height:0}
+    .mc-grid.layout-1x1{grid-template-columns:1fr;grid-template-areas:"a"}
+    .mc-grid.layout-1x2{grid-template-columns:1fr 1fr;grid-template-areas:"a b"}
+    .mc-grid.layout-2x1{grid-template-rows:1fr 1fr;grid-template-areas:"a" "b"}
+    .mc-grid.layout-2x2{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;grid-template-areas:"a b" "c d"}
+    .mc-grid.layout-1plus2{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;grid-template-areas:"a a" "b c"}
+
+    .mc-pane{display:flex;flex-direction:column;min-height:0;min-width:0;
+             border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;
+             overflow:auto;background:#fff;position:relative}
+    .mc-pane.drag-over{outline:2px dashed #2563eb;outline-offset:-2px;background:#eff6ff}
+    .mc-pane:nth-child(1){grid-area:a}
+    .mc-pane:nth-child(2){grid-area:b}
+    .mc-pane:nth-child(3){grid-area:c}
+    .mc-pane:nth-child(4){grid-area:d}
+    .mc-pane-title{margin:0 0 4px;font-size:14px;font-weight:700;color:var(--text)}
+    .mc-pane-meta{margin:0 0 10px;font-size:11px;color:#64748b;word-break:break-all}
+    .mc-pane-body{flex:1;min-height:0;overflow:auto;font-size:13px;line-height:1.65;color:var(--text)}
+    .mc-pane-empty{display:flex;align-items:center;justify-content:center;flex:1;
+                   color:#94a3b8;font-size:13px;border:2px dashed #e2e8f0;border-radius:10px;
+                   text-align:center;padding:20px}
+    .mc-pane .pdf-frame,.mc-pane .cards-frame{min-height:0;height:100%}
 
     /* ── Rendered markdown ── */
     #docBody{color:var(--text);line-height:1.75;font-size:15px;flex:1}
@@ -163,6 +222,16 @@
     @media(min-width:901px){
       .mob-bar,.mob-overlay{display:none!important}
       .mobile-back-btn{display:none!important}
+
+      /* Sidebar hide/show toggle */
+      .sidebar-show-btn{display:none;position:fixed;left:20px;top:20px;z-index:250;
+        align-items:center;gap:6px;padding:8px 14px;border:none;border-radius:10px;
+        background:rgba(255,255,255,.97);color:#1d4ed8;font-weight:600;font-size:13px;
+        cursor:pointer;box-shadow:0 8px 24px rgba(2,6,23,.25)}
+      .sidebar-show-btn:hover{background:#fff}
+      .layout.sidebar-collapsed{grid-template-columns:0fr 1fr}
+      .layout.sidebar-collapsed .panel{display:none}
+      .layout.sidebar-collapsed .sidebar-show-btn{display:inline-flex}
     }
 
     /* ── Mobile layout ── */
@@ -210,6 +279,8 @@
 
       .pdf-frame{min-height:70dvh}
       .cards-frame{min-height:calc(100dvh - 90px)}
+      /* Multi content: desktop-only, force single-document view on mobile */
+      .content-toolbar,#mcWrap,.sidebar-toggle,.sidebar-show-btn{display:none!important}
       #docBody{font-size:14px}
       #docTitle{font-size:18px}
       .mobile-back-btn{display:none!important}
@@ -228,7 +299,9 @@
 
   <div class="shell">
     <div class="layout" id="wikiLayout">
+      <button class="sidebar-show-btn" id="sidebarShowBtn" type="button" title="Zobrazit postranní panel">⮞ Témata</button>
       <aside class="panel" id="wikiPanel">
+        <button class="sidebar-toggle" id="sidebarToggleBtn" type="button" title="Skrýt postranní panel" aria-label="Skrýt postranní panel">⮜</button>
         <a class="back" href="index.html">← Rozcestník</a>
         <h1>SZZ Viki</h1>
         <p class="sub">Poznámky, PDFka a shrnutí — staticky z GitHub Pages.</p>
@@ -237,6 +310,9 @@
       </aside>
 
       <main class="content">
+        <div class="content-toolbar" id="contentToolbar">
+          <button class="mc-toggle-btn" id="multiToggleBtn" type="button">⊞ Více oken</button>
+        </div>
         <div id="coiBanner">
           ⚠️ <strong>TikZ diagramy</strong> vyžadují <em>Cross-Origin Isolation</em>.
           Stránka se automaticky znovu načte přes servisního workera —
@@ -246,6 +322,21 @@
         <h2 id="docTitle">Načítání…</h2>
         <p id="docMeta"></p>
         <div id="docBody" class="status">Vyberte téma vlevo.</div>
+
+        <div class="mc-wrap" id="mcWrap" hidden>
+          <div class="mc-toolbar">
+            <div class="mc-layout-picker" id="mcLayoutPicker">
+              <button type="button" data-layout="1x1" title="Jedno okno">▢</button>
+              <button type="button" data-layout="1x2" title="Dva sloupce">▥</button>
+              <button type="button" data-layout="2x1" title="Dva řádky">▤</button>
+              <button type="button" data-layout="2x2" title="Mřížka 2×2">▦</button>
+              <button type="button" data-layout="1+2" title="Jeden + dva">⊟</button>
+            </div>
+            <button class="mc-close-btn" id="mcCloseBtn" type="button" title="Zpět na jedno okno">✕ Zavřít více oken</button>
+          </div>
+          <div class="mc-tabbar" id="mcTabbar"></div>
+          <div class="mc-grid" id="mcGrid"></div>
+        </div>
       </main>
     </div>
   </div>

@@ -311,12 +311,24 @@
     docTitle:    document.getElementById('docTitle'),
     docMeta:     document.getElementById('docMeta'),
     docBody:     document.getElementById('docBody'),
+
+    wikiLayout:      document.getElementById('wikiLayout'),
+    sidebarToggleBtn: document.getElementById('sidebarToggleBtn'),
+    sidebarShowBtn:   document.getElementById('sidebarShowBtn'),
+
+    contentToolbar:  document.getElementById('contentToolbar'),
+    multiToggleBtn:  document.getElementById('multiToggleBtn'),
+    mcWrap:          document.getElementById('mcWrap'),
+    mcLayoutPicker:  document.getElementById('mcLayoutPicker'),
+    mcCloseBtn:      document.getElementById('mcCloseBtn'),
+    mcTabbar:        document.getElementById('mcTabbar'),
+    mcGrid:          document.getElementById('mcGrid'),
   };
 
   /* ── State ── */
   let activeKey    = null;
   let filterText   = '';
-  const groupOpen  = {};  // code → bool (default true)
+  const groupOpen  = {};  // code → bool (default false — sections start collapsed)
 
   /* ═══════════════════════════════════════════════════════
    *  Helpers
@@ -496,24 +508,18 @@
    *  Opening documents
    * ═══════════════════════════════════════════════════════ */
 
-  function showStatus(msg) {
-    els.docBody.innerHTML = '';
-    els.docBody.className = 'status';
-    els.docBody.textContent = msg;
-  }
-
-  async function openResource(key, label, src, type) {
-    if (key === activeKey) return;
-    activeKey = key;
-    els.docTitle.textContent = label;
-    els.docMeta.textContent  = src;
-    renderSidebar();
+  /** Render a resource (note/PDF/cards/summary) into an arbitrary set of
+   *  {docTitle, docMeta, docBody} targets — shared by the single-document view
+   *  and each multi-content pane. */
+  async function renderResourceInto(targets, label, src, type) {
+    targets.docTitle.textContent = label;
+    targets.docMeta.textContent  = src;
 
     if (type === 'pdf') {
       /* PDF: show iframe + new-tab link */
       const enc = encodePath(src);
-      els.docBody.className = '';
-      els.docBody.innerHTML =
+      targets.docBody.className = '';
+      targets.docBody.innerHTML =
         `<div class="pdf-toolbar">` +
           `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
         `</div>` +
@@ -523,15 +529,16 @@
 
     if (type === 'cards') {
       /* CARDS: embed the flashcard app pre-filtered to this subject */
-      els.docBody.className = '';
-      els.docBody.innerHTML =
+      targets.docBody.className = '';
+      targets.docBody.innerHTML =
         `<iframe src="cards.html?subject=${encodeURIComponent(src)}" class="cards-frame" title="${esc(label)}"></iframe>`;
-      updateHash(key);
       return;
     }
 
     /* Markdown */
-    showStatus('Načítám…');
+    targets.docBody.innerHTML = '';
+    targets.docBody.className = 'status';
+    targets.docBody.textContent = 'Načítám…';
     try {
       const res = await fetch(encodePath(src), { cache: 'no-cache' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -544,13 +551,13 @@
       // Grab tikz placeholders BEFORE appending (so we have refs to them)
       const tikzPlaceholders = [...rendered.querySelectorAll('.tikz-loading')];
 
-      els.docBody.className = '';
-      els.docBody.innerHTML = '';
-      els.docBody.appendChild(rendered);
+      targets.docBody.className = '';
+      targets.docBody.innerHTML = '';
+      targets.docBody.appendChild(rendered);
 
       // KaTeX fallback for any math that slipped through
       if (window.renderMathInElement) {
-        renderMathInElement(els.docBody, {
+        renderMathInElement(targets.docBody, {
           delimiters: [
             { left: '$$', right: '$$', display: true },
             { left: '\\[', right: '\\]', display: true },
@@ -563,11 +570,18 @@
 
       // Resolve TikZ placeholders → pre-rendered SVGs (or source fallback)
       resolveTikzPlaceholders(tikzPlaceholders);
-
-      updateHash(key);
     } catch (err) {
-      showStatus(`Nepodařilo se načíst „${src}": ${err.message}`);
+      targets.docBody.className = 'status';
+      targets.docBody.textContent = `Nepodařilo se načíst „${src}": ${err.message}`;
     }
+  }
+
+  async function openResource(key, label, src, type) {
+    if (key === activeKey) return;
+    activeKey = key;
+    renderSidebar();
+    await renderResourceInto(els, label, src, type);
+    updateHash(key);
   }
 
   function waitFor(cond, ms) {
@@ -634,7 +648,7 @@
         );
         if (visibleRes.length === 0) continue;
 
-        const isOpen = groupOpen[subj.code] !== false;
+        const isOpen = groupOpen[subj.code] === true;
         const groupDiv = document.createElement('div');
         groupDiv.className = 'subject-group';
 
@@ -679,8 +693,294 @@
       `<span class="res-tag ${tag.cls}">${tag.label}</span>` +
       `<span class="res-label">${esc(r.label)}</span>`;
     btn.addEventListener('click', () => openResource(key, r.label, r.src, r.type));
+
+    /* Drag into a multi-content pane */
+    btn.draggable = true;
+    btn.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('application/json', JSON.stringify({ key, label: r.label, src: r.src, type: r.type }));
+      e.dataTransfer.effectAllowed = 'copy';
+    });
     return btn;
   }
+
+  /* ═══════════════════════════════════════════════════════
+   *  Sidebar collapse (desktop)
+   * ═══════════════════════════════════════════════════════ */
+
+  function applySidebarCollapsed(collapsed) {
+    els.wikiLayout.classList.toggle('sidebar-collapsed', collapsed);
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    applySidebarCollapsed(collapsed);
+    localStorage.setItem('wiki_sidebar_collapsed', collapsed ? '1' : '');
+  }
+
+  applySidebarCollapsed(localStorage.getItem('wiki_sidebar_collapsed') === '1');
+
+  els.sidebarToggleBtn.addEventListener('click', () =>
+    setSidebarCollapsed(!els.wikiLayout.classList.contains('sidebar-collapsed'))
+  );
+  els.sidebarShowBtn.addEventListener('click', () => setSidebarCollapsed(false));
+
+  /* ═══════════════════════════════════════════════════════
+   *  Multi content (split panes + browser-style tabs)
+   *  Desktop only — mobile always shows a single document.
+   * ═══════════════════════════════════════════════════════ */
+
+  const MC_LAYOUTS = { '1x1': 1, '1x2': 2, '2x1': 2, '2x2': 4, '1+2': 3 };
+  let mcMode = false;
+  let mcTabSeq = 0;
+
+  function loadMultiState() {
+    try {
+      const raw = localStorage.getItem('wiki_multi_state');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.panes) || !parsed.tabs || !MC_LAYOUTS[parsed.layout]) return null;
+      return parsed;
+    } catch { return null; }
+  }
+
+  const multiState = loadMultiState() || { layout: '1x2', panes: [], tabs: {} };
+
+  let mcSaveTimer = null;
+  function saveMultiState() {
+    clearTimeout(mcSaveTimer);
+    mcSaveTimer = setTimeout(() => {
+      localStorage.setItem('wiki_multi_state', JSON.stringify(multiState));
+    }, 200);
+  }
+
+  function newTabId() { return `t${Date.now()}_${mcTabSeq++}`; }
+
+  function ensurePaneCount(n) {
+    while (multiState.panes.length < n) {
+      multiState.panes.push({ id: `p${multiState.panes.length}_${Date.now()}_${mcTabSeq++}`, tabIds: [], activeTabId: null });
+    }
+    if (multiState.panes.length > n) {
+      const removed = multiState.panes.splice(n);
+      const target = multiState.panes[multiState.panes.length - 1];
+      for (const pane of removed) {
+        for (const tid of pane.tabIds) {
+          if (!target.tabIds.includes(tid)) target.tabIds.push(tid);
+        }
+      }
+      if (!target.activeTabId && target.tabIds.length) target.activeTabId = target.tabIds[target.tabIds.length - 1];
+    }
+  }
+
+  /** Drop stale tabs whose resource no longer resolves (renamed/removed source). */
+  function pruneStaleTabs() {
+    let changed = false;
+    for (const id of Object.keys(multiState.tabs)) {
+      if (!resolveKey(multiState.tabs[id].key)) { delete multiState.tabs[id]; changed = true; }
+    }
+    for (const pane of multiState.panes) {
+      const before = pane.tabIds.length;
+      pane.tabIds = pane.tabIds.filter(id => multiState.tabs[id]);
+      if (pane.tabIds.length !== before) changed = true;
+      if (pane.activeTabId && !multiState.tabs[pane.activeTabId]) {
+        pane.activeTabId = pane.tabIds[pane.tabIds.length - 1] || null;
+        changed = true;
+      }
+    }
+    if (changed) saveMultiState();
+  }
+
+  function setLayout(layoutId) {
+    if (!MC_LAYOUTS[layoutId]) return;
+    multiState.layout = layoutId;
+    ensurePaneCount(MC_LAYOUTS[layoutId]);
+    saveMultiState();
+    renderMulti();
+  }
+
+  function openInPane(pane, resource) {
+    let tabId = pane.tabIds.find(id => multiState.tabs[id] && multiState.tabs[id].key === resource.key);
+    if (!tabId) {
+      tabId = newTabId();
+      multiState.tabs[tabId] = { key: resource.key, label: resource.label, src: resource.src, type: resource.type };
+      pane.tabIds.push(tabId);
+    }
+    pane.activeTabId = tabId;
+    saveMultiState();
+    renderMulti();
+  }
+
+  function closeTab(tabId) {
+    for (const pane of multiState.panes) {
+      const idx = pane.tabIds.indexOf(tabId);
+      if (idx === -1) continue;
+      pane.tabIds.splice(idx, 1);
+      if (pane.activeTabId === tabId) {
+        pane.activeTabId = pane.tabIds[Math.min(idx, pane.tabIds.length - 1)] || null;
+      }
+    }
+    if (!multiState.panes.some(p => p.tabIds.includes(tabId))) delete multiState.tabs[tabId];
+    saveMultiState();
+    renderMulti();
+  }
+
+  function moveTabToPane(tabId, targetPane, beforeTabId) {
+    let sourcePane = null;
+    for (const pane of multiState.panes) {
+      const idx = pane.tabIds.indexOf(tabId);
+      if (idx !== -1) { sourcePane = pane; pane.tabIds.splice(idx, 1); break; }
+    }
+    if (!sourcePane) return;
+    if (sourcePane.activeTabId === tabId) {
+      sourcePane.activeTabId = sourcePane.tabIds[sourcePane.tabIds.length - 1] || null;
+    }
+    let insertAt = targetPane.tabIds.length;
+    if (beforeTabId) {
+      const bi = targetPane.tabIds.indexOf(beforeTabId);
+      if (bi !== -1) insertAt = bi;
+    }
+    targetPane.tabIds.splice(insertAt, 0, tabId);
+    targetPane.activeTabId = tabId;
+    saveMultiState();
+    renderMulti();
+  }
+
+  function activateTab(pane, tabId) {
+    if (pane.activeTabId === tabId) return;
+    pane.activeTabId = tabId;
+    saveMultiState();
+    renderMulti();
+  }
+
+  function readDragData(e) {
+    try {
+      const raw = e.dataTransfer.getData('application/json');
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+
+  function makeTabEl(tabId, tab, pane) {
+    const tag = TYPE_TAG[tab.type] || TYPE_TAG.sum;
+    const el = document.createElement('div');
+    el.className = 'mc-tab' + (pane.activeTabId === tabId ? ' active' : '');
+    el.draggable = true;
+    el.innerHTML =
+      `<span class="res-tag ${tag.cls}">${tag.label}</span>` +
+      `<span class="mc-tab-label">${esc(tab.label)}</span>` +
+      `<button type="button" class="mc-tab-close" title="Zavřít">✕</button>`;
+    el.addEventListener('click', e => {
+      if (e.target.closest('.mc-tab-close')) return;
+      activateTab(pane, tabId);
+    });
+    el.querySelector('.mc-tab-close').addEventListener('click', e => {
+      e.stopPropagation();
+      closeTab(tabId);
+    });
+    el.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('application/json', JSON.stringify({ mcTab: tabId }));
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragover', e => {
+      if (!e.dataTransfer.types.includes('application/json')) return;
+      e.preventDefault();
+      el.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const data = readDragData(e);
+      if (data && data.mcTab && data.mcTab !== tabId) moveTabToPane(data.mcTab, pane, tabId);
+    });
+    return el;
+  }
+
+  function makePaneEl(pane) {
+    const el = document.createElement('div');
+    el.className = 'mc-pane';
+
+    el.addEventListener('dragover', e => {
+      if (!e.dataTransfer.types.includes('application/json')) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed === 'move' ? 'move' : 'copy';
+      el.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave', e => {
+      if (!el.contains(e.relatedTarget)) el.classList.remove('drag-over');
+    });
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const data = readDragData(e);
+      if (!data) return;
+      if (data.mcTab) moveTabToPane(data.mcTab, pane);
+      else if (data.key) openInPane(pane, data);
+    });
+
+    const tabId = pane.activeTabId;
+    const tab = tabId ? multiState.tabs[tabId] : null;
+    if (!tab) {
+      el.innerHTML = `<div class="mc-pane-empty">Přetáhni sem téma ze seznamu vlevo (nebo záložku z lišty)</div>`;
+      return el;
+    }
+
+    const title = document.createElement('h3');
+    title.className = 'mc-pane-title';
+    const meta = document.createElement('p');
+    meta.className = 'mc-pane-meta';
+    const body = document.createElement('div');
+    body.className = 'mc-pane-body';
+    el.appendChild(title);
+    el.appendChild(meta);
+    el.appendChild(body);
+
+    renderResourceInto({ docTitle: title, docMeta: meta, docBody: body }, tab.label, tab.src, tab.type);
+    return el;
+  }
+
+  function renderMulti() {
+    if (!mcMode) return;
+    ensurePaneCount(MC_LAYOUTS[multiState.layout] || 1);
+
+    els.mcLayoutPicker.querySelectorAll('button').forEach(b =>
+      b.classList.toggle('active', b.dataset.layout === multiState.layout));
+
+    els.mcTabbar.innerHTML = '';
+    for (const pane of multiState.panes) {
+      for (const tabId of pane.tabIds) {
+        const tab = multiState.tabs[tabId];
+        if (tab) els.mcTabbar.appendChild(makeTabEl(tabId, tab, pane));
+      }
+    }
+
+    els.mcGrid.className = `mc-grid layout-${multiState.layout}`;
+    els.mcGrid.innerHTML = '';
+    for (const pane of multiState.panes) els.mcGrid.appendChild(makePaneEl(pane));
+  }
+
+  function setMultiMode(on) {
+    if (on && isMobile()) return; // no multi-view on mobile
+    mcMode = on;
+    els.multiToggleBtn.classList.toggle('active', on);
+    els.mcWrap.hidden = !on;
+    els.docTitle.style.display = on ? 'none' : '';
+    els.docMeta.style.display  = on ? 'none' : '';
+    els.docBody.style.display  = on ? 'none' : '';
+    localStorage.setItem('wiki_multi_mode', on ? '1' : '');
+    if (on) {
+      pruneStaleTabs();
+      ensurePaneCount(MC_LAYOUTS[multiState.layout] || 1);
+      renderMulti();
+    }
+  }
+
+  els.multiToggleBtn.addEventListener('click', () => setMultiMode(!mcMode));
+  els.mcCloseBtn.addEventListener('click', () => setMultiMode(false));
+  els.mcLayoutPicker.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => setLayout(btn.dataset.layout));
+  });
+
+  window.addEventListener('resize', () => {
+    if (mcMode && isMobile()) setMultiMode(false);
+  });
 
   /* ═══════════════════════════════════════════════════════
    *  Init
@@ -701,6 +1001,11 @@
     const firstRes = first.resources[0];
     const firstKey = makeKey(first.code, firstRes.src);
     await openResource(firstKey, firstRes.label, firstRes.src, firstRes.type);
+  }
+
+  function restoreMultiMode() {
+    if (isMobile()) return; // multi content is desktop-only
+    if (localStorage.getItem('wiki_multi_mode') === '1') setMultiMode(true);
   }
 
   /* ── Events ── */
@@ -752,4 +1057,5 @@
   });
 
   void init();
+  restoreMultiMode();
 })();
