@@ -921,6 +921,7 @@
       el.innerHTML = `<div class="mc-pane-empty">Přetáhni sem téma ze seznamu vlevo (nebo záložku z lišty)</div>`;
       return el;
     }
+    if (tab.type === 'pdf' || tab.type === 'cards') el.classList.add('compact');
 
     const title = document.createElement('h3');
     title.className = 'mc-pane-title';
@@ -961,6 +962,7 @@
     mcMode = on;
     els.multiToggleBtn.classList.toggle('active', on);
     document.querySelector('.content').classList.toggle('mc-active', on);
+    els.wikiLayout.classList.toggle('mc-fullwidth', on);
     els.mcWrap.hidden = !on;
     els.docTitle.style.display = on ? 'none' : '';
     els.docMeta.style.display  = on ? 'none' : '';
