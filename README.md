@@ -237,6 +237,17 @@ Legenda (pro kazdy tematicky blok):
 2. Pro správné zobrazení vzorců je potřeba internetové připojení (pokud se používá CDN pro KaTeX/MathJax).
 3. Pro úpravu otázek editujte soubory v `json/` (doporučeno použít VS Code nebo jiný editor s podporou JSON).
 
+## Nasazení na GitHub Pages
+
+Repozitář je připravený pro GitHub Pages přes GitHub Actions workflow:
+
+1. V GitHub repozitáři otevřete **Settings → Pages**.
+2. V sekci **Build and deployment** nastavte **Source = GitHub Actions**.
+3. Push do větve `main` automaticky spustí workflow `Deploy to GitHub Pages`.
+4. Web bude dostupný na URL projektu GitHub Pages (`https://<user>.github.io/cards/`).
+
+Poznámka: Soubor `.nojekyll` je přidaný schválně, aby GitHub Pages publikoval statické soubory bez Jekyll filtrace.
+
 ## Rozšíření a úpravy
 
 - Pro přidání nových otázek stačí rozšířit JSON soubory ve složce `json/`.
