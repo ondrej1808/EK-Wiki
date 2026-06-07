@@ -1,0 +1,393 @@
+{
+    "title": "OKS Zkouska",
+    "questions": [
+        {
+            "id": 1,
+            "type": "open",
+            "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+            "question": "Definujte optický paprsek.",
+            "answer_parts": [
+                {
+                    "title": "Optický paprsek",
+                    "text": "Jedná se o zjednodušenou interpretaci šíření elektromagnetického vlnění pomocí vektoru šíření $\\overrightarrow{k}$. Pokud si představíme vlnoplochy tvořící „trubici“ světla, paprsek je myšlená čára spojující středy těchto vlnoploch. Je to tedy svazek světla s určitým směrem, který se může lámat a ohýbat.",
+                    "image": {
+                        "src": "figs/definice_paprsku.png",
+                        "caption": "Optický paprsek, převzato z [SOK]"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "type": "open",
+            "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+            "question": "Definujte co je trajektorie paprsku.",
+            "answer_parts": [
+                {
+                    "title": "Trajektorie paprsku",
+                    "text": "Jde o dráhu (``cestu''), kterou opíše optický paprsek při průchodu optickou soustavou.",
+                    "image": {
+                        "src": "figs/definice_paprsku.png",
+                        "caption": "Optický paprsek"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "type": "open",
+            "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+            "question": "Kdy vzniká totální odraz?",
+            "answer_parts": [
+                {
+                    "title": "Totální odraz",
+                    "text": "Jev, kdy se světlo neláme do druhého prostředí, ale zcela se odráží zpět.\n* Světlo se musí šířit z opticky hustšího do řidšího prostředí ($n_1 > n_2$).\n* Nastává pro úhly dopadu větší než **kritický úhel** $\\alpha_c$:\n$$\\sin \\alpha_c = \\frac{n_2}{n_1}$$"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "type": "open",
+            "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+            "question": "Snellovy zákony",
+            "answer_parts": [
+                {
+                    "title": "Snellův zákon lomu",
+                    "text": "Popisuje lom paprsku na rozhraní dvou prostředí s indexy lomu $n_1$ a $n_2$:\n$$n_1 \\sin \\alpha = n_2 \\sin \\beta$$\nkde $\\alpha$ je úhel dopadu a $\\beta$ je úhel lomu.",
+                    "image": {
+                        "src": "figs/snell_law.png",
+                        "caption": "Snellův zákon lomu"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "type": "open",
+            "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+            "question": "Brewsterův úhel",
+            "answer_parts": [
+                {
+                    "title": "Brewsterův úhel",
+                    "text": "Úhel dopadu, při kterém dochází k úplné polarizaci odraženého světla (odražené světlo je lineárně polarizované kolmo k rovině dopadu).\n$$\\tan \\alpha_B = \\frac{n_2}{n_1}$$",
+                    "image": {
+                        "src": "figs/brewster.svg",
+                        "caption": "Brewsterův úhel"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "type": "open",
+            "category": "Základní prvky optických komunikačních systémů, základní mechanismy, šíření paprsku v nehomogenním prostředí",
+            "question": "Fázová a skupinová rychlost v optickém vlnovodu",
+            "answer_parts": [
+                {
+                    "title": "Fázová a skupinová rychlost",
+                    "text": "Fázová rychlost vlny je rychlost, kterou se v prostoru propagují místa konstantní fáze (vlnoplochy), platí $v_f = \\frac{\\omega}{\\beta}$.\nGrupová rychlost je pak rychlost šíření celé signálové obálky (tedy samotné informace), platí $v_g = \\frac{\\partial\\omega}{\\partial\\beta}$.\nSignál, do něhož je zakódovaná informace má formu skupiny kmitočtů (nosné a postranních pásem) a vytváří tak *vlnový balík*. Skupinová rychlost je rychlost šíření tohoto balíku.",
+                    "image": {
+                        "src": "figs/fazegrupa.gif",
+                        "caption": "rozdíl mezi fázovou a grupovou rychlostí"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "type": "open",
+            "category": "Maticová optika, přenosové matice prvků",
+            "question": "Principy maticové optiky, parametry matic",
+            "answer_parts": [
+                {
+                    "title": "Maticová optika",
+                    "text": "Maticová optika je způsob výpočtu transformace paprsku v optickém systému bez použití grafických metod. Tedy vlastně maticový přepis zobrazovacích rovnic. Matice vlnového vektoru je ve tvaru $\\begin{pmatrix} x \\\\ y \\end{pmatrix}$, kde $x$ je poloha vstupu paprsku vztažená k optické ose a $y$ je tangens úhlu vstupu/výstupu paprsku $\\varphi$. Transformační matice jsou pak rozměru $2 \\times 2$.",
+                    "image": {
+                        "src": "figs/matrix_optics.png",
+                        "caption": "Dielektrická vrstva s indexem lomu $n_2$ obklopená prostředím s indexem lomu $n_1$"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "type": "open",
+            "category": "Maticová optika, přenosové matice prvků",
+            "question": "Matice: Volný prostor (d)",
+            "answer_parts": [
+                {
+                    "title": "Volný prostor (d)",
+                    "text": "$$\\begin{pmatrix} 1 & d \\\\ 0 & 1 \\end{pmatrix}$$"
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "type": "open",
+            "category": "Maticová optika, přenosové matice prvků",
+            "question": "Matice: Lom na rovinné ploše",
+            "answer_parts": [
+                {
+                    "title": "Lom na rovinné ploše",
+                    "text": "$$\\begin{pmatrix} 1 & 0 \\\\ 0 & \\frac{n_1}{n_2} \\end{pmatrix}$$"
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "type": "open",
+            "category": "Maticová optika, přenosové matice prvků",
+            "question": "Matice: Lom tenkou čočkou (f)",
+            "answer_parts": [
+                {
+                    "title": "Lom tenkou čočkou (f)",
+                    "text": "$$\\begin{pmatrix} 1 & 0 \\\\ -\\frac{1}{f} & 1 \\end{pmatrix}$$"
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "type": "open",
+            "category": "Maticová optika, přenosové matice prvků",
+            "question": "Matice: Tenká destička",
+            "answer_parts": [
+                {
+                    "title": "Tenká destička",
+                    "text": "$$\\begin{pmatrix} 1 & d \\cdot \\frac{n_1}{n_2} \\\\ 0 & 1 \\end{pmatrix}$$"
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "type": "open",
+            "category": "Maticová optika, přenosové matice prvků",
+            "question": "Matice: Lom na kulové ploše (r)",
+            "answer_parts": [
+                {
+                    "title": "Lom na kulové ploše (r)",
+                    "text": "$$\\begin{pmatrix} 1 & 0 \\\\ \\frac{n_1-n_2}{n_2 \\cdot r} & \\frac{n_1}{n_2} \\end{pmatrix}$$"
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Princip Gaussova svazku",
+            "answer_parts": [
+                {
+                    "title": "Princip Gaussova svazku",
+                    "text": "Vychází z myšlenky, že světelný svazek nelze nikdy zaostřit na pouhý bod. Lze jej zaostřit na kruhovou plochu a rozložení výkonu na této ploše kopíruje Gaussovu křivku. Toto však platí pouze pro dominantní vid $\\mathrm{TM}_{00}$ (emitovaný většinou laserů)."
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Pološířka svazku (waist) $w_0$",
+            "answer_parts": [
+                {
+                    "title": "Pološířka svazku (waist) $w_0$",
+                    "text": "Jedná se o poloměr svazku v jeho nejužším místě."
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Pološířka v libovolném místě $w(z)$",
+            "answer_parts": [
+                {
+                    "title": "Pološířka v libovolném místě $w(z)$",
+                    "text": "$$w(z) = w_0 \\cdot \\sqrt{1 + \\left(\\frac{z}{z_0}\\right)^2}$$\nKde $z_0$ je Rayleigho vzdálenost (vzdálenost, kde je plocha svazku dvojnásobná oproti $w_0$)."
+                }
+            ]
+        },
+        {
+            "id": 16,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Rayleighova vzdálenost $z_0$",
+            "answer_parts": [
+                {
+                    "title": "Rayleighova vzdálenost $z_0$",
+                    "text": "$$z_0 = \\pi \\frac{w_0^2}{\\lambda}$$"
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Poloměr vlnoplochy $R(z)$",
+            "answer_parts": [
+                {
+                    "title": "Poloměr vlnoplochy $R(z)$",
+                    "text": "$$R(z) = z \\cdot \\left[1 + \\left(\\frac{z_0}{z}\\right)^2\\right]$$"
+                }
+            ]
+        },
+        {
+            "id": 18,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Rozbíhavost svazku $\\theta$",
+            "answer_parts": [
+                {
+                    "title": "Rozbíhavost svazku $\\theta$",
+                    "text": "$$\n\\theta = \\lim_{z \\to \\infty} \\left(\\arctan\\left(\\frac{w(z)}{z}\\right)\\right) = \\frac{\\lambda}{\\pi w_0}\n$$"
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "type": "open",
+            "category": "Základy vlnové optiky, Gaussovské svazky",
+            "question": "Intenzita a výkon Gaussova svazku",
+            "answer_parts": [
+                {
+                    "title": "Intenzita a výkon",
+                    "text": "$$I(z) = I_0 \\cdot \\left(\\frac{w_0}{w(z)}\\right)^2, \\quad P_{celk} = \\frac{1}{2} I(z) \\cdot \\pi \\cdot w(z)^2$$"
+                }
+            ]
+        },
+        {
+            "id": 20,
+            "type": "open",
+            "category": "Základní technologie optických vlnovodů a jejich řešení - vidová struktura",
+            "question": "Na jakém fyzikálním principu je založeno šíření v optických vlnovodech? Co je efektivní index lomu?",
+            "answer_parts": [
+                {
+                    "title": "Princip šíření a efektivní index lomu",
+                    "text": "Šíření je primárně založeno na principu totálního odrazu. Efektivní index lomu struktury ($n_{ef}$) je „zprůměrování“ indexů lomu jednotlivých materiálů. Reprezentuje chování světla v daném prostředí jednou hodnotou. Počítá se pro každý vid zvlášť:\n$$n_{ef} = \\frac{\\beta}{k_0}$$"
+                }
+            ]
+        },
+        {
+            "id": 21,
+            "type": "open",
+            "category": "Základní technologie optických vlnovodů a jejich řešení - vidová struktura",
+            "question": "Grafické řešení 2D souměrného planárního vlnovodu",
+            "answer_parts": [
+                {
+                    "title": "Normované příčné konstanty",
+                    "text": "Normované příčné konstanty jsou nezávislé na tloušťce vrstev a lze je aplikovat na různé struktury.\n$$u = h \\cdot k_{1x}, \\quad v = j \\cdot h \\cdot k_{2x}$$"
+                },
+                {
+                    "title": "Postup grafického řešení",
+                    "text": "1. Spočteme normovanou frekvenci $V$.\n2. Z grafu určíme (pomocí kružnice o poloměru $V$), jaké vidy se budou šířit.\n3. Odečteme $u$ a $v$, spočteme konstanty $k_0$, $k_1$ a následně příčnou konstantu šíření.\n4. Dopočteme efektivní index lomu."
+                }
+            ]
+        },
+        {
+            "id": 22,
+            "type": "open",
+            "category": "Základní technologie optických vlnovodů a jejich řešení - vidová struktura",
+            "question": "Uveďte, jak se řeší žebrový vlnovod metodou efektivního indexu lomu.",
+            "answer_parts": [
+                {
+                    "title": "Metoda efektivního indexu lomu pro žebrový vlnovod",
+                    "text": "Žebrový vlnovod se skládá z žebra ($n_3$, šířka $b$), substrátu ($n_1$) a okolí ($n_2$). Postup:\n1. Vypočteme vidy pro oblast I (sendvič prostředí-žebro-substrát). Spočteme $V = k_0 \\cdot h_1 \\cdot NA$.\n2. Najdeme kořeny Besselových funkcí $u$ a dopočteme $k_{1x} = u/h_1$.\n3. Určíme $\\beta = \\sqrt{k_1^2 - k_{1x}^2}$ a $n_{ef}$.\n4. Shodný postup pro oblast II.\n5. Společná analýza vidů šířících se v obou oblastech."
+                }
+            ]
+        },
+        {
+            "id": 23,
+            "type": "open",
+            "category": "Přenosové vlastnosti optických vláken, analýza šíření optického záření v optickém vlákně na základě geometrické optiky a řešení vlnové rovnice - vidová struktura",
+            "question": "Jaké znáte typy vláknových vlnovodů? Trajektorie paprsku v SI a gradientním vlnovodu.",
+            "answer_parts": [
+                {
+                    "title": "Typy vláknových vlnovodů",
+                    "text": "**Planární**: Struktury na čipech.\n**Vláknové**:\n- **SI (Step Index)**: Skoková změna indexu lomu. Paprsek se šíří rovně a odráží se totálním odrazem.\n- **GRIN (Gradient Index)**: Gradientní změna. Paprsek se spojitě ohýbá (sinusovka), neodráží se na rozhraní."
+                }
+            ]
+        },
+        {
+            "id": 24,
+            "type": "open",
+            "category": "Přenosové vlastnosti optických vláken, analýza šíření optického záření v optickém vlákně na základě geometrické optiky a řešení vlnové rovnice - vidová struktura",
+            "question": "Uveďte základní konstrukční parametry optických vláken různých typů.",
+            "answer_parts": [
+                {
+                    "title": "Konstrukční parametry optických vláken",
+                    "text": "**MM OM1**: Jádro 62.5 $\\mu$m, plášť 125 $\\mu$m. Útlum cca 3 dB/km (850 nm).\n**MM OM2-OM4**: Jádro 50 $\\mu$m, plášť 125 $\\mu$m.\n**SM**: Jádro 9 $\\mu$m, plášť 125 $\\mu$m. Útlum cca 0.5 dB/km (1310 nm)."
+                }
+            ]
+        },
+        {
+            "id": 25,
+            "type": "open",
+            "category": "Přenosové vlastnosti optických vláken, analýza šíření optického záření v optickém vlákně na základě geometrické optiky a řešení vlnové rovnice - vidová struktura",
+            "question": "Dominantní vid SI vláknového vlnovodu. Co jsou LP vidy?",
+            "answer_parts": [
+                {
+                    "title": "Dominantní vid a LP vidy",
+                    "text": "Dominantní vid $HE_{11}$ má nejnižší mezní frekvenci. Jednovidovost je zajištěna pokud normovaný kmitočet $$V=2\\pi \\frac{a}{\\lambda}\\sqrt{n_1^2-n_2^2} \\le 2.4048$$.\n**LP (Lineárně Polarizované) vidy** vznikají ve vláknech se slabým vedením superpozicí vidů HE a EH. Mají jednu kartézskou složku intenzity el. pole, což zjednodušuje řešení disperzní rovnice."
+                }
+            ]
+        },
+        {
+            "id": 26,
+            "type": "open",
+            "category": "Absorpce a disperze, šíření pulsů v disperzním prostředí",
+            "question": "Čím jsou způsobeny ztráty v optických vlnovodech? Jak závisí přenosové vlastnosti na druhu skla (transparence skel v NIR/MIR)?",
+            "answer_parts": [
+                {
+                    "title": "Ztráty v optických vlnovodech a transparence skel",
+                    "text": "Ztráty jsou způsobeny materiálem (rozptyl, absorpce) nebo ohyby.\n- **Rayleighův rozptyl**: Interakce s atomy materiálu, klesá s vlnovou délkou.\n- **Absorpce**: OH absorpce (rezonance iontů OH, cca 1400 nm) a infračervená absorpce.\nPřenosové vlastnosti závisí na použitém skle – různé druhy skel mají různou transparenci v NIR/MIR oblasti."
+                }
+            ]
+        },
+        {
+            "id": 27,
+            "type": "open",
+            "category": "Absorpce a disperze, šíření pulsů v disperzním prostředí",
+            "question": "Čím je způsobena disperze signálu v optickém vlnovodu? Druhy disperzí, jejich popis.",
+            "answer_parts": [
+                {
+                    "title": "Disperze signálu v optickém vlnovodu",
+                    "text": "Disperze způsobuje rozšíření pulzu a omezuje přenosovou rychlost.\n- **Vidová disperze**: Různé vidy mají různé dráhy (pouze u MM vláken).\n- **Chromatická disperze**: Závislost indexu lomu na vlnové délce. Skládá se z materiálové a vlnovodné disperze.\n- **Polarizační vidová disperze (PMD)**: Vlivem nedokonalosti kruhového průřezu se ortogonální polarizace šíří různou rychlostí."
+                }
+            ]
+        },
+        {
+            "id": 28,
+            "type": "open",
+            "category": "Nelineární vláknová optika, trendy ve vláknové optice",
+            "question": "Nelineární chování optického vlákna, čím je definována nelinearita, techniky pro potlačení/zvýšení nelinearity (skla, modifikace struktury vlákna)",
+            "answer_parts": [
+                {
+                    "title": "Nelineární chování optického vlákna",
+                    "text": "Nelinearita ve vlákně je definována intenzitou světla, délkou vlákna a nelineárními vlastnostmi materiálu (např. nelineární index lomu). Nelineární jevy zahrnují například Ramanův a Brillouinův rozptyl, samofázovou modulaci, čtyřvlnnou směšování apod. Pro potlačení nebo zvýšení nelinearity lze použít různé druhy skel, modifikace struktury vlákna (např. mikrostrukturní vlákna), nebo úpravu průměru jádra."
+                }
+            ]
+        },
+        {
+            "id": 29,
+            "type": "open",
+            "category": "Nelineární vláknová optika, trendy ve vláknové optice",
+            "question": "Ramanův a Brillouinův rozptyl",
+            "answer_parts": [
+                {
+                    "title": "Ramanův a Brillouinův rozptyl",
+                    "text": "**Ramanův a Brillouinův rozptyl** jsou nelineární jevy, při kterých dochází k přenosu energie mezi optickou vlnou a vibračními módy materiálu (fonony).\n\n- **Ramanův rozptyl**: Dochází ke změně směru i energie fotonu. Foton při srážce s atomem předá část své energie, změní směr a vlnovou délku. \n- **Brillouinův rozptyl**: Vzniká namáháním a stresem v materiálu. Foton interaguje s materiálovou mřížkou, předá část energie do materiálu a posune se jeho vlnová délka. Využívá se ve vláknových senzorech tlaku či teploty."
+                }
+            ]
+        },
+        {
+            "id": 30,
+            "type": "open",
+            "category": "Nelineární vláknová optika, trendy ve vláknové optice",
+            "question": "Optické zesilovače – EDFA",
+            "answer_parts": [
+                {
+                    "title": "Optické zesilovače – EDFA",
+                    "text": "EDFA zesilovače (Erbium Doped Fiber Amplifier) jsou optická vlákna s příměsí erbia. Do pláště vlákna se svítí čerpacím zdrojem, který excituje atomy erbia. Světlo v jádře pak interaguje s excitovanými atomy a dochází ke stimulované emisi záření, které je koherentní s původním světlem. Výsledkem je zesílení signálu přímo ve vlákně bez potřeby konverze do elektrické domény."
+                }
+            ]
+        }
+    ]
+}

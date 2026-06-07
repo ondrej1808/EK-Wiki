@@ -1,0 +1,203 @@
+{
+   "title": "Created with cards_creator - CZS",
+   "questions": [
+      {
+         "type": "open",
+         "question": "Diskrétní Fourierova transformace (DFT)",
+         "subsetPath": ["CZS", "DFT a spektrální analýza"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Numerický algoritmus pro výpočet Fourierovy transformace zavedený vztahem $X[k] = \\sum_{n=0}^{N-1} x[n]e^{-i\\frac{2\\pi}{N}nk}$. Kvůli konečné délce posloupnosti představuje pouze odhad skutečného spektra."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Rychlá Fourierova transformace (FFT)",
+         "subsetPath": ["CZS", "DFT a spektrální analýza"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Efektivní implementace DFT založená na rozmělňování posloupnosti na sudé a liché složky. Snižuje výpočetní náročnost z původní kvadratické složitosti $O(n^2)$ na složitost $O(n\\log(n))$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Prosakování ve spektru a okénkové funkce",
+         "subsetPath": ["CZS", "DFT a spektrální analýza"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Omezení délky signálu (násobení obdélníkovým oknem) způsobuje prosakování spektrálních složek. Pro jeho redukci se používají váhovací okna s rychlejším útlumem (např. Hammingovo, Hannovo, Blackmanovo, Kaiserovo), která však rozštěpují spektrální čáry."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Časově-frekvenční analýza a spektrogram",
+         "subsetPath": ["CZS", "DFT a spektrální analýza"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Zobrazení výkonového spektra signálu v čase pomocí rozkladu na více segmentů. Na spektrogramu (osa x: čas, osa y: frekvence, barva: amplituda v dB) se projevuje Heisenbergův princip neurčitosti $\\Delta t \\Delta E \\ge \\hbar / 2$, což znemožňuje libovolné rozlišení v obou osách současně."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Lineární konvoluce diskrétních signálů",
+         "subsetPath": ["CZS", "Lineární systémy a konvoluce"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Operace popsaná vztahem $y[n] = \\sum_{j=0}^{M} x[n-j]h[j]$. Pro vstup délky $N$ a impulsovou odezvu délky $M$ generuje výstupní posloupnost o celkové délce $L = M + N - 1$ a má kvadratickou výpočetní složitost."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Cyklická konvoluce",
+         "subsetPath": ["CZS", "Lineární systémy a konvoluce"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Ekvivalent lineární konvoluce realizovaný ve frekvenční oblasti pomocí přenásobení spekter DFT a zpětné iDFT. Vyžaduje interpolaci obou signálů nulami na cílovou délku $L = M + N - 1$, přičemž dosahuje výpočetní složitosti $O(n\\log(n))$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Zpracování dlouhých signálů (OLA a OLS)",
+         "subsetPath": ["CZS", "Lineární systémy a konvoluce"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Metody Overlap-and-Add (OLA) a Overlap-and-Save (OLS) slouží k průběžnému filtrování dlouhých či nekonečných vstupních signálů. Využívají segmentaci příchozích dat na kratší bloky, které se zpracovávají pomocí cyklické konvoluce s impulsovou odezvou."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Základní vlastnosti FIR filtrů",
+         "subsetPath": ["CZS", "Číslicové filtry"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Filtry s konečnou impulsovou odezvou, kde koeficienty odpovídají přímo prvkům $h[n]$. Jsou vždy stabilní, vykazují lineární fázovou charakteristiku při symetrické odezvě, ale vyžadují výrazně vyšší řád než IIR filtry, což zanáší do systému zpoždění. Počet členů odezvy je roven řád + 1."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Základní vlastnosti IIR filtrů",
+         "subsetPath": ["CZS", "Číslicové filtry"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Filtry s nekonečnou impulsovou odezvou navrhované jako číslicové ekvivalenty analogových aproximací (Butterworth, Chebyshev, Cauer). Postačuje jim nízký řád, ale vyžadují kontrolu stability a způsobují fázové zkreslení vlivem nelineární fázové charakteristiky."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Kvantování a jeho parametry",
+         "subsetPath": ["CZS", "Kvantování a nelinearita"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Nelineární operace diskretizace signálu v amplitudě realizovaná zaokrouhlováním nebo usekáváním. Je charakterizována kvantizačním krokem $\\Delta = X_M 2^{-B}$, vznikem kvantizační chyby (šumu) a dynamickým rozsahem $D = 20\\log(X_{max}/X_{min})$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Důsledky kvantování v číslicových systémech",
+         "subsetPath": ["CZS", "Kvantování a nelinearita"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Kvantování koeficientů mění polohu pólů, zhoršuje vlastnosti filtru a může způsobit nestabilitu. Kvantování mezivýsledků v IIR generuje šum a vyvolává nežádoucí limitní cykly. Vlivy se redukují rozkladem filtru na sekce 2. řádu (kaskádní/paralelní zapojení)."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Filtrace ve frekvenční oblasti",
+         "subsetPath": ["CZS", "Filtrace a převzorkování"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Ekvivalent lineární konvoluce vyjádřený jako součin spekter $Y(\\omega) = H(\\omega) \\cdot X(\\omega)$. Pro diskrétní signály vyžaduje doplnění nul na délku $L = M + N - 1$, transformaci pomocí DFT, bodové vynásobení a zpětnou iDFT se složitostí $O(n\\log(n))$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Decimace signálu",
+         "subsetPath": ["CZS", "Filtrace a převzorkování"],
+         "answer_parts": [
+            {
+               "title": "Snížení vzorkovací frekvence faktorem M",
+               "text": "Sestává ze dvou kroků: filtrace decimačním filtrem pro zamezení překrývání spekter (omezení šířky pásma) a následného ponechání každého $M$-tého vzorku. Výsledná frekvence je $f_s' = f_s / M$; operace není časově invariantní (je invariantní s periodou $M$)."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Interpolace signálu",
+         "subsetPath": ["CZS", "Filtrace a převzorkování"],
+         "answer_parts": [
+            {
+               "title": "Zvýšení vzorkovací frekvence faktorem L",
+               "text": "Sestává z doplnění $L-1$ nul mezi původní vzorky (expandér), což ve spektru vytvoří spektrální zrcadla, a z následného odstranění těchto zrcadel pomocí interpolačního filtru. Výsledná frekvence je $f_s' = f_s \\cdot L$; expandér je invariantní s periodou $L$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Podmínky perfektní rekonstrukce v bankách filtrů",
+         "subsetPath": ["CZS", "Filtrace a převzorkování"],
+         "answer_parts": [
+            {
+               "title": "Podmínky pro dvoupásmovou banku",
+               "text": "Pro eliminaci zkreslení a překrývání spekter při zpětném sloučení musí platit: žádné překrývání $H_0(-z)F_0(z) + H_1(-z)F_1(z) = 0$ a žádné zkreslení $H_0(z)F_0(z) + H_1(z)F_1(z) = 2z^{-D}$. Výstup je pak pouze zpožděný: $y[n] = x[n-D]$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Chyby odhadů náhodných signálů",
+         "subsetPath": ["CZS", "Odhad parametrů a analýza"],
+         "answer_parts": [
+            {
+               "title": "Systématické a náhodné chyby",
+               "text": "Systématické chyby určuje vychýlení $\\hat{b}[\\varphi] = \\varphi - E\\hat{\\varphi}$ (odhad je nevychýlený, pokud $\\hat{b}[\\varphi] = 0$). Náhodné chyby popisuje variance $var\\hat{\\varphi} = E(\\hat{\\varphi} - E\\hat{\\varphi})^2$. Odhad je konzistentní, pokud s rostoucí délkou realizace konverguje variance k nule."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Odhad střední hodnoty a variance",
+         "subsetPath": ["CZS", "Odhad parametrů a analýza"],
+         "answer_parts": [
+            {
+               "title": "Statistické odhady na segmentu délky N",
+               "text": "Odhad střední hodnoty $\\hat{\\mu}_X = \\frac{1}{N}\\sum_{n=0}^{N-1} x[n]$ je nevychýlený a konzistentní. Odhad variance $\\hat{\\sigma}_X^2 = \\frac{1}{N-1}\\sum_{n=0}^{N-1} (x[n] - \\hat{\\mu}_X)^2$ je asymptoticky nevychýlený a konzistentní. Jsou svázány s výkonem vztahem $\\hat{\\sigma}_X^2 = \\hat{\\P}_X - \\hat{\\mu}_X^2$."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Korelační a spektrální analýza",
+         "subsetPath": ["CZS", "Odhad parametrů a analýza"],
+         "answer_parts": [
+            {
+               "title": "",
+               "text": "Korelační analýza zkoumá podobnost signálů (např. určení periody, detekce zpoždění šumu). Spektrální analýza zjišťuje frekvenční vlastnosti a zastoupení složek v signálu, přičemž základním nástrojem pro její získání je Fourierova transformace."
+            }
+         ]
+      }
+   ]
+}

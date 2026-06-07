@@ -1,0 +1,145 @@
+{
+  "title": "Statistika a pravděpodobnost (B0B01STP)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Náhodná veličina",
+      "subsetPath": ["STP", "Náhodná veličina a náhodný vektor"],
+      "answer_parts": [
+        {
+          "text": "Náhodná veličina X je měřitelné zobrazení X: (Ω, A) -> (R, B), které náhodnému jevu přiřazuje reálné číslo."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Distribuční funkce náhodné veličiny",
+      "subsetPath": ["STP", "Náhodná veličina a náhodný vektor"],
+      "answer_parts": [
+        {
+          "text": "Reálná funkce FX(x) = P(X ≤ x) definovaná pro x ∈ R. Je neklesající, zprava spojitá a platí lim_{x→-∞} FX(x) = 0 a lim_{x→∞} FX(x) = 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozptyl náhodné veličiny",
+      "subsetPath": ["STP", "Číselné charakteristiky"],
+      "answer_parts": [
+        {
+          "text": "Druhý centrální moment definovaný jako var(X) = E(X²) - (EX)² = σ². Vyjadřuje míru variability náhodné veličiny."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Korelace náhodných veličin",
+      "subsetPath": ["STP", "Náhodný vektor"],
+      "answer_parts": [
+        {
+          "text": "Korelační matice s prvky corr(Xj, Xk) = cov(Xj, Xk) / (√(var Xj * var Xk)) představuje normovanou kovarianci. Hodnoty nabývá v intervalu [-1, 1]."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Centrální limitní věta",
+      "subsetPath": ["STP", "Statistické věty"],
+      "answer_parts": [
+        {
+          "text": "Tvrzení, že náhodná veličina vzniklá jako součet velkého počtu nezávislých, stejně rozdělených náhodných veličin má asymptoticky normální rozdělení N(μ, σ²)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metoda maximální věrohodnosti",
+      "subsetPath": ["STP", "Statistické odhady"],
+      "answer_parts": [
+        {
+          "text": "Metoda odhadu parametru θ na základě věrohodnostní funkce L(θ) = Π P(Xi = xi). Parametr θ se získá jako řešení rovnice d/dθ(ln L(θ)) = 0."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Chí-kvadrát test dobré shody",
+      "subsetPath": ["STP", "Testování hypotéz"],
+      "answer_parts": [
+        {
+          "text": "Testuje shodu skutečných četností s očekávanými pravděpodobnostmi. Vypočte se hodnota χ² = Σ (Xj - n*pj)² / (n*pj). Pokud χ² > χ²_{1-α, k-1}, hypotézu H0 zamítáme."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastnosti distribuční funkce",
+      "subsetPath": ["STP", "Náhodná veličina a náhodný vektor"],
+      "answer_parts": [
+        {
+          "text": "Distribuční funkce FX(x) je neklesající, zprava spojitá, lim_{x→-∞} FX(x) = 0 a lim_{x→∞} FX(x) = 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hustota pravděpodobnosti spojité náhodné veličiny",
+      "subsetPath": ["STP", "Náhodná veličina a náhodný vektor"],
+      "answer_parts": [
+        {
+          "text": "Nezáporná integrovatelná funkce fX, pro kterou platí FX(x) = ∫_{-∞}^{x} fX(t) dt a ∫_{-∞}^{∞} fX(x) dx = 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Střední hodnota náhodné veličiny",
+      "subsetPath": ["STP", "Číselné charakteristiky"],
+      "answer_parts": [
+        {
+          "text": "Definována jako EX = ∫_{-∞}^{∞} x * fX(x) dx (pro spojité rozdělení)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kovariační matice",
+      "subsetPath": ["STP", "Náhodný vektor"],
+      "answer_parts": [
+        {
+          "text": "Matice n×n, kde na diagonále jsou variance jednotlivých veličin a prvky mimo diagonálu jsou cov(Xj, Xk) = E[(Xj - EXj)(Xk - EXk)]."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výběrový průměr a výběrový rozptyl",
+      "subsetPath": ["STP", "Statistické odhady"],
+      "answer_parts": [
+        {
+          "text": "Výběrový průměr Xn = (1/n) * ΣXj a výběrový rozptyl Sn² = (1/(n-1)) * Σ(Xj - Xn)²."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Studentovo t-rozdělení",
+      "subsetPath": ["STP", "Statistické testování"],
+      "answer_parts": [
+        {
+          "text": "Náhodná veličina Z = X / (√(Y/n)), kde X má rozdělení N(0,1) a Y má rozdělení χ² o n stupních volnosti."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jednovýběrový t-test",
+      "subsetPath": ["STP", "Testování hypotéz"],
+      "answer_parts": [
+        {
+          "text": "Testuje hypotézu H0: μ = μ0. Vypočte se T0 = (Xn - μ0) / (Sn / √n). Pokud T0 ≥ t_{1-α, n-1}, hypotézu H0 zamítáme."
+        }
+      ]
+    }
+  ]
+}

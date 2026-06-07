@@ -1,0 +1,261 @@
+{
+  "title": "Created with cards_creator - EMPA",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Zdroje elektrického a magnetického pole",
+      "subsetPath": [
+        "EMPA",
+        "Elektrické a magnetické pole a jeho zdroje"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Zdrojem elektrického pole jsou elektrické náboje (nepohyblivé i pohybující se) nebo časově proměnné magnetické pole."
+        },
+        {
+          "title": "",
+          "text": "Zdrojem magnetického pole je pohybující se elektrický náboj (elektrický proud) nebo časově proměnné elektrické pole."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Potenciálové a vírové pole",
+      "subsetPath": [
+        "EMPA",
+        "Elektrické a magnetické pole a jeho zdroje"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Potenciálové pole má nulovou rotaci (rot E = 0), práce po uzavřené dráze je nulová a lze ho popsat skalárním potenciálem (např. elektrostatické pole)."
+        },
+        {
+          "title": "",
+          "text": "Vírové pole má nenulovou rotaci, siločáry jsou uzavřené křivky a práce po uzavřené dráze obecně není nulová (např. stacionární magnetické pole)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klasifikace prostředí v elektromagnetismu",
+      "subsetPath": [
+        "EMPA",
+        "Elektrické a magnetické pole a jeho zdroje"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Lineární / nelineární (parametry závisí nebo nezávisí na intenzitě pole)."
+        },
+        {
+          "title": "",
+          "text": "Izotropní / anizotropní (parametry jsou stejné nebo se liší podle směru vektoru pole)."
+        },
+        {
+          "title": "",
+          "text": "Homogenní / nehomogenní (parametry jsou stejné nebo se mění v závislosti na souřadnicích místa)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní vektorové veličiny v elektrickém poli",
+      "subsetPath": [
+        "EMPA",
+        "Elektrické a magnetické pole a jeho zdroje"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Intenzita elektrického pole E (V/m) vyjadřuje silové působení na jednotkový náboj."
+        },
+        {
+          "title": "",
+          "text": "Elektrická indukce D (C/m^2) popisuje pole s vyloučením vlivu vázaných nábojů v dielektriku, platí vztah D = epsilon * E."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Gaussova věta elektrostatiky (integrální tvar)",
+      "subsetPath": [
+        "EMPA",
+        "Elektrostatické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Tok vektoru elektrické indukce D uzavřenou plochou S je roven celkovému volnému náboji Q uzavřenému uvnitř této plochy."
+        },
+        {
+          "title": "",
+          "text": "\\oint_S D \\cdot dS = Q"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metoda zrcadlení v elektrostatice",
+      "subsetPath": [
+        "EMPA",
+        "Elektrostatické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Metoda řešení pole v přítomnosti vodivých těles nahrazením vlivu indukovaných nábojů fiktivními bodovými náboji vně řešené oblasti tak, aby zůstaly zachovány okrajové podmínky (např. nulový potenciál na uzemněné rovině)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Energie a objemová hustota energie elektrického pole",
+      "subsetPath": [
+        "EMPA",
+        "Elektrostatické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Celková energie pole: W_e = (1/2) * \\int_V (E \\cdot D) dV"
+        },
+        {
+          "title": "",
+          "text": "Objemová hustota energie: w_e = (1/2) * E \\cdot D = (1/2) * epsilon * E^2"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kapacita a její obecný výpočet",
+      "subsetPath": [
+        "EMPA",
+        "Elektrostatické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Kapacita C vyjadřuje schopnost soustavy elektrod akumulovat elektrický náboj při daném napětí, platí C = Q / U."
+        },
+        {
+          "title": "",
+          "text": "Postup výpočtu: Volba náboje Q -> určení elektrické indukce D a intenzity E (např. pomocí Gaussovy věty) -> integrace intenzity E pro získání napětí U -> dosazení do C = Q / U."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní vektorové veličiny v magnetickém poli",
+      "subsetPath": [
+        "EMPA",
+        "Stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Magnetická indukce B (T) vyjadřuje skutečné silové účinky pole na pohybující se náboje a proudy."
+        },
+        {
+          "title": "",
+          "text": "Intenzita magnetického pole H (A/m) popisuje pole vyvolané pouze makroskopickými volnými proudy, platí vztah B = mu * H."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Biotův-Savartův zákon",
+      "subsetPath": [
+        "EMPA",
+        "Stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Určuje příspěvek elementu vodiče dl protékaného proudem I k celkové magnetické indukci dB v daném bodě."
+        },
+        {
+          "title": "",
+          "text": "dB = (mu / (4 * \\pi)) * (I * (dl \\times r) / r^3)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ampérův zákon (integrální tvar)",
+      "subsetPath": [
+        "EMPA",
+        "Stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Cirkulace vektoru intenzity magnetického pole H po uzavřené křivce l je rovna celkovému volnému proudu I, který tato křivka obepíná."
+        },
+        {
+          "title": "",
+          "text": "\\oint_l H \\cdot dl = I"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Energie a objemová hustota energie magnetického pole",
+      "subsetPath": [
+        "EMPA",
+        "Stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Celková energie pole: W_m = (1/2) * \\int_V (H \\cdot B) dV"
+        },
+        {
+          "title": "",
+          "text": "Objemová hustota energie: w_m = (1/2) * H \\cdot B = (1/2) * mu * H^2"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Faradayův indukční zákon",
+      "subsetPath": [
+        "EMPA",
+        "Stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Časová změna magnetického indukčního toku uzavřenou smyčkou indukuje ve smyčce elektromotorické napětí U_i."
+        },
+        {
+          "title": "",
+          "text": "U_i = - d\\psi / dt, kde \\psi je celkový spřažený magnetický tok smyčkou. Znaménko minus vyjadřuje Lenzovo pravidlo."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastní a vzájemná indukčnost",
+      "subsetPath": [
+        "EMPA",
+        "Stacionární magnetické pole"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vlastní indukčnost L (H) určuje vazbu mezi proudem ve vodiči a vlastním spřaženým tokem: L = \\psi / I."
+        },
+        {
+          "title": "",
+          "text": "Vzájemná indukčnost M (H) určuje vazbu mezi proudem v prvním vodiči a indukovaným spřaženým tokem ve vodiči druhém: M_21 = \\psi_21 / I_1."
+        },
+        {
+          "title": "",
+          "text": "Postup výpočtu: Volba proudu I -> určení H a B (např. Ampérovým zákonem) -> integrace B přes plochu smyčky pro tok \\psi -> dosazení do L = \\psi / I."
+        }
+      ]
+    }
+  ]
+}

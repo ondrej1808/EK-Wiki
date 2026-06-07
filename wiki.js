@@ -1,77 +1,300 @@
+/* ═══════════════════════════════════════════════════════
+ *  EK Wiki – unified subject-ordered index
+ *  Renders: markdown (marked.js), LaTeX (KaTeX), TikZ (tikzjax)
+ *  PDF files open in an embedded iframe
+ * ═══════════════════════════════════════════════════════ */
 (() => {
-  /* ─────────────────────────────────────────────
-   *  Static index of SZZ submodule notes
-   * ───────────────────────────────────────────── */
-  const SZZ_NOTES = [
-    { subject: 'DRN', label: 'Diferenciální rovnice a num. metody', notes: [
-      { title: '05 – Lineární diferenciální rovnice a soustavy',
-        path: 'SZZ/DRN/05 Linearni diferencialni rovnice a soustavy.md' },
-      { title: '06 – Numerické metody rovnic, integrálů a dif. rovnic',
-        path: 'SZZ/DRN/06 Numericke metody rovnic integralu a diferencialnich rovnic.md' },
-    ]},
-    { subject: 'ELD', label: 'Elektromagnetické vlny', notes: [
-      { title: '15 – Elektromagnetická vlna v neomezeném prostředí a na rozhraní',
-        path: 'SZZ/ELD/15 Elektromagneticka vlna v neomezenem prostredi a rozhrani.md' },
-      { title: '16 – Vedené a evanescentní vlny, vlnovody a vedení',
-        path: 'SZZ/ELD/16 Vedene a evanescentni vlny vlnovody vedeni.md' },
-    ]},
-    { subject: 'EMPA', label: 'Elektromagnetické pole a antény', notes: [
-      { title: '13 – Elektrické a magnetické pole, elektrostatika, kapacita',
-        path: 'SZZ/EMPA/13 Elektricke a magneticke pole elektrostatika kapacita.md' },
-      { title: '14 – Stacionární magnetické pole, indukčnost, Faradayův zákon',
-        path: 'SZZ/EMPA/14 Stacionarni magneticke pole indukcnost Faraday.md' },
-    ]},
-    { subject: 'KANA', label: 'Komplexní analýza a transformace', notes: [
-      { title: '09 – Komplexní funkce, integrál, singularity, rezidua',
-        path: 'SZZ/KANA/09 Komplexni funkce integral singularity rezidua.md' },
-      { title: '10 – Fourierova, Laplaceova a Z-transformace',
-        path: 'SZZ/KANA/10 Fourier Laplace Z transformace.md' },
-      { title: '10a – Srovnání transformací (přehledová tabulka)',
-        path: 'SZZ/KANA/10a Srovnani transformaci Fourier Laplace Z.md' },
-      { title: 'Vývar KANA – souhrnný přehled',
-        path: 'SZZ/KANA/Vývar KANA.md' },
-    ]},
-    { subject: 'LAGA', label: 'Lineární algebra a geometrie', notes: [
-      { title: '01 – Struktura lin. prostoru, báze a dimenze',
-        path: 'SZZ/LAGA/01 Struktura linearniho prostoru, baze a dimenze.md' },
-      { title: '02 – Maticový počet, determinant, inverze, vlastní čísla',
-        path: 'SZZ/LAGA/02 Maticovy pocet, determinant, inverze, vlastni cisla.md' },
-    ]},
-    { subject: 'MA1A', label: 'Matematická analýza 1', notes: [
-      { title: '03 – Funkce jedné proměnné, limita, derivace, průběh',
-        path: 'SZZ/MA1A/03 Funkce jedne promenne, limita, derivace, prubeh.md' },
-      { title: '04 – Primitivní funkce a integrály',
-        path: 'SZZ/MA1A/04 Primitivni funkce a integraly.md' },
-    ]},
-    { subject: 'MA2A', label: 'Matematická analýza 2', notes: [
-      { title: '07 – Funkce více proměnných, gradient, extrémy',
-        path: 'SZZ/MA2A/07 Funkce vice promennych, gradient, extremy.md' },
-      { title: '08 – Vícerozměrné integrály a integrální věty',
-        path: 'SZZ/MA2A/08 Vicerozmerne integraly a integralni vety.md' },
-    ]},
-    { subject: 'PST', label: 'Pravděpodobnost a statistika', notes: [
-      { title: '11 – Náhodná veličina, vektor, rozdělení, charakteristiky',
-        path: 'SZZ/PST/11 Nahodna velicina vektor rozdeleni charakteristiky.md' },
-      { title: '12 – CLV, MLE, testování hypotéz',
-        path: 'SZZ/PST/12 CLV MLE testovani hypotez.md' },
-    ]},
-    { subject: 'SAS', label: 'Signály a soustavy', notes: [
-      { title: '19 – Signály, reprezentace, vzorkování, náhodné procesy',
-        path: 'SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md' },
-      { title: '20 – Soustavy LTI, konvoluce, stabilita, modulace',
-        path: 'SZZ/SAS/20 Soustavy LTI konvoluce stabilita pasmove signaly modulace.md' },
-    ]},
+
+  /* ── Path prefixes ── */
+  const EK  = 'ek-drive/Bakaláři/6. semestr/SZZ/LS2026/';
+  const SZZ = 'SZZ/';
+  const AQ  = 'assets/questions/';
+  const AM  = 'assets/questions_master/';
+
+  /* ── Resource types ── */
+  // note = SZZ Obsidian markdown note
+  // pdf  = PDF document (iframe viewer)
+  // sum  = assets/ question summary markdown
+
+  /* ═══════════════════════════════════════════════════════
+   *  MASTER SUBJECT INDEX (ordered by question_list.md)
+   * ═══════════════════════════════════════════════════════ */
+  const SECTIONS = [
+    {
+      section: '1 – Teoretický základ',
+      subjects: [
+        {
+          code: 'B0B01LAGA', title: 'Lineární algebra a geometrie',
+          resources: [
+            { type: 'note', label: '01 – Lin. prostor, báze a dimenze',         src: SZZ + 'LAGA/01 Struktura linearniho prostoru, baze a dimenze.md' },
+            { type: 'note', label: '02 – Maticový počet, determinant, vlastní čísla', src: SZZ + 'LAGA/02 Maticovy pocet, determinant, inverze, vlastni cisla.md' },
+            { type: 'pdf',  label: 'AKLA 2023 (Kolář)',                         src: SZZ + 'LAGA/akla_2023_09_15.pdf' },
+            { type: 'pdf',  label: 'laga2 (ek-drive)',                          src: EK  + 'LAGA/laga2.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',                      src: AQ  + 'B0B01LAGA.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',                         src: AM  + 'B0B01LAGA-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',                         src: AM  + 'B0B01LAGA-02.md' },
+          ],
+        },
+        {
+          code: 'B0B01MA1A', title: 'Matematická analýza 1',
+          resources: [
+            { type: 'note', label: '03 – Funkce jedné proměnné, limita, derivace', src: SZZ + 'MA1A/03 Funkce jedne promenne, limita, derivace, prubeh.md' },
+            { type: 'note', label: '04 – Primitivní funkce a integrály',          src: SZZ + 'MA1A/04 Primitivni funkce a integraly.md' },
+            { type: 'pdf',  label: 'ma1a-23 k2',  src: SZZ + 'MA1A/ma1a-23k2.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k3',  src: SZZ + 'MA1A/ma1a-23k3.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k4',  src: SZZ + 'MA1A/ma1a-23k4.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k6',  src: SZZ + 'MA1A/ma1a-23k6.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k7',  src: SZZ + 'MA1A/ma1a-23k7.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k8',  src: SZZ + 'MA1A/ma1a-23k8.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k9',  src: SZZ + 'MA1A/ma1a-23k9.pdf' },
+            { type: 'pdf',  label: 'ma1a-23 k10', src: SZZ + 'MA1A/ma1a-23k10.pdf' },
+            { type: 'pdf',  label: 'SZZ MA1A (ek-drive)',  src: EK + 'MA1A/SZZ___MA1A.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ + 'B0B01MA1A.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM + 'B0B01MA1A-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM + 'B0B01MA1A-02.md' },
+          ],
+        },
+        {
+          code: 'B0B01DRN', title: 'Diferenciální rovnice a num. metody',
+          resources: [
+            { type: 'note', label: '05 – Lineární dif. rovnice a soustavy',        src: SZZ + 'DRN/05 Linearni diferencialni rovnice a soustavy.md' },
+            { type: 'note', label: '06 – Numerické metody rovnic, integrálů, DR', src: SZZ + 'DRN/06 Numericke metody rovnic integralu a diferencialnich rovnic.md' },
+            { type: 'pdf',  label: 'dnbook (DN zápisky)',  src: SZZ + 'DRN/dnbook.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ  + 'B0B01DRN.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM  + 'B0B01DRN-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM  + 'B0B01DRN-02.md' },
+          ],
+        },
+        {
+          code: 'B0B01MA2A', title: 'Matematická analýza 2',
+          resources: [
+            { type: 'note', label: '07 – Funkce více proměnných, gradient, extrémy', src: SZZ + 'MA2A/07 Funkce vice promennych, gradient, extremy.md' },
+            { type: 'note', label: '08 – Vícerozměrné integrály a integrální věty', src: SZZ + 'MA2A/08 Vicerozmerne integraly a integralni vety.md' },
+            { type: 'pdf',  label: 'Diferenciální počet víc proměnných',            src: SZZ + 'MA2A/dipocet.pdf' },
+            { type: 'pdf',  label: 'Integrální počet víc proměnných',               src: SZZ + 'MA2A/integralni_pocet_vice_prom.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ  + 'B0B01MA2A.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM  + 'B0B01MA2A-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM  + 'B0B01MA2A-02.md' },
+          ],
+        },
+        {
+          code: 'B0B01KANA', title: 'Komplexní analýza a transformace',
+          resources: [
+            { type: 'note', label: '09 – Komplexní funkce, integrál, singularity, rezidua', src: SZZ + 'KANA/09 Komplexni funkce integral singularity rezidua.md' },
+            { type: 'note', label: '10 – Fourierova, Laplaceova a Z-transformace',          src: SZZ + 'KANA/10 Fourier Laplace Z transformace.md' },
+            { type: 'note', label: '10a – Srovnání transformací (přehledová tabulka)',      src: SZZ + 'KANA/10a Srovnani transformaci Fourier Laplace Z.md' },
+            { type: 'note', label: 'Vývar KANA – souhrnný přehled',                        src: SZZ + 'KANA/Vývar KANA.md' },
+            { type: 'pdf',  label: 'testkom.pdf',                   src: SZZ + 'KANA/testkom.pdf' },
+            { type: 'pdf',  label: 'transformace.pdf',              src: SZZ + 'KANA/transformace.pdf' },
+            { type: 'pdf',  label: 'Komplexka – Kulhánek',          src: EK  + 'KANA/Komplexka-Kulhánek.pdf' },
+            { type: 'pdf',  label: 'MA1, MA2, LAGA, DRN, KANA – KK', src: EK + 'KANA/MA1,MA2, LAGA, DRN, KANA_KK.pdf' },
+            { type: 'pdf',  label: 'KANA 1+2 – Orri',               src: EK  + 'KANA/feeaci22_Orri_KANA-1,2_v3.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',          src: AQ  + 'B0B01KANA.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',              src: AM  + 'B0B01KANA-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',              src: AM  + 'B0B01KANA-02.md' },
+          ],
+        },
+        {
+          code: 'B0B01STP', title: 'Statistika a pravděpodobnost',
+          resources: [
+            { type: 'note', label: '11 – Náhodná veličina, vektor, rozdělení',   src: SZZ + 'PST/11 Nahodna velicina vektor rozdeleni charakteristiky.md' },
+            { type: 'note', label: '12 – CLV, MLE, testování hypotéz',            src: SZZ + 'PST/12 CLV MLE testovani hypotez.md' },
+            { type: 'pdf',  label: 'STP 1 (ek-drive)',  src: EK + 'STP/stp1.pdf' },
+            { type: 'pdf',  label: 'STP 2 (ek-drive)',  src: EK + 'STP/stp2.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ + 'B0B01STP.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM + 'B0B01STP-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM + 'B0B01STP-02.md' },
+          ],
+        },
+        {
+          code: 'B2B02FY1', title: 'Fyzika 1',
+          resources: [
+            { type: 'pdf',  label: 'FY1+FY2 – KK (SZZ)',         src: SZZ + 'FY1-FY2_KK.pdf' },
+            { type: 'pdf',  label: 'FY1 – 13. THUR main',        src: EK  + 'FY/13. THUR_main.pdf' },
+            { type: 'pdf',  label: 'FY1 – Brajer v2',            src: EK  + 'FY/14_BRAJER_FY1_v2.pdf' },
+            { type: 'pdf',  label: 'FY1+FY2 – KK (ek-drive)',    src: EK  + 'FY/FY1-FY2_KK.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',       src: AQ  + 'B2B02FY1.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',           src: AM  + 'B2B02FY1-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',           src: AM  + 'B2B02FY1-02.md' },
+            { type: 'sum',  label: 'Otázka 3 (detail)',           src: AM  + 'B2B02FY1-03.md' },
+          ],
+        },
+        {
+          code: 'B2B02FY2', title: 'Fyzika 2',
+          resources: [
+            { type: 'pdf',  label: 'FY1+FY2 – KK (SZZ)',               src: SZZ + 'FY1-FY2_KK.pdf' },
+            { type: 'pdf',  label: 'FY2 – 15. THUR main',              src: EK  + 'FY/15. THUR_main.pdf' },
+            { type: 'pdf',  label: 'FY2 – Brajer v3',                  src: EK  + 'FY/16_BRAJER_FY2_v3.pdf' },
+            { type: 'pdf',  label: 'FY2 – Anička 2',                   src: EK  + 'FY/17. ANICKA_FY2_2-1.pdf' },
+            { type: 'pdf',  label: 'FY2 – Anička 3 (LaTeX)',           src: EK  + 'FY/18. ANICKA_FY2-3_latex.pdf' },
+            { type: 'pdf',  label: 'FY2 – Anička kvantovka',           src: EK  + 'FY/18_FY2_ANICKA_Kvantovka.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',             src: AQ  + 'B2B02FY2.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',                 src: AM  + 'B2B02FY2-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',                 src: AM  + 'B2B02FY2-02.md' },
+            { type: 'sum',  label: 'Otázka 3 (detail)',                 src: AM  + 'B2B02FY2-03.md' },
+          ],
+        },
+      ],
+    },
+
+    {
+      section: '2 – Odborná část',
+      subjects: [
+        {
+          code: 'B2B31ZEOA', title: 'Základy elektrických obvodů',
+          resources: [
+            { type: 'pdf', label: 'SZZ ZEOA (ek-drive)', src: EK  + 'ZEOA/SZZ___ZEOA.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B31ZEOA.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B31ZEOA-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B31ZEOA-02.md' },
+          ],
+        },
+        {
+          code: 'B2B31EO1', title: 'Elektronické obvody 1',
+          resources: [
+            { type: 'pdf', label: 'EO1-1 (ek-drive)',              src: EK  + 'EO1/feaci222_EO1-1.pdf' },
+            { type: 'pdf', label: 'EO1-2 (ek-drive)',              src: EK  + 'EO1/feeaci22_EO1-2.pdf' },
+            { type: 'pdf', label: 'Toleranční schéma – grafy (KK)', src: EK + 'EO1/hex_compost_tolerancni_schema_KK_grafy_DP_HP_PP_PZ_AI_pro_ruzne_aproximace.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',           src: AQ + 'B2B31EO1.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',               src: AM + 'B2B31EO1-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',               src: AM + 'B2B31EO1-02.md' },
+          ],
+        },
+        {
+          code: 'B2B38EMB', title: 'Elektronická měření a přístroje',
+          resources: [
+            { type: 'pdf', label: 'SZZ EMB (ek-drive)', src: EK  + 'EMB/SZZ___EMB.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B38EMB.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B38EMB-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B38EMB-02.md' },
+          ],
+        },
+        {
+          code: 'B2B32DITA', title: 'Digitální technika',
+          resources: [
+            { type: 'pdf', label: 'HEX DITA-1 (ek-drive)', src: EK  + 'DITA/7. HEX_DITA-1.pdf' },
+            { type: 'pdf', label: 'MAX DITA-1 (ek-drive)', src: EK  + 'DITA/7. MAX_DITA-1.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B32DITA.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',      src: AM  + 'B2B32DITA-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',      src: AM  + 'B2B32DITA-02.md' },
+          ],
+        },
+        {
+          code: 'B2B32DATA', title: 'Datová komunikace a sítě',
+          resources: [
+            { type: 'pdf', label: 'DATA-1 (ek-drive)',     src: EK  + 'DATA/DATA-1.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B32DATA.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',      src: AM  + 'B2B32DATA-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',      src: AM  + 'B2B32DATA-02.md' },
+          ],
+        },
+        {
+          code: 'B2B34ELPA', title: 'Elektronické prvky',
+          resources: [
+            { type: 'pdf', label: 'elp1 (ek-drive)',       src: EK  + 'ELPA/elp1.pdf' },
+            { type: 'pdf', label: 'elp2 (ek-drive)',       src: EK  + 'ELPA/elp2.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B34ELPA.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',      src: AM  + 'B2B34ELPA-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',      src: AM  + 'B2B34ELPA-02.md' },
+          ],
+        },
+        {
+          code: 'B2B17EMPA', title: 'Elektromagnetické pole',
+          resources: [
+            { type: 'note', label: '13 – El. a mag. pole, elektrostatika, kapacita', src: SZZ + 'EMPA/13 Elektricke a magneticke pole elektrostatika kapacita.md' },
+            { type: 'note', label: '14 – Stacionární mag. pole, indukčnost, Faraday', src: SZZ + 'EMPA/14 Stacionarni magneticke pole indukcnost Faraday.md' },
+            { type: 'pdf',  label: 'EMPA – complete edition',  src: SZZ + 'EMPA/empa_complete_edition.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',     src: AQ  + 'B2B17EMPA.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',         src: AM  + 'B2B17EMPA-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',         src: AM  + 'B2B17EMPA-02.md' },
+          ],
+        },
+        {
+          code: 'B2B17ELD', title: 'Elektromagnetické vlny a vedení',
+          resources: [
+            { type: 'note', label: '15 – EM vlna v neomezeném prostředí a na rozhraní', src: SZZ + 'ELD/15 Elektromagneticka vlna v neomezenem prostredi a rozhrani.md' },
+            { type: 'note', label: '16 – Vedené a evanescentní vlny, vlnovody',          src: SZZ + 'ELD/16 Vedene a evanescentni vlny vlnovody vedeni.md' },
+            { type: 'pdf',  label: 'Elektromagnetická vlna 2021',  src: SZZ + 'ELD/Elektromagnetická vlna_13_5_2021.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',         src: AQ  + 'B2B17ELD.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',             src: AM  + 'B2B17ELD-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',             src: AM  + 'B2B17ELD-02.md' },
+          ],
+        },
+        {
+          code: 'B2B34SEE', title: 'Senzory a MEMS',
+          resources: [
+            { type: 'pdf', label: 'HEX-compost SEE (ek-drive)', src: EK  + 'SEE/HEX-compost_SEE.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',        src: AQ  + 'B2B34SEE.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',            src: AM  + 'B2B34SEE-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',            src: AM  + 'B2B34SEE-02.md' },
+          ],
+        },
+        {
+          code: 'B2B37SAS', title: 'Signály a soustavy',
+          resources: [
+            { type: 'note', label: '19 – Signály, reprezentace, vzorkování, náhodné procesy', src: SZZ + 'SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md' },
+            { type: 'note', label: '20 – Soustavy LTI, konvoluce, stabilita, modulace',       src: SZZ + 'SAS/20 Soustavy LTI konvoluce stabilita pasmove signaly modulace.md' },
+            { type: 'pdf',  label: 'SAS cvičení v0.96 (zápisky)', src: SZZ + 'SAS/sas_cviceni_v0.96_250225.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů',         src: AQ  + 'B2B37SAS.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',             src: AM  + 'B2B37SAS-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',             src: AM  + 'B2B37SAS-02.md' },
+          ],
+        },
+        {
+          code: 'B2B17TBK', title: 'Teorie bezdrátové komunikace',
+          resources: [
+            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B17TBK.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B17TBK-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B17TBK-02.md' },
+          ],
+        },
+        {
+          code: 'B2B31CZS', title: 'Číslicové zpracování signálů',
+          resources: [
+            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B31CZS.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B31CZS-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B31CZS-02.md' },
+          ],
+        },
+        {
+          code: 'B2B37AVT', title: 'Audiovizuální technika',
+          resources: [
+            { type: 'pdf', label: 'AVT 1 (ek-drive)',     src: EK  + 'AVT/avt1.pdf' },
+            { type: 'pdf', label: 'AVT 2 (ek-drive)',     src: EK  + 'AVT/avt2.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B37AVT.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',      src: AM  + 'B2B37AVT-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',      src: AM  + 'B2B37AVT-02.md' },
+          ],
+        },
+        {
+          code: 'B2B34MIT', title: 'Mikroelektronika a technologie',
+          resources: [
+            { type: 'pdf', label: 'MIT 27–28 – Hlaváček',  src: EK  + 'MIT/27-28_Hlaváček_MIT.pdf' },
+            { type: 'pdf', label: 'MIT 27 – Hlaváček',     src: EK  + 'MIT/27_Hlaváček_MIT.pdf' },
+            { type: 'pdf', label: 'HEX-compost MIT',       src: EK  + 'MIT/hex_compost_MIT.pdf' },
+            { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B34MIT.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',      src: AM  + 'B2B34MIT-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',      src: AM  + 'B2B34MIT-02.md' },
+          ],
+        },
+        {
+          code: 'B2B32TSI', title: 'Telefonní a mobilní sítě',
+          resources: [
+            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B32TSI.md' },
+            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B32TSI-01.md' },
+            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B32TSI-02.md' },
+          ],
+        },
+      ],
+    },
   ];
 
-  /* ─────────────────────────────────────────────
-   *  Config
-   * ───────────────────────────────────────────── */
-  const QUESTION_INDEX_PATH = 'assets/question_list.md';
-  const QUESTION_DOC_BASE   = 'assets/questions/';
+  /* ── Shared reference ── */
+  const HEX_COMPOST = { type: 'pdf', label: 'hex_compost.pdf (hlavní reference)', src: SZZ + 'hex_compost.pdf' };
 
-  /* ─────────────────────────────────────────────
+  /* ═══════════════════════════════════════════════════════
    *  DOM refs
-   * ───────────────────────────────────────────── */
+   * ═══════════════════════════════════════════════════════ */
   const els = {
     topicList:   document.getElementById('topicList'),
     topicFilter: document.getElementById('topicFilter'),
@@ -80,77 +303,61 @@
     docBody:     document.getElementById('docBody'),
   };
 
-  /* ─────────────────────────────────────────────
-   *  State
-   * ───────────────────────────────────────────── */
-  let questionTopics = [];
-  let activeKey = null;
-  let filterText = '';
-  let szzCollapsed = false;
-  let okruhCollapsed = false;
-  const subjectOpen = {};   // subject code → bool (default true)
+  /* ── State ── */
+  let activeKey    = null;
+  let filterText   = '';
+  const groupOpen  = {};  // code → bool (default true)
 
-  /* ─────────────────────────────────────────────
+  /* ═══════════════════════════════════════════════════════
    *  Helpers
-   * ───────────────────────────────────────────── */
+   * ═══════════════════════════════════════════════════════ */
 
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  /** URL-encode each path segment (handles spaces in filenames) */
   function encodePath(p) {
     return p.split('/').map(encodeURIComponent).join('/');
   }
 
-  /* ─────────────────────────────────────────────
+  function matches(s) {
+    return !filterText || s.toLowerCase().includes(filterText);
+  }
+
+  /* resource type → display tag */
+  const TYPE_TAG = {
+    note: { label: 'SZZ', cls: 'tag-note' },
+    pdf:  { label: 'PDF', cls: 'tag-pdf'  },
+    sum:  { label: 'HEX', cls: 'tag-sum'  },
+  };
+
+  /* ═══════════════════════════════════════════════════════
    *  Obsidian pre-processing
-   * ───────────────────────────────────────────── */
+   * ═══════════════════════════════════════════════════════ */
 
   function preprocessObsidian(text) {
-    // [[path|label]] or [[path#anchor|label]] → label
     text = text.replace(/\[\[[^\]]*?\|([^\]]+)\]\]/g, '$1');
-    // [[file.ext]] (pdf/png/jpg/gif/tex/svg) → '' (pure file ref, no useful text)
     text = text.replace(/\[\[[^\]]*?\.(pdf|png|jpg|gif|tex|svg)([^\]]*?)\]\]/gi, '');
-    // [[Title]] → Title
     text = text.replace(/\[\[([^\]#|]+)\]\]/g, '$1');
-    // Any remaining [[...]] → ''
     text = text.replace(/\[\[[^\]]*\]\]/g, '');
-
-    // Obsidian callouts: "> [!type] Rest" → "> **Type:** Rest"
-    text = text.replace(/^(>+[ \t]*)\[!(\w+)\](.*)/gm, (_, prefix, type, rest) => {
+    text = text.replace(/^(>+[ \t]*)\[!(\w+)\](.*)/gm, (_, pre, type, rest) => {
       const label = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
-      return `${prefix}**${label}:**${rest}`;
+      return `${pre}**${label}:**${rest}`;
     });
-
     return text;
   }
 
-  /* ─────────────────────────────────────────────
-   *  Math extraction (protect from marked.js)
-   * ───────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════
+   *  Math extraction (protect from marked)
+   * ═══════════════════════════════════════════════════════ */
 
   function extractMath(text) {
     const blocks = [];
-
-    const save = (type, math) => {
-      const id = blocks.length;
-      blocks.push({ type, math });
-      return `\x00M${id}\x00`;
-    };
-
-    // Display: $$...$$
+    const save = (type, math) => { const id = blocks.length; blocks.push({ type, math }); return `\x00M${id}\x00`; };
     text = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => save('display', m));
-    // Display: \[...\]
     text = text.replace(/\\\[([\s\S]+?)\\\]/g, (_, m) => save('display', m));
-    // Inline: \(...\)
     text = text.replace(/\\\((.+?)\\\)/g, (_, m) => save('inline', m));
-    // Inline: $...$ — not preceded/followed by $, no newlines
     text = text.replace(/(?<!\$)\$(?!\$)([^\n$]+?)(?<!\$)\$(?!\$)/g, (_, m) => save('inline', m));
-
     return { text, blocks };
   }
 
@@ -158,14 +365,8 @@
     return html.replace(/\x00M(\d+)\x00/g, (_, i) => {
       const { type, math } = blocks[+i];
       if (window.katex) {
-        try {
-          return katex.renderToString(math.trim(), {
-            displayMode: type === 'display',
-            throwOnError: false,
-          });
-        } catch {
-          // fall through to raw
-        }
+        try { return katex.renderToString(math.trim(), { displayMode: type === 'display', throwOnError: false }); }
+        catch { /* fall through */ }
       }
       return type === 'display'
         ? `<div class="math-raw">$$${math}$$</div>`
@@ -173,29 +374,21 @@
     });
   }
 
-  /* ─────────────────────────────────────────────
-   *  Full render pipeline
-   * ───────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════
+   *  Full markdown render pipeline
+   * ═══════════════════════════════════════════════════════ */
 
   function renderMarkdown(rawText) {
-    // 1. Strip Obsidian syntax
     let text = preprocessObsidian(rawText);
-
-    // 2. Pull math out before marked sees it
-    const { text: safeText, blocks } = extractMath(text);
-
-    // 3. marked → HTML
+    const { text: safe, blocks } = extractMath(text);
     marked.setOptions({ gfm: true, breaks: false });
-    let html = marked.parse(safeText);
-
-    // 4. Restore math with KaTeX
+    let html = marked.parse(safe);
     html = restoreMath(html, blocks);
 
-    // 5. Build real DOM
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
 
-    // 6. Convert ```tikz code blocks → <script type="text/tikz"> for tikzjax
+    // Convert ```tikz code blocks → <script type="text/tikz"> for tikzjax
     wrapper.querySelectorAll('pre > code.language-tikz').forEach(code => {
       const script = document.createElement('script');
       script.type = 'text/tikz';
@@ -206,9 +399,9 @@
     return wrapper;
   }
 
-  /* ─────────────────────────────────────────────
-   *  Document loading + display
-   * ───────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════
+   *  Opening documents
+   * ═══════════════════════════════════════════════════════ */
 
   function showStatus(msg) {
     els.docBody.innerHTML = '';
@@ -216,70 +409,73 @@
     els.docBody.textContent = msg;
   }
 
-  async function openFile(key, title, filePath, setHash) {
+  async function openResource(key, label, src, type) {
     if (key === activeKey) return;
     activeKey = key;
-    els.docTitle.textContent = title;
-    els.docMeta.textContent = filePath;
-    showStatus('Načítám…');
+    els.docTitle.textContent = label;
+    els.docMeta.textContent  = src;
     renderSidebar();
 
+    if (type === 'pdf') {
+      /* PDF: show iframe + new-tab link */
+      const enc = encodePath(src);
+      els.docBody.className = '';
+      els.docBody.innerHTML =
+        `<div class="pdf-toolbar">` +
+          `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
+        `</div>` +
+        `<iframe src="${enc}" class="pdf-frame" title="${esc(label)}"></iframe>`;
+      return;
+    }
+
+    /* Markdown */
+    showStatus('Načítám…');
     try {
-      const res = await fetch(encodePath(filePath), { cache: 'no-cache' });
+      const res = await fetch(encodePath(src), { cache: 'no-cache' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const text = await res.text();
 
-      els.docBody.className = '';
-
-      // KaTeX might not be loaded yet (deferred). Wait for it.
-      if (!window.katex) {
-        await waitFor(() => window.katex, 5000);
-      }
+      if (!window.katex) await waitFor(() => window.katex, 5000);
 
       const rendered = renderMarkdown(text);
+      els.docBody.className = '';
       els.docBody.innerHTML = '';
       els.docBody.appendChild(rendered);
 
-      // Fallback: KaTeX auto-render on any $...$ that slipped through
       if (window.renderMathInElement) {
         renderMathInElement(els.docBody, {
           delimiters: [
             { left: '$$', right: '$$', display: true },
             { left: '\\[', right: '\\]', display: true },
-            { left: '$', right: '$', display: false },
+            { left: '$',  right: '$',  display: false },
             { left: '\\(', right: '\\)', display: false },
           ],
           throwOnError: false,
         });
       }
 
-      if (setHash) updateHash(key);
+      updateHash(key);
     } catch (err) {
-      showStatus(`Nepodařilo se načíst „${filePath}": ${err.message}`);
+      showStatus(`Nepodařilo se načíst „${src}": ${err.message}`);
     }
   }
 
-  /** Poll until condition() is true or timeout ms have passed */
-  function waitFor(condition, timeout) {
-    return new Promise(resolve => {
-      if (condition()) { resolve(); return; }
+  function waitFor(cond, ms) {
+    return new Promise(r => {
+      if (cond()) return r();
       const t0 = Date.now();
-      const id = setInterval(() => {
-        if (condition() || Date.now() - t0 > timeout) {
-          clearInterval(id); resolve();
-        }
-      }, 50);
+      const id = setInterval(() => { if (cond() || Date.now()-t0 > ms) { clearInterval(id); r(); } }, 50);
     });
   }
 
-  /* ─────────────────────────────────────────────
+  /* ═══════════════════════════════════════════════════════
    *  Hash routing
-   * ───────────────────────────────────────────── */
+   * ═══════════════════════════════════════════════════════ */
 
   function updateHash(key) {
     const h = `doc=${encodeURIComponent(key)}`;
     if (window.location.hash.replace(/^#/, '') === h) return;
-    window.location.hash = h;
+    history.replaceState(null, '', '#' + h);
   }
 
   function getKeyFromHash() {
@@ -288,79 +484,47 @@
     return new URLSearchParams(raw).get('doc') || null;
   }
 
-  /* ─────────────────────────────────────────────
-   *  Question index parsing
-   * ───────────────────────────────────────────── */
-
-  function parseQuestionIndex(md) {
-    const result = [];
-    for (const line of md.split(/\r?\n/)) {
-      const m = line.match(/^###\s+(.+?)\s+\(([A-Z0-9]+)\)\s*$/);
-      if (m) result.push({
-        title: m[1].trim(),
-        code:  m[2].trim(),
-        file:  `${QUESTION_DOC_BASE}${m[2].trim()}.md`,
-      });
-    }
-    return result;
-  }
-
-  /* ─────────────────────────────────────────────
-   *  Key resolver
-   * ───────────────────────────────────────────── */
-
   function resolveKey(key) {
-    if (!key) return null;
-    if (key.startsWith('szz:')) {
-      const path = key.slice(4);
-      for (const g of SZZ_NOTES) {
-        const n = g.notes.find(n => n.path === path);
-        if (n) return { title: n.title, filePath: n.path };
-      }
-    }
-    if (key.startsWith('okruh:')) {
-      const code = key.slice(6);
-      const t = questionTopics.find(t => t.code === code);
-      if (t) return { title: t.title, filePath: t.file };
-    }
+    for (const sec of SECTIONS)
+      for (const subj of sec.subjects)
+        for (const r of [...subj.resources, HEX_COMPOST])
+          if (makeKey(subj.code, r.src) === key)
+            return { label: r.label, src: r.src, type: r.type };
     return null;
   }
 
-  /* ─────────────────────────────────────────────
-   *  Sidebar rendering
-   * ───────────────────────────────────────────── */
+  function makeKey(code, src) { return `${code}|${src}`; }
 
-  function matches(s) {
-    return !filterText || s.toLowerCase().includes(filterText);
-  }
-
-  function makeSectionHdr(label, key, collapsed) {
-    const hdr = document.createElement('div');
-    hdr.className = 'section-hdr' + (collapsed ? ' collapsed' : '');
-    hdr.innerHTML = `<span>${label}</span><span class="arrow">▾</span>`;
-    hdr.addEventListener('click', () => {
-      if (key === 'szz') szzCollapsed = !szzCollapsed;
-      else okruhCollapsed = !okruhCollapsed;
-      renderSidebar();
-    });
-    return hdr;
-  }
+  /* ═══════════════════════════════════════════════════════
+   *  Sidebar
+   * ═══════════════════════════════════════════════════════ */
 
   function renderSidebar() {
     els.topicList.innerHTML = '';
 
-    /* ── SZZ Notes ── */
-    els.topicList.appendChild(makeSectionHdr('SZZ Poznámky', 'szz', szzCollapsed));
+    /* Shared reference */
+    const hexKey = makeKey('GLOBAL', HEX_COMPOST.src);
+    const hexBtn = makeResourceBtn(hexKey, HEX_COMPOST, 'GLOBAL');
+    const hexRow = document.createElement('div');
+    hexRow.style.cssText = 'padding:0 0 8px 0';
+    hexRow.appendChild(hexBtn);
+    els.topicList.appendChild(hexRow);
 
-    if (!szzCollapsed) {
-      for (const group of SZZ_NOTES) {
-        const visible = group.notes.filter(n =>
-          matches(n.title) || matches(group.subject) || matches(group.label)
+    for (const sec of SECTIONS) {
+      /* Section separator */
+      const secHdr = document.createElement('div');
+      secHdr.className = 'section-hdr';
+      secHdr.textContent = sec.section;
+      secHdr.style.pointerEvents = 'none';
+      els.topicList.appendChild(secHdr);
+
+      for (const subj of sec.subjects) {
+        const visibleRes = subj.resources.filter(r =>
+          matches(r.label) || matches(subj.title) || matches(subj.code)
         );
-        if (visible.length === 0) continue;
+        if (visibleRes.length === 0) continue;
 
-        const isOpen = subjectOpen[group.subject] !== false;
-
+        const isOpen = groupOpen[subj.code] !== false;
         const groupDiv = document.createElement('div');
         groupDiv.className = 'subject-group';
 
@@ -368,25 +532,20 @@
         hdr.type = 'button';
         hdr.className = 'subject-hdr' + (isOpen ? ' open' : '');
         hdr.innerHTML =
-          `<span>${escapeHtml(group.subject)}</span>` +
-          `<span style="flex:1;text-align:left;color:#64748b;font-weight:400;font-size:11px;margin-left:6px">${escapeHtml(group.label)}</span>` +
+          `<span class="subj-code">${esc(subj.code.replace('B0B01','').replace('B2B',''))}</span>` +
+          `<span class="subj-title">${esc(subj.title)}</span>` +
           `<span class="arr">▶</span>`;
         hdr.addEventListener('click', () => {
-          subjectOpen[group.subject] = !isOpen;
+          groupOpen[subj.code] = !isOpen;
           renderSidebar();
         });
 
         const notesDiv = document.createElement('div');
         notesDiv.className = 'subject-notes' + (isOpen ? ' open' : '');
 
-        for (const note of visible) {
-          const key = 'szz:' + note.path;
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'topic-btn' + (key === activeKey ? ' active' : '');
-          btn.textContent = note.title;
-          btn.addEventListener('click', () => openFile(key, note.title, note.path, true));
-          notesDiv.appendChild(btn);
+        for (const r of visibleRes) {
+          const key = makeKey(subj.code, r.src);
+          notesDiv.appendChild(makeResourceBtn(key, r, subj.code));
         }
 
         groupDiv.appendChild(hdr);
@@ -394,84 +553,41 @@
         els.topicList.appendChild(groupDiv);
       }
     }
-
-    /* ── Question summaries ── */
-    if (questionTopics.length > 0) {
-      els.topicList.appendChild(makeSectionHdr('Okruhy (shrnutí)', 'okruh', okruhCollapsed));
-
-      if (!okruhCollapsed) {
-        const visible = questionTopics.filter(t =>
-          matches(t.title) || matches(t.code)
-        );
-
-        if (visible.length === 0) {
-          const p = document.createElement('p');
-          p.style.cssText = 'font-size:12px;color:#94a3b8;padding:4px 10px';
-          p.textContent = 'Nic nenalezeno.';
-          els.topicList.appendChild(p);
-        } else {
-          for (const topic of visible) {
-            const key = 'okruh:' + topic.code;
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'topic-btn' + (key === activeKey ? ' active' : '');
-            btn.innerHTML = `${escapeHtml(topic.title)}<small>${escapeHtml(topic.code)}</small>`;
-            btn.addEventListener('click', () =>
-              openFile(key, topic.title, topic.file, true)
-            );
-            els.topicList.appendChild(btn);
-          }
-        }
-      }
-    }
   }
 
-  /* ─────────────────────────────────────────────
+  function makeResourceBtn(key, r, code) {
+    const tag = TYPE_TAG[r.type] || TYPE_TAG.sum;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'topic-btn' + (key === activeKey ? ' active' : '');
+    btn.innerHTML =
+      `<span class="res-tag ${tag.cls}">${tag.label}</span>` +
+      `<span class="res-label">${esc(r.label)}</span>`;
+    btn.addEventListener('click', () => openResource(key, r.label, r.src, r.type));
+    return btn;
+  }
+
+  /* ═══════════════════════════════════════════════════════
    *  Init
-   * ───────────────────────────────────────────── */
+   * ═══════════════════════════════════════════════════════ */
 
   async function init() {
-    // Render sidebar immediately with SZZ notes
     renderSidebar();
 
-    // Load question index in background
-    fetch(QUESTION_INDEX_PATH, { cache: 'no-cache' })
-      .then(r => r.ok ? r.text() : '')
-      .then(md => { questionTopics = parseQuestionIndex(md); renderSidebar(); })
-      .catch(() => {});
-
-    // Determine initial document
     const fromHash = getKeyFromHash();
-    let key = fromHash;
-
-    // If hash points to an okruh: that needs questionTopics (not yet loaded)
-    // Open it after topics load; meanwhile open default SZZ note
-    if (!key || key.startsWith('okruh:')) {
-      const defaultKey = 'szz:' + SZZ_NOTES[0].notes[0].path;
-      const defaultNote = SZZ_NOTES[0].notes[0];
-      await openFile(defaultKey, defaultNote.title, defaultNote.path, !fromHash);
-
-      // If there was an okruh hash, open it once topics are loaded
-      if (fromHash && fromHash.startsWith('okruh:')) {
-        await waitFor(() => questionTopics.length > 0, 5000);
-        const resolved = resolveKey(fromHash);
-        if (resolved) openFile(fromHash, resolved.title, resolved.filePath, false);
-      }
-    } else {
-      const resolved = resolveKey(key);
-      if (resolved) {
-        await openFile(key, resolved.title, resolved.filePath, false);
-      } else {
-        const defaultNote = SZZ_NOTES[0].notes[0];
-        await openFile('szz:' + defaultNote.path, defaultNote.title, defaultNote.path, true);
-      }
+    if (fromHash) {
+      const r = resolveKey(fromHash);
+      if (r) { await openResource(fromHash, r.label, r.src, r.type); return; }
     }
+
+    /* Default: first SZZ note (ELD-15) */
+    const first = SECTIONS[0].subjects[0];
+    const firstRes = first.resources[0];
+    const firstKey = makeKey(first.code, firstRes.src);
+    await openResource(firstKey, firstRes.label, firstRes.src, firstRes.type);
   }
 
-  /* ─────────────────────────────────────────────
-   *  Event listeners
-   * ───────────────────────────────────────────── */
-
+  /* ── Events ── */
   els.topicFilter.addEventListener('input', () => {
     filterText = els.topicFilter.value.trim().toLowerCase();
     renderSidebar();
@@ -480,8 +596,8 @@
   window.addEventListener('hashchange', () => {
     const key = getKeyFromHash();
     if (!key || key === activeKey) return;
-    const resolved = resolveKey(key);
-    if (resolved) openFile(key, resolved.title, resolved.filePath, false);
+    const r = resolveKey(key);
+    if (r) openResource(key, r.label, r.src, r.type);
   });
 
   void init();

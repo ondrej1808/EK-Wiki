@@ -1,0 +1,85 @@
+{
+  "title": "Teorie bezdrátové komunikace (B2B17TBK)",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Napěťové vlny na vedení",
+      "subsetPath": ["TBK", "Napěťové vlny"],
+      "answer_parts": [
+        {
+          "text": "Na vedení se energie šíří jako postupně se šířící vlny. Celkové napětí je dáno součtem vlny postupující (incidentní) a odražené: $V = V^+ + V^-$. Pokud je vedení zakončeno nesouhlasnou impedancí, dochází k odrazu vlny."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Smithův diagram",
+      "subsetPath": ["TBK", "Smithův diagram"],
+      "answer_parts": [
+        {
+          "text": "Grafická pomůcka pro řešení impedančních přizpůsobení vedení. Umožňuje zobrazit komplexní impedanci nebo činitel odrazu. V normovaném diagramu se střed (přizpůsobený stav) nachází v bodě 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Význam parametrů dBi, dBd a dBm",
+      "subsetPath": ["TBK", "Antény a parametry"],
+      "answer_parts": [
+        {
+          "text": "dBm: Výkon vztažený na 1 mW. dBi: Směrovost antény vztažená k izotropnímu zářiči. dBd: Směrovost antény vztažená k dipólu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Parametry nelinearity (IP3, 1dB komprese)",
+      "subsetPath": ["TBK", "VF parametry"],
+      "answer_parts": [
+        {
+          "text": "Bod 1dB komprese (P1dB) udává výkon, při kterém výstupní výkon klesne o 1 dB oproti ideální lineární charakteristice. IP3 (třetího řádu) je teoretický bod, kde se protínají lineární charakteristika a charakteristika produktů intermodulačního zkreslení třetího řádu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Zrcadlová frekvence v přijímači",
+      "subsetPath": ["TBK", "Struktury přijímačů"],
+      "answer_parts": [
+        {
+          "text": "V superheterodynním přijímači je to nežádoucí frekvence, která po smíšení s oscilátorem dává stejnou mezifrekvenci jako přijímaný signál: $f_z = f_{RF} + 2f_{IF}$ (nebo rozdíl dle strany směšování)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Šíření vln a Fresnelova zóna",
+      "subsetPath": ["TBK", "Šíření vln"],
+      "answer_parts": [
+        {
+          "text": "Prostor mezi vysílačem a přijímačem, ve kterém by se neměly vyskytovat překážky. První Fresnelova zóna je klíčová pro přímou viditelnost; její zablokování výrazně zeslabuje signál."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výkonová bilance rádiového spoje",
+      "subsetPath": ["TBK", "Systémový návrh"],
+      "answer_parts": [
+        {
+          "text": "Rovnice bilance: $P_{RX} = P_{TX} + G_{TX} + G_{RX} - L_{path} - L_{other}$, kde P je výkon, G zisk antén a L ztráty (včetně útlumu volného prostoru)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Digitální modulace: PSK",
+      "subsetPath": ["TBK", "Digitální modulace"],
+      "answer_parts": [
+        {
+          "text": "Fázová modulace (Phase Shift Keying). Informace je obsažena ve fázi nosné vlny. BPSK používá 2 stavy fáze (0, 180°), QPSK používá 4 stavy (2 bity na symbol)."
+        }
+      ]
+    }
+  ]
+}

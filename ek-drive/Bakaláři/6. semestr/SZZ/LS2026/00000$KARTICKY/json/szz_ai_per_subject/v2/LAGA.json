@@ -1,0 +1,354 @@
+{
+  "title": "Created with cards_creator - LAGA",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Struktura lineárního prostoru.",
+      "subsetPath": [
+        "LAGA",
+        "Struktura lineárního prostoru"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Lineární prostor nad $\\R$ je množina $L$, ve které platí:\n- operace sčítání (+)\n  - Nulový prvek\n  - Asociativita\n  - Komutaativita\n  - Opačný vektor\n- operace násobení ($\\cdot$)\n  - Nulový prvek\n  - Asociativita\n  - Distributivní zákon\n  - Násobení jedntkovým skalárem\n- existence nulového prvku $\\overrightarrow o$",
+          "imageSrc": null,
+          "raw": {
+            "title": "",
+            "text": "Lineární prostor nad $\\R$ je množina $L$, ve které platí:\n- operace sčítání (+)\n  - Nulový prvek\n  - Asociativita\n  - Komutaativita\n  - Opačný vektor\n- operace násobení ($\\cdot$)\n  - Nulový prvek\n  - Asociativita\n  - Distributivní zákon\n  - Násobení jedntkovým skalárem\n- existence nulového prvku $\\overrightarrow o$",
+            "imageSrc": null,
+            "raw": {
+              "title": "",
+              "text": "Lineární prostor nad $\\R$ je množina $L$, ve které platí:\n- operace sčítání (+)\n  - Nulový prvek\n  - Asociativita\n  - Komutaativita\n  - Opačný vektor\n- operace násobení ($\\cdot$)\n  - Nulový prvek\n  - Asociativita\n  - Distributivní zákon\n  - Násobení jedntkovým skalárem\n- existence nulového prvku $\\overrightarrow o$"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastnosti sčítání vektorů.",
+      "subsetPath": [
+        "LAGA",
+        "Struktura lineárního prostoru"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "a) Sčítání s nulovým vektorem:\nExistuje vektor $\\vec{o} \\in L$ takový, že pro každé $\\vec{x} \\in L$ platí:\n$$\\vec{x} + \\vec{o} = \\vec{o} + \\vec{x} = \\vec{x}$$\n\nb) Asociativita sčítání:\nPro všechna $\\vec{x}, \\vec{y}, \\vec{z} \\in L$ platí:\n$$(\\vec{x} + \\vec{y}) + \\vec{z} = \\vec{x} + (\\vec{y} + \\vec{z})$$\n\nc) Komutativita sčítání:\nPro všechna $\\vec{x}, \\vec{y} \\in L$ platí:\n$$\\vec{x} + \\vec{y} = \\vec{y} + \\vec{x}$$\n\nd) Existence opačného vektoru:\nPro každý $\\vec{x} \\in L$ existuje právě jeden $\\vec{y} \\in L$ takový, že:\n$$\\vec{x} + \\vec{y} = \\vec{o}$$\n\nTento vektor $\\vec{y} = -\\vec{x}$ označujeme jako opačný."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastnosti násobení skalárem",
+      "subsetPath": [
+        "LAGA",
+        "Struktura lineárního prostoru"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "a) násobení nulového prvku:\nPro každé \\vec{x} \\in L platí:\n$$0 \\cdot \\vec{x} = \\vec{o}$$\n\nb) Násobení jednotkovým skalárem:\nPro každé \\vec{x} \\in L platí:\n$$1 \\cdot \\vec{x} = \\vec{x}$$\n\nc) Asociativita násobení skalárem:\nPro všechna a, b \\in \\mathbb{R} a \\vec{x} \\in L platí:\n$$a \\cdot (b \\cdot \\vec{x}) = (a \\cdot b) \\cdot \\vec{x}$$\n\nd) Distributivní zákon:\nPro všechna a, b \\in \\mathbb{R}, \\vec{x} \\in L platí:\n$$(a + b) \\cdot \\vec{x} = a \\cdot \\vec{x} + b \\cdot \\vec{x}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Lineární nezávislost",
+      "subsetPath": [
+        "LAGA",
+        "Struktura lineárního prostoru"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Dodatek: Lineárně nezávislá množina je taková množina, kdy nemůžeš ani jeden vektor z dané množiny \"vyrobit\" kombinací jiných n vektorů.\nPříklad LN množiny je:\n$$\\vec{v}_1 = \\begin{bmatrix} 1 \\\\ 0 \\\\ 0 \\end{bmatrix}, \\quad \\vec{v}_2 = \\begin{bmatrix} 0 \\\\ 1 \\\\ 0 \\end{bmatrix}, \\quad \\vec{v}_3 = \\begin{bmatrix} 0 \\\\ 0 \\\\ 1 \\end{bmatrix}$$\n\nnebo:\n$$\\vec{v}_1 = \\begin{bmatrix} 0 \\\\ 1 \\end{bmatrix}, \\quad \\vec{v}_2 = \\begin{bmatrix} 1 \\\\ 0 \\end{bmatrix}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Báze",
+      "subsetPath": [
+        "LAGA",
+        "Struktura lineárního prostoru"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Lineárně nezávislé množině B, která generuje prostor L, říkáme báze prostoru L. Je-li B konečná, pak seznamu prvků B říkáme uspořádaná báze."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Dimenze",
+      "subsetPath": [
+        "LAGA",
+        "Struktura lineárního prostoru"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Lineární prostor $L$ má dimenzi $n$ (značíme: $\\dim(L) = n$), pokud existuje báze $B$ prostoru $L$, která obsahuje právě $n$ prvků, kde $n$ je přirozené číslo.\n"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "GEM - Gaussova Eliminační Metoda",
+      "subsetPath": [
+        "LAGA",
+        "Rešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Povolené úpravy pro GEM:\n\n* Přičtení skalárního násobku řádku matice k jinému řádku matice\n* Prohození dvou řádků v matici\n* Vynásobení řádku matice nenulovým skalárem\n\nVýsledkem je horní trojúhelníkový tvar:\n$$A = \\begin{bmatrix} 1 & 1 & 1 \\\\ 0 & 1 & 1 \\\\ 0 & 0 & 1 \\end{bmatrix}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Cramerovo pravidlo",
+      "subsetPath": [
+        "LAGA",
+        "Rešení soustav lineárních rovnic"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Podmínky pro použití Cramerova pravidla:\n\n* Matice musí být čtvercová\n* Matice musí být regulární (determinant != 0 & má inverzi)\n* Matice musí obsahovat lineárně nezávislé řádky\n\nCramerovo pravidlo - vysvětlení\n\nProvedení Cramerova pravidla je víceméně \"triviální\". V $\\mathbb{R}^2$ nahradím pravou stranou matice (pravá strana soustavy) první nebo druhý sloupec matice A, dle volby proměnné pro kterou to počítáme. Dále spočítám determinant této nově vzniklé matice $A'$ ze vztahu:\n$$x_i = \\frac{\\det(A')}{\\det(A)}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Podmínky pro identifikaci zobrazení jako lineární",
+      "subsetPath": [
+        "LAGA",
+        "Lineární zobrazení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Nechť $L_1, L_2$ jsou lineární prostory nad tělesem $F$. Zobrazení $f : L_1 \\to L_2$, pro které platí:\n\n* Additivita (zachování sčítání):\n$$f(\\vec{x} + \\vec{y}) = f(\\vec{x}) + f(\\vec{y})$$\npro všechna $\\vec{x}, \\vec{y} \\in L_1$.\n\n* Homogenita (zachování násobení skalárem):\n$$f(a \\cdot \\vec{x}) = a \\cdot f(\\vec{x})$$\npro všechna $a \\in F$ a $\\vec{x} \\in L_1$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je monomorfismus",
+      "subsetPath": [
+        "LAGA",
+        "Lineární zobrazení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* Monomorfismus, pokud je f injektivní (také: prosté) zobrazení.\n    - Toto zobrazení přiřadí jednomu prvku z $L_2$ právě jeden prvek z $L_1$. Tudíž toto zobrazení nic nepřidává, ale ani nic neztrácí. Je to jako zamíchat karty a pak všechny postupně přiřazovat pozici od 1 do 32.\n    - Prosté znamená, že žádné dva různé prvky v $A$ se nezobrazí na stejný prvek v $B$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je isomorfismus",
+      "subsetPath": [
+        "LAGA",
+        "Lineární zobrazení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* Isomorfismus, pokud je f bijektivní (také: prosté a na) zobrazení.\n    - Toto zobrazení, lidsky řečeno, přiřadí prvku v $L_2$ právě jeden prvek z $L_1$. Může ale nastat, že se může sloučit více prvků z $L_2$ do $L_1$.\n    - Prosté a Na znamená, že každý prvek v $B$ má právě jeden odpovídající prvek v $A$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Co je epimorfismus",
+      "subsetPath": [
+        "LAGA",
+        "Lineární zobrazení"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "* Epimorfismus, pokud je f surjektivní (také: na) zobrazení.\n    - Každý prvek v množině $L_2$ má svůj vzor v množině $L_1$. V množině $L_2$ může být i více prvků jak v množině $L_1$, neboli jeden prvek z $L_1$ může ukazovat i na více jak právě jeden prvek v $L_2$\n    - Na znamená, že každý prvek v $B$ má odpovídající prvek v $A$.\n\nBody a), e) z původní množiny se promítnou na více jak jeden prvek v cílové množině.\nBody b), d) se promítnou právě na jeden prvek z původní množiny.\nBod c) se nepromítne do cílové množiny, ale to v epimorfismu nevadí, jelikož v cílové množině jsou všechny body, které mají svůj vzor v původní.",
+          "image": {
+            "src": "data:image/png;base64,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"
+          }
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Podmínky a vysvětlení skalárního součinu",
+      "subsetPath": [
+        "LAGA",
+        "Skalární součin"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Podmínky skalárního součinu\n\n* Komutativita:\n$$\\langle \\vec{x} \\mid \\vec{y} \\rangle = \\langle \\vec{y} \\mid \\vec{x} \\rangle$$\n\n* Linearita ve druhé souřadnici:\nzobrazení $\\langle \\vec{x} \\mid - \\rangle : L \\to \\mathbb{R}$ je lineární.\n\n* Pozitivní definitivnost:\n$$\\langle \\vec{x} \\mid \\vec{x} \\rangle \\ge 0, \\quad \\langle \\vec{x} \\mid \\vec{x} \\rangle = 0 \\text{ iff } \\vec{x} = \\vec{o}$$\n\nSkalární součin - vysvětlení\n\nSkalární součin je zadefinován jako:\n$$\\langle \\vec{x} \\mid \\vec{y} \\rangle = \\|\\vec{x}\\| \\cdot \\|\\vec{y}\\| \\cdot \\cos \\varphi = \\vec{x} \\cdot G \\cdot \\vec{y} \\quad $$\nkde G je metrický tenzor\n\na z tohoto vztahu plynou dané podmínky výše. Hlavní hodnotou, kterou nám může skalární součit udat je: $\\langle \\vec{x} \\mid \\vec{y} \\rangle = 0$, právě tato hodnota nám říká, že jsou vůči sobě tyto dva vektory \"ortogonální\", neboli svírají pravý úhel. Dále platí, že skalár jakéhokoliv vektoru s nulovým vektorem je roven 0. tj $\\langle \\vec{o} \\mid \\vec{y} \\rangle = 0"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ortogonalizace",
+      "subsetPath": [
+        "LAGA",
+        "Ortogonalizace"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Viz slide 340 LAGA"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sčítání matic",
+      "subsetPath": [
+        "LAGA",
+        "Maticový počet"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Sčítání matic je triviální. Každý prvek matice A přičtu k stejnému prvku na stejné pozici matice B. tj.\n$$A = \\begin{bmatrix} a_{11} & a_{12} & a_{13} \\\\ a_{21} & a_{22} & a_{23} \\\\ a_{31} & a_{32} & a_{33} \\end{bmatrix} \\quad B = \\begin{bmatrix} b_{11} & b_{12} & b_{13} \\\\ b_{21} & b_{22} & b_{23} \\\\ b_{31} & b_{32} & b_{33} \\end{bmatrix}$$\n\nSoučet těchto matic vypadá takto:\n$$\\begin{bmatrix} a_{11} & a_{12} & a_{13} \\\\ a_{21} & a_{22} & a_{23} \\\\ a_{31} & a_{32} & a_{33} \\end{bmatrix} + \\begin{bmatrix} b_{11} & b_{12} & b_{13} \\\\ b_{21} & b_{22} & b_{23} \\\\ b_{31} & b_{32} & b_{33} \\end{bmatrix} = \\begin{bmatrix} a_{11} + b_{11} & a_{12} + b_{12} & a_{13} + b_{13} \\\\ a_{21} + b_{21} & a_{22} + b_{22} & a_{23} + b_{23} \\\\ a_{31} + b_{31} & a_{32} + b_{32} & a_{33} + b_{33} \\end{bmatrix}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Násobení matic skalárem",
+      "subsetPath": [
+        "LAGA",
+        "Maticový počet"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Násobení matice A skalárem znamená, že každý prvek matice vynásobíme daným skalárem $a$.\n$$C = \\begin{bmatrix} c_{11} & c_{12} & c_{13} \\\\ c_{21} & c_{22} & c_{23} \\\\ c_{31} & c_{32} & c_{33} \\end{bmatrix}$$\nkde $a$ je skalární násobitel,\n$$a \\cdot \\begin{bmatrix} c_{11} & c_{12} & c_{13} \\\\ c_{21} & c_{22} & c_{23} \\\\ c_{31} & c_{32} & c_{33} \\end{bmatrix} = \\begin{bmatrix} a \\cdot c_{11} & a \\cdot c_{12} & a \\cdot c_{13} \\\\ a \\cdot c_{21} & a \\cdot c_{22} & a \\cdot c_{23} \\\\ a \\cdot c_{31} & a \\cdot c_{32} & a \\cdot c_{33} \\end{bmatrix}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Násobení matic - podmínky, algoritmus",
+      "subsetPath": [
+        "LAGA",
+        "Maticový počet"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Podmínky pro násobení matic:\n\n* Matice D musí mít stejný počet řádků jako matice E sloupců.\n* Násobení není komutativní. To znamená, že $D \\cdot E \\neq E \\cdot D$\n\nNásobení matic je již komplikovanější. Platí, že se násobí nejprve řádek první matice D a první sloupec druhé matice E a sečtou se. Výsledná matice bude o velikosti $A_{\\text{řádky}} \\cdot B_{\\text{sloupce}}$\n\n$$\\begin{bmatrix} d_{11} & d_{12} & d_{13} \\\\ d_{21} & d_{22} & d_{23} \\\\ d_{31} & d_{32} & d_{33} \\end{bmatrix} \\cdot \\begin{bmatrix} e_{11} & e_{12} & e_{13} \\\\ e_{21} & e_{22} & e_{23} \\\\ e_{31} & e_{32} & e_{33} \\end{bmatrix} = \\\\\\begin{bmatrix} \\sum_{k=1}^3 d_{1k}e_{k1} & \\sum_{k=1}^3 d_{1k}e_{k2} & \\sum_{k=1}^3 d_{1k}e_{k3} \\\\ \\sum_{k=1}^3 d_{2k}e_{k1} & \\sum_{k=1}^3 d_{2k}e_{k2} & \\sum_{k=1}^3 d_{2k}e_{k3} \\\\ \\sum_{k=1}^3 d_{3k}e_{k1} & \\sum_{k=1}^3 d_{3k}e_{k2} & \\sum_{k=1}^3 d_{3k}e_{k3} \\end{bmatrix}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Transponování matic",
+      "subsetPath": [
+        "LAGA",
+        "Maticový počet"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Transponování matice znamená ozrcadlení podle hlavní diagonály.\n$$F = \\begin{bmatrix} f_{11} & f_{12} & f_{13} \\\\ f_{21} & f_{22} & f_{23} \\\\ f_{31} & f_{32} & f_{33} \\end{bmatrix}$$\n\nTransponovaná $F^T$:\n$$F^T = \\begin{bmatrix} f_{11} & f_{21} & f_{31} \\\\ f_{12} & f_{22} & f_{32} \\\\ f_{13} & f_{23} & f_{33} \\end{bmatrix}$$\n\nJe to možné i pro nečtvercové matice:\n$$G = \\begin{bmatrix} g_{11} & g_{12} & g_{13} \\\\ g_{21} & g_{22} & g_{23} \\end{bmatrix}$$\n\nTransponovaná matice $G^T$:\n$$G^T = \\begin{bmatrix} g_{11} & g_{21} \\\\ g_{12} & g_{22} \\\\ g_{13} & g_{23} \\end{bmatrix}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Inverzní matice pomocí GEM",
+      "subsetPath": [
+        "LAGA",
+        "Determinant a inverze matice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Dám si vedle sebe matici A, které chci inverzi, a jednotkovou matici $E_3$\n$$A = \\left( \\begin{array}{cc|cc} 1 & 0 & 1 & 0 \\\\ 1 & 3 & 0 & 1 \\end{array} \\right)$$\n\nNyní odečtu od druhého řádku $R_2$ jedenkrát $R_1$\n$$A = \\left( \\begin{array}{cc|cc} 1 & 0 & 1 & 0 \\\\ 0 & 3 & 0 & 1 \\end{array} \\right)$$\n\nA následně podělím třema $R_2$\n$$A = \\left( \\begin{array}{cc|cc} 1 & 0 & 1 & 0 \\\\ 0 & 1 & 0 & 1/3 \\end{array} \\right)$$\n\nMomentálně je vlevo jednotková matice $E_2$ a vpravo je $A^{-1}$\n$$A^{-1} = \\left( \\begin{array}{cc} 1 & 0 \\\\ 0 & 1/3 \\end{array} \\right)$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Inverzní matice pomocí Adjungované matice",
+      "subsetPath": [
+        "LAGA",
+        "Determinant a inverze matice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Mějme matici B, které chceme inverzi $B^{-1}$:\n$$B = \\begin{pmatrix} b_{11} & b_{12} & b_{13} \\\\ b_{21} & b_{22} & b_{23} \\\\ b_{31} & b_{32} & b_{33} \\end{pmatrix}$$\n\nPoté Vytvoříme matici doplňků, kde jeden doplněk je zadefinován tímto vztahem, kde i a j, jsou řádek a sloupec B:\n$$A_{ij} = (-1)^{i+j} \\cdot \\det(M_{ij})$$\n\nLidské vysvětlení podstaty vzorce. První člen, kde mocníme -1 udává, zdali bude doplněk kladný, nebo záporný. (sudá mocnina = kladný, lichá mocnina = záporný). Dalším krokem je, si vyškrtnout si i a j -tý řádek.\n\nV tu chvíli nám vznikne pouze matice typu 2x2 z 3x3. Zde je příklad, jak toto vypadá pro i = 1 a j = 1 :\n$$M_{11} = \\begin{pmatrix} b_{22} & b_{23} \\\\ b_{32} & b_{33} \\end{pmatrix}$$\n\nV tuto chvíli můžeme říct, že:\n$$c_{11} = (-1)^{1+1} \\cdot \\det \\begin{pmatrix} b_{22} & b_{23} \\\\ b_{32} & b_{33} \\end{pmatrix}$$\n\nZ této matice poté uděláme determinant a máme první prvek matice doplňků. Poté, co takto uděláme celou matici získáme novou matici o stejném rozměru jako byla původní. To je 3x3:\n$$C = \\begin{pmatrix} c_{11} & c_{12} & c_{13} \\\\ c_{21} & c_{22} & c_{23} \\\\ c_{31} & c_{32} & c_{33} \\end{pmatrix}$$\n\nMatici doplňků trasnformujeme a získáme adjungovanou matici:\n$$\\operatorname{adj}(B) = C^T$$\n\nV tuto chvíli již můžeme konečně použít vztah na výslednou inverzní matici:\n$$B^{-1} = \\frac{1}{\\det(B)} \\cdot \\operatorname{adj}(B)$$\n\nDůrazně tento postup doporučuji u matic větších jak 3x3. Ideální velikost je 4x4, kdy jsme schopni pro doplněk použít Sarussovo pravidlo, ALE stále potřebujeme získat původní derminant 4x4 matice."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sarrusovo pravidlo",
+      "subsetPath": [
+        "LAGA",
+        "Determinant a inverze matice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "- Pouze pro matice 2x2 a 3x3!\n\nNejznámější je asi ze střední školy Sarrusovo pravidlo. To nám říká, že determinant matice A je součet součinů všech prků na hlavní diagonále ku rozdílu součtu součinů na vedlejší diagonále.\n\nPříklad v $R^2$:\n$$A = \\begin{pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} \\end{pmatrix}$$\n$$\\det(A) = a_{11} \\cdot a_{22} - a_{12} \\cdot a_{21}$$\n\nPříklad v $R^3$:\n$$B = \\begin{pmatrix} b_{11} & b_{12} & b_{13} \\\\ b_{21} & b_{22} & b_{23} \\\\ b_{31} & b_{32} & b_{33} \\end{pmatrix}$$\n$$\\det(B) = b_{11} \\cdot b_{22} \\cdot b_{33} + b_{13} \\cdot b_{21} \\cdot b_{32} + b_{12} \\cdot b_{23} \\cdot b_{31} - b_{11} \\cdot b_{23} \\cdot b_{32} - b_{12} \\cdot b_{21} \\cdot b_{33} - b_{13} \\cdot b_{22} \\cdot b_{31}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Determinant pomocí GEM",
+      "subsetPath": [
+        "LAGA",
+        "Determinant a inverze matice"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "- Pro libovolně velké matice.\n\n$$A = \\begin{bmatrix} a_{11} & a_{12} & a_{13} \\\\ 0 & a_{22} & a_{23} \\\\ 0 & 0 & a_{33} \\end{bmatrix}$$\n$$\\det(A) = a_{11} \\cdot a_{22} \\cdot a_{33}$$\n\n$$B = \\begin{bmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\\\ 0 & b_{22} & b_{23} & b_{24} \\\\ 0 & 0 & b_{33} & b_{34} \\\\ 0 & 0 & 0 & b_{44} \\end{bmatrix}$$\n$$\\det(B) = b_{11} \\cdot b_{22} \\cdot b_{33} \\cdot b_{44}$$"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Definice Vlastní vektory a vlastní čísla",
+      "subsetPath": [
+        "LAGA",
+        "Vlastní vektory a vlastní čísla"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Pro lineární zobrazení $f : L \\to L$ je $\\lambda \\in F$ vlastní číslo, pokud existuje nenulový vektor $\\mathbf{x}$, splňující rovnost $f(\\mathbf{x}) = \\lambda \\cdot \\mathbf{x}$.\nKaždému takovému nenulovému vektoru $\\mathbf{x}$ říkáme vlastní vektor příslušný hodnotě $\\lambda$."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vlastní číslo - výpočet",
+      "subsetPath": [
+        "LAGA",
+        "Vlastní vektory a vlastní čísla"
+      ],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Vlastní číslo dostaneme ze vztahu:\n$$\\det(A - \\lambda E_n) = 0$$\n\nUvedu na příkladě:\n$$A = \\begin{bmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 0 \\\\ 1 & 0 & 1 \\end{bmatrix}$$\n\nDeterminant této matice $\\det(A) = 0$, což splňuje podmínku o singularitě.\nNásledně aplikujeme $A - \\lambda E_n = 0$:\n$$A = \\begin{bmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 0 \\\\ 1 & 0 & 1 \\end{bmatrix} \\quad \\lambda E_3 = \\begin{bmatrix} \\lambda & 0 & 0 \\\\ 0 & \\lambda & 0 \\\\ 0 & 0 & \\lambda \\end{bmatrix}$$\n\nPo vynásobení:\n$$A = \\begin{bmatrix} 1 - \\lambda & 0 & 1 \\\\ 0 & 1 - \\lambda & 0 \\\\ 1 & 0 & 1 - \\lambda \\end{bmatrix}$$\n\nPoté determinant matice $A - \\lambda E_n = 0$: \\quad \\text{tohle je charakteristický polynom}\n$$\\det(A - \\lambda E_n) = (1 - \\lambda)^3 - (1 - \\lambda) = 0$$\n\nŘešení této kubické rovnice je $\\lambda = -1, 0, 1$. Tyto hodnoty jsou vlastní čísla\n\n* Doplněk:\n  Pro singulární matici (nemá inverzi a $\\det(A) = 0$) platí, že alespoň jedno vlastní číslo je $\\lambda = 0$.\n  Naopak pro regulární matici matici (má inverzi a $\\det(A) \\neq 0$) platí, že žádné vlastní číslo je $\\lambda = 0$."
+        }
+      ]
+    }
+  ]
+}

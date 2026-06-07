@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cards Creator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cards_creator.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+</head>
+<body>
+  <header>
+    <div class="titlebar">
+      <h1>Cards Creator</h1>
+      <button id="helpBtn" class="help-btn" type="button" aria-label="Help" title="Help">?</button>
+    </div>
+  </header>
+  <main class="creator-container">
+    <section class="creator-list">
+      <h2 class="section-title">Cards</h2>
+      <div class="toolbar-row">
+        <button id="newCardBtn">+ New Card</button>
+        <button id="newSetBtn">New Set</button>
+        <button id="importBtn">Import JSON</button>
+        <button id="exportBtn">Export JSON</button>
+        <button id="saveSessionBtn">Save session as URL</button>
+        <button id="openInCardsBtn">Open in Cards</button>
+      </div>
+      <div class="toolbar-row toolbar-row-secondary">
+        <label class="small">Filename: <input id="exportFilename" placeholder="my_cards.json" value="cards_export.json" class="filename-input"></label>
+        <label class="small">Předmět: 
+          <select id="listFilterSelect" class="list-filter-select">
+            <option value="">Všechny předměty</option>
+          </select>
+        </label>
+      </div>
+      <div id="cardsList"></div>
+      <input type="file" id="importFile" accept="application/json" style="display:none">
+    </section>
+
+    <section class="creator-editor">
+      <h2 class="section-title">Editor</h2>
+      <form id="cardForm">
+        <div style="display:flex;gap:8px;align-items:center">
+          <label>Type: <select id="cardType"><option value="open">open</option><option value="closed">closed</option></select></label>
+        </div>
+
+        <div class="subset-section">
+          <label>Subset path</label>
+          <div id="subsetPathBuilder" class="subset-builder"></div>
+          <div class="small">Build a structured path like Topic / Subtopic / Detail.</div>
+          <input id="subsetPath" type="hidden">
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:center;margin:8px 0">
+          <button id="prevCardBtn" type="button">Prev card</button>
+          <button id="nextCardBtn" type="button">Next card</button>
+          <span id="cardPosition" class="small">No cards yet</span>
+        </div>
+
+        <div>
+          <label>Question</label>
+          <textarea id="question" rows="4" style="width:100%"></textarea>
+        </div>
+
+        <div id="closedOptions" style="display:none">
+          <label>Options</label>
+          <div class="options-list" id="optionsList"></div>
+          <button id="addOptionBtn" type="button">Add option</button>
+        </div>
+
+        <div id="openAnswer">
+          <div class="answer-parts-header">
+            <label>Answer parts</label>
+            <button id="addAnswerPartBtn" type="button">Add answer part</button>
+          </div>
+          <div id="answerPartsEditor" class="answer-parts-editor"></div>
+          <div class="small">Each part can hold its own title, text, and optional image.</div>
+        </div>
+
+        <div id="closedAnswer">
+          <label>Answer / Explanation</label>
+          <textarea id="answerText" rows="6" style="width:100%"></textarea>
+        </div>
+
+        <div id="imageSection" style="margin-top:8px">
+          <label>Image (optional) <input id="imageFile" type="file" accept="image/*"></label>
+          <button id="clearImageBtn" type="button" style="display:none;margin-top:8px;">Remove image</button>
+          <div class="small image-hint">Tip: click anywhere on the creator and press Ctrl+V to paste a screenshot from the clipboard.</div>
+          <div id="imagePreviewThumb" class="image-preview-thumb"></div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="saveCardBtn" type="button">Save Card</button>
+          <button id="deleteCardBtn" type="button">Delete</button>
+          <button id="clearDraftBtn" type="button">Clear Draft</button>
+        </div>
+
+        <div class="editor-legend">
+          <div class="editor-legend-title">Fast editing</div>
+          <div class="editor-legend-grid">
+            <div><kbd>←</kbd> <kbd>→</kbd> switch cards</div>
+            <div><kbd>Ctrl</kbd> + <kbd>A</kbd> new card</div>
+            <div><kbd>Ctrl</kbd> + <kbd>V</kbd> paste image</div>
+            <div><kbd>Esc</kbd> deselect field</div>
+            <div><kbd>Tab</kbd> move between fields</div>
+            <div>Edits autosave after typing</div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="creator-preview">
+      <div class="preview">
+        <div class="preview-toolbar">
+          <h2 class="section-title">Preview</h2>
+          <label class="preview-toggle">
+            <input id="showAnswerToggle" type="checkbox" checked>
+            <span>Show answer</span>
+          </label>
+        </div>
+        <div class="cards-section creator-preview-stage">
+          <div class="cards-grid">
+            <div id="previewCard" class="card stack-0"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="helpModal" class="help-modal" aria-hidden="true">
+    <div class="help-dialog" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="help-dialog-header">
+        <h2 id="helpTitle">Creator Help / Nápověda</h2>
+        <button id="helpCloseBtn" class="help-close-btn" type="button" aria-label="Close help">×</button>
+      </div>
+      <div class="help-dialog-body">
+        <section>
+          <h3>English</h3>
+          <ul>
+            <li>Click a card in the list to open it in the editor.</li>
+            <li>Drag cards in the list to change their order.</li>
+            <li><kbd>Ctrl</kbd> + <kbd>S</kbd> saves the current card.</li>
+            <li><kbd>Ctrl</kbd> + <kbd>A</kbd> creates a new card when focus is not inside a text field.</li>
+            <li><kbd>Ctrl</kbd> + <kbd>V</kbd> pastes an image from the clipboard.</li>
+            <li><kbd>Esc</kbd> deselects the current field so arrow keys can switch cards.</li>
+            <li>Subset path creates structured questions like Topic / Subtopic / Detail.</li>
+            <li>Open cards can now store multiple answer parts, each with its own text and optional image.</li>
+            <li>Open cards store answers in <code>answer_parts</code>, so images appear in the real cards page.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Czech / Česky</h3>
+          <ul>
+            <li>Klikni na kartu v seznamu a otevře se v editoru.</li>
+            <li>Karty můžeš přetahovat myší a měnit jejich pořadí.</li>
+            <li><kbd>Ctrl</kbd> + <kbd>S</kbd> uloží aktuální kartu.</li>
+            <li><kbd>Ctrl</kbd> + <kbd>A</kbd> vytvoří novou kartu, když nejsi v textovém poli.</li>
+            <li><kbd>Ctrl</kbd> + <kbd>V</kbd> vloží obrázek ze schránky.</li>
+            <li><kbd>Esc</kbd> zruší fokus na poli, aby šipky přepínaly karty.</li>
+            <li>Subset path slouží pro strukturované otázky typu Téma / Podtéma / Detail.</li>
+            <li>Otevřené karty teď mohou mít více částí odpovědi, každou s vlastním textem a volitelným obrázkem.</li>
+            <li>U otevřených karet se obrázky ukládají do <code>answer_parts</code>, takže se zobrazí i v hlavní stránce.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <script src="cards_creator.js"></script>
+</body>
+</html>

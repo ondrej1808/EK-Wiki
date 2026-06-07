@@ -1,0 +1,359 @@
+{
+  "title": "Digitální technika (DITA) - Otázka 1",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Logická proměnná a dvouhodnotová logika",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Logická proměnná je obecně nezávislá matematická proměnná, která může nabývat konečného počtu hodnot. V dvouhodnotové logice nabývá pouze hodnot logická 1 nebo logická 0."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Logická funkce a počet možných funkcí",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice a vlastnosti",
+          "text": "Logická funkce představuje soubor pravidel pro jednoznačné přiřazení hodnot závisle proměnných k jednotlivým kombinacím nezávislých proměnných. Pro n proměnných existuje 2^n různých vstupních kombinací a 2^(2^n) různých logických funkcí."
+        },
+        {
+          "title": "Určitá vs. neurčitá funkce",
+          "text": "Určitá funkce má jednoznačně určenou hodnotu pro všech 2^n kombinací. Neurčitá funkce nemá pro alespoň jednu kombinaci určenou hodnotu (zapisuje se jako neurčitý stav X)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Úplný a minimální úplný soubor logických funkcí",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Úplný soubor funkcí",
+          "text": "Soubor elementárních logických funkcí, pomocí nichž lze vyjádřit libovolnou logickou funkci."
+        },
+        {
+          "title": "Minimální úplný soubor funkcí",
+          "text": "Nejmenší možný soubor elementárních logických funkcí schopný vyjádřit libovolnou funkci (např. samotné hradlo NAND nebo samotné hradlo NOR)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Logické funkce NOT, AND, OR",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "NOT (Negace)",
+          "text": "Nabývá vždy opačné hodnoty než vstupní proměnná a. Zápis: f(a) = ¬a"
+        },
+        {
+          "title": "AND (Logický součin)",
+          "text": "Hodnota je logická 1 pouze tehdy, pokud všechny vstupní proměnné nabývají hodnoty logická 1. Zápis: f(a, b) = a ⋅ b"
+        },
+        {
+          "title": "OR (Logický součet)",
+          "text": "Hodnota je logická 0 pouze tehdy, pokud všechny vstupní proměnné nabývají hodnoty logická 0. Zápis: f(a, b) = a + b"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Logické funkce NAND, NOR, XOR, XNOR",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "NAND (Shefferova funkce)",
+          "text": "Negace logického součinu. Výstup je logická 0 pouze tehdy, jsou-li všechny vstupy logická 1."
+        },
+        {
+          "title": "NOR (Piercova funkce)",
+          "text": "Negace logického součtu. Výstup je logická 1 pouze tehdy, jsou-li všechny vstupy logická 0."
+        },
+        {
+          "title": "XOR (Exclusive OR)",
+          "text": "Neekvivalence. Výstup je logická 1, pokud jsou hodnoty dvou vstupů navzájem různé."
+        },
+        {
+          "title": "XNOR",
+          "text": "Ekvivalence. Výstup je logická 1, pokud jsou hodnoty dvou vstupů shodné."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Booleova algebra a priorita operací",
+      "subsetPath": [
+        "DITA",
+        "Booleova algebra"
+      ],
+      "answer_parts": [
+        {
+          "title": "Podstata",
+          "text": "Matematický prostor zabývající se logickými proměnnými a funkcemi. Je založen na dvou prvcích (logická 0 a logická 1) a úplném souboru funkcí AND, OR, NOT."
+        },
+        {
+          "title": "Priorita operací",
+          "text": "V Booleově algebře má logický součin (⋅) vyšší prioritu než logický součet (+)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Způsoby vyjadřování logických funkcí",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Čtyři základní způsoby",
+          "text": "1. Pravdivostní tabulka (úplná s 2^n řádky nebo zkrácená bez neurčitých stavů)\n2. Zkrácený seznam stavových indexů N (seznam indexů s logickou 1 nebo neurčitým stavem)\n3. Algebraický zápis (funkční vyjádření pomocí součtů, součinů a negací)\n4. Mapy (Karnaughovy mapy do 6 proměnných)"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Pojmy algebraického zápisu: Minterm, maxterm, ÚNDF, ÚNKF",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Minterm a Maxterm",
+          "text": "Minterm je součinový term obsahující všechny vstupní proměnné právě jednou v přímém či negovaném tvaru. Maxterm je součtový term obsahující všechny proměnné právě jednou."
+        },
+        {
+          "title": "ÚNDF (Úplná normální disjunktní forma)",
+          "text": "Forma funkce vyjádřená jako logický součet mintermů (Sum of Products, SoP). Obsahuje tolik součinů, kolik má funkce jednotkových (podstatných) bodů."
+        },
+        {
+          "title": "ÚNKF (Úplná normální konjunktní forma)",
+          "text": "Forma funkce vyjádřená jako logický součin maxtermů. Získává se z řádků pravdivostní tabulky, kde je funkční hodnota rovna logické 0."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Karnaughovy mapy a vlastnosti sousedních políček",
+      "subsetPath": [
+        "DITA",
+        "Logické funkce a výrazy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Vlastnosti mapy",
+          "text": "Grafická reprezentace funkce s 2^n políčky, kde každé políčko představuje jeden řádek pravdivostní tabulky (minterm). Používá se zejména pro minimalizaci logických funkcí."
+        },
+        {
+          "title": "Sousední políčka",
+          "text": "Políčka jsou očíslována pomocí Grayova kódu. Indexy sousedních políček se ve dvojkové soustavě liší v právě jedné řádové pozici (v přímém vs. negovaném tvaru jedné proměnné). Mapa je symetrická a lze ji cyklicky překlápět zleva-doprava i seshora-dolů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kombinační logický obvod (KLO)",
+      "subsetPath": [
+        "DITA",
+        "Kombinační obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Logický obvod složený z hradel, jehož výstupy jsou v každém okamžiku jednoznačně určeny pouze aktuální kombinací vstupních hodnot. Obvod neobsahuje žádný paměťový člen ani zpětnou vazbu."
+        },
+        {
+          "title": "Reálný KLO a logické hazardy",
+          "text": "Na rozdíl od ideálního obvodu vykazuje reálný obvod dobu zpoždění hradel (časová prodleva před nastavením správného výstupu). Nenulová doba zpoždění hradel způsobuje vznik logických hazardů."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Sekvenční logický obvod (SLO)",
+      "subsetPath": [
+        "DITA",
+        "Sekvenční obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Sekvenční logický obvod vznikne spojením kombinačního obvodu, paměti a zpětné vazby. Výstup závisí nejen na aktuálních vstupech, ale i na předchozím vnitřním stavu."
+        },
+        {
+          "title": "Synchronní vs. Asynchronní režim",
+          "text": "U synchronního obvodu se vstupy vyhodnocují pouze během aktivní hrany nebo hladiny hodinového signálu (Clk). V asynchronním obvodu způsobí změna vstupu změnu výstupu přímo se zpožděním τ bez závislosti na hodinách."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Obvod typu Mealy vs. Moore",
+      "subsetPath": [
+        "DITA",
+        "Sekvenční obvody"
+      ],
+      "answer_parts": [
+        {
+          "title": "Mealyho automat",
+          "text": "Výstup obvodu v čase t+1 závisí na aktuální hodnotě vstupů i na aktuálním vnitřním stavu obvodu: Y(t+1) = F(X(t), Q(t))"
+        },
+        {
+          "title": "Mooreův automat",
+          "text": "Výstup obvodu v čase t+1 závisí výhradně na aktuálním vnitřním stavu obvodu: Y(t+1) = F(Q(t))"
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klasifikace klopných obvodů podle stability",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Bistabilní obvod",
+          "text": "Má dva stabilní stavy, mezi kterými se překlápí. Po odeznění impulzu zůstává trvale v daném stabilním stavu (využívá se jako paměťový člen)."
+        },
+        {
+          "title": "Monostabilní obvod",
+          "text": "Má pouze jeden stabilní stav. Po vnějším překlopení se po definované době sám vrátí zpět do výchozího stabilního stavu."
+        },
+        {
+          "title": "Astabilní obvod",
+          "text": "Nemá žádný stabilní stav. Obvod trvale kmitá mezi dvěma polohami (např. generátor impulzů)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klopný obvod RS (Reset-Set)",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Funkce a transformace",
+          "text": "Má 2 vstupy (S - Set, R - Reset) a dva výstupy (Q, ¬Q). Provádí transformace:\n- Jedničková: S=1, R=0 → Q=1\n- Nulová: S=0, R=1 → Q=0\n- Paměťová: S=0, R=0 → stav Q se nemění"
+        },
+        {
+          "title": "Zakázaný stav",
+          "text": "Stav S=1, R=1 je zakázaný (u asynchronní realizace pomocí hradel NOR je aktivován logickou 1, u realizace NAND logickou 0). Při tomto stavu není výstup jednoznačně určen."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klopný obvod JK",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Funkce",
+          "text": "Synchronní klopný obvod pojmenovaný po Jacku Kilbym. Odstraňuje zakázaný stav obvodu RS pomocí dvou zpětných vazeb. Vstupy J (Set) a K (Reset) fungují shodně jako u RS obvodu."
+        },
+        {
+          "title": "Klopná transformace",
+          "text": "Při kombinaci J=1, K=1 dochází s hodinovým impulzem k negaci (překlopení) předchozího stavu výstupu (Q = ¬Q_předchozí)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vícenásobné kmitání (race-hazard) a zapojení Master-Slave",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Problém kmitání",
+          "text": "U základního JK obvodu mohou zpětné vazby přenést změnu výstupu zpět na vstup ještě během trvání hodinového impulzu, což způsobí nekontrolovatelné rozkmitání výstupu."
+        },
+        {
+          "title": "Řešení Master-Slave",
+          "text": "Obvod je rozdělen na dvě části. Část 'Master' reaguje na vzestupnou hranu hodinového signálu a zachytí vstup, přičemž část 'Slave' je blokována. Při sestupné hraně se 'Master' uzamkne a 'Slave' přenese stav na finální výstup, čímž se přeruší přímá smyčka kmitání."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klopný obvod D (Delay / Data)",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Princip",
+          "text": "Synchronní obvod vzniklý z RS obvodu spojením vstupů R = ¬S. S každou aktivní hranou/hladinou hodin kopíruje hodnotu ze vstupu D na výstup Q. Slouží jako dočasná paměť na jeden hodinový takt."
+        },
+        {
+          "title": "Problém ripple-through a hranové řízení",
+          "text": "U hladinově řízeného D obvodu se při dlouhé aktivní hladině hodin promítají veškeré změny vstupu D na výstup. Řešením je hranový klopný obvod D, který zkracuje citlivost na velmi krátký okamžik hrany pomocí vnitřního zpoždění hradel."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Asynchronní vstupy Preset a Clear u klopných obvodů",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Funkce a priorita",
+          "text": "Asynchronní vstupy S (Preset - nastavení do 1) a R (Clear - nulování) pracují nezávisle na hodinovém signálu Clock. Jsou pozůstatkem původní struktury RS a jsou aktivní v logické 0."
+        },
+        {
+          "title": "Priorita",
+          "text": "Tyto vstupy mají absolutní prioritu nad synchronním vstupem D, což vyplývá z chování vnitřních hradel NAND."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klopný obvod T (Toggle)",
+      "subsetPath": [
+        "DITA",
+        "Paměťové členy"
+      ],
+      "answer_parts": [
+        {
+          "title": "Konstrukce a funkce",
+          "text": "Vychází z klopného obvodu JK spojením obou vstupů dohromady (J = K = T)."
+        },
+        {
+          "title": "Chování",
+          "text": "Pokud je T=0, obvod realizuje paměťovou transformaci (zachovává stav). Pokud je T=1, obvod s každým hodinovým impulzem překlápí (neguje) svůj předchozí stav."
+        }
+      ]
+    }
+  ]
+}

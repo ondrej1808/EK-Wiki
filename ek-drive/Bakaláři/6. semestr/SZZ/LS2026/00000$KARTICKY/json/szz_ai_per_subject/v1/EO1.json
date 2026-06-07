@@ -1,0 +1,334 @@
+{
+   "title": "Elektronické obvody 1 (B2B31EO1)",
+   "questions": [
+      {
+         "type": "open",
+         "question": "Atributy LTI systémů.",
+         "subsetPath": ["B2B31EO1", "Popis a vlastnosti lineárních systémů"],
+         "answer_parts": [
+            {
+               "title": "Linearita",
+               "text": "y(t) = S{x(t)} \\Rightarrow ay(t) = S{ax(t)} = aS{x(t)}"
+            },
+            {
+               "title": "Princip superpozice",
+               "text": "y(t) = S{ax1(t) + bx2(t)} = y1(t) + y2(t) = aS{x1(t)} + bS{x2(t)}"
+            },
+            {
+               "title": "Časová invariance",
+               "text": "y(t - t0) = S{x(t - t0)}"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Povolené a nepovolené funkce v LTI systémech.",
+         "subsetPath": ["B2B31EO1", "Popis a vlastnosti lineárních systémů"],
+         "answer_parts": [
+            {
+               "title": "Povolené",
+               "text": "Součet (rozdíl) signálů, násobení signálu reálnou konstantou, paměť pro diskrétní systémy."
+            },
+            {
+               "title": "Nepovolené",
+               "text": "Násobení a dělení signálů mezi sebou, mocnina, odmocnina, logaritmus, přičtení konstanty."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Vnější vs. vnitřní popis LTI systémů.",
+         "subsetPath": ["B2B31EO1", "Popis a vlastnosti lineárních systémů"],
+         "answer_parts": [
+            {
+               "title": "Vnější popis",
+               "text": "Charakterizuje výstupní signál na základě vstupního signálu, vlastností systému a počátečních podmínek (při nulových podmínkách přenosovou funkcí)."
+            },
+            {
+               "title": "Vnitřní (stavový) popis",
+               "text": "Umožňuje popsat i vnitřní (např. stavové) signály systému."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Přechodová charakteristika LTI systému.",
+         "subsetPath": ["B2B31EO1", "Popis LTI systémů v časové oblasti"],
+         "answer_parts": [
+            {
+               "title": "Definice",
+               "text": "Odezva systému na Diracův pulz \\delta(t). Značí se h(t) a hodí se k zjištění odezvy na obecný signál."
+            },
+            {
+               "title": "Konvoluční integrál",
+               "text": "y(t) = \\int_{-\\infty}^{+\\infty} x(\\tau)h(t - \\tau) d\\tau = x(t) * h(t)"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Impulzní charakteristika LTI systému.",
+         "subsetPath": ["B2B31EO1", "Popis LTI systémů v časové oblasti"],
+         "answer_parts": [
+            {
+               "title": "Definice",
+               "text": "Odezva systému na jednotkový skok 1(t). Značí se \\omega(t) a hodí se k analýze přechodového jevu."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Vztah mezi přechodovou a impulzní charakteristikou.",
+         "subsetPath": ["B2B31EO1", "Popis LTI systémů v časové oblasti"],
+         "answer_parts": [
+            {
+               "title": "Vzorce",
+               "text": "h(t) = d\\omega(t) / dt a současně \\omega(t) = \\int_{0-}^{t} h(\\tau) d\\tau"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Základní rovnice a přenos zpětné vazby.",
+         "subsetPath": ["B2B31EO1", "Princip a vlastnosti zpětné vazby"],
+         "answer_parts": [
+            {
+               "title": "Rovnice",
+               "text": "u1 = ui + u\\beta, u\\beta = uo * \\beta, uo = u1 * A"
+            },
+            {
+               "title": "Zisk ZV soustavy",
+               "text": "A' = uo / ui = A / (1 - \\beta A) = A / F"
+            },
+            {
+               "title": "Pojmy",
+               "text": "\\beta A je přenos rozpojené ZV smyčky, F je vratný rozdíl."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Klasifikace zpětné vazby podle vratného rozdílu.",
+         "subsetPath": ["B2B31EO1", "Princip a vlastnosti zpětné vazby"],
+         "answer_parts": [
+            {
+               "title": "\\beta A < 0, F > 1",
+               "text": "|A'| < |A| -> záporná zpětná vazba (ZZV)"
+            },
+            {
+               "title": "\\beta A = 0, F = 1",
+               "text": "|A'| = |A| -> obvod bez vazby"
+            },
+            {
+               "title": "0 < \\beta A < 1, 1 > F > 0",
+               "text": "|A'| > |A| -> stabilní kladná ZV"
+            },
+            {
+               "title": "\\beta A = 1, F = 0",
+               "text": "|A'| -> \\infty -> kladná zpětná vazba (KZV), obvod je nestabilní / kmitá"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Základní typy kmitočtových filtrů.",
+         "subsetPath": ["B2B31EO1", "Typy filtrů"],
+         "answer_parts": [
+            {
+               "title": "Rozdělení",
+               "text": "Dolní propust (Lowpass - LP), horní propust (Highpass - HP), pásmová propust (Bandpass - BP), pásmová zádrž (Band-stop - BS)."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Přenosová funkce filtru v Zero-Pole tvaru.",
+         "subsetPath": ["B2B31EO1", "Aproximace modulových charakteristik filtrů"],
+         "answer_parts": [
+            {
+               "title": "Vzorec",
+               "text": "H(s) = Uout(s) / Uin(s) = [\\prod_{i=1}^{N} (s - sni)] / [\\prod_{i=1}^{M} (s - spi)]"
+            },
+            {
+               "title": "Podmínka",
+               "text": "M \\le N. Póly (sp) a nuly (sn) udávají celkové chování systému v časové i kmitočtové oblasti."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Hlavní druhy aproximací filtrů v EO1.",
+         "subsetPath": ["B2B31EO1", "Aproximace modulových charakteristik filtrů"],
+         "answer_parts": [
+            {
+               "title": "Metody",
+               "text": "Butterworthova, Čebyševova, Inverzní Čebyševova a Cauerova aproximace."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Ideální vlastnosti operačního zesilovače (výchozí předpoklad pro analýzu).",
+         "subsetPath": ["B2B31EO1", "Operační zesilovač"],
+         "answer_parts": [
+            {
+               "title": "Základní vztah",
+               "text": "[i+ = i- = 0] a současně [ud = 0 \\Rightarrow u+ = u-]"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Neinvertující zesilovač.",
+         "subsetPath": ["B2B31EO1", "Základní zapojení OZ"],
+         "answer_parts": [
+            {
+               "title": "Napěťové zesílení",
+               "text": "Au = uo / ui = 1 + R2 / R1"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Invertující zesilovač.",
+         "subsetPath": ["B2B31EO1", "Základní zapojení OZ"],
+         "answer_parts": [
+            {
+               "title": "Napěťové zesílení",
+               "text": "Au = uo / ui = -R2 / R1"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Invertující sumátor.",
+         "subsetPath": ["B2B31EO1", "Základní zapojení OZ"],
+         "answer_parts": [
+            {
+               "title": "Výstupní napětí",
+               "text": "uo = -Rn * i = -Rn * \\sum_{i=1}^{n} (ui / Ri)"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Rozdílový zesilovač.",
+         "subsetPath": ["B2B31EO1", "Rozdílový a přístrojový zesilovač"],
+         "answer_parts": [
+            {
+               "title": "Výstupní napětí",
+               "text": "uo = (R2 / R1) * (ui1 - ui2) za předpokladu, že R4 / R3 = R2 / R1."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Přístrojový zesilovač.",
+         "subsetPath": ["B2B31EO1", "Rozdílový a přístrojový zesilovač"],
+         "answer_parts": [
+            {
+               "title": "Výstupní napětí",
+               "text": "uo = -(R4 / R3) * (1 + 2 * R2 / R1) * (ui1 - ui2)"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Ideální invertující integrátor.",
+         "subsetPath": ["B2B31EO1", "Integrátor a derivátor"],
+         "answer_parts": [
+            {
+               "title": "Výstupní napětí",
+               "text": "uo = -1/(RC) * \\int_{0}^{t} ui(\\tau) d\\tau - uc(0)"
+            },
+            {
+               "title": "Přenosová funkce",
+               "text": "H(s) = -1 / (sRC) = -1 / (s\\tau)"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Ideální invertující derivátor.",
+         "subsetPath": ["B2B31EO1", "Integrátor a derivátor"],
+         "answer_parts": [
+            {
+               "title": "Výstupní napětí",
+               "text": "uo = -RC * (dui(t) / dt)"
+            },
+            {
+               "title": "Přenosová funkce",
+               "text": "H(s) = -sRC = -s\\tau"
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Vzorkovací obvody (S&H).",
+         "subsetPath": ["B2B31EO1", "Vzorkovací obvody"],
+         "answer_parts": [
+            {
+               "title": "Účel a princip",
+               "text": "Používají se před A/D převodníkem. Pokročilejší varianty zapojení s OZ pomaleji vybíjejí kapacitor nebo nezatěžují vzorkovaný zdroj napětí."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Hystereze u komparátorů.",
+         "subsetPath": ["B2B31EO1", "Komparátory"],
+         "answer_parts": [
+            {
+               "title": "Důvod použití",
+               "text": "Zamezuje nechtěným zákmitům výstupního signálu okolo referenční hodnoty při přítomnosti šumu."
+            },
+            {
+               "title": "Princip",
+               "text": "Změna komparační úrovně v závislosti na úrovni výstupního signálu."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Podmínka oscilací u oscilátorů.",
+         "subsetPath": ["B2B31EO1", "Oscilátory"],
+         "answer_parts": [
+            {
+               "title": "Nutná podmínka",
+               "text": "|A(j\\omega)\\beta(j\\omega)| = 1"
+            },
+            {
+               "title": "Princip",
+               "text": "Generování harmonických či neharmonických průběhů bez vnějšího buzení pomocí zpětnovazební smyčky."
+            }
+         ]
+      },
+      {
+         "type": "open",
+         "question": "Fázový závěs (PLL).",
+         "subsetPath": ["B2B31EO1", "Fázový závěs"],
+         "answer_parts": [
+            {
+               "title": "Princip",
+               "text": "Řídí napěťově řízený oscilátor (VCO) tak, aby kmitočet jeho signálu odpovídal kmitočtu (nebo násobku) vstupního signálu."
+            },
+            {
+               "title": "Složení",
+               "text": "Fázový detektor (FD) porovnávající fáze, dolní propust (LP) zamezující skokům a napěťově řízený oscilátor (VCO)."
+            }
+         ]
+      },
+      {
+         "type": "closed",
+         "question": "Jak se změní zisk zesilovače A po zavedení záporné zpětné vazby, pokud je F > 1?",
+         "subsetPath": ["B2B31EO1", "Princip a vlastnosti zpětné vazby"],
+         "options": [
+            "Absolutní hodnota zisku se zmenší.",
+            "Absolutní hodnota zisku se zvětší.",
+            "Zisk zůstane zcela beze změny."
+         ],
+         "correctIndex": 0,
+         "explanation": "U záporné zpětné vazby platí, že vratný rozdíl F > 1, což podle vztahu |A'| = |A| / F vede ke zmenšení výsledného zisku."
+      }
+   ]
+}

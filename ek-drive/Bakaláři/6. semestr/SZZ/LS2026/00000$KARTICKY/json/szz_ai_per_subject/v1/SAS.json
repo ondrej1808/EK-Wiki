@@ -1,0 +1,674 @@
+{
+  "title": "B2B37SAS - Signály a soustavy",
+  "questions": [
+    {
+      "type": "open",
+      "question": "Definice signálu a základní kritéria klasifikace",
+      "subsetPath": ["SAS", "Klasifikace signálů a základní charakteristiky"],
+      "answer_parts": [
+        {
+          "title": "",
+          "text": "Signál je funkce nezávislé proměnné popisující vývoj měnící se veličiny (nejčastěji v závislosti na čase s(t))."
+        },
+        {
+          "title": "Kritéria klasifikace",
+          "text": "1. Podle matematického popisu: deterministické (známý průběh popsatelný funkcí) a stochastické (náhodné, nutný pravděpodobnostní popis).\n2. Podle spojitosti nezávislé proměnné: spojité (popis diferenciálním počtem) a diskrétní (popis diferencemi a sumacemi)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozdělení signálů podle kauzality a délky trvání",
+      "subsetPath": ["SAS", "Klasifikace signálů a základní charakteristiky"],
+      "answer_parts": [
+        {
+          "title": "Podle délky trvání",
+          "text": "Finitní signály mají definovaný začátek a konec (konečná délka trvání). Nekonečné signály nejsou časově omezené (např. harmonická funkce sinus)."
+        },
+        {
+          "title": "Podle kauzality",
+          "text": "Kauzální signály mají definovaný začátek a před ním je jejich hodnota nulová. Nekauzální signály začínají v -\\infty."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jednotkový skok (Heavisideova funkce)",
+      "subsetPath": ["SAS", "Speciální signály"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "1(t) = 1 pro t >= 0, a 1(t) = 0 pro t < 0."
+        },
+        {
+          "title": "Vlastnosti",
+          "text": "Jedná se o kauzální a výkonový signál. Pro hodnotu autokorelační funkce v počátku platí R(0) = 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Obdélníkový impulz",
+      "subsetPath": ["SAS", "Speciální signály"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "rect(t) = 1 pro |t| < 1/2, a rect(t) = 0 pro |t| > 1/2. Lze vyjádřit jako rozdíl dvou posunutých jednotkových skoků: 1(t + 1/2) - 1(t - 1/2)."
+        },
+        {
+          "title": "Vlastnosti",
+          "text": "Jedná se o kauzální, finitní a energetický signál."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Jednotkový impulz (Kroneckerův impulz)",
+      "subsetPath": ["SAS", "Speciální signály"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "\\delta[k] = 1 pro k = 0, a \\delta[k] = 0 pro k \\neq 0."
+        },
+        {
+          "title": "Vlastnosti",
+          "text": "Představuje obdobu Diracova impulzu v diskrétním čase. Je kauzální, finitní a energetický."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Diracův impulz",
+      "subsetPath": ["SAS", "Speciální signály"],
+      "answer_parts": [
+        {
+          "title": "Definice a vlastnosti",
+          "text": "\\delta(t) je definován jako derivace jednotkového skolu d1(t)/dt. Má nulovou délku a nekonečnou amplitudu."
+        },
+        {
+          "title": "Vzorkovací vlastnost",
+          "text": "Má jednotkovou plochu (integrál od -\\infty do +\\infty z \\delta(t)dt = 1). Průnik (součin a integrace) Diracova impulzu s libovolnou funkcí dává hodnotu této funkce v daném bodě, v ostatních bodech je nulový."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vzorkovací funkce (Sample function)",
+      "subsetPath": ["SAS", "Speciální signály"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Nenormalizovaná forma: Sa(t) = sin(t)/t pro t \\neq 0, a Sa(t) = 1 pro t = 0.\nNormalizovaná forma: Sa(t) = sin(\\pi t)/(\\pi t) pro t \\neq 0, a Sa(t) = 1 pro t = 0."
+        },
+        {
+          "title": "Vlastnosti",
+          "text": "Jedná se o energetický signál. Integrál od -\\infty do +\\infty z Sa(t)dt = \\pi, a integrál z Sa^2(t)dt = \\pi."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Energetické signály",
+      "subsetPath": ["SAS", "Charakteristiky signálů"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Signály, které mají konečnou energii (E < \\infty). Každý finitní signál má konečnou energii."
+        },
+        {
+          "title": "Výpočet energie",
+          "text": "Ve spojitém čase: E = integrál od -\\infty do +\\infty z |s(t)|^2 dt = integrál z s(t)s*(t) dt.\nV diskrétním čase: E = suma od k=-\\infty do +\\infty z |s[k]|^2 = suma z s[k]s*[k]."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výkonové signály",
+      "subsetPath": ["SAS", "Charakteristiky signálů"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Signály, které mají nekonečnou energii, ale jejich střední výkon je konečný a nenulový (0 < P < \\infty)."
+        },
+        {
+          "title": "Výpočet výkonu",
+          "text": "Ve spojitém čase: P = lim (T -> \\infty) 1/T * integrál od -T/2 do T/2 z |s(t)|^2 dt.\nV diskrétním čase: P = lim (N -> \\infty) 1/(2N+1) * suma od k=-N do N z |s[k]|^2."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ortogonální signály",
+      "subsetPath": ["SAS", "Charakteristiky signálů"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Signály, které mají nulovou vzájemnou energii (u energetických signálů) nebo nulový vzájemný výkon (u výkonových signálů). Příkladem mohou být vhodně časově posunuté signály."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Vzájemná korelační funkce (Křížová korelace)",
+      "subsetPath": ["SAS", "Korelace a spektrum"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Popisuje míru podobnosti dvou různých signálů v závislosti na jejich časovém posunu \\tau nebo k."
+        },
+        {
+          "title": "Výpočet",
+          "text": "Energetické signály: R_12(\\tau) = integrál od -\\infty do +\\infty z s_1(t+\\tau)s_2*(t) dt.\nVýkonové signály: R_12(\\tau) = Av[s_1(t+\\tau)s_2*(t)] (střední hodnota součinu s posunem).\nPři nulovém posunu platí R_12(0) = E_12."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Autokorelační funkce",
+      "subsetPath": ["SAS", "Korelace a spektrum"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Popisuje závislost signálu na sobě samém při časovém posunu \\tau."
+        },
+        {
+          "title": "Vlastnosti",
+          "text": "Pro reálný signál je autokorelační funkce vždy sudá: R(\\tau) = R(-\\tau).\nV počátku nabývá svého globálního maxima. U energetických signálů platí R(0) = E (celková energie), u výkonových signálů R(0) = P (celkový výkon)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Výkonové spektrum",
+      "subsetPath": ["SAS", "Korelace a spektrum"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Reprezentuje výkon dané frekvenční složky signálu. Je provázáno s autokorelační funkcí přes Fourierovu transformaci."
+        },
+        {
+          "title": "Periodické signály",
+          "text": "Celkový výkon periodického signálu lze vyjádřit jako suma kvadrátů modulů koeficientů komplexní Fourierovy řady: P = suma od n=-\\infty do +\\infty z |c_n|^2."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip Fourierovy řady (FS)",
+      "subsetPath": ["SAS", "Frekvenční reprezentace"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Slouží k rozkladu periodického signálu do úplného ortogonálního systému funkcí."
+        },
+        {
+          "title": "Analýza a syntéza",
+          "text": "Syntéza: Aproximace signálu pomocí lineární kombinace funkcí z úplného ortogonálního systému.\nAnalýza: Rozklad signálu na jednotlivé Fourierovy koeficienty c_n = 1/T * integrál na intervalu T z s(t)e^(-jn\\omega_0 t) dt. Koeficienty c_n tvoří spektrum signálu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip Fourierovy transformace (FT)",
+      "subsetPath": ["SAS", "Frekvenční reprezentace"],
+      "answer_parts": [
+        {
+          "title": "Definice a postup",
+          "text": "Slouží k výpočtu spektra obecných (neperiodických) signálů."
+        },
+        {
+          "title": "Postup odvození",
+          "text": "1. Vyjme se část signálu s_T(t) na konečném intervalu (-T, T).\n2. Tento výřez se periodicky naskládá za sebe.\n3. Provede se rozklad do Fourierovy řady (FS).\n4. Použije se limitní přechod T -> \\infty a \\Delta\\omega -> 0."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rozdíly mezi typy Fourierových transformací",
+      "subsetPath": ["SAS", "Frekvenční reprezentace"],
+      "answer_parts": [
+        {
+          "title": "Spojitý čas",
+          "text": "Neperiodický signál -> Fourierova transformace (FT): spektrum je spojité a neperiodické.\nPeriodický signál -> Fourierova řada (FS): spektrum je diskrétní a neperiodické."
+        },
+        {
+          "title": "Diskrétní čas",
+          "text": "Neperiodický signál -> Diskrétní Fourierova transformace s časem (DTFT): spektrum je spojité a periodické.\nPeriodický signál -> Diskrétní Fourierova řada (DFS): spektrum je diskrétní a periodické."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Spektrum speciálních signálů",
+      "subsetPath": ["SAS", "Frekvenční reprezentace"],
+      "answer_parts": [
+        {
+          "title": "Základní dvojice",
+          "text": "Diracův impulzu \\delta(t) má konstantní spektrum: F{\\delta(t)} = 1.\nKonstantní signál K má spektrum ve tvaru Diracova impulzu: F{K} = 2\\pi K \\delta(\\omega).\nVzorkovací funkce Sa má za spektrum obdélník.\nObdélníkový impulz má za spektrum vzorkovací funkci Sa."
+        },
+        {
+          "title": "Harmonický signál",
+          "text": "Spektrum harmonického signálu A cos(\\omega_0 t) tvoří dva Diracovy impulzy na kmitočtech signálu: A\\pi [\\delta(\\omega - \\omega_0) + \\delta(\\omega + \\omega_0)]."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní teorémy Fourierovy transformace (Linearita, Modulace, Posun)",
+      "subsetPath": ["SAS", "Teorémy a transformace"],
+      "answer_parts": [
+        {
+          "title": "Věta o linearitě",
+          "text": "F{A_1 s_1[k] + A_2 s_2[k]} = A_1 X_1(\\omega) + A_2 X_2(\\omega)."
+        },
+        {
+          "title": "Modulační věta (frekvenční posun)",
+          "text": "Násobení signálu komplexní exponenciálou e^(j\\omega_0 k) způsobí posun spektra ve frekvenční oblasti o \\omega_0."
+        },
+        {
+          "title": "Věta o posunu v čase",
+          "text": "Časové zpoždění signálu nezmění jeho amplitudové spektrum, způsobí pouze lineární fázový posun (fázové zpoždění)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní teorémy Fourierovy transformace (Konvoluce, Diference, Parseval)",
+      "subsetPath": ["SAS", "Teorémy a transformace"],
+      "answer_parts": [
+        {
+          "title": "Věta o konvoluci a součinu",
+          "text": "Konvoluce signálů v časové oblasti odpovídá součinu jejich spekter ve frekvenční oblasti. Součin signálů v časové oblasti odpovídá konvoluci jejich spekter na omezeném intervalu."
+        },
+        {
+          "title": "Obraz diference signálu",
+          "text": "Kauzální definice diference: \\Delta s[k] = s[k] - s[k-1] (aktuální vzorek - předchozí vzorek).\nNekauzální definice diference: \\Delta s[k] = s[k+1] - s[k] (následující vzorek - aktuální vzorek)."
+        },
+        {
+          "title": "Parsevalova věta",
+          "text": "Celková energie signálu v časové oblasti je rovna celkové energii spočtené přes jeho frekvenční reprezentaci (sumě kvadrátů modulů Fourierových koeficientů)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Diskrétní Fourierova transformace (DFT) a FFT",
+      "subsetPath": ["SAS", "Teorémy a transformace"],
+      "answer_parts": [
+        {
+          "title": "DFT",
+          "text": "Umožňuje numerický výpočet spektra na konečném intervalu. Nevyžaduje analytický výraz signálu (pracuje s vektorem vzorků) a poskytuje přibližný diskrétní výsledek."
+        },
+        {
+          "title": "FFT (Fast Fourier Transform)",
+          "text": "Představuje efektivní a rychlý algoritmus výpočtu DFT využívaný v softwarových nástrojích jako Matlab, Maple či Mathematica."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Shannonův vzorkovací teorém",
+      "subsetPath": ["SAS", "Vzorkování a interpolace"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Spojitý, frekvenčně omezený signál s nejvyšším kmitočtem f_max lze jednoznačně a beze ztráty informace obnovit ze svých diskrétních vzorků, pokud je vzorkovací frekvence f_s větší než dvojnásobek nejvyššího kmitočtu: f_s > 2 f_max."
+        },
+        {
+          "title": "Aliasing",
+          "text": "Pokud není podmínka vzorkovacího teorému dodržena, dochází k překrývání spekter a nevratnému zkreslení signálu zvanému aliasing."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Rekonstrukce signálu z diskrétních vzorků",
+      "subsetPath": ["SAS", "Vzorkování a interpolace"],
+      "answer_parts": [
+        {
+          "title": "Ideální proces (Interpolace)",
+          "text": "Získání hodnot v intervalu mezi dvěma vzorky. Vzorky se nahradí Diracovými impulzy a proženou se ideální dolní propustí. Výsledný spojitý signál je sumou funkcí typu Sa: s(t) = suma od k=-\\infty do +\\infty z s[k] * Sa(\\dots)."
+        },
+        {
+          "title": "Praktické problémy a řešení",
+          "text": "Problémy: Ideální dolní propust je nekauzální (fyzicky nerealizovatelná) a generování ideálních Diracových impulzů není možné.\nŘešení: Vzorkovaný signál se aproximuje pomocí obdélníkových schodů (tvarování impulzů) a následně se vyhladí reálnou dolní propustí, což s sebou nese mírné zkreslení."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Základní pojmy náhodných procesů",
+      "subsetPath": ["SAS", "Náhodné procesy"],
+      "answer_parts": [
+        {
+          "title": "Náhodný signál",
+          "text": "Má náhodný průběh a vyžaduje popis pomocí teorie pravděpodobnosti. Obsahuje neznámý užitečný signál nebo šum. Jedna konkrétní realizace náhodného signálu je již deterministický signál."
+        },
+        {
+          "title": "Pojmy",
+          "text": "Náhodný jev: Množina výsledků nějakého pokusu.\nNáhodná veličina: Náhodný jev s přiřazenou číselnou hodnotou.\nHustota pravděpodobnosti (PDF): Popisuje rozložení pravděpodobnosti, její integrál je roven 1.\nDistribuční funkce (CDF): Integrál hustoty pravděpodobnosti, jedná se o neklesající funkci v rozsahu od 0 do 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Stacionarita náhodného procesu",
+      "subsetPath": ["SAS", "Náhodné procesy"],
+      "answer_parts": [
+        {
+          "title": "Stacionární náhodný signál",
+          "text": "Signál, jehož stochastický popis nezávisí na volbě počátku časové osy."
+        },
+        {
+          "title": "Stacionarita ve striktním (užším) smyslu",
+          "text": "Funkce hustoty pravděpodobnosti (PDF) a distribuční funkce (CDF) se při posunu v čase vůbec nemění a nezávisí na počátku časové osy."
+        },
+        {
+          "title": "Stacionarita v širším smyslu (WSS)",
+          "text": "Na volbě počátku časové osy nezávisí pouze vybrané statistické charakteristiky (např. střední hodnota je konstantní a autokorelační funkce závisí pouze na časovém rozdílu \\tau, nikoliv na absolutním čase)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Ergodičnost a bílý šum",
+      "subsetPath": ["SAS", "Náhodné procesy"],
+      "answer_parts": [
+        {
+          "title": "Ergodický proces",
+          "text": "Proces, u kterého se časové charakteristiky určené z jedné dostatečně dlouhé realizace shodují s charakteristikami určenými přes množinu všech možných realizací (nulový rozptyl mezi realizacemi). Není nutné průměrovat přes množinu realizací."
+        },
+        {
+          "title": "Bílý šum",
+          "text": "Náhodný proces s konstantní spektrální výkonovou hustotou přes všechny frekvence, nekonečným pravděpodobnostním výkonem a nulovou střední hodnotou."
+        },
+        {
+          "title": "AWGN (Aditivní bílý gaussovský šum)",
+          "text": "Model náhodného šumu, který je ergodický, stacionární, má nekonečnou šířku pásma a normální (Gaussovo) rozložení hustoty pravděpodobnosti."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Klasifikace soustav a operátor soustavy",
+      "subsetPath": ["SAS", "Klasifikace a popis soustav"],
+      "answer_parts": [
+        {
+          "title": "Soustava a operátor",
+          "text": "Soustava je objekt transformující vstupní signál (buzení x) na výstupní signál (odezva y). Operátor soustavy A popisuje tuto transformaci a aplikuje se na vstup: y = A{x}."
+        },
+        {
+          "title": "Typy soustav podle signálů",
+          "text": "Spojitá (vstup i výstup spojitý), diskrétní (vstup i výstup diskrétní) a smíšená (např. vzorkovač se spojitým vstupem a diskrétním výstupem, nebo interpolátor s diskrétním vstupem a spojitým výstupem)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Kauzální soustavy a soustavy s pamětí",
+      "subsetPath": ["SAS", "Klasifikace a popis soustav"],
+      "answer_parts": [
+        {
+          "title": "Kauzální soustava",
+          "text": "Soustava, kde buzení je výhradní příčinou odezvy. Odezva nemůže nastat dříve než buzení; h(t) = 0 pro t < 0. Nekauzální soustavy reagují i na budoucí buzení, nelze je fyzicky realizovat v reálném čase (využívají se v postprocessingu)."
+        },
+        {
+          "title": "Soustavy s pamětí a bez paměti",
+          "text": "Soustava s pamětí ukládá informace o minulosti (např. obvody s kapacitami a indukčnostmi). U soustavy bez paměti závisí odezva pouze na vstupním signálu v daném okamžiku (např. čistě rezistorová síť)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "LTI soustavy a stabilita BIBO",
+      "subsetPath": ["SAS", "Klasifikace a popis soustav"],
+      "answer_parts": [
+        {
+          "title": "LTI soustava",
+          "text": "Soustava, která je lineární (platí princip superpozice: A{a*x_1 + b*x_2} = a*A{x_1} + b*A{x_2}) a časově invariantní (zpoždění vstupu vyvolá stejné zpoždění výstupu: y(t-\\tau) = A{x(t-\\tau)})."
+        },
+        {
+          "title": "BIBO stabilita",
+          "text": "Soustava je stabilní ve smyslu BIBO (Bounded-Input Bounded-Output), pokud na jakýkoliv amplitudově omezený vstupní signál reaguje taktéž omezenou odezvou."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Impulzová odezva LTI soustavy",
+      "subsetPath": ["SAS", "Klasifikace a popis soustav"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Jednoznačně popisuje chování LTI soustavy.\nVe spojitém čase: h(t) je odezva soustavy na Diracův impulz \\delta(t).\nV diskrétním čase: h[k] je odezva soustavy na jednotkový Kroneckerův impulz \\delta[k]."
+        },
+        {
+          "title": "Posouzení vlastností",
+          "text": "Kauzality: Musí platit h(t) = 0 pro t < 0.\nStability: Impulzová odezva musí být absolutně integrovatelná, tedy integrál od -\\infty do +\\infty z |h(t)|dt < \\infty."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Konvoluce a její vlastnosti u LTI soustav",
+      "subsetPath": ["SAS", "Klasifikace a popis soustav"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Matematická operace, kterou LTI soustava transformuje vstupní signál na výstupní odezvu za využití impulzové odezvy h."
+        },
+        {
+          "title": "Výpočet",
+          "text": "Spojitá konvoluce: y(t) = integrál od -\\infty do +\\infty z x(\\tau)h(t-\\tau) d\\tau.\nDiskrétní konvoluce: y[k] = suma od i=-\\infty do +\\infty z x[i]h[k-i]."
+        },
+        {
+          "title": "Vlastnosti operace",
+          "text": "Komutativita (h_1 * h_2 = h_2 * h_1), asociativita ((h_1 * h_2) * h_3 = h_1 * (h_2 * h_3)) a distributivita (x * h_1 + x * h_2 = x * (h_1 + h_2))."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Popis spojitých soustav v p-doméně (Laplaceova transformace)",
+      "subsetPath": ["SAS", "Popis soustav v p-doméně a z-doméně"],
+      "answer_parts": [
+        {
+          "title": "Systémová funkce",
+          "text": "Spojité soustavy popsané diferenciální rovnicí s konstantními koeficienty lze transformovat pomocí Laplaceovy transformace. Výsledkem je systémová funkce H(p) = Y(p)/X(p), kde H(p) je podílem polynomů čitatele (kořeny jsou nuly) a jmenovatele (kořeny jsou póly)."
+        },
+        {
+          "title": "Stabilita",
+          "text": "Spojitá soustava je stabilní, pokud všechny póly její systémové funkce H(p) leží výhradně v levé polorovině komplexní roviny p, tedy platí Re(\\lambda_n) < 0."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Popis diskrétních soustav v z-doméně (Z-transformace)",
+      "subsetPath": ["SAS", "Popis soustav v p-doméně a z-doméně"],
+      "answer_parts": [
+        {
+          "title": "Systémová funkce",
+          "text": "Diskrétní soustavy popsané diferenční rovnicí s konstantními koeficienty se řeší pomocí Z-transformace. Systémová funkce H(z) = Y(z)/X(z) vyjadřuje poměr polynomů, kde kořeny jmenovatele představují póly a kořeny čitatele nuly systému."
+        },
+        {
+          "title": "Stabilita",
+          "text": "Diskrétní soustava je stabilní, pokud všechny póly její systémové funkce H(z) leží uvnitř jednotkové kružnice v komplexní rovině z, tedy platí |\\lambda_n| < 1."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Frekvenční charakteristika LTI soustavy",
+      "subsetPath": ["SAS", "Klasifikace a popis soustav"],
+      "answer_parts": [
+        {
+          "title": "Přenosová funkce H(\\omega)",
+          "text": "Je definována jako Fourierova transformace impulzové odezvy h(t). Lze ji získat ze systémové funkce dosazením p = j\\omega (pro spojité) nebo z = e^(j\\omega) (pro diskrétní)."
+        },
+        {
+          "title": "Symetrie vlastností",
+          "text": "Pro reálné impulzové odezvy vykazuje přenosová funkce symetrii: Amplitudová frekvenční charakteristika |H(\\omega)| je sudá funkce, zatímco fázová frekvenční charakteristika \\Phi(\\omega) je lichá funkce."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Pásmové signály (Band Pass)",
+      "subsetPath": ["SAS", "Pásmové signály a komplexní obálka"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Reálný, frekvenčně omezený signál, jehož spektrum je soustředěno kolem vysokého nosného kmitočtu \\omega_c, přičemž platí \\omega_c >> 2\\pi B (kde B je šířka pásma)."
+        },
+        {
+          "title": "Vlastnosti spektra",
+          "text": "Amplitudové spektrum vykazuje symetrii |S(\\omega)| = |S(-\\omega)|, fázové spektrum je liché."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Komplexní obálka pásmového signálu",
+      "parts": [],
+      "subsetPath": ["SAS", "Pásmové signály a komplexní obálka"],
+      "answer_parts": [
+        {
+          "title": "Význam",
+          "text": "Nízkofrekvenční reprezentace vysokofrekvenčního pásmového signálu. Slouží ke zjednodušení matematického popisu, snížení vzorkovací frekvence při simulacích a snazší realizaci algoritmů."
+        },
+        {
+          "title": "Matematické vyjádření",
+          "text": "Komplexní obálka se zapisuje ve tvaru s_l(t) = a(t) + j b(t), kde reálná část a(t) je soufázová složka a imaginární část b(t) je kvadraturní složka."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Metody získání komplexní obálky",
+      "subsetPath": ["SAS", "Pásmové signály a komplexní obálka"],
+      "answer_parts": [
+        {
+          "title": "Metoda fázového posuvu",
+          "text": "K pásmovému signálu se přičte j-násobek jeho Hilbertovy transformace (vnikne analytický signál s jednostranným spektrem) a výsledek se vynásobí tlumící komplexní exponenciálou e^(-j\\omega_c t) pro posun spektra do počátku."
+        },
+        {
+          "title": "Filtrační metoda",
+          "text": "Pásmový signál se nejprve vynásobí komplexní exponenciálou a následně se vyfiltruje pomocí dolní propusti, která odseparuje nízkofrekvenční spektrum komplexní obálky."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Hilbertova transformace",
+      "subsetPath": ["SAS", "Pásmové signály a komplexní obálka"],
+      "answer_parts": [
+        {
+          "title": "Definice a funkce",
+          "text": "Transformace využívaná k převodu reálného pásmového signálu na analytický signál s jednostranným spektrem. Hilbertův transformátor vykazuje přenosovou funkci H_hat(\\omega) = -j sgn(\\omega)."
+        },
+        {
+          "title": "Vlastnosti",
+          "text": "Jedná se o lineární, ale nekauzální a nestabilní systém. V oblasti kladných kmitočtů realizuje konstantní fázové zpoždění o \\pi/2 (90°)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Princip analogové modulace",
+      "subsetPath": ["SAS", "Analogové modulace"],
+      "answer_parts": [
+        {
+          "title": "Definice",
+          "text": "Proces ovlivňování parametrů vysokofrekvenční nosné vlny (zpravidla harmonického průběhu s(t) = A cos(\\omega_c t + \\Phi_0)) pomocí nízkofrekvenčního modulačního signálu, který nese informaci (zvuk, data)."
+        },
+        {
+          "title": "Základní typy",
+          "text": "1. Amplitudová (AM) – modulační signál mění amplitudu nosné.\n2. Úhlová – zahrnuje fázovou (PM) a frekvenční (FM) modulaci, kde se mění fáze či okamžitý kmitočet."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Amplitudová modulace (AM) – vlastnosti a spektrum",
+      "subsetPath": ["SAS", "Analogové modulace"],
+      "answer_parts": [
+        {
+          "title": "Princip v časové a frekvenční doméně",
+          "text": "Časová oblast: Obálka vysokofrekvenční nosné vlny je tvarována podle modulačního signálu. Fáze zůstává konstantní. Hloubka modulace m se pohybuje v mezích 0 <= m <= 1.\nFrekvenční oblast: Spektrum modulačního signálu se lineárně posune symetrickky okolo nosné frekvence \\omega_c."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Varianty amplitudové modulace (AM)",
+      "subsetPath": ["SAS", "Analogové modulace"],
+      "answer_parts": [
+        {
+          "title": "Typy AM",
+          "text": "1. DSB se zachovanou nosnou: Jednoduchá modulace i demodulace (obálkový detektor), ale extrémně nízká energetická účinnost a nadbytečnost (obě postranní pásma nesou totéž).\n2. DSB-SC (s potlačenou nosnou): Vyšší energetická účinnost, avšak složitější synchronní demodulace.\n3. SSB (s jedním postranním pásmem): Maximálně efektivní využití šířky spektra, technicky náročné na realizaci bez zkreslení.\n4. VSB (s částečně potlačeným postranním pásmem): Kompromis využívaný v analogovém televizním vysílání."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Úhlové modulace (FM a PM)",
+      "subsetPath": ["SAS", "Analogové modulace"],
+      "answer_parts": [
+        {
+          "title": "Charakteristika",
+          "text": "Modulační signál ovlivňuje fázi (PM) nebo okamžitou frekvenci (FM). Amplituda vlnění zůstává konstantní (konstantní obálka). Jedná se o nelineární modulace."
+        },
+        {
+          "title": "Frekvenční spektrum a šířka pásma",
+          "text": "Spektrum je velmi složité a matematicky je ovlivněno Besselovými funkcemi. Šířka pásma se určuje dle Carsonova pravidla: B_FM = 2*(\\Delta f_max + f_max), kde \\Delta f_max je frekvenční zdvih a f_max je nejvyšší kmitočet modulačního signálu."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Pulzní modulace",
+      "subsetPath": ["SAS", "Analogové modulace"],
+      "answer_parts": [
+        {
+          "title": "Definice a druhy",
+          "text": "Modulace, které jsou diskrétní v čase. Informace se přenáší pomocí parametrů sledu pulzů o periodě B (šířka pásma odpovídá 2\\pi B)."
+        },
+        {
+          "title": "Základní typy",
+          "text": "PAM (pulzně amplitudová), PWM (pulzně šířková), PPM (pulzně polohová/fázová) a PCM (pulzně kódová modulace využívající kvantování a kódování)."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Senzory magnetických veličin",
+      "subsetPath": ["SAS", "Senzory fyzikálních veličin"],
+      "answer_parts": [
+        {
+          "title": "Hallovy senzory",
+          "text": "Využívají destičku napájenou konstantním proudem I. Výstupní Hallovo napětí U_H = (R_H / a) * B * I reaguje na kolmou magnetickou indukci B (kde R_H je Hallova konstanta a 'a' tloušťka destičky). Měří vzdálenost feromagnetika, posuv, natočení či DC proudy."
+        },
+        {
+          "title": "Magnetoodporové a SAW senzory",
+          "text": "Magnetoodporové: Využívají anizotropní magnetoodporový jev v tenké vrstvě, kde vnější pole stáčí vektor magnetizace a mění odpor cesty proudu; slouží k měření přiblížení.\nSAW mikrosenzory: Umístěné na tenké magnetické vrstvě modulují parametry šíření povrchové akustické vlny vlivem vnější indukce."
+        }
+      ]
+    },
+    {
+      "type": "open",
+      "question": "Senzory záření a chemických veličin",
+      "subsetPath": ["SAS", "Senzory fyzikálních veličin"],
+      "answer_parts": [
+        {
+          "title": "Senzory záření",
+          "text": "IR záření lze měřit termoelektrickými články (zahřívají se absorpcí). Bolometry a mikrobolometry (termokamery) bezdotykově měří celkový vyzářený tepelný výkon na základě změny odporu vyvolané dopadajícím zářením."
+        },
+        {
+          "title": "Senzory chemických veličin",
+          "text": "Vodivostní senzory: Zahrnují chemorezistory, odporové senzory a TGS senzory.\nDalší principy: Chemokapacitory (změna kapacity), senzory plynu využívající změnu teploty, optické senzory či chemodiody."
+        }
+      ]
+    }
+  ]
+}

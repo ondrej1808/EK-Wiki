@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>TSI Kartičky</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ===== LIGHT MODE PALETTE ===== */
+        :root {
+            /* Background - Vibrant purple gradient */
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            
+            /* Cards & Panels - Clean white */
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --header-bg: rgba(255, 255, 255, 0.95);
+            
+            /* Text - Dark for readability */
+            --card-text: #2d3748;
+            
+            /* Borders - Subtle gray */
+            --border-color: #e2e8f0;
+            
+            /* Explanation sections - Light blue tint */
+            --explanation-bg: #ebf8ff;
+            --explanation-border: #667eea;
+            
+            /* Answer options - Light gray */
+            --option-bg: #f7fafc;
+            --option-border: #e2e8f0;
+            --option-hover-bg: #edf2f7;
+            
+            /* Answered cards - Light green tint */
+            --answered-bg: #f0fff4;
+            --answered-border: #48bb78;
+            
+            /* Navigation buttons - Semi-transparent white */
+            --nav-btn-bg: rgba(255, 255, 255, 0.3);
+            --nav-btn-border: rgba(255, 255, 255, 0.5);
+            --nav-btn-text: #ffffff;
+        }
+
+        /* ===== DARK MODE PALETTE ===== */
+        body.dark-mode {
+            /* Background - Deep dark blue/slate gradient */
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #1e293b;
+            
+            /* Cards & Panels - Dark slate with slight transparency */
+            --card-bg: rgba(30, 41, 59, 0.95);
+            --header-bg: rgba(30, 41, 59, 0.95);
+            
+            /* Text - Bright white for readability */
+            --card-text: #f1f5f9;
+            
+            /* Borders - Lighter slate */
+            --border-color: #475569;
+            
+            /* Explanation sections - Slightly lighter dark blue */
+            --explanation-bg: #1e293b;
+            --explanation-border: #818cf8;
+            
+            /* Answer options - Medium slate */
+            --option-bg: #334155;
+            --option-border: #475569;
+            --option-hover-bg: #475569;
+            
+            /* Answered cards - Dark with green tint */
+            --answered-bg: rgba(34, 197, 94, 0.15);
+            --answered-border: #22c55e;
+            
+            /* Navigation buttons - Semi-transparent slate */
+            --nav-btn-bg: rgba(51, 65, 85, 0.6);
+            --nav-btn-border: rgba(71, 85, 105, 0.8);
+            --nav-btn-text: #f1f5f9;
+        }
+        
+        /* Force dark background on html and body */
+        html.dark-mode,
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0;
+            padding-top: 30px;
+        }
+
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 30px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--header-bg);
+            z-index: 1100;
+            padding: 10px 20px;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: background 0.3s ease;
+        }
+
+        .mobile-stats {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .mobile-stats .stat-item {
+            font-size: 11px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            color: var(--card-text);
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .menu-overlay.active {
+            display: block;
+        }
+
+        .menu-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: var(--header-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            width: 90vw;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 2001;
+            transform-origin: center center;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-popup.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .menu-popup .btn {
+            width: 100%;
+            font-size: 18px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+        }
+
+        .menu-popup h3 {
+            color: var(--card-text);
+            font-size: 22px;
+            margin: 20px 0 15px 0;
+            text-align: center;
+        }
+
+        .menu-popup h3:first-child {
+            margin-top: 0;
+        }
+
+        .menu-section {
+            height: 25vh;
+            padding: 0 20px;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cards-section {
+            height: 65vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .navigation-section {
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background: var(--header-bg);
+            padding: 0;
+            margin-top: 0;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .header-title {
+            padding: 15px 20px 10px 20px;
+            background: var(--header-bg);
+            border-radius: 15px 15px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s ease;
+        }
+
+        .header-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px 20px 15px 20px;
+        }
+
+        .header-title-text {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            color: var(--card-text);
+            margin: 0;
+            font-size: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .header-title .stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+            justify-content: center;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
+
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+            line-height: 1;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
+            color: white;
+        }
+
+        .stat-item {
+            font-weight: bold;
+            color: var(--card-text);
+            font-size: 12px;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .stat-value {
+            color: #667eea;
+            margin-left: 5px;
+        }
+
+        .cards-grid {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+            perspective: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: absolute;
+            max-width: 800px;
+            width: 100%;
+            height: 85%;
+            max-height: 85%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
+            box-sizing: border-box;
+            border: 3px solid transparent;
+            overflow: hidden;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .card-content {
+            flex: 1;
+            overflow: hidden;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .card.stack-0 {
+            z-index: 30;
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .card.swiping {
+            transition: none !important;
+        }
+
+        .card.swipe-left {
+            animation: swipeLeftOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .card.swipe-right {
+            animation: swipeRightOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes swipeLeftOut {
+            to {
+                transform: translateX(-150%) scale(0.8) rotate(-10deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes swipeRightOut {
+            to {
+                transform: translateX(150%) scale(0.8) rotate(10deg);
+                opacity: 0;
+            }
+        }
+
+        .card.stack-1 {
+            z-index: 20;
+            transform: translateY(-30px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .card.stack-2 {
+            z-index: 10;
+            transform: translateY(-60px) scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .card.stack-prev {
+            z-index: 5;
+            transform: translateY(30px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0;
+            padding-bottom: 15px;
+            background: transparent;
+            z-index: 10;
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .card-number {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .flag-btn {
+            position: absolute;
+            right: 0;
+        }
+
+        .card-question {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--card-text);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            line-height: 1.4;
+            text-align: center;
+            transition: color 0.3s ease;
+            background: transparent;
+            border-bottom: 2px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .card-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .card-scrollable-content {
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex: 1;
+            padding-right: 5px;
+            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option-btn {
+            background: var(--option-bg);
+            border: 3px solid var(--option-border);
+            padding: 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+            color: var(--card-text);
+            font-weight: 500;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--option-hover-bg);
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background: #28a745 !important;
+            border-color: #1e7e34 !important;
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background: #dc3545 !important;
+            border-color: #c82333 !important;
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        .open-question-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .action-btn.show-answer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .action-btn.correct-self {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .action-btn.wrong-self {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .card.answered {
+            background: var(--answered-bg);
+            border: 3px solid var(--answered-border);
+        }
+
+        .card.flagged {
+            border: 4px solid #ff5722;
+        }
+
+        .nav-btn {
+            background: var(--nav-btn-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--nav-btn-border);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--nav-btn-text);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .nav-btn.prev {
+            /* no specific positioning needed */
+        }
+
+        .nav-btn.next {
+            /* no specific positioning needed */
+        }
+
+        .nav-btn:hover {
+            background: var(--option-hover-bg);
+            border-color: var(--explanation-border);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .flag-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s;
+        }
+
+        .flag-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .flag-btn.flagged {
+            filter: none;
+        }
+
+        .flag-btn:not(.flagged) {
+            filter: grayscale(100%);
+            opacity: 0.3;
+        }
+
+        .card-answer {
+            display: none;
+            background: var(--explanation-bg);
+            border-left: 4px solid var(--explanation-border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: var(--card-text);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .card-answer.show {
+            display: block;
+        }
+
+        .answer-title {
+            font-weight: bold;
+            color: var(--explanation-border);
+            margin-bottom: 8px;
+        }
+
+        .answer-text {
+            color: var(--card-text);
+            line-height: 1.6;
+        }
+
+        .answer-text strong {
+            color: var(--explanation-border);
+            font-weight: bold;
+        }
+
+        .answer-text .katex {
+            font-size: 1.1em;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: var(--option-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .filter-checkbox:hover {
+            background: var(--option-hover-bg);
+            border-color: var(--explanation-border);
+        }
+        
+        .filter-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .filter-checkbox label {
+            cursor: pointer;
+            color: var(--card-text);
+            font-weight: 500;
+            flex: 1;
+        }
+
+        #messageContainer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+
+        .progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 900;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, 
+                #ff0080 0%, 
+                #ff8c00 20%, 
+                #40e0d0 40%, 
+                #00ff7f 60%, 
+                #9370db 80%, 
+                #ff1493 100%);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0 20px 20px 0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-text {
+            position: relative;
+            z-index: 10001;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: flex;
+            }
+
+            .menu-section {
+                display: none;
+            }
+
+            .cards-section {
+                height: 100vh;
+                padding-top: 90px;
+            }
+
+            .cards-grid {
+                padding: 0 10px;
+            }
+
+            .navigation-section {
+                display: none;
+            }
+
+            .card-content {
+                padding: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .btn {
+                width: 100%;
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .progress-bar-container {
+                font-size: 12px;
+                height: 30px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-header {
+                display: none;
+            }
+
+            .menu-overlay,
+            .menu-popup {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">🎯 Pokrok: 0%</div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <button class="dark-mode-toggle" id="darkModeToggleMobile" title="Přepnout světlý/tmavý režim">🌙</button>
+        <div class="mobile-stats">
+            <div class="stat-item">✅ <span class="stat-value" id="answeredQuestionsMobile">0</span></div>
+            <div class="stat-item">❌ <span class="stat-value" id="wrongAnswersMobile">0</span></div>
+            <div class="stat-item">🚩 <span class="stat-value" id="flaggedCountMobile">0</span></div>
+        </div>
+        <button class="hamburger-btn" id="hamburgerBtn">⚙️</button>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <!-- Menu Popup -->
+    <div class="menu-popup" id="menuPopup">
+        <div class="controls">
+            <div class="filter-checkbox">
+                <input type="checkbox" id="showFlaggedOnlyMobile" />
+                <label for="showFlaggedOnlyMobile">🚩 Jen označené otázky</label>
+            </div>
+            <div class="filter-checkbox">
+                <input type="checkbox" id="shuffleAnswersMobile" />
+                <label for="shuffleAnswersMobile">🔀 Zamíchat tlačítka</label>
+            </div>
+            <button class="btn btn-secondary" id="resetBtnMobile">🔄 Reset</button>
+            <button class="btn btn-warning" id="shuffleBtnMobile">🔀 Zamíchat</button>
+            <button class="btn btn-primary" id="sortBtnMobile">🔢 Seřadit podle ID</button>
+            <div class="file-input-wrapper">
+                <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">📁 Nahrát JSON</button>
+            </div>
+            <div class="file-input-wrapper">
+                <button class="btn btn-success" onclick="document.getElementById('ankiFileInput').click()">🎴 Import Anki</button>
+            </div>
+            <button class="btn btn-primary" id="downloadSampleBtnMobile">💾 Stáhnout Vzor</button>
+            <button class="btn btn-primary" id="exportAnkiBtnMobile">🎴 Export do Anki</button>
+            <button class="btn btn-success" id="shareBtnMobile">🔗 Sdílet Progress</button>
+            <button class="btn btn-warning" id="downloadFlagsBtnMobile">🚩 Stáhnout Flagy</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Menu Section (30vh) -->
+        <div class="menu-section">
+            <div class="header">
+                <div class="header-title">
+                    <button class="dark-mode-toggle" id="darkModeToggle" title="Přepnout světlý/tmavý režim">🌙</button>
+                    <div class="header-title-text">
+                        <h1>📚 TSI Kartičky</h1>
+                        <div class="stats">
+                            <div class="stat-item">📊 Celkem: <span class="stat-value" id="totalQuestions">0</span></div>
+                            <div class="stat-item">✅ <span class="stat-value" id="answeredQuestions">0</span></div>
+                            <div class="stat-item">❌ <span class="stat-value" id="wrongAnswers">0</span></div>
+                            <div class="stat-item">🚩 <span class="stat-value" id="flaggedCount">0</span></div>
+                            <div class="stat-item">⏳ Zbývá: <span class="stat-value" id="remainingQuestions">0</span></div>
+                        </div>
+                    </div>
+                    <div style="width: 34px;"></div> <!-- Spacer for centering -->
+                </div>
+                <div class="header-content">
+                    <div class="controls">
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="showFlaggedOnly" />
+                            <label for="showFlaggedOnly">🚩 Jen označené otázky</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="shuffleAnswers" />
+                            <label for="shuffleAnswers">🔀 Zamíchat tlačítka</label>
+                        </div>
+                        <button class="btn btn-secondary" id="resetBtn">🔄 Reset</button>
+                        <button class="btn btn-warning" id="shuffleBtn">🔀 Zamíchat</button>
+                        <button class="btn btn-primary" id="sortBtn">🔢 Seřadit podle ID</button>
+                        <div class="file-input-wrapper">
+                            <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">📁 Nahrát JSON</button>
+                            <input type="file" id="fileInput" accept=".json">
+                        </div>
+                        <div class="file-input-wrapper">
+                            <button class="btn btn-success" onclick="document.getElementById('ankiFileInput').click()">🎴 Import Anki</button>
+                            <input type="file" id="ankiFileInput" accept=".txt,.csv,.apkg" style="position: absolute; left: -9999px;">
+                        </div>
+                        <button class="btn btn-primary" id="downloadSampleBtn">💾 Stáhnout Vzor</button>
+                        <button class="btn btn-primary" id="exportAnkiBtn">🎴 Export do Anki</button>
+                        <button class="btn btn-success" id="shareBtn">🔗 Sdílet Progress</button>
+                        <button class="btn btn-warning" id="downloadFlagsBtn">🚩 Stáhnout Flagy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards Section (65vh) - Fixed -->
+        <div class="cards-section">
+            <div class="cards-grid">
+                <div id="cardsContainer" style="position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;"></div>
+            </div>
+        </div>
+
+        <!-- Navigation Section (10vh) -->
+        <div class="navigation-section">
+            <button class="nav-btn prev" id="prevBtn">▲</button>
+            <button class="nav-btn next" id="nextBtn">▼</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to render explanation with markdown and LaTeX
+        function renderExplanation(text, element) {
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            element.innerHTML = html;
+            
+            setTimeout(() => {
+                if (window.renderMathInElement) {
+                    renderMathInElement(element, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
+            }, 100);
+        }
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const prefersDark = localStorage.getItem('tsi-cards-dark-mode') !== 'false'; // Default to dark
+        
+        function updateDarkMode(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark-mode');
+                document.body.classList.add('dark-mode');
+                if (darkModeToggle) darkModeToggle.textContent = '🌙';
+                if (darkModeToggleMobile) darkModeToggleMobile.textContent = '🌙';
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+                document.body.classList.remove('dark-mode');
+                if (darkModeToggle) darkModeToggle.textContent = '☀️';
+                if (darkModeToggleMobile) darkModeToggleMobile.textContent = '☀️';
+            }
+            localStorage.setItem('tsi-cards-dark-mode', isDark);
+        }
+        
+        updateDarkMode(prefersDark);
+        
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                const isDark = !document.body.classList.contains('dark-mode');
+                updateDarkMode(isDark);
+            });
+        }
+        
+        if (darkModeToggleMobile) {
+            darkModeToggleMobile.addEventListener('click', () => {
+                const isDark = !document.body.classList.contains('dark-mode');
+                updateDarkMode(isDark);
+            });
+        }
+
+        // Hamburger menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuPopup = document.getElementById('menuPopup');
+
+        function toggleMenu() {
+            menuOverlay.classList.toggle('active');
+            menuPopup.classList.toggle('active');
+        }
+
+        if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', toggleMenu);
+        }
+
+        if (menuOverlay) {
+            menuOverlay.addEventListener('click', toggleMenu);
+        }
+
+        // Filter flagged questions
+        let showOnlyFlagged = false;
+        const showFlaggedCheckbox = document.getElementById('showFlaggedOnly');
+        const showFlaggedCheckboxMobile = document.getElementById('showFlaggedOnlyMobile');
+        
+        function updateFlaggedFilter(value) {
+            showOnlyFlagged = value;
+            if (showFlaggedCheckbox) showFlaggedCheckbox.checked = value;
+            if (showFlaggedCheckboxMobile) showFlaggedCheckboxMobile.checked = value;
+            
+            // Reset to first card when filter changes
+            currentCardIndex = 0;
+            renderCards();
+            updateStats();
+        }
+        
+        if (showFlaggedCheckbox) {
+            showFlaggedCheckbox.addEventListener('change', (e) => {
+                updateFlaggedFilter(e.target.checked);
+            });
+        }
+        
+        if (showFlaggedCheckboxMobile) {
+            showFlaggedCheckboxMobile.addEventListener('change', (e) => {
+                updateFlaggedFilter(e.target.checked);
+            });
+        }
+
+        // Shuffle answer options
+        let shuffleAnswerOptions = false;
+        const shuffleAnswersCheckbox = document.getElementById('shuffleAnswers');
+        const shuffleAnswersCheckboxMobile = document.getElementById('shuffleAnswersMobile');
+        
+        function updateShuffleAnswers(value) {
+            shuffleAnswerOptions = value;
+            if (shuffleAnswersCheckbox) shuffleAnswersCheckbox.checked = value;
+            if (shuffleAnswersCheckboxMobile) shuffleAnswersCheckboxMobile.checked = value;
+            
+            // Re-render current card to apply shuffle
+            renderCards();
+        }
+        
+        if (shuffleAnswersCheckbox) {
+            shuffleAnswersCheckbox.addEventListener('change', (e) => {
+                updateShuffleAnswers(e.target.checked);
+            });
+        }
+        
+        if (shuffleAnswersCheckboxMobile) {
+            shuffleAnswersCheckboxMobile.addEventListener('change', (e) => {
+                updateShuffleAnswers(e.target.checked);
+            });
+        }
+
+        // Global variables
+        let allQuestions = [];
+        let answeredCorrectly = [];
+        let wrongAnswersCount = 0;
+        let flaggedQuestions = new Set();
+        let currentOrder = [];
+        let currentCardIndex = 0;
+
+        // Navigation buttons
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                renderCards();
+                saveProgressToCookies();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentCardIndex < currentOrder.length - 1) {
+                currentCardIndex++;
+                renderCards();
+                saveProgressToCookies();
+            }
+        });
+
+        function updateNavButtons() {
+            prevBtn.disabled = currentCardIndex === 0;
+            nextBtn.disabled = currentCardIndex >= currentOrder.length - 1;
+        }
+
+        // Touch/Swipe handling
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let isDragging = false;
+        let isHorizontalSwipe = false;
+        let swipeDirectionDetermined = false;
+        let currentCard = null;
+
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isDragging = false;
+            isHorizontalSwipe = false;
+            swipeDirectionDetermined = false;
+            currentCard = document.querySelector('.card.stack-0');
+            
+            // Mark the target element to potentially prevent click later
+            const target = e.target;
+            if (target.tagName === 'BUTTON' || target.closest('button')) {
+                currentCard._touchedButton = target.closest('button') || target;
+            } else {
+                currentCard._touchedButton = null;
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (!currentCard) return;
+            
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            
+            // Determine swipe direction only once
+            if (!swipeDirectionDetermined && (Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
+                swipeDirectionDetermined = true;
+                // Check if horizontal movement is dominant
+                if (Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+                    isHorizontalSwipe = true;
+                    isDragging = true;
+                    currentCard.classList.add('swiping');
+                    e.preventDefault(); // Prevent scrolling when horizontal swipe detected
+                }
+            }
+            
+            // Only move card if horizontal swipe is detected
+            if (isDragging && isHorizontalSwipe) {
+                const rotation = diffX / 30;
+                currentCard.style.transform = `translateX(${diffX}px) rotate(${rotation}deg)`;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!currentCard) return;
+            
+            // If horizontal swipe was detected, prevent click on button
+            if (isDragging && isHorizontalSwipe && currentCard._touchedButton) {
+                currentCard._touchedButton._preventClick = true;
+                setTimeout(() => {
+                    if (currentCard._touchedButton) {
+                        currentCard._touchedButton._preventClick = false;
+                    }
+                }, 100);
+            }
+            
+            if (!isDragging || !isHorizontalSwipe) {
+                // Reset everything if it wasn't a horizontal swipe
+                touchStartX = 0;
+                touchStartY = 0;
+                touchEndX = 0;
+                touchEndY = 0;
+                isDragging = false;
+                isHorizontalSwipe = false;
+                swipeDirectionDetermined = false;
+                currentCard = null;
+                return;
+            }
+            
+            isDragging = false;
+            const diff = touchEndX - touchStartX;
+            const threshold = 100;
+
+            currentCard.classList.remove('swiping');
+
+            if (Math.abs(diff) > threshold) {
+                if (diff < 0 && currentCardIndex < currentOrder.length - 1) {
+                    // Swipe left - next card
+                    currentCard.classList.add('swipe-left');
+                    setTimeout(() => {
+                        currentCardIndex++;
+                        renderCards();
+                        saveProgressToCookies();
+                    }, 300);
+                } else if (diff > 0 && currentCardIndex > 0) {
+                    // Swipe right - previous card
+                    currentCard.classList.add('swipe-right');
+                    setTimeout(() => {
+                        currentCardIndex--;
+                        renderCards();
+                        saveProgressToCookies();
+                    }, 300);
+                } else {
+                    currentCard.style.transform = '';
+                }
+            } else {
+                currentCard.style.transform = '';
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
+            touchEndX = 0;
+            touchEndY = 0;
+            isHorizontalSwipe = false;
+            swipeDirectionDetermined = false;
+            currentCard = null;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' && currentCardIndex > 0) {
+                currentCardIndex--;
+                renderCards();
+                saveProgressToCookies();
+            } else if (e.key === 'ArrowDown' && currentCardIndex < currentOrder.length - 1) {
+                currentCardIndex++;
+                renderCards();
+                saveProgressToCookies();
+            } else if ((e.code === 'Space' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') && currentCardIndex < currentOrder.length - 1) {
+                // Space and Enter move to next card
+                const currentCard = document.querySelector('.card.center');
+                const buttons = currentCard ? currentCard.querySelectorAll('.option-btn') : [];
+                
+                // Only advance if no active buttons or buttons are disabled (answered)
+                if (buttons.length === 0 || buttons[0].disabled) {
+                    e.preventDefault();
+                    currentCardIndex++;
+                    renderCards();
+                    saveProgressToCookies();
+                }
+            }
+        });
+
+        // Cookie management
+        function saveProgressToCookies() {
+            const answeredIds = answeredCorrectly.map(q => q.id);
+            const flaggedIds = Array.from(flaggedQuestions);
+            document.cookie = `tsi_cards_answered=${JSON.stringify(answeredIds)}; max-age=${30 * 24 * 60 * 60}; path=/`;
+            document.cookie = `tsi_cards_wrong=${wrongAnswersCount}; max-age=${30 * 24 * 60 * 60}; path=/`;
+            document.cookie = `tsi_cards_flagged=${JSON.stringify(flaggedIds)}; max-age=${30 * 24 * 60 * 60}; path=/`;
+            document.cookie = `tsi_cards_position=${currentCardIndex}; max-age=${30 * 24 * 60 * 60}; path=/`;
+        }
+
+        function loadProgressFromCookies() {
+            const cookies = document.cookie.split(';');
+            const result = { answeredIds: [], wrongCount: 0, flaggedIds: [], position: 0 };
+            
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'tsi_cards_answered') {
+                    try { result.answeredIds = JSON.parse(value); } catch (e) {}
+                } else if (name === 'tsi_cards_wrong') {
+                    result.wrongCount = parseInt(value) || 0;
+                } else if (name === 'tsi_cards_flagged') {
+                    try { result.flaggedIds = JSON.parse(value); } catch (e) {}
+                } else if (name === 'tsi_cards_position') {
+                    result.position = parseInt(value) || 0;
+                }
+            }
+            return result;
+        }
+
+        function clearProgressCookies() {
+            document.cookie = 'tsi_cards_answered=; max-age=0; path=/';
+            document.cookie = 'tsi_cards_wrong=; max-age=0; path=/';
+            document.cookie = 'tsi_cards_flagged=; max-age=0; path=/';
+            document.cookie = 'tsi_cards_position=; max-age=0; path=/';
+        }
+
+        // Load progress from URL
+        function loadProgressFromUrl() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#progress=')) {
+                try {
+                    const encoded = hash.substring(10);
+                    const progressData = JSON.parse(atob(encoded));
+                    
+                    const answeredIds = progressData.answered || [];
+                    const wrong = progressData.wrong || 0;
+                    const flagged = progressData.flagged || [];
+                    const position = progressData.position || 0;
+                    
+                    document.cookie = `tsi_cards_answered=${JSON.stringify(answeredIds)}; max-age=${30 * 24 * 60 * 60}; path=/`;
+                    document.cookie = `tsi_cards_wrong=${wrong}; max-age=${30 * 24 * 60 * 60}; path=/`;
+                    document.cookie = `tsi_cards_flagged=${JSON.stringify(flagged)}; max-age=${30 * 24 * 60 * 60}; path=/`;
+                    document.cookie = `tsi_cards_position=${position}; max-age=${30 * 24 * 60 * 60}; path=/`;
+                    
+                    showMessage('✅ Progress načten ze sdíleného linku!', 'success');
+                    history.replaceState(null, null, window.location.pathname);
+                } catch (e) {
+                    console.error('Neplatný progress link:', e);
+                    showMessage('⚠️ Neplatný progress link!', 'error');
+                }
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            // Desktop stats
+            document.getElementById('totalQuestions').textContent = allQuestions.length;
+            document.getElementById('answeredQuestions').textContent = answeredCorrectly.length;
+            document.getElementById('wrongAnswers').textContent = wrongAnswersCount;
+            document.getElementById('flaggedCount').textContent = flaggedQuestions.size;
+            document.getElementById('remainingQuestions').textContent = allQuestions.length - answeredCorrectly.length;
+            
+            const progress = allQuestions.length > 0 ? (answeredCorrectly.length / allQuestions.length) * 100 : 0;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `🎯 Pokrok: ${Math.round(progress)}% (${answeredCorrectly.length}/${allQuestions.length})`;
+            
+            // Mobile stats
+            const answeredMobile = document.getElementById('answeredQuestionsMobile');
+            const wrongMobile = document.getElementById('wrongAnswersMobile');
+            const flaggedMobile = document.getElementById('flaggedCountMobile');
+            if (answeredMobile) answeredMobile.textContent = answeredCorrectly.length;
+            if (wrongMobile) wrongMobile.textContent = wrongAnswersCount;
+            if (flaggedMobile) flaggedMobile.textContent = flaggedQuestions.size;
+        }
+
+        // Attach touch listeners to container
+        function attachSwipeListeners() {
+            const container = document.getElementById('cardsContainer');
+            container.addEventListener('touchstart', handleTouchStart, { passive: true });
+            container.addEventListener('touchmove', handleTouchMove, { passive: false });
+            container.addEventListener('touchend', handleTouchEnd, { passive: true });
+        }
+
+        // Render cards
+        function renderCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            // Filter questions based on showOnlyFlagged
+            let questionsToShow = currentOrder;
+            if (showOnlyFlagged) {
+                questionsToShow = currentOrder.filter(q => flaggedQuestions.has(q.id));
+                
+                if (questionsToShow.length === 0) {
+                    container.innerHTML = '<div style="color: var(--card-text); font-size: 24px; text-align: center;">🚩 Žádné označené otázky</div>';
+                    updateNavButtons();
+                    return;
+                }
+            }
+            
+            if (questionsToShow.length === 0) {
+                container.innerHTML = '<div style="color: var(--card-text); font-size: 24px;">Žádné otázky k zobrazení</div>';
+                updateNavButtons();
+                return;
+            }
+
+            // Clamp current index
+            currentCardIndex = Math.max(0, Math.min(currentCardIndex, questionsToShow.length - 1));
+            
+            // Render previous card (behind)
+            if (currentCardIndex > 0) {
+                const prevQuestion = questionsToShow[currentCardIndex - 1];
+                renderCard(prevQuestion, 'stack-prev', container);
+            }
+            
+            // Render next 2 cards (stacked on top)
+            for (let i = Math.min(2, questionsToShow.length - currentCardIndex - 1); i >= 1; i--) {
+                const nextQuestion = questionsToShow[currentCardIndex + i];
+                renderCard(nextQuestion, `stack-${i}`, container);
+            }
+            
+            // Render current card (front)
+            const question = questionsToShow[currentCardIndex];
+            renderCard(question, 'stack-0', container);
+            
+            updateNavButtons();
+        }
+
+        // Render individual card
+        function renderCard(question, stackClass, container) {
+            const isOpenQuestion = !question.options || question.options.length <= 1;
+
+            const card = document.createElement('div');
+            card.className = `card ${stackClass}`;
+            if (answeredCorrectly.some(q => q.id === question.id)) {
+                card.classList.add('answered');
+            }
+            if (flaggedQuestions.has(question.id)) {
+                card.classList.add('flagged');
+            }
+
+            // Pro stackované karty - jen prázdné tělo bez obsahu
+            if (stackClass !== 'stack-0') {
+                container.appendChild(card);
+                return;
+            }
+
+            // Pro aktuální kartu - plný obsah
+            card.innerHTML = `
+                <div class="card-content">
+                    <div class="card-header">
+                        <div class="card-number">Otázka #${question.id}</div>
+                        <button class="flag-btn ${flaggedQuestions.has(question.id) ? 'flagged' : ''}" data-id="${question.id}">🚩</button>
+                    </div>
+                    <div class="card-question">${question.question}</div>
+                    <div class="card-scrollable-content">
+                        ${!isOpenQuestion ? '<div class="card-options" data-id="' + question.id + '"></div>' : ''}
+                        ${isOpenQuestion ? '<div class="open-question-actions" id="open-actions-' + question.id + '"></div>' : ''}
+                        <div class="card-answer" id="answer-${question.id}">
+                            <div class="answer-title">💡 ${isOpenQuestion ? 'Odpověď:' : 'Vysvětlení:'}</div>
+                            <div class="answer-text" id="answer-text-${question.id}"></div>
+                        </div>
+                    </div>
+                </div>
+                `;
+
+                container.appendChild(card);
+
+                // Handle flag button
+                const flagBtn = card.querySelector('.flag-btn');
+                flagBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(flagBtn.dataset.id);
+                    if (flaggedQuestions.has(id)) {
+                        flaggedQuestions.delete(id);
+                        flagBtn.classList.remove('flagged');
+                        card.classList.remove('flagged');
+                    } else {
+                        flaggedQuestions.add(id);
+                        flagBtn.classList.add('flagged');
+                        card.classList.add('flagged');
+                    }
+                    saveProgressToCookies();
+                    updateStats();
+                });
+
+                if (isOpenQuestion) {
+                    // Open question - show answer and self-assessment buttons
+                    const actionsContainer = card.querySelector(`#open-actions-${question.id}`);
+                    const answerDiv = document.getElementById(`answer-${question.id}`);
+                    const answerText = document.getElementById(`answer-text-${question.id}`);
+                    
+                    // Show answer button
+                    const showAnswerBtn = document.createElement('button');
+                    showAnswerBtn.className = 'action-btn show-answer';
+                    showAnswerBtn.textContent = '👁️ Ukázat odpověď';
+                    showAnswerBtn.onclick = () => {
+                        const answer = question.options && question.options.length > 0 ? question.options[0] : 'Odpověď nebyla poskytnuta';
+                        if (question.explanation) {
+                            renderExplanation(question.explanation, answerText);
+                        } else {
+                            answerText.textContent = answer;
+                        }
+                        answerDiv.classList.add('show');
+                        showAnswerBtn.style.display = 'none';
+                        correctBtn.style.display = 'block';
+                        wrongBtn.style.display = 'block';
+                    };
+                    actionsContainer.appendChild(showAnswerBtn);
+                    
+                    // Correct self-assessment button
+                    const correctBtn = document.createElement('button');
+                    correctBtn.className = 'action-btn correct-self';
+                    correctBtn.textContent = '✅ Mám to správně';
+                    correctBtn.style.display = 'none';
+                    correctBtn.onclick = () => {
+                        if (!answeredCorrectly.some(q => q.id === question.id)) {
+                            answeredCorrectly.push(question);
+                            card.classList.add('answered');
+                            saveProgressToCookies();
+                            updateStats();
+                        }
+                        correctBtn.disabled = true;
+                        wrongBtn.disabled = true;
+                    };
+                    actionsContainer.appendChild(correctBtn);
+                    
+                    // Wrong self-assessment button
+                    const wrongBtn = document.createElement('button');
+                    wrongBtn.className = 'action-btn wrong-self';
+                    wrongBtn.textContent = '❌ Nemám to správně';
+                    wrongBtn.style.display = 'none';
+                    wrongBtn.onclick = () => {
+                        wrongAnswersCount++;
+                        saveProgressToCookies();
+                        updateStats();
+                        correctBtn.disabled = true;
+                        wrongBtn.disabled = true;
+                    };
+                    actionsContainer.appendChild(wrongBtn);
+                } else {
+                    // Multiple choice question
+                    const optionsContainer = card.querySelector('.card-options');
+                    const isAnswered = answeredCorrectly.some(q => q.id === question.id);
+                    
+                    // Create array of options with original indices
+                    let optionsWithIndices = question.options.map((option, index) => ({
+                        text: option,
+                        originalIndex: index,
+                        isCorrect: index === question.correctIndex
+                    }));
+                    
+                    // Shuffle if enabled
+                    if (shuffleAnswerOptions) {
+                        // Fisher-Yates shuffle
+                        for (let i = optionsWithIndices.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [optionsWithIndices[i], optionsWithIndices[j]] = [optionsWithIndices[j], optionsWithIndices[i]];
+                        }
+                    }
+                    
+                    optionsWithIndices.forEach((optionData, displayIndex) => {
+                        const btn = document.createElement('button');
+                        btn.className = 'option-btn';
+                        btn.textContent = optionData.text;
+                        
+                        // If already answered, show the result and disable buttons
+                        if (isAnswered) {
+                            btn.disabled = true;
+                            if (optionData.isCorrect) {
+                                btn.classList.add('correct');
+                            }
+                            // Show explanation if available
+                            if (question.explanation && optionData.isCorrect) {
+                                const answerDiv = document.getElementById(`answer-${question.id}`);
+                                const answerText = document.getElementById(`answer-text-${question.id}`);
+                                renderExplanation(question.explanation, answerText);
+                                answerDiv.classList.add('show');
+                            }
+                        } else {
+                            // Pass original index to checkAnswer
+                            btn.onclick = () => checkAnswer(question, optionData.originalIndex, btn, card);
+                        }
+                        
+                        optionsContainer.appendChild(btn);
+                    });
+                    
+                    // Add keyboard handler for this question only if not answered
+                    if (!isAnswered) {
+                        const keyHandler = (e) => {
+                            const buttons = optionsContainer.querySelectorAll('.option-btn');
+                            if (buttons.length === 0 || buttons[0].disabled) return;
+                            
+                            let optionIndex = -1;
+                            
+                            // Handle numbers 1-4
+                            if (e.key >= '1' && e.key <= '4') {
+                                optionIndex = parseInt(e.key) - 1;
+                            }
+                            // Handle Czech keyboard layout: + ě š č (on positions 1-4)
+                            else if (e.key === '+' || e.key === '1') optionIndex = 0;
+                            else if (e.key === 'ě' || e.key === '2') optionIndex = 1;
+                            else if (e.key === 'š' || e.key === '3') optionIndex = 2;
+                            else if (e.key === 'č' || e.key === '4') optionIndex = 3;
+                            
+                            if (optionIndex >= 0 && optionIndex < buttons.length) {
+                                e.preventDefault();
+                                buttons[optionIndex].click();
+                            }
+                        };
+                        
+                        // Store handler to remove it later
+                        card.dataset.keyHandler = 'active';
+                        card._keyHandler = keyHandler;
+                        document.addEventListener('keydown', keyHandler);
+                    }
+                }
+        }
+
+        // Check answer for multiple choice
+        function checkAnswer(question, selectedIndex, selectedBtn, card) {
+            // Prevent click if it was part of a swipe gesture
+            if (selectedBtn._preventClick) {
+                selectedBtn._preventClick = false;
+                return;
+            }
+            
+            const optionsContainer = card.querySelector(`[data-id="${question.id}"]`);
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const isCorrect = selectedIndex === question.correctIndex;
+            selectedBtn.classList.add(isCorrect ? 'correct' : 'wrong');
+            
+            if (!isCorrect) {
+                if (question.correctIndex !== undefined && buttons[question.correctIndex]) {
+                    buttons[question.correctIndex].classList.add('correct');
+                }
+                wrongAnswersCount++;
+            } else {
+                if (!answeredCorrectly.some(q => q.id === question.id)) {
+                    answeredCorrectly.push(question);
+                    card.classList.add('answered');
+                }
+            }
+
+            // Show explanation
+            if (question.explanation) {
+                const answerDiv = document.getElementById(`answer-${question.id}`);
+                const answerText = document.getElementById(`answer-text-${question.id}`);
+                renderExplanation(question.explanation, answerText);
+                answerDiv.classList.add('show');
+            }
+
+            saveProgressToCookies();
+            updateStats();
+            
+            // Remove the answer selection key handler
+            if (card._keyHandler) {
+                document.removeEventListener('keydown', card._keyHandler);
+                card._keyHandler = null;
+            }
+        }
+
+        // Load questions
+        function loadQuestions(data) {
+            if (!data.questions || !Array.isArray(data.questions)) {
+                showMessage('Neplatný formát JSON!', 'error');
+                return;
+            }
+
+            allQuestions = data.questions;
+            currentOrder = [...allQuestions];
+            
+            const savedProgress = loadProgressFromCookies();
+            answeredCorrectly = allQuestions.filter(q => savedProgress.answeredIds.includes(q.id));
+            wrongAnswersCount = savedProgress.wrongCount;
+            flaggedQuestions = new Set(savedProgress.flaggedIds);
+            currentCardIndex = Math.min(savedProgress.position, allQuestions.length - 1);
+
+            updateStats();
+            renderCards();
+            showMessage(`Načteno ${allQuestions.length} otázek!`, 'success');
+        }
+
+        // Parse Anki text format (tab or semicolon separated)
+        function parseAnkiFormat(text) {
+            const lines = text.trim().split('\n');
+            const questions = [];
+            let id = 1;
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                // Try tab separator first, then semicolon
+                let parts = line.split('\t');
+                if (parts.length < 2) {
+                    parts = line.split(';');
+                }
+
+                if (parts.length >= 2) {
+                    const front = parts[0].trim();
+                    const back = parts[1].trim();
+
+                    // Check if there are multiple choice options (separated by |)
+                    const optionParts = back.split('|').map(o => o.trim());
+                    
+                    if (optionParts.length > 1) {
+                        // Multiple choice question
+                        // First option is the correct answer
+                        questions.push({
+                            id: id++,
+                            question: front,
+                            options: optionParts,
+                            correctIndex: 0,
+                            explanation: parts[2] ? parts[2].trim() : undefined
+                        });
+                    } else {
+                        // Open question (just front and back)
+                        questions.push({
+                            id: id++,
+                            question: front,
+                            options: [back],
+                            explanation: parts[2] ? parts[2].trim() : undefined
+                        });
+                    }
+                }
+            }
+
+            return questions;
+        }
+
+        // Parse APKG format (Anki package - ZIP with SQLite database)
+        async function parseApkgFormat(arrayBuffer) {
+            try {
+                // APKG is a ZIP file
+                const zip = await JSZip.loadAsync(arrayBuffer);
+                
+                // Find the collection file (collection.anki2 or collection.anki21)
+                let collectionFile = zip.file('collection.anki2') || zip.file('collection.anki21');
+                
+                if (!collectionFile) {
+                    throw new Error('Nenalezen soubor collection.anki2 v APKG');
+                }
+
+                // Read the SQLite database
+                const dbData = await collectionFile.async('uint8array');
+                
+                // Initialize sql.js
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+                
+                const db = new SQL.Database(dbData);
+                
+                // Query notes from database
+                // flds contains fields separated by \x1f (ASCII 31)
+                const stmt = db.prepare('SELECT flds FROM notes');
+                const questions = [];
+                let id = 1;
+                
+                while (stmt.step()) {
+                    const row = stmt.getAsObject();
+                    const fields = row.flds.split('\x1f'); // Fields separated by ASCII 31
+                    
+                    if (fields.length >= 2) {
+                        const front = stripHtml(fields[0].trim());
+                        const back = stripHtml(fields[1].trim());
+                        
+                        // Check if back contains multiple options
+                        const optionParts = back.split(/[\n|]/).map(o => stripHtml(o.trim())).filter(o => o);
+                        
+                        if (optionParts.length > 1) {
+                            // Multiple choice
+                            questions.push({
+                                id: id++,
+                                question: front,
+                                options: optionParts,
+                                correctIndex: 0,
+                                explanation: fields[2] ? stripHtml(fields[2].trim()) : undefined
+                            });
+                        } else {
+                            // Open question
+                            questions.push({
+                                id: id++,
+                                question: front,
+                                options: [back],
+                                explanation: fields[2] ? stripHtml(fields[2].trim()) : undefined
+                            });
+                        }
+                    }
+                }
+                
+                stmt.free();
+                db.close();
+                
+                return questions;
+            } catch (error) {
+                console.error('Error parsing APKG:', error);
+                throw error;
+            }
+        }
+
+        // Strip HTML tags from text
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        // Export to Anki format
+        function exportToAnki() {
+            if (allQuestions.length === 0) {
+                showMessage('\u00c5\u00bd\u00c3\u00a1dn\u00c3\u00a9 ot\u00c3\u00a1zky k exportu!', 'error');
+                return;
+            }
+
+            let ankiText = '';
+            for (const q of allQuestions) {
+                const isOpenQuestion = !q.options || q.options.length <= 1;
+                
+                if (isOpenQuestion) {
+                    // Open question: Front\tBack
+                    const answer = q.options && q.options.length > 0 ? q.options[0] : '';
+                    ankiText += `${q.question}\t${answer}`;
+                    if (q.explanation) {
+                        ankiText += `\t${q.explanation}`;
+                    }
+                    ankiText += '\n';
+                } else {
+                    // Multiple choice: Front\tCorrectAnswer|Option2|Option3\tExplanation
+                    const correctAnswer = q.options[q.correctIndex];
+                    const otherOptions = q.options.filter((_, i) => i !== q.correctIndex);
+                    const allOptions = [correctAnswer, ...otherOptions].join('|');
+                    ankiText += `${q.question}\t${allOptions}`;
+                    if (q.explanation) {
+                        ankiText += `\t${q.explanation}`;
+                    }
+                    ankiText += '\n';
+                }
+            }
+
+            const blob = new Blob([ankiText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tsi-anki-export.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showMessage(`Exportov\u00c3\u00a1no ${allQuestions.length} ot\u00c3\u00a1zek do Anki form\u00c3\u00a1tu!`, 'success');
+        }
+        
+        document.getElementById('exportAnkiBtn').addEventListener('click', exportToAnki);
+        const exportAnkiBtnMobile = document.getElementById('exportAnkiBtnMobile');
+        if (exportAnkiBtnMobile) {
+            exportAnkiBtnMobile.addEventListener('click', () => {
+                exportToAnki();
+                toggleMenu();
+            });
+        }
+
+        // Shuffle cards
+        function shuffleCards() {
+            currentOrder = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentCardIndex = 0;
+            renderCards();
+            showMessage('Kartičky zamíchány!', 'success');
+        }
+        document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
+        const shuffleBtnMobile = document.getElementById('shuffleBtnMobile');
+        if (shuffleBtnMobile) {
+            shuffleBtnMobile.addEventListener('click', () => {
+                shuffleCards();
+                toggleMenu();
+            });
+        }
+
+        // Sort cards by ID
+        function sortCards() {
+            currentOrder = [...allQuestions].sort((a, b) => a.id - b.id);
+            currentCardIndex = 0;
+            renderCards();
+            showMessage('Kartičky seřazeny podle ID!', 'success');
+        }
+        document.getElementById('sortBtn').addEventListener('click', sortCards);
+        const sortBtnMobile = document.getElementById('sortBtnMobile');
+        if (sortBtnMobile) {
+            sortBtnMobile.addEventListener('click', () => {
+                sortCards();
+                toggleMenu();
+            });
+        }
+
+        // Reset
+        function resetProgress() {
+            answeredCorrectly = [];
+            wrongAnswersCount = 0;
+            flaggedQuestions.clear();
+            clearProgressCookies();
+            updateStats();
+            renderCards();
+            showMessage('Reset proveden!', 'success');
+        }
+        document.getElementById('resetBtn').addEventListener('click', resetProgress);
+        const resetBtnMobile = document.getElementById('resetBtnMobile');
+        if (resetBtnMobile) {
+            resetBtnMobile.addEventListener('click', () => {
+                resetProgress();
+                toggleMenu();
+            });
+        }
+
+        // Share progress
+        async function shareProgress() {
+            const progressData = {
+                answered: answeredCorrectly.map(q => q.id),
+                wrong: wrongAnswersCount,
+                flagged: Array.from(flaggedQuestions),
+                position: currentCardIndex
+            };
+            const encoded = btoa(JSON.stringify(progressData));
+            // Build correct path - handle both local and server paths
+            const basePath = window.location.pathname.includes('cards.html') 
+                ? window.location.origin + window.location.pathname 
+                : window.location.origin + '/zapoctak/cards.html';
+            const shareUrl = `${basePath}#progress=${encoded}`;
+            
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                showMessage('🔗 Link zkopírován do schránky!', 'success');
+            } catch (err) {
+                showMessage('❌ Kopírování selhalo', 'error');
+                console.error('Clipboard error:', err);
+            }
+        }
+        document.getElementById('shareBtn').addEventListener('click', shareProgress);
+        const shareBtnMobile = document.getElementById('shareBtnMobile');
+        if (shareBtnMobile) {
+            shareBtnMobile.addEventListener('click', async () => {
+                await shareProgress();
+                toggleMenu();
+            });
+        }
+
+        // Download flagged questions
+        function downloadFlagged() {
+            const flaggedData = {
+                title: "Flagované otázky TSI",
+                questions: allQuestions.filter(q => flaggedQuestions.has(q.id))
+            };
+            
+            const blob = new Blob([JSON.stringify(flaggedData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tsi-flagged-questions.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showMessage(`Staženo ${flaggedQuestions.size} flagovaných otázek!`, 'success');
+        }
+        document.getElementById('downloadFlagsBtn').addEventListener('click', downloadFlagged);
+        const downloadFlagsBtnMobile = document.getElementById('downloadFlagsBtnMobile');
+        if (downloadFlagsBtnMobile) {
+            downloadFlagsBtnMobile.addEventListener('click', () => {
+                downloadFlagged();
+                toggleMenu();
+            });
+        }
+
+        // Download sample
+        function downloadSample() {
+            const sample = {
+                title: "Vzorové otázky",
+                questions: [
+                    {
+                        id: 1,
+                        question: "Jaká je hlavní město ČR?",
+                        options: ["Praha", "Brno", "Ostrava"],
+                        correctIndex: 0,
+                        explanation: "**Praha** je hlavní město České republiky."
+                    },
+                    {
+                        id: 2,
+                        question: "Otevřená otázka - co je to LaTeX?",
+                        options: ["Systém pro sazbu dokumentů používající matematické vzorce"]
+                    }
+                ]
+            };
+            const blob = new Blob([JSON.stringify(sample, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sample-questions.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showMessage('Vzorový soubor stažen!', 'success');
+        }
+        document.getElementById('downloadSampleBtn').addEventListener('click', downloadSample);
+        const downloadSampleBtnMobile = document.getElementById('downloadSampleBtnMobile');
+        if (downloadSampleBtnMobile) {
+            downloadSampleBtnMobile.addEventListener('click', () => {
+                downloadSample();
+                toggleMenu();
+            });
+        }
+
+        // File upload
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        loadQuestions(data);
+                    } catch (error) {
+                        showMessage('Chyba při čtení JSON!', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Anki import (TXT/CSV/APKG format)
+        document.getElementById('ankiFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.name.endsWith('.apkg')) {
+                    // APKG file - binary format
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const questions = await parseApkgFormat(arrayBuffer);
+                        const data = {
+                            title: "Import z Anki APKG",
+                            questions: questions
+                        };
+                        loadQuestions(data);
+                        showMessage(`Importováno ${questions.length} otázek z APKG!`, 'success');
+                    } catch (error) {
+                        console.error('APKG import error:', error);
+                        showMessage('Chyba při importu APKG souboru: ' + error.message, 'error');
+                    }
+                } else {
+                    // TXT/CSV file - text format
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const text = event.target.result;
+                            const questions = parseAnkiFormat(text);
+                            const data = {
+                                title: "Import z Anki",
+                                questions: questions
+                            };
+                            loadQuestions(data);
+                            showMessage(`Importováno ${questions.length} otázek z Anki!`, 'success');
+                        } catch (error) {
+                            console.error('Anki import error:', error);
+                            showMessage('Chyba při importu Anki souboru!', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            }
+        });
+
+        // Show message
+        function showMessage(text, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            container.innerHTML = '';
+            container.appendChild(message);
+            
+            setTimeout(() => message.remove(), 5000);
+        }
+
+        // Load default questions on startup
+        window.addEventListener('load', async () => {
+            attachSwipeListeners();
+            loadProgressFromUrl();
+            
+            try {
+                const response = await fetch('tsi-json-questions-explanation.json');
+                const data = await response.json();
+                loadQuestions(data);
+            } catch (error) {
+                console.error('Chyba při načítání JSON:', error);
+                showMessage('Chyba při načítání otázek!', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

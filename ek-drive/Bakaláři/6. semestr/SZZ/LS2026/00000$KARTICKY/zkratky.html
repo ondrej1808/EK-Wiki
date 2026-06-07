@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSI - Seznam zkratek</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .search-container {
+            padding: 20px 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .abbreviations-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+        }
+
+        .abbreviations-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .abbreviations-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .abbreviations-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .abbreviations-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .abbreviation-item {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            padding: 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .abbreviation-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            border-left-color: #764ba2;
+        }
+
+        .abbreviation-item:hover .explanation {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 12px;
+        }
+
+        .abbreviation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .abbreviation-text {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: 1.5px;
+        }
+
+        .abbreviation-text::after {
+            content: ' 💡';
+            font-size: 0.7em;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .abbreviation-item:hover .abbreviation-text::after {
+            opacity: 1;
+        }
+
+        .abbreviation-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .explanation {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.4s ease;
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.6;
+            padding-left: 15px;
+            border-left: 2px solid #667eea;
+        }
+
+        .explanation.show {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 12px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .no-results-text {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            margin: 20px 0 10px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .footer {
+            padding: 15px 30px;
+            text-align: center;
+            background: #f8f9fa;
+            border-top: 2px solid #f0f0f0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .abbreviation-text {
+                font-size: 1em;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 TSI - Seznam zkratek</h1>
+            <p>Telekomunikační systémy a IS - Klikněte na zkratku pro zobrazení vysvětlení</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Celkem zkratek</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="visibleCount">0</div>
+                    <div class="stat-label">Zobrazeno</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Vyhledat zkratku...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <div class="abbreviations-container" id="abbreviationsList">
+            <!-- Zkratky budou vloženy JavaScriptem -->
+        </div>
+
+        <div class="footer">
+            Extrahováno z tsi-json-questions-explanation.json | © 2025
+        </div>
+    </div>
+
+    <script>
+        // Všechny zkratky s vysvětleními z JSON souboru
+        const zkratkyData = {
+            'GPON': 'Gigabit Passive Optical Network - gigabitová pasivní optická síť',
+            'PON': 'Passive Optical Network - pasivní optická síť',
+            'DWDM': 'Dense Wavelength Division Multiplexing - hustý vlnový multiplex s roztečí 0,8 nm a méně',
+            'CWDM': 'Coarse Wavelength Division Multiplexing - řídký vlnový multiplex s roztečí 20 nm a větší',
+            'FTTH': 'Fiber To The Home - optické vlákno vedené přímo do domácnosti',
+            'FTTx': 'Fiber To The x - koncept hybridní přístupové sítě (FTTB, FTTC, FTTdp...)',
+            'OTDR': 'Optical Time-Domain Reflectometer - optický reflektometr v časové oblasti',
+            'EDFA': 'Erbium-Doped Fiber Amplifier - vláknový zesilovač dotovaný erbiem',
+            'DRA': 'Distributed Raman Amplifier - distribuovaný Ramanův zesilovač',
+            'ASE': 'Amplified Spontaneous Emission - zesílená spontánní emise (šum zesilovačů)',
+            'PMD': 'Polarization Mode Dispersion - polarizační vidová disperze',
+            'DCF': 'Dispersion Compensating Fiber - vlákno kompenzující disperzi',
+            'LTE': 'Long Term Evolution - mobilní síť 4. generace',
+            'NMT': 'Nordic Mobile Telephone - analogový systém 1. generace',
+            'GSM': 'Global System for Mobile Communications - digitální systém 2. generace',
+            'GPRS': 'General Packet Radio Service - paketový přenos dat (2.5G)',
+            'EDGE': 'Enhanced Data rates for GSM Evolution - vylepšené datové rychlosti (2.75G)',
+            'UMTS': 'Universal Mobile Telecommunications System - systém 3. generace (WCDMA)',
+            'HSDPA': 'High-Speed Downlink Packet Access - vysokorychlostní paketový přístup (až 14 Mbit/s)',
+            'EPC': 'Evolved Packet Core - jádrová paketová síť LTE',
+            'IMS': 'IP Multimedia Subsystem - podsystém pro VoLTE',
+            'VoLTE': 'Voice over LTE - hlasové hovory přes LTE',
+            'SVLTE': 'Simultaneous Voice and LTE - současný hlas (3G) a data (LTE)',
+            'CSFB': 'Circuit Switched Fallback - přepnutí z LTE do 2G/3G pro hovor',
+            'GBR': 'Guaranteed Bit Rate - garantovaná přenosová rychlost (pro VoIP)',
+            'MBR': 'Maximum Bit Rate - maximální přenosová rychlost',
+            'QOS': 'Quality of Service - kvalita služby',
+            'BER': 'Bit Error Rate - bitová chybovost (základní měřítko kvality)',
+            'MOS': 'Mean Opinion Score - průměrné subjektivní hodnocení kvality',
+            'SDH': 'Synchronous Digital Hierarchy - synchronní digitální hierarchie',
+            'PDH': 'Plesiochronous Digital Hierarchy - plesiochronní digitální hierarchie',
+            'PCM': 'Pulse Code Modulation - pulzně kódová modulace (vzorkování, kvantování, kódování)',
+            'E1': 'PCM 1. řádu - 2048 kbit/s, 32 kanálových intervalů (30 hovorových)',
+            'STM': 'Synchronous Transport Module - synchronní transportní modul',
+            'STM1': 'STM-1 - základní modul SDH (155,52 Mbit/s)',
+            'VC': 'Virtual Container - virtuální kontejner v SDH',
+            'AU': 'Administrative Unit - administrační jednotka',
+            'TU': 'Tributary Unit - tributární jednotka',
+            'TUG': 'Tributary Unit Group - skupina tributárních jednotek',
+            'PTR': 'Pointer - ukazatel polohy VC a vyrovnávání rychlostí',
+            'FAS': 'Frame Alignment Signal - synchroskupina rámcového souběhu',
+            'CRC': 'Cyclic Redundancy Check - cyklický redundantní kód pro detekci chyb',
+            'OSI': 'Open Systems Interconnection - referenční model 7 vrstev',
+            'TCP': 'Transmission Control Protocol - spolehlivý protokol transportní vrstvy',
+            'IP': 'Internet Protocol - protokol síťové vrstvy',
+            'MPLS': 'Multi-Protocol Label Switching - směrování na základě značky (label)',
+            'ISDN': 'Integrated Services Digital Network - digitální síť integrovaných služeb',
+            'BRA': 'Basic Rate Access - základní přístup ISDN (2B+D, 144 kbit/s)',
+            'PRA': 'Primary Rate Access - primární přístup ISDN (30B+D, 2048 kbit/s)',
+            'ADSL': 'Asymmetric Digital Subscriber Line - asymetrická DSL',
+            'ADSL2': 'ADSL 2. generace (až 12 Mbit/s downstream)',
+            'ADSL2+': 'ADSL 3. generace (až 24 Mbit/s downstream, pásmo do 2,208 MHz)',
+            'VDSL': 'Very-high-bit-rate DSL - velmi vysokorychlostní DSL',
+            'VDSL2': 'VDSL 2. generace (až 100 Mbit/s, pásmo do 30 MHz)',
+            'HDSL': 'High-bit-rate DSL - vysokorychlostní symetrická DSL',
+            'SHDSL': 'Single-pair HDSL - HDSL na jednom páru',
+            'DSL': 'Digital Subscriber Line - digitální účastnická linka',
+            'DMT': 'Discrete Multi-Tone - modulace s diskrétními nosnými (OFDM)',
+            'VDMT': 'Vectored DMT - DMT s vektorováním pro potlačení přeslechů',
+            'QAM': 'Quadrature Amplitude Modulation - kvadraturní amplitudová modulace',
+            'ASK': 'Amplitude Shift Keying - amplitudová klíčovací modulace',
+            'PSK': 'Phase Shift Keying - fázová klíčovací modulace',
+            'AM': 'Amplitude Modulation - amplitudová modulace',
+            'FM': 'Frequency Modulation - frekvenční modulace',
+            'PM': 'Phase Modulation - fázová modulace',
+            'FDD': 'Frequency Division Duplexing - frekvenční dělení pro duplex',
+            'TDD': 'Time Division Duplexing - časové dělení pro duplex',
+            'FDM': 'Frequency Division Multiplexing - frekvenční multiplex',
+            'TDM': 'Time Division Multiplexing - časový multiplex',
+            'WDM': 'Wavelength Division Multiplexing - vlnový multiplex',
+            'FDMA': 'Frequency Division Multiple Access - frekvenční vícenásobný přístup',
+            'TDMA': 'Time Division Multiple Access - časový vícenásobný přístup',
+            'CDMA': 'Code Division Multiple Access - kódový vícenásobný přístup',
+            'WDMA': 'Wavelength Division Multiple Access - vlnový vícenásobný přístup',
+            'SS7': 'Signaling System No. 7 - signalizační systém č. 7 (síťová signalizace)',
+            'DSS1': 'Digital Subscriber Signalling System No. 1 - účastnická signalizace ISDN',
+            'CAS': 'Channel Associated Signalling - signalizace přidružená hovorovým kanálům',
+            'BORSCHT': 'Battery, Overvoltage, Ringing, Supervision, Codec, Hybrid, Test - funkce účastnické sady',
+            'STP': 'Shielded Twisted Pair - stíněný kroucený pár',
+            'UTP': 'Unshielded Twisted Pair - nestíněný kroucený pár',
+            'SM': 'Single Mode - jednovidové optické vlákno',
+            'MM': 'Multi Mode - mnohovidové optické vlákno',
+            'SI': 'Step Index - skoková změna indexu lomu',
+            'GI': 'Graded Index - gradientní změna indexu lomu',
+            'NA': 'Numerical Aperture - numerická apertura (schopnost vlákna sbírat světlo)',
+            'HDLC': 'High-level Data Link Control - protokol spojové vrstvy',
+            'MAC': 'Medium Access Control - řízení přístupu k médiu (podvrstva spojové vrstvy)',
+            'NRZ': 'Non-Return to Zero - linkový kód bez návratu k nule',
+            'AMI': 'Alternate Mark Inversion - bipolární kód se střídavou inverzí',
+            'NEXT': 'Near-End Crosstalk - přeslech na blízkém konci',
+            'FEXT': 'Far-End Crosstalk - přeslech na vzdáleném konci',
+            'SNR': 'Signal-to-Noise Ratio - odstup signálu od šumu',
+            'RFI': 'Radio Frequency Interference - vysokofrekvenční rušení',
+            'VoIP': 'Voice over IP - hlasové služby přes IP',
+            'MIMO': 'Multiple Input Multiple Output - více vstupů a výstupů (anténní systém)',
+            'EFM': 'Ethernet in the First Mile - Ethernet v přístupové síti',
+            'EFMC': 'EFM Copper - EFM přes metalickou přípojku',
+            'CSD': 'Circuit Switched Data - přepojování okruhů pro data',
+            'ADM': 'Add-Drop Multiplexer - přidávací/odnímací multiplexer',
+            'OTM': 'Optical Transport Module - optický transportní modul',
+            'OTH': 'Optical Transport Hierarchy - optická transportní hierarchie',
+            'SOH': 'Section Overhead - režie sekce',
+            'BTS': 'Base Transceiver Station - základnová vysílací stanice',
+            'BSC': 'Base Station Controller - řadič základnových stanic',
+            'MSC': 'Mobile Switching Center - mobilní ústředna',
+            'HLR': 'Home Location Register - domácí lokalizační registr',
+            'VLR': 'Visitor Location Register - návštěvnický lokalizační registr',
+            'UE': 'User Equipment - uživatelské zařízení (v LTE)',
+            'eNodeB': 'evolved NodeB - základnová stanice LTE',
+            'RNC': 'Radio Network Controller - řadič rádiové sítě (UMTS)',
+            'ČTÚ': 'Český telekomunikační úřad - regulátor elektronických komunikací',
+            'ITU': 'International Telecommunication Union - Mezinárodní telekomunikační unie',
+            'ETSI': 'European Telecommunications Standards Institute',
+            'IETF': 'Internet Engineering Task Force',
+            'LED': 'Light Emitting Diode - světlo emitující dioda',
+            'IFFT': 'Inverse Fast Fourier Transform - inverzní rychlá Fourierova transformace',
+            'FFT': 'Fast Fourier Transform - rychlá Fourierova transformace',
+            'FEC': 'Forward Error Correction - dopředná korekce chyb',
+            'TC': 'Trellis Code - mřížkové kódování',
+            'LFSR': 'Linear Feedback Shift Register - posuvný registr s lineární zpětnou vazbou',
+            'LAN': 'Local Area Network - lokální síť',
+            'MAN': 'Metropolitan Area Network - metropolitní síť',
+            'WAN': 'Wide Area Network - rozlehlá síť',
+            'PAN': 'Personal Area Network - osobní síť',
+            'DTE': 'Data Terminal Equipment - koncové datové zařízení',
+            'DCE': 'Data Circuit-terminating Equipment - zařízení ukončující datový okruh',
+            'NSN': 'National Significant Number - národní číslo (9 číslic v ČR)',
+            'KI': 'Kanálový Interval - časový slot v rámci PCM',
+        };
+        
+        const zkratky = Object.keys(zkratkyData).sort();
+
+        const abbreviationsList = document.getElementById('abbreviationsList');
+        const searchInput = document.getElementById('searchInput');
+        const totalCount = document.getElementById('totalCount');
+        const visibleCount = document.getElementById('visibleCount');
+
+        // Funkce pro vykreslení zkratek
+        function renderAbbreviations(filteredZkratky = zkratky) {
+            abbreviationsList.innerHTML = '';
+
+            if (filteredZkratky.length === 0) {
+                abbreviationsList.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">🔍</div>
+                        <div class="no-results-text">Žádné výsledky</div>
+                        <div>Zkuste jiné vyhledávání</div>
+                    </div>
+                `;
+                visibleCount.textContent = '0';
+                return;
+            }
+
+            // Seskupení podle prvního písmene
+            const grouped = {};
+            filteredZkratky.forEach(zkr => {
+                const firstLetter = zkr[0];
+                if (!grouped[firstLetter]) {
+                    grouped[firstLetter] = [];
+                }
+                grouped[firstLetter].push(zkr);
+            });
+
+            // Vykreslení po skupinách
+            Object.keys(grouped).sort().forEach(letter => {
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.textContent = letter;
+                abbreviationsList.appendChild(header);
+
+                grouped[letter].forEach((zkr, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'abbreviation-item';
+                    
+                    const explanation = zkratkyData[zkr] || 'Vysvětlení není k dispozici';
+                    
+                    item.innerHTML = `
+                        <div class="abbreviation-header">
+                            <span class="abbreviation-text">${zkr}</span>
+                            <span class="abbreviation-badge">${letter}</span>
+                        </div>
+                        <div class="explanation">${explanation}</div>
+                    `;
+                    
+                    // Toggle vysvětlení při kliknutí
+                    item.addEventListener('click', function() {
+                        const explElem = this.querySelector('.explanation');
+                        explElem.classList.toggle('show');
+                    });
+                    
+                    abbreviationsList.appendChild(item);
+                });
+            });
+
+            visibleCount.textContent = filteredZkratky.length;
+        }
+
+        // Vyhledávání
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toUpperCase();
+            const filtered = zkratky.filter(zkr => zkr.includes(searchTerm));
+            renderAbbreviations(filtered);
+        });
+
+        // Inicializace
+        totalCount.textContent = zkratky.length;
+        renderAbbreviations();
+    </script>
+</body>
+</html>

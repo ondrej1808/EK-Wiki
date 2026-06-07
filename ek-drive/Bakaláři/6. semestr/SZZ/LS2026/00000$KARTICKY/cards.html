@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Kartičky</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">🎯 Pokrok: 0%</div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    <div class="mobile-header">
+        <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
+        <div class="mobile-stats">
+            <div class="stat-item">Zbývá: <span id="mobileRemaining" class="stat-value">0</span></div>
+            <div class="stat-item">Úspěšnost: <span id="mobileAccuracy" class="stat-value">0%</span></div>
+        </div>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+    </div>
+
+    <div class="menu-overlay" onclick="toggleMenu()"></div>
+    <div class="menu-popup" id="menuPopup">
+        <h3>Menu</h3>
+        <div id="mobileMenuContent">
+            </div>
+        <button class="btn btn-secondary" onclick="toggleMenu()">Zavřít</button>
+    </div>
+
+    <div class="wrong-answer-overlay" id="wrongAnswerOverlay"></div>
+    <div class="wrong-answer-popup" id="wrongAnswerPopup" role="dialog" aria-modal="true" aria-labelledby="wrongAnswerTitle">
+        <h3 id="wrongAnswerTitle">Vyberte možnost</h3>
+        <p>Jak se má tato karta vrátit?</p>
+        <p class="wrong-answer-hint">Zkratky: 1–5 nebo +ěščř</p>
+        <div class="wrong-answer-actions">
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 10, event)">1️⃣ Připomenout za 10 karet</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 20, event)">2️⃣ Připomenout za 20 karet</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 50, event)">3️⃣ Připomenout za 50 karet</button>
+            <button class="btn btn-secondary" onclick="handleWrongAnswerChoice('remind', 100, event)">4️⃣ Připomenout za 100 karet</button>
+            <button class="btn btn-primary" onclick="handleWrongAnswerChoice('random', null, event)">5️⃣ 🔀 Náhodně zamíchat do dalších karet</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="menu-section">
+            <div class="header">
+                <div class="header-title">
+                    <div style="width: 24px"></div>
+                    <div class="header-title-text">
+                        <h1>TSI Kartičky</h1>
+                        <div class="stats">
+                            <div class="stat-item">Celkem: <span id="totalCount" class="stat-value">0</span></div>
+                            <div class="stat-item">Zbývá: <span id="remainingCount" class="stat-value">0</span></div>
+                            <div class="stat-item">Správně: <span id="correctCount" class="stat-value">0</span></div>
+                            <div class="stat-item">Špatně: <span id="wrongCount" class="stat-value">0</span></div>
+                            <div class="stat-item">Úspěšnost: <span id="accuracy" class="stat-value">0%</span></div>
+                        </div>
+                    </div>
+                    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+                </div>
+                
+                <div class="header-content">
+                    <div class="controls">
+                        <div class="select-wrapper">
+                            <select id="subjectSelect" class="subject-select" onchange="changeSubject(this.value)">
+                                <option value="" disabled selected>📂 Vybrat sadu...</option>
+                                <option value="json/ozd-open-micro.json">OZD - Open microcards</option>
+                                <option value="json/szz-open-micro.json">SZZ - Open microcards</option>
+                                <option value="json/oks.json">OKS - Optické systémy</option>
+                                </select>
+                        </div>
+
+                        <div class="select-wrapper">
+                            <select id="subjectFilterSelect" class="subject-select" onchange="changeSubjectFilter(this.value)">
+                                <option value="">📚 Vybrat předmět...</option>
+                            </select>
+                        </div>
+
+                        <div class="select-wrapper">
+                            <select id="subsetSelect" class="subject-select" onchange="changeSubsetFilter(this.value)">
+                                <option value="">🧭 Všechny subsety</option>
+                            </select>
+                        </div>
+
+                        <div class="file-input-wrapper">
+                            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📂 Nahrát vlastní</button>
+                            <input type="file" id="fileInput" accept=".json">
+                        </div>
+                        <div class="file-input-wrapper">
+                            <button class="btn btn-warning" onclick="document.getElementById('ankiInput').click()">🔄 Import Anki</button>
+                            <input type="file" id="ankiInput" accept=".txt">
+                        </div>
+                        <button class="btn btn-secondary" onclick="shuffleCurrentSet()">🔀 Zamíchat set</button>
+                        <button class="btn btn-secondary" onclick="openCurrentSetInEditor()">✏️ Otevřít v editoru</button>
+                        <button class="btn btn-secondary" onclick="resetProgress()">↺ Resetovat</button>
+                            <button class="btn btn-warning" onclick="clearAppCache()">🧹 Smazat cache</button>
+                        <button class="btn btn-success" onclick="downloadFailed()">⬇️ Stáhnout chyby</button>
+                    </div>
+                    
+                    <div style="margin-top: 15px; text-align: left;">
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="onlyFlagged" onchange="toggleFlaggedMode()">
+                            <label for="onlyFlagged">🚩 Zobrazit pouze označené</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards-section">
+            <div class="cards-grid" id="cardsGrid">
+                </div>
+        </div>
+
+        <div class="navigation-section">
+            <button class="nav-btn prev" onclick="prevCard()" id="prevBtn" disabled>←</button>
+            <button class="nav-btn next" onclick="nextCard()" id="nextBtn">→</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

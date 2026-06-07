@@ -8,13 +8,12 @@
   <!-- KaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
-          onload="window._katexReady=true"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-  <!-- marked.js (markdown) -->
+  <!-- marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 
-  <!-- tikzjax (TikZ → SVG via WebAssembly) — MutationObserver auto-processes script[type="text/tikz"] -->
+  <!-- tikzjax — auto-processes <script type="text/tikz"> via MutationObserver -->
   <script defer src="https://tikzjax.com/v1/tikzjax.js"></script>
 
   <style>
@@ -24,56 +23,68 @@
          background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
 
     .shell{min-height:100vh;padding:20px}
-    .layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:310px 1fr;gap:16px}
+    .layout{max-width:1340px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;gap:16px}
 
     /* ── Sidebar ── */
     .panel{background:rgba(255,255,255,.97);border-radius:16px;
            box-shadow:0 12px 40px rgba(2,6,23,.3);padding:14px;
            position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column}
-    .panel h1{margin:0 0 4px;font-size:19px;color:var(--text)}
+    .panel h1{margin:0 0 4px;font-size:18px;color:var(--text)}
     .panel .sub{margin:0 0 10px;font-size:12px;color:var(--muted)}
     .back{display:inline-block;margin-bottom:10px;color:#1d4ed8;text-decoration:none;font-weight:600;font-size:13px}
-    #topicFilter{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;font-size:13px}
-    #topicList{overflow:auto;padding-right:2px;flex:1}
+    #topicFilter{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;font-size:13px}
+    #topicList{overflow-y:auto;overflow-x:hidden;padding-right:2px;flex:1}
 
-    /* Section headers */
-    .section-hdr{display:flex;align-items:center;justify-content:space-between;
-                 padding:6px 8px;margin:6px 0 4px;cursor:pointer;border-radius:8px;
-                 font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-                 color:#64748b;background:#f8fafc;user-select:none}
-    .section-hdr:hover{background:#f1f5f9}
-    .section-hdr .arrow{transition:transform .2s}
-    .section-hdr.collapsed .arrow{transform:rotate(-90deg)}
+    /* Section dividers */
+    .section-hdr{padding:5px 4px 3px;margin:8px 0 3px;
+                 font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+                 color:#94a3b8;border-bottom:1px solid #e2e8f0}
 
     /* Subject groups */
-    .subject-group{margin-bottom:4px}
-    .subject-hdr{display:flex;align-items:center;gap:6px;width:100%;text-align:left;
-                 padding:7px 10px;border:none;background:none;cursor:pointer;
-                 font-size:12px;font-weight:600;color:#374151;border-radius:8px}
-    .subject-hdr:hover{background:#f1f5f9}
-    .subject-hdr .badge{font-size:10px;color:#94a3b8;margin-left:auto}
-    .subject-hdr .arr{font-size:10px;color:#94a3b8;transition:transform .15s}
+    .subject-group{margin-bottom:2px}
+    .subject-hdr{display:flex;align-items:center;gap:5px;width:100%;text-align:left;
+                 padding:6px 8px;border:none;background:none;cursor:pointer;border-radius:8px}
+    .subject-hdr:hover{background:#f8fafc}
+    .subj-code{font-size:10px;font-weight:700;color:#2563eb;background:#eff6ff;
+               padding:1px 5px;border-radius:4px;flex-shrink:0;white-space:nowrap}
+    .subj-title{font-size:11px;font-weight:600;color:#374151;flex:1;text-align:left;line-height:1.3}
+    .arr{font-size:9px;color:#94a3b8;transition:transform .15s;flex-shrink:0}
     .subject-hdr.open .arr{transform:rotate(90deg)}
-    .subject-notes{padding-left:10px;display:none}
+    .subject-notes{padding-left:6px;display:none}
     .subject-notes.open{display:block}
 
-    /* Topic buttons */
-    .topic-btn{width:100%;text-align:left;padding:7px 10px;border:1px solid var(--line);
-               border-radius:8px;background:#fff;color:var(--text);cursor:pointer;margin-bottom:5px;
-               font-size:12px;line-height:1.3}
-    .topic-btn small{display:block;color:#64748b;margin-top:2px;font-size:11px}
-    .topic-btn.active{border-color:#93c5fd;background:#eff6ff}
-    .topic-btn:hover:not(.active){background:#f8fafc}
+    /* Resource buttons */
+    .topic-btn{width:100%;text-align:left;padding:5px 8px;border:1px solid transparent;
+               border-radius:7px;background:none;cursor:pointer;margin-bottom:3px;
+               display:flex;align-items:flex-start;gap:6px;line-height:1.3}
+    .topic-btn:hover{background:#f8fafc;border-color:#e2e8f0}
+    .topic-btn.active{background:#eff6ff;border-color:#93c5fd}
+    .res-tag{font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;
+             flex-shrink:0;margin-top:1px;letter-spacing:.03em}
+    .tag-note{background:#dbeafe;color:#1d4ed8}
+    .tag-pdf {background:#fee2e2;color:#b91c1c}
+    .tag-sum {background:#f1f5f9;color:#475569}
+    .res-label{font-size:11px;color:#374151;line-height:1.4}
 
     /* ── Content pane ── */
     .content{background:rgba(255,255,255,.97);border-radius:16px;
              box-shadow:0 12px 40px rgba(2,6,23,.3);padding:28px 32px;
-             min-height:calc(100vh - 40px)}
-    #docTitle{margin:0 0 6px;color:var(--text);font-size:22px}
-    #docMeta{margin:0 0 20px;color:#64748b;font-size:12px}
+             min-height:calc(100vh - 40px);display:flex;flex-direction:column}
+    #docTitle{margin:0 0 5px;color:var(--text);font-size:21px}
+    #docMeta{margin:0 0 18px;color:#64748b;font-size:12px;word-break:break-all}
 
-    /* ── Rendered markdown styles ── */
-    #docBody{color:var(--text);line-height:1.7;font-size:15px}
+    /* PDF viewer */
+    .pdf-toolbar{margin-bottom:10px}
+    .pdf-newtab{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;
+                border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;
+                color:#1d4ed8;text-decoration:none;font-size:13px;font-weight:500;
+                transition:box-shadow .15s,transform .15s}
+    .pdf-newtab:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,23,42,.10)}
+    .pdf-frame{width:100%;flex:1;min-height:calc(100vh - 200px);border:none;border-radius:10px;
+               box-shadow:0 2px 12px rgba(15,23,42,.08)}
+
+    /* ── Rendered markdown ── */
+    #docBody{color:var(--text);line-height:1.75;font-size:15px;flex:1}
     #docBody.status{color:#64748b;font-style:italic;padding:20px 0}
 
     #docBody h1,#docBody h2,#docBody h3,#docBody h4{margin:1.4em 0 .5em;color:#0f172a;line-height:1.3}
@@ -84,43 +95,28 @@
     #docBody p{margin:.6em 0}
     #docBody ul,#docBody ol{margin:.5em 0;padding-left:1.6em}
     #docBody li{margin:.25em 0}
-    #docBody li>ul,#docBody li>ol{margin:.1em 0}
-
-    /* blockquote (Obsidian callouts map here) */
-    #docBody blockquote{margin:.8em 0;padding:.5em 1em;
-                        border-left:3px solid #93c5fd;background:#eff6ff;
-                        border-radius:0 8px 8px 0;color:#1e40af}
+    #docBody blockquote{margin:.8em 0;padding:.5em 1em;border-left:3px solid #93c5fd;
+                        background:#eff6ff;border-radius:0 8px 8px 0;color:#1e40af}
     #docBody blockquote p{margin:0}
-
-    /* code */
     #docBody code{background:#f1f5f9;padding:.1em .35em;border-radius:4px;
                   font-size:.88em;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
     #docBody pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;border-radius:10px;
                  overflow-x:auto;margin:1em 0}
     #docBody pre code{background:none;padding:0;color:inherit;font-size:.85em}
-
-    /* tables */
     #docBody table{border-collapse:collapse;margin:1em 0;width:100%;font-size:.9em}
     #docBody th,#docBody td{border:1px solid #e2e8f0;padding:6px 12px;text-align:left}
     #docBody th{background:#f8fafc;font-weight:600}
-
-    /* KaTeX display math */
     #docBody .katex-display{margin:.8em 0;overflow-x:auto}
-
-    /* TikZ SVG output */
     #docBody svg[data-tikzjax]{display:block;max-width:100%;margin:1em auto}
-
-    /* hr */
     #docBody hr{border:none;border-top:1px solid #e2e8f0;margin:1.5em 0}
-
-    /* strong/em */
     #docBody strong{font-weight:700}
     #docBody em{font-style:italic;color:#374151}
 
-    @media (max-width:980px){
+    @media(max-width:980px){
       .layout{grid-template-columns:1fr}
       .panel{position:static;height:auto}
       .content{min-height:unset;padding:18px}
+      .pdf-frame{min-height:70vh}
     }
   </style>
 </head>
@@ -130,7 +126,7 @@
       <aside class="panel">
         <a class="back" href="index.html">← Rozcestník</a>
         <h1>SZZ Wiki</h1>
-        <p class="sub">Statická wiki — GitHub Pages friendly.</p>
+        <p class="sub">Poznámky, PDFka a shrnutí — staticky z GitHub Pages.</p>
         <input id="topicFilter" type="search" placeholder="Hledat…" autocomplete="off" />
         <div id="topicList" aria-label="Seznam témat"></div>
       </aside>
@@ -138,7 +134,7 @@
       <main class="content">
         <h2 id="docTitle">Načítání…</h2>
         <p id="docMeta"></p>
-        <div id="docBody" class="status">Načítám index témat…</div>
+        <div id="docBody" class="status">Vyberte téma vlevo.</div>
       </main>
     </div>
   </div>

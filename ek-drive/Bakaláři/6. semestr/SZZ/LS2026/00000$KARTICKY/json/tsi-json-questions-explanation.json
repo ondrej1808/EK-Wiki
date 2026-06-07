@@ -1,0 +1,3021 @@
+{
+  "title": "TSI Zkouska - Telekomunikacni systemy a IS (Opticke systemy + LTE + Optoelektronika + kompletni sada otazek)",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Maximální rozsah útlumu Gigabitové PON je:",
+      "options": [
+        "3 dB",
+        "13 dB",
+        "32 dB",
+        "130 dB"
+      ],
+      "correctIndex": 2,
+      "explanation": "Gigabitová pasivní optická síť (GPON) je navržena s maximálním rozsahem útlumu 32 dB, což umožňuje pokrytí typické přístupové sítě s dostatečnou rezervou pro rozbočovače a útlum vlákna."
+    },
+    {
+      "id": 2,
+      "question": "Fyzický dosah PON je typicky:",
+      "options": [
+        "200 km",
+        ">1000 km",
+        "20 km",
+        "několik metrů"
+      ],
+      "correctIndex": 2,
+      "explanation": "Pasivní optické sítě (PON) mají typický fyzický dosah okolo 20 km, což odpovídá požadavkům na přístupové sítě v městských a příměstských oblastech."
+    },
+    {
+      "id": 3,
+      "question": "Gigabitová PON podle ITU-T (2010) nabízí následující přenosové rychlostí pro směr downstream / upstream:",
+      "options": [
+        "1 Gbit/s symetricky",
+        "10 Gbit/s / 2.5 Gbit/s asymetricky",
+        "10 Gbit/s symetricky",
+        "10 Gbit/s / 1.25 Gbit/s asymetricky"
+      ],
+      "correctIndex": 1,
+      "explanation": "GPON podle standardu ITU-T G.987 (XG-PON) poskytuje asymetrickou přenosovou rychlost 10 Gbit/s ve směru downstream a 2,5 Gbit/s ve směru upstream."
+    },
+    {
+      "id": 4,
+      "question": "DWDM umožňuje:",
+      "options": [
+        "kanálovou rozteč aspoň 20 nm",
+        "kanálovou rozteč 0,8 nm a méně",
+        "použití Fabry-Perot laserů",
+        "použití LED"
+      ],
+      "correctIndex": 1,
+      "explanation": "DWDM (Dense Wavelength Division Multiplexing) je charakterizován hustým vlnovým multiplexem s kanálovou roztečí 0,8 nm a méně, což umožňuje přenos mnoha kanálů v jednom optickém vlákně."
+    },
+    {
+      "id": 5,
+      "question": "CWDM umožňuje:",
+      "options": [
+        "kanálovou rozteč  20 nm a větší",
+        "kanálovou rozteč 0,8 nm a méně",
+        "dosah kolem 1000 km",
+        "přenosovou kapacitu vlákna až 1 Tbit/s"
+      ],
+      "correctIndex": 0,
+      "explanation": "CWDM (Coarse Wavelength Division Multiplexing) používá řidší vlnový multiplex s kanálovou roztečí 20 nm a větší, což snižuje náklady na komponenty, ale omezuje počet kanálů."
+    },
+    {
+      "id": 6,
+      "question": "FTTH je:",
+      "options": [
+        "je aktivní optickou sítí bez pasivní síťových prvků",
+        "přístupovou sítí, ve které optická vlákna jsou ukončena v domácnosti koncového uživatele",
+        "přístupovou sítí, ve které na optická vlákna navazuje metalická infrastruktura",
+        "přístupovou sítí, ve které optická vlákna se kombinují s Wi-Fi"
+      ],
+      "correctIndex": 1,
+      "explanation": "FTTH (Fiber To The Home) je architektura přístupové sítě, kde optické vlákno vede přímo do domácnosti koncového uživatele, což poskytuje nejvyšší možné přenosové rychlosti a kvalitu."
+    },
+    {
+      "id": 7,
+      "question": "Základní přenosový modul v Optické Transportní Hierarchii (OTM-0.1, bez vlnového multiplexu) může přenášet:",
+      "options": [
+        "STM-16 při 2,5 Gbit/s",
+        "STM-16 při 10 Gbit/s",
+        "STM-64 při 2,5 Gbit/s",
+        "STM-64 při 40 Gbit/s"
+      ],
+      "correctIndex": 0,
+      "explanation": "Základní modul OTM-0.1 v Optické Transportní Hierarchii je schopen přenášet STM-16 signál při rychlosti 2,5 Gbit/s."
+    },
+    {
+      "id": 8,
+      "question": "Optické svary:",
+      "options": [
+        "mají větší útlum než optické konektory",
+        "nevykazují zpětné odrazy, které postihuje konektory",
+        "typicky mají útlum kolem 1-2 dB",
+        "nelze detekovat optickým reflektometrem"
+      ],
+      "correctIndex": 1,
+      "explanation": "Optické svary mají výhodu v absenci zpětných odrazů, které jsou typické pro optické konektory. Svary mají také nižší útlum (typicky < 0,1 dB) než konektory."
+    },
+    {
+      "id": 9,
+      "question": "OTDR:",
+      "options": [
+        "funguje na principu Stimulovaného Ramanova Rozptylu",
+        "funguje na principu zpětného Rayleighova rozptylu",
+        "vyžaduje přístup k oběma koncům měřeného vlákna",
+        "umožňuje měření na vzdálenosti až 1000 km (podmořské spoje)"
+      ],
+      "correctIndex": 1,
+      "explanation": "OTDR (Optical Time-Domain Reflectometer) funguje na principu zpětného Rayleighova rozptylu, což umožňuje měření charakteristik optického vlákna pouze z jednoho konce."
+    },
+    {
+      "id": 10,
+      "question": "OTDR:",
+      "options": [
+        "zobrazuje optické svary jako výkonové špičky (lokální maximum intenzity záření)",
+        "zobrazuje optické konektory jako výkonové špičky",
+        "nezobrazuje svary z důvodu absence zpětného odrazu",
+        "nezobrazují optické konektory z důvodu absence zpětných odrazů"
+      ],
+      "correctIndex": 1,
+      "explanation": "OTDR zobrazuje optické konektory jako výkonové špičky kvůli zpětnému odrazu na rozhraní. Optické svary se zobrazují jako skoky útlumu bez špičky, protože nevykazují zpětný odraz."
+    },
+    {
+      "id": 11,
+      "question": "Typický rozsah hodnot zisku EDFA zesilovače je:",
+      "options": [
+        "5 až 10 dB",
+        "30 až 50 dBm",
+        "20 až 50 dB",
+        "10 až 15 dBm"
+      ],
+      "correctIndex": 2,
+      "explanation": "EDFA (Erbium-Doped Fiber Amplifier) zesilovače typicky poskytují zisk v rozsahu 20 až 50 dB, což je dostatečné pro kompenzaci útlumu na dlouhých trasách."
+    },
+    {
+      "id": 12,
+      "question": "Výkonový zesilovač (booster) je zesilovač, který se umísťuje:",
+      "options": [
+        "na počátku sítě v blízkosti zdroje optického záření",
+        "na konci sítě, těsně před detektorem optického záření",
+        "průběžně na trase, spolu s kompenzátory disperze",
+        "na konci trasy, ale jeho čerpací zdroj se umísťuje uprostřed trasy"
+      ],
+      "correctIndex": 0,
+      "explanation": "Výkonový zesilovač (booster) se umísťuje na počátku trasy v blízkosti vysílače, aby zvýšil výkon signálu před vstupem do přenosového vlákna."
+    },
+    {
+      "id": 13,
+      "question": "Princip fungování EDFA je založen na:",
+      "options": [
+        "Stimulovaném Ramanově Rozptylu",
+        "zpětném rozptylu",
+        "stimulované emisi záření",
+        "spontánní emisi záření"
+      ],
+      "correctIndex": 2,
+      "explanation": "EDFA (Erbium-Doped Fiber Amplifier) funguje na principu stimulované emise záření v optickém vlákně dotovaném erbiem, které je čerpáno externím laserem."
+    },
+    {
+      "id": 14,
+      "question": "Ramanův zesilovač generuje záření na vlnové délce, která je:",
+      "options": [
+        "stejná jako vlnová délka čerpacího zdroje",
+        "závislá na délce optického vlákna",
+        "posunutá o asi 100 nm směrem k delším vlnovým délkám",
+        "posunutá o asi 100 nm směrem ke kratším vlnovým délkám"
+      ],
+      "correctIndex": 2,
+      "explanation": "Ramanův zesilovač využívá Stimulovaný Ramanův Rozptyl (SRS), při kterém dochází k posunu vlnové délky asi o 100 nm směrem k delším vlnovým délkám (Stokesův posun)."
+    },
+    {
+      "id": 15,
+      "question": "Ramanův zesilovač může pracovat jako:",
+      "options": [
+        "RLA",
+        "RDA",
+        "NRD",
+        "DRA"
+      ],
+      "correctIndex": 3,
+      "explanation": "Ramanův zesilovač může pracovat jako **DRA (Distributed Raman Amplifier)**, což umožňuje distribuované zesílení podél celé délky přenosového vlákna. Ostatní zkratky: **RLA** (Remote Line Amplifier) - vzdálený linkový zesilovač, **RDA** (Remote Distribution Amplifier) - vzdálený distribuční zesilovač, **NRD** - není standardní označení pro optické zesilovače."
+    },
+    {
+      "id": 16,
+      "question": "Jednou z nevýhod optovláknových dotovaných zesilovačů je:",
+      "options": [
+        "nízký zisk",
+        "úzké spektrum vyzařovaných vlnových délek",
+        "velký ASE šum",
+        "plochá charakteristika zisku"
+      ],
+      "correctIndex": 2,
+      "explanation": "Významnou nevýhodou dotovaných vláknových zesilovačů (jako EDFA) je ASE (Amplified Spontaneous Emission) šum, který se akumuluje při průchodu signálu řadou zesilovačů."
+    },
+    {
+      "id": 17,
+      "question": "Čerpací zdroj EDFA může pracovat na vlnové délce:",
+      "options": [
+        "630 nm",
+        "980 nm",
+        "630 nm",
+        "1550 nm"
+      ],
+      "correctIndex": 1,
+      "explanation": "EDFA zesilovače používají čerpací zdroje typicky na vlnových délkách 980 nm nebo 1480 nm. Vlnová délka 980 nm poskytuje nižší šumovou charakteristiku."
+    },
+    {
+      "id": 18,
+      "question": "Chromatická disperze:",
+      "options": [
+        "se vyjadřuje v jednotkách [ps/km]",
+        "se skládá s materiálové a vidové disperze",
+        "se skládá s materiálové a polarizační vidové disperze",
+        "znamená, že každá frekvenční složka se šíří jinou rychlosti"
+      ],
+      "correctIndex": 3,
+      "explanation": "Chromatická disperze znamená, že různé frekvenční (vlnové) složky optického signálu se šíří různou rychlostí, což vede k rozšíření pulzů a mezisymbolové interferenci."
+    },
+    {
+      "id": 19,
+      "question": "Vidová disperze:",
+      "options": [
+        "znamená, že každá frekvenční složka se šíří jinou optickou drahou",
+        "znamená, že každá frekvenční složka se šíří jinou rychlosti",
+        "znamená, že každý vid záření se šíří jinou optickou drahou",
+        "představuje vždy záporné hodnoty"
+      ],
+      "correctIndex": 2,
+      "explanation": "Vidová disperze (modal dispersion) znamená, že různé vidy (módy) záření šířící se optickým vláknem mají různé optické dráhy, což vede k časovému rozptylu signálu."
+    },
+    {
+      "id": 20,
+      "question": "Disperzi kompenzující vlákno (DCF):",
+      "options": [
+        "může být navrženo jako mikrostrukturní vlákno (Photonic Crystal Fibre)",
+        "představuje kladné hodnoty disperzního koeficientu",
+        "může mít disperzní koeficient 1000 ps/ns/km",
+        "může potlačovat kladnou materiálovou disperzi s použitím záporné vidové disperze"
+      ],
+      "correctIndex": 0,
+      "explanation": "Disperzi kompenzující vlákna (DCF) mohou být navržena jako mikrostrukturní vlákna (Photonic Crystal Fibre), která využívají periodickou strukturu pro ovládání disperzních vlastností."
+    },
+    {
+      "id": 21,
+      "question": "PMD znamená:",
+      "options": [
+        "různou rychlost pro obě souřadnice x a y (vlna postupuje ve směru z)",
+        "interferenci vybraných polarizačních složek",
+        "změnu hodnoty indexu lomu pro různou délku vlákna",
+        "že každá vlnová složka se šíří jinou rychlosti"
+      ],
+      "correctIndex": 0,
+      "explanation": "PMD (Polarization Mode Dispersion) znamená polarizační vidovou disperzi, kdy dvě ortogonální polarizační složky světla (x a y) se šíří různou rychlostí, což způsobuje rozšíření pulzu."
+    },
+    {
+      "id": 22,
+      "question": "Provozování DWDM systému vedle CWDM systému (DWDM over CWDM):",
+      "options": [
+        "má za účel zvýšení informační kapacity a přenosové rychlosti",
+        "je aktuálním trendem, jelikož technologie CWDM už není podporovaná",
+        "vyžaduje odlišné modulační formáty u CWDM a DWDM",
+        "není možná z důvodu čtyřvlnného směšování (FWM)"
+      ],
+      "correctIndex": 0,
+      "explanation": "Provozování DWDM nad CWDM (DWDM over CWDM) umožňuje kombinovat výhody obou technologií a dosáhnout vyšší informační kapacity a přenosové rychlosti využitím více vlnových kanálů."
+    },
+    {
+      "id": 23,
+      "question": "LTE znamená:",
+      "options": [
+        "Lightweight Terminal Emulation",
+        "Long Term Evolution",
+        "Light Transmission Evolution",
+        "Link To East"
+      ],
+      "correctIndex": 1,
+      "explanation": "LTE znamená **Long Term Evolution** -标准mobilní sítě 4. generace, která představuje významný evoluční krok od 3G technologií směrem k vyšším přenosovým rychlostem a nižším latencím."
+    },
+    {
+      "id": 24,
+      "question": "Jaké jsou hlavní milníky ve vývoji mobilní komunikace?",
+      "options": [
+        "Token - CSMA -LTE",
+        "MS - BTS - BSC - MSC",
+        "UE - HLR - VLR - MSC - BSC - RNC - eNodeB - BTS",
+        "NMT - GSM - GPRS - EDGE - UMTS - LTE - LTE-A"
+      ],
+      "correctIndex": 3,
+      "explanation": "Hlavní milníky ve vývoji mobilních sítí jsou: **NMT** (1G), **GSM** (2G), **GPRS/EDGE** (2.5G/2.75G), **UMTS** (3G), **LTE** (4G) a **LTE-A** (LTE Advanced)."
+    },
+    {
+      "id": 25,
+      "question": "Stěžejní technologií systémů 1G je:",
+      "options": [
+        "NMT",
+        "GSM",
+        "GPRS",
+        "EDGE"
+      ],
+      "correctIndex": 0,
+      "explanation": "**NMT (Nordic Mobile Telephone)** byla stěžejní technologií první generace (1G) mobilních sítí. Jednalo se o analogový systém."
+    },
+    {
+      "id": 26,
+      "question": "Stěžejní technologií systémů 2G je:",
+      "options": [
+        "NMT",
+        "GSM",
+        "GPRS",
+        "EDGE"
+      ],
+      "correctIndex": 1,
+      "explanation": "**GSM (Global System for Mobile Communications)** je stěžejní technologií druhé generace (2G) mobilních sítí. Představuje přechod na digitální přenos."
+    },
+    {
+      "id": 27,
+      "question": "Stěžejní technologií systémů 2,5G je:",
+      "options": [
+        "NMT",
+        "GSM",
+        "GPRS",
+        "EDGE"
+      ],
+      "correctIndex": 2,
+      "explanation": "**GPRS (General Packet Radio Service)** je stěžejní technologií 2.5G, která přidává k GSM paketový přenos dat."
+    },
+    {
+      "id": 28,
+      "question": "Stěžejní technologií systémů 2,75G je:",
+      "options": [
+        "NMT",
+        "GSM",
+        "GPRS",
+        "EDGE"
+      ],
+      "correctIndex": 3,
+      "explanation": "**EDGE (Enhanced Data rates for GSM Evolution)** je technologie 2.75G, která dále zvyšuje přenosovou rychlost nad rámec GPRS."
+    },
+    {
+      "id": 29,
+      "question": "Stěžejní technologií systémů 3G je:",
+      "options": [
+        "NMT",
+        "GSM",
+        "GPRS",
+        "EDGE",
+        "UMTS",
+        "LTE"
+      ],
+      "correctIndex": 4,
+      "explanation": "**UMTS (Universal Mobile Telecommunications System)** je stěžejní technologií třetí generace (3G) mobilních sítí."
+    },
+    {
+      "id": 30,
+      "question": "Stěžejní technologií systémů 4G je:",
+      "options": [
+        "NMT",
+        "GSM",
+        "GPRS",
+        "EDGE",
+        "UMTS",
+        "LTE"
+      ],
+      "correctIndex": 5,
+      "explanation": "**LTE (Long Term Evolution)** je stěžejní technologií čtvrté generace (4G) mobilních sítí."
+    },
+    {
+      "id": 31,
+      "question": "Část 'Circuit switching' NEZAJIŠŤUJE:",
+      "options": [
+        "Telefonní hovory",
+        "Dělení zpráv do menších částí",
+        "Datová volání",
+        "Video hovory"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Circuit switching** (přepojování okruhů) je určen pro spojově orientované služby jako telefonní hovory. **Dělení zpráv do menších částí** (paketů) je typické pro **packet switching**."
+    },
+    {
+      "id": 32,
+      "question": "Část 'Packet switching' NEZAJIŠŤUJE:",
+      "options": [
+        "Rezervace vyhrazené cesty",
+        "Dělení zpráv do menších částí",
+        "Přenosy paketů",
+        "Sestavování paketů v cíli"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Packet switching** (přepojování paketů) NEZAJIŠŤUJE **rezervaci vyhrazené cesty** - to je charakteristické pro circuit switching. Paketový přenos funguje bez předem vyhrazené cesty."
+    },
+    {
+      "id": 33,
+      "question": "Z jakých bloků je složena technologie LTE?",
+      "options": [
+        "EPC",
+        "Internet",
+        "Ukládání uživatelských dat",
+        "BTS"
+      ],
+      "correctIndex": 0,
+      "explanation": "Technologie LTE je složena z **EPC (Evolved Packet Core)** - jádrové sítě a **E-UTRAN** (radiové přístupové sítě s eNodeB)."
+    },
+    {
+      "id": 34,
+      "question": "Jaké funkce zastřešuje eNodeB?",
+      "options": [
+        "Modulace a demodulace",
+        "Identifikace uživatele a adresování",
+        "Autentizace mezi sítí a terminálem",
+        "Ukládání uživatelských dat"
+      ],
+      "correctIndex": 0,
+      "explanation": "**eNodeB** (evolved NodeB) je základnová stanice v LTE, která zajišťuje **modulaci a demodulaci** signálů, řízení rádiových zdrojů a správu mobility."
+    },
+    {
+      "id": 35,
+      "question": "Logické kanály:",
+      "options": [
+        "řídí toky v bezdrátovém prostředí",
+        "implementují transportní kanál",
+        "popisují, co se vysílá",
+        "mohou být uplinkové nebo downlinkové"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Logické kanály** definují **co** se vysílá (typ informace) - např. řídicí informace nebo uživatelská data."
+    },
+    {
+      "id": 36,
+      "question": "Transportní kanály:",
+      "options": [
+        "řídí toky v bezdrátovém prostředí",
+        "implementují fyzický kanál",
+        "popisují, co se vysílá",
+        "mohou být uplinkové nebo downlinkové"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Transportní kanály** popisují **jak** a **kde** se data přenášejí a **mohou být uplinkové nebo downlinkové**."
+    },
+    {
+      "id": 37,
+      "question": "Fyzické kanály:",
+      "options": [
+        "řídí toky v bezdrátovém prostředí",
+        "implementují transportní kanál",
+        "popisují, co se vysílá",
+        "mohou být uplinkové nebo downlinkové"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Fyzické kanály** jsou skutečné rádiové kanály, které **implementují transportní kanály** na fyzické vrstvě."
+    },
+    {
+      "id": 38,
+      "question": "Co je pravdou ohledně Voice over LTE?",
+      "options": [
+        "LTE je založena na paketově orientované službě a tedy hovorová komunikace je v LTE nativně podporována",
+        "Hovorovou komunikaci v LTE zastřešují služby IMS",
+        "Hovorová komunikace v LTE není možná",
+        "LTE je založena na okruhově orientované službě a tedy hovorová komunikace je v LTE nativně podporována"
+      ],
+      "correctIndex": 1,
+      "explanation": "LTE je čistě paketová síť. **Hovorovou komunikaci v LTE zastřešují služby IMS (IP Multimedia Subsystem)**, které umožňují VoLTE (Voice over LTE)."
+    },
+    {
+      "id": 39,
+      "question": "'Simultaneous voice and LTE' znamená:",
+      "options": [
+        "Mobilní telefon pracuje současně v paketovém i okruhovém režimu",
+        "Mobilní telefon pracuje současně v hovorovém i ve video režimu",
+        "Mobilní telefon pracuje současně v režimu fotoaparát i kamera",
+        "Mobilní telefon pracuje současně s dvěma či více SIM kartami"
+      ],
+      "correctIndex": 0,
+      "explanation": "**SVLTE (Simultaneous Voice and LTE)** znamená, že mobilní telefon může současně využívat **paketový režim** (LTE pro data) a **okruhový režim** (např. 3G pro hlasový hovor)."
+    },
+    {
+      "id": 40,
+      "question": "Jak se nazývá mechanismus, který při požadavku na hovor provede přepnutí z režimu paketového přenosu dat do CS domény?",
+      "options": [
+        "CSMA",
+        "IMS",
+        "CSFB",
+        "SVLTE"
+      ],
+      "correctIndex": 2,
+      "explanation": "**CSFB (Circuit Switched Fallback)** je mechanismus, který při požadavku na hovor přepne zařízení z LTE (paketová doména) do 2G/3G sítě (okruhově přepínaná doména) pro uskutečnění hlasového hovoru."
+    },
+    {
+      "id": 41,
+      "question": "LTE Advanced přidává k LTE následující:",
+      "options": [
+        "Vícenásobné přihlášení uživatele",
+        "Agregace uživatelů do privátních skupin",
+        "Přenosy vícenásobnými anténními systémy",
+        "Video hovory"
+      ],
+      "correctIndex": 2,
+      "explanation": "**LTE Advanced** přidává pokročilé funkce jako **MIMO (Multiple Input Multiple Output)** - přenosy vícenásobnými anténními systémy, agregaci nosných frekvencí (Carrier Aggregation) a vylepšené koordinované systémy."
+    },
+    {
+      "id": 42,
+      "question": "Které z následujících tvrzení o QoS v LTE je pravdivé?",
+      "options": [
+        "Non-GBR nosič může být použit pro VoIP",
+        "Přenosy rychlostí vyšší jak GBR nejsou povoleny, i když je k dispozici volné pásmo",
+        "MBR nastavuje nižší hranici přenosové rychlosti",
+        "GBR nosič může být použit pro VoIP"
+      ],
+      "correctIndex": 3,
+      "explanation": "V LTE se používají **GBR (Guaranteed Bit Rate) nosiče** pro služby citlivé na zpoždění jako VoIP, které vyžadují garantovanou přenosovou rychlost. Non-GBR nosiče se používají pro best-effort služby."
+    },
+    {
+      "id": 43,
+      "question": "Které přenosové médium je typické pro páteřní telekomunikační sítě?",
+      "options": [
+        "jednovidové optické vlákno",
+        "mnohavidové optické vlákno",
+        "gradientní optické vlákno",
+        "plastové optické vlákno"
+      ],
+      "correctIndex": 0,
+      "explanation": "Páteřní telekomunikační sítě využívají jednovidové optické vlákno pro dosažení vysokých přenosových rychlostí na velké vzdálenosti."
+    },
+    {
+      "id": 44,
+      "question": "Energie fotonu, E, je úměrná:",
+      "options": [
+        "kmitočtu",
+        "jeho vidu",
+        "hmotnosti",
+        "umístění"
+      ],
+      "correctIndex": 0,
+      "explanation": "Energie fotonu je úměrná **kmitočtu** podle vztahu E = h·f, kde h je Planckova konstanta a f je kmitočet. Čím vyšší kmitočet (kratší vlnová délka), tím větší energie fotonu."
+    },
+    {
+      "id": 45,
+      "question": "Barva světla závisí na jeho:",
+      "options": [
+        "intenzitě",
+        "výkonu",
+        "vlnové délce",
+        "útlumu"
+      ],
+      "correctIndex": 2,
+      "explanation": "Barva světla závisí na jeho **vlnové délce**. Různé vlnové délky viditelného světla odpovídají různým barvám (fialová ~400 nm, červená ~700 nm)."
+    },
+    {
+      "id": 46,
+      "question": "Jev úplného vnitřního odrazu lze pozorovat pro:",
+      "options": [
+        "různé barvy světla",
+        "libovolný úhel dopadu",
+        "různé hodnoty energie",
+        "úhel větší než je kritický úhel"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Úplný vnitřní odraz** nastává, když světlo dopadá na rozhraní dvou prostředí pod **úhlem větším než je kritický úhel** a postupuje z opticky hustšího do opticky řidšího prostředí. Tento princip je základem vedení světla v optických vláknech."
+    },
+    {
+      "id": 47,
+      "question": "Disperze světla je způsobená závislosti indexu lomu na:",
+      "options": [
+        "intenzitě světla",
+        "vlnové délce",
+        "úhlu dopadu",
+        "úhlu zalomení"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Disperze** světla vzniká kvůli závislosti indexu lomu materiálu na **vlnové délce** záření. Různé vlnové délky (barvy) se lámou pod různými úhly, což způsobuje rozklad bílého světla na barevné spektrum."
+    },
+    {
+      "id": 48,
+      "question": "Snellův zákon udává vztah mezi:",
+      "options": [
+        "hodnotami intenzity světla",
+        "vlnovými délkami",
+        "úhlem dopadajícího záření a úhlem zalomeného záření",
+        "hodnotami absorpce záření"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Snellův zákon** (zákon lomu) popisuje vztah mezi **úhlem dopadu a úhlem lomu** světla na rozhraní dvou prostředí: n₁·sin(θ₁) = n₂·sin(θ₂), kde n jsou indexy lomu a θ úhly."
+    },
+    {
+      "id": 49,
+      "question": "Lidské oči mohou detekovat světlo vlnové délky v rozsahu:",
+      "options": [
+        "ultrafialového záření",
+        "infračerveného záření",
+        "100 nm - 800 nm",
+        "450 nm - 650 nm"
+      ],
+      "correctIndex": 3,
+      "explanation": "Lidské oko vnímá viditelné světlo v rozsahu přibližně **380-780 nm**, přičemž maximální citlivost je v rozsahu **450-650 nm** (modrozelená až červená oblast spektra)."
+    },
+    {
+      "id": 50,
+      "question": "Fotodioda je:",
+      "options": [
+        "detektor světla",
+        "zdroj světla",
+        "optický zesilovač",
+        "snímač polohy"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Fotodioda** je polovodičová součástka fungující jako **detektor světla**. Při dopadu fotonů generuje elektrický proud úměrný intenzitě dopadajícího záření."
+    },
+    {
+      "id": 51,
+      "question": "Solární články převádí dopadající záření na:",
+      "options": [
+        "elektrický proud",
+        "světlo různých barev",
+        "informace",
+        "světlo"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Solární články** (fotovoltaické články) převádějí energii dopadajícího světelného záření přímo na **elektrický proud** pomocí fotovoltaického jevu."
+    },
+    {
+      "id": 52,
+      "question": "Na konci optických komunikačních systémů můžeme mít:",
+      "options": [
+        "elektrický proud",
+        "solární články",
+        "optické zesilovače",
+        "optické senzory"
+      ],
+      "correctIndex": 3,
+      "explanation": "Na konci (přijímací straně) optických komunikačních systémů jsou **optické senzory** (fotodetektory), které převádějí optický signál zpět na elektrický signál."
+    },
+    {
+      "id": 53,
+      "question": "Diody LED jsou:",
+      "options": [
+        "detektory záření",
+        "zdrojem světla",
+        "optickými zesilovači",
+        "senzory polohy"
+      ],
+      "correctIndex": 1,
+      "explanation": "**LED (Light Emitting Diode)** jsou polovodičové diody, které slouží jako **zdroj světla**. Při průchodu elektrického proudu emitují světlo díky elektroluminiscenci."
+    },
+    {
+      "id": 54,
+      "question": "Fotovodivost je optoelektronický jev, kdy materiál se stává elektricky vodivým z důvodu:",
+      "options": [
+        "elektrického proudu",
+        "absorpce elektromagnetického záření",
+        "děr ve valenčním pásmu",
+        "odrazů světla"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Fotovodivost** je jev, kdy materiál zvyšuje svou elektrickou vodivost v důsledku **absorpce elektromagnetického záření**. Fotony excitují elektrony z valenčního pásu do vodivostního pásu."
+    },
+    {
+      "id": 55,
+      "question": "Absorpční koeficient je funkcí:",
+      "options": [
+        "vlnové délky",
+        "indexu lomu",
+        "odrazu",
+        "výkonu světla"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Absorpční koeficient** materiálu je funkcí **vlnové délky** záření. Různé materiály absorbují různé vlnové délky s různou účinností, což se vyjadřuje spektrální závislostí absorpčního koeficientu."
+    },
+    {
+      "id": 56,
+      "question": "Diody jsou založeny na:",
+      "options": [
+        "p-n přechodu",
+        "izolátorech",
+        "optických zesilovačích",
+        "snímačích polohy"
+      ],
+      "correctIndex": 0,
+      "explanation": "Diody jsou založeny na **p-n přechodu** - rozhraní mezi polovodičem typu p (s převahou děr) a polovodičem typu n (s převahou elektronů). Tento přechod umožňuje jednosměrné vedení proudu."
+    },
+    {
+      "id": 57,
+      "question": "Princip stimulované emise záření lze uplatnit:",
+      "options": [
+        "u elektrického proudu",
+        "v laserech",
+        "u LED",
+        "u optických vláken"
+      ],
+      "correctIndex": 1,
+      "explanation": "Princip **stimulované emise** záření se uplatňuje **v laserech** (Light Amplification by Stimulated Emission of Radiation). Při stimulované emisi foton vyvolá emisi dalšího fotonu se stejnou fází, směrem a vlnovou délkou."
+    },
+    {
+      "id": 58,
+      "question": "Proč optické zesilovače jsou nezbytné v optických komunikacích?",
+      "options": [
+        "Pro možnost detekce záření",
+        "Pro přenos dat na krátké vzdáleností",
+        "Z důvodu útlumu komunikačního kanálu",
+        "Pro účely filtrování záření"
+      ],
+      "correctIndex": 2,
+      "explanation": "Optické zesilovače jsou nezbytné **z důvodu útlumu komunikačního kanálu**. Při přenosu optického signálu na dlouhé vzdálenosti dochází k jeho zeslabení vlivem útlumu ve vlákně, které je třeba kompenzovat."
+    },
+    {
+      "id": 59,
+      "question": "Počet vidů v optickém vlákně je závislá na:",
+      "options": [
+        "délce optického vlákna",
+        "spojování optického vlákna",
+        "intenzitě záření",
+        "numerické apertuře: NA"
+      ],
+      "correctIndex": 3,
+      "explanation": "Počet vidů (módů) v optickém vlákně závisí na **numerické apertuře (NA)**, průměru jádra a vlnové délce záření. Numerická apertura určuje maximální úhel, pod kterým může světlo vstoupit do vlákna a šířit se v něm."
+    },
+    {
+      "id": 60,
+      "question": "Jedním ze zdrojů přenosových ztrát ve vlákně je:",
+      "options": [
+        "rozptyl",
+        "Snellův mechanismus",
+        "barva světla",
+        "odrazy"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Rozptyl** (zejména Rayleighův rozptyl) je jedním z hlavních zdrojů přenosových ztrát v optických vláknech. Vzniká na mikroskopických nehomogenitách v materiálu vlákna."
+    },
+    {
+      "id": 61,
+      "question": "U optických vláken vyrobených z oxidu křemičitého (SiO₂) existují tři hlavní maxima útlumu kvůli absorpci způsobené:",
+      "options": [
+        "OH⁻ ionty",
+        "ohyby",
+        "průměrem jádra",
+        "odporem"
+      ],
+      "correctIndex": 0,
+      "explanation": "U vláken z SiO₂ způsobují **OH⁻ ionty** (hydroxylové skupiny) absorpční píky na vlnových délkách kolem 1383 nm, 1250 nm a 950 nm. Moderní vlákna mají velmi nízký obsah OH⁻ iontů."
+    },
+    {
+      "id": 62,
+      "question": "Míra ztrát v optickém vlákně v důsledku ohybu závisí na:",
+      "options": [
+        "poloměru ohybu",
+        "vlnové délce",
+        "vzdálenosti",
+        "výkonu"
+      ],
+      "correctIndex": 0,
+      "explanation": "Ztráty způsobené ohybem závisí primárně na **poloměru ohybu**. Čím menší je poloměr ohybu, tím větší jsou ztráty, protože se porušuje podmínka úplného vnitřního odrazu."
+    },
+    {
+      "id": 63,
+      "question": "Optická vlákna s velmi malým průměrem jádra mohou přenášet:",
+      "options": [
+        "více světla",
+        "dva vidy záření",
+        "mnoho vidů záření",
+        "jeden vid optického záření"
+      ],
+      "correctIndex": 3,
+      "explanation": "Optická vlákna s velmi malým průměrem jádra (typicky ~9 μm) jsou **jednovidová (single-mode)** a mohou přenášet pouze **jeden vid (mód) optického záření**, což eliminuje vidovou disperzi a umožňuje přenos na velmi dlouhé vzdálenosti."
+    },
+    {
+      "id": 64,
+      "question": "Jaká je obvyklá topologie páteřních telekomunikačních sítí?",
+      "options": [
+        "kruh",
+        "hvězda",
+        "sběrnice",
+        "strom"
+      ],
+      "correctIndex": 0,
+      "explanation": "Páteřní sítě obvykle využívají topologii kruhu pro zajištění redundance a vysoké dostupnosti."
+    },
+    {
+      "id": 65,
+      "question": "Které přenosové médium je typické pro přístupové telekomunikační sítě?",
+      "options": [
+        "symetrický metalický pár",
+        "jednovidové optické vlákno",
+        "mnohavidové optické vlákno",
+        "plastové optické vlákno"
+      ],
+      "correctIndex": 0,
+      "explanation": "Přístupové sítě tradičně využívají symetrický metalický pár pro připojení koncových účastníků."
+    },
+    {
+      "id": 66,
+      "question": "Jaká je obvyklá topologie přístupových telekomunikačních sítí?",
+      "options": [
+        "strom",
+        "kruh",
+        "hvězda",
+        "sběrnice"
+      ],
+      "correctIndex": 0,
+      "explanation": "Přístupové sítě obvykle využívají stromovou topologii s centrálním uzlem a větvením k jednotlivým účastníkům."
+    },
+    {
+      "id": 67,
+      "question": "Na jaké technologii je založen koncept hybridní přístupové sítě?",
+      "options": [
+        "FTTx",
+        "FTP",
+        "HTTP",
+        "FFT"
+      ],
+      "correctIndex": 0,
+      "explanation": "FTTx (Fiber to the x) je koncept hybridní přístupové sítě kombinující optická vlákna s jinými technologiemi."
+    },
+    {
+      "id": 68,
+      "question": "Které technologie xDSL jsou používány u hybridních přístupových sítí?",
+      "options": [
+        "ADSL2+ a VDSL2",
+        "ADSL a VDSL",
+        "výhradně VDSL",
+        "HDSL a SHDSL"
+      ],
+      "correctIndex": 0,
+      "explanation": "ADSL2+ a VDSL2 jsou nejnovější generace technologií xDSL využívané v hybridních přístupových sítích."
+    },
+    {
+      "id": 69,
+      "question": "Lze u přípojek VDSL2 měnit přenosovou rychlost za provozu?",
+      "options": [
+        "ano",
+        "ne",
+        "jen u předem vybraných přípojek",
+        "tato funkce je závislá na použité verzi firmwaru"
+      ],
+      "correctIndex": 0,
+      "explanation": "VDSL2 podporuje dynamickou změnu přenosové rychlosti během provozu (seamless rate adaptation)."
+    },
+    {
+      "id": 70,
+      "question": "Jaká je maximální šířka pásma využitelná pro přípojky VDSL2?",
+      "options": [
+        "až 30 MHz",
+        "až 12 MHz",
+        "až 2,208 MHz",
+        "až 1,104 MHz"
+      ],
+      "correctIndex": 0,
+      "explanation": "VDSL2 může využívat kmitočtové pásmo až do 30 MHz pro dosažení vysokých přenosových rychlostí."
+    },
+    {
+      "id": 71,
+      "question": "Vysvětlete pojem 'prokládání'.",
+      "options": [
+        "Prokládání je postup, který zlepšuje možnost detekce a korekce chyb vznikajících v důsledku impulsního rušení při přenosu.",
+        "Prokládání je postup, který omezuje možnost detekce a korekce chyb vznikajících v důsledku impulsního rušení při přenosu.",
+        "Prokládání je postup, který zlepšuje možnost detekce a korekce chyb vznikajících v důsledku souvislého rušení při přenosu.",
+        "Prokládání je postup, který omezuje možnost detekce a korekce chyb vznikajících v důsledku souvislého rušení při přenosu."
+      ],
+      "correctIndex": 0,
+      "explanation": "Prokládání (interleaving) přeskupuje bity v přenosovém rámci, čímž rozprostře shluky chyb způsobené impulsním rušením a zlepší schopnost korekčního kódu tyto chyby opravit."
+    },
+    {
+      "id": 72,
+      "question": "Co je nevýhodou procesu prokládání?",
+      "options": [
+        "nárůst zpoždění při přenosu",
+        "nárůst celkového útlumu",
+        "vyšší chybovost",
+        "nižší citlivost přijímače"
+      ],
+      "correctIndex": 0,
+      "explanation": "Prokládání vyžaduje buffering dat, což způsobuje zvýšení zpoždění přenosu. To může být problematické pro aplikace citlivé na zpoždění."
+    },
+    {
+      "id": 73,
+      "question": "Jakým způsobem jsou realizovány operace skramblování a deskramblování?",
+      "options": [
+        "posuvným registrem",
+        "pamětí RWM",
+        "klopnými obvody",
+        "mikročipem"
+      ],
+      "correctIndex": 0,
+      "explanation": "Skramblování a deskramblování je implementováno pomocí posuvného registru s lineární zpětnou vazbou (LFSR)."
+    },
+    {
+      "id": 74,
+      "question": "Jaký typ modulace je využíván u přípojek VDSL2?",
+      "options": [
+        "modulace DMT",
+        "modulace QAM",
+        "modulace GMSK",
+        "modulace PCM"
+      ],
+      "correctIndex": 0,
+      "explanation": "VDSL2 využívá DMT (Discrete Multi-Tone) modulaci, která rozděluje dostupné pásmo na mnoho úzkých subkanálů."
+    },
+    {
+      "id": 75,
+      "question": "Pro vytvoření obousměrného přenosu u VDSL2 se může používat pouze metoda:",
+      "options": [
+        "FDD",
+        "TDD",
+        "CDD",
+        "PSD"
+      ],
+      "correctIndex": 0,
+      "explanation": "VDSL2 využívá FDD (Frequency Division Duplexing) pro oddělení směru přenosu pomocí různých kmitočtových pásem."
+    },
+    {
+      "id": 76,
+      "question": "Způsob střídání a šířku jednotlivých kmitočtových subpásem určuje:",
+      "options": [
+        "kmitočtový plán",
+        "plán přenosových parametrů",
+        "přeslechový plán",
+        "spektrální plán"
+      ],
+      "correctIndex": 0,
+      "explanation": "Kmitočtový plán definuje, jak jsou alokována frekvenční pásma pro jednotlivé směry přenosu a jejich šířky."
+    },
+    {
+      "id": 77,
+      "question": "Standard G.fast je označován jako:",
+      "options": [
+        "4. generace systémů xDSL",
+        "3. generace systémů xDSL",
+        "2. generace systémů xDSL",
+        "1. generace systémů xDSL"
+      ],
+      "correctIndex": 0,
+      "explanation": "G.fast představuje čtvrtou generaci technologií xDSL s výrazně vyššími přenosovými rychlostmi než předchozí generace."
+    },
+    {
+      "id": 78,
+      "question": "Jaký koncept hybridní přístupové sítě je typický pro standard G.fast?",
+      "options": [
+        "FTTdb",
+        "FTTB",
+        "FTTH",
+        "FTTCab"
+      ],
+      "correctIndex": 0,
+      "explanation": "G.fast je typicky nasazován v konceptu FTTdp (Fiber to the distribution point), kde optické vlákno vede až k rozvaděči v blízkosti koncového uživatele."
+    },
+    {
+      "id": 79,
+      "question": "Jakým způsobem jsou potlačovány přeslechy typu FEXT u přípojek G.fast?",
+      "options": [
+        "pomocí vektorové modulace",
+        "pomocí vidlice",
+        "pomocí splitterů",
+        "pomocí fantomových okruhů"
+      ],
+      "correctIndex": 0,
+      "explanation": "G.fast využívá vektorovou modulaci (vectoring) pro aktivní potlačení přeslechů FEXT mezi jednotlivými páry v kabelu."
+    },
+    {
+      "id": 80,
+      "question": "Která přístupová metoda je využívána u přípojek G.fast?",
+      "options": [
+        "TDD",
+        "FDD",
+        "CDD",
+        "PSD"
+      ],
+      "correctIndex": 0,
+      "explanation": "G.fast používá TDD (Time Division Duplexing), kde se směry přenosu střídají v čase na stejném frekvenčním pásmu."
+    },
+    {
+      "id": 81,
+      "question": "Jaká je teoretická maximální přenosová rychlost přípojky G.fast?",
+      "options": [
+        "500 Mbit/s",
+        "100 Mbit/s",
+        "200 Mbit/s",
+        "50 Mbit/s"
+      ],
+      "correctIndex": 0,
+      "explanation": "G.fast dosahuje teoretické maximální přenosové rychlosti až 500 Mbit/s při použití frekvenčního pásma do 106 MHz."
+    },
+    {
+      "id": 82,
+      "question": "Jaká je nevýhoda modulace VDMT?",
+      "options": [
+        "vysoká výpočetní náročnost při koordinaci vysílání",
+        "eliminace přeslechů NEXT a FEXT",
+        "zvýšení provozní zátěže účastnické přípojky",
+        "nekoordinované vysílání dat"
+      ],
+      "correctIndex": 0,
+      "explanation": "VDMT (Vectored DMT) vyžaduje koordinaci vysílání všech vedení v kabelu, což je výpočetně velmi náročné."
+    },
+    {
+      "id": 83,
+      "question": "Jaký parametr přenosové cesty je určující pro počet stavů použité modulace?",
+      "options": [
+        "Útlum vedení Au (poměr výstupního napětí signálu ku vstupnímu napětí signálu).",
+        "Amplituda užitečného signálu na konci vedení (poměr špička-špička).",
+        "Odstup signálu od šumu (poměr SNR).",
+        "Útlum vedení Ap (poměr výstupního výkonu signálu ku vstupnímu výkonu signálu)."
+      ],
+      "correctIndex": 2,
+      "explanation": "Odstup signálu od šumu (**SNR**) je klíčový parametr, protože ovlivňuje maximální teoretickou kapacitu kanálu podle Shannon-Hartleyova teorému (Přednáška 1). Vyšší SNR umožňuje použití modulací s větším počtem stavů (např. QAM) (Přednáška 7), avšak s rostoucím počtem stavů se signál stává náchylnější na rušení, což vyžaduje vyšší SNR pro zajištění nízké chybovosti (Přednáška 7)."
+    },
+    {
+      "id": 84,
+      "question": "Pro měření chybovosti za provozu se používá měření:",
+      "options": [
+        "ztrátovosti paketů",
+        "délky jednotkového intervalu",
+        "bit po bitu",
+        "blokových chyb"
+      ],
+      "correctIndex": 3,
+      "explanation": "Pro měření chybovosti digitálního přenosu se používá sledování chybně přenesených prvků zprávy, kterými mohou být bity, symboly, nebo **bloky dat** (Přednáška 1). Měření **blokových chyb** se využívá u kódů pro detekci chyb, jako je například cyklický kód (CRC) aplikovaný na bloky dat (např. u signálu E1 pro detekci nárůstu chybovosti) (Přednáška 2, Přednáška 7)."
+    },
+    {
+      "id": 85,
+      "question": "Pro měření bitové chybovosti se používá měření:",
+      "options": [
+        "bit po bitu",
+        "blokových chyb",
+        "délky jednotkového intervalu",
+        "ztrátovosti paketů"
+      ],
+      "correctIndex": 0,
+      "explanation": "Bitová chybovost (**BER**) vyjadřuje poměr chybně přenesených prvků signálu, kterým je v tomto případě **bit**, k celkovému počtu přenesených prvků (Přednáška 1). Měření **bit po bitu** je přímou metodou pro zjištění počtu chybných bitů ve sledovaném intervalu (Přednáška 1)."
+    },
+    {
+      "id": 86,
+      "question": "Lze využít technologii SDH ve vysokorychlostních datových sítích?",
+      "options": [
+        "ano, pomocí stuffingu",
+        "ne",
+        "ano, pomocí zřetězení virtuálních kontejnerů",
+        "ano, pomocí adaptace příspěvkových signálů"
+      ],
+      "correctIndex": 2,
+      "explanation": "Ano, technologie SDH se využívá pro transparentní přenos velkých objemů dat (např. IP paketů) ve vysokorychlostních datových sítích pomocí **zřetězení virtuálních kontejnerů (Concatenation)**, kdy se spojí více kontejnerů dohromady (VC-n-Xc nebo VC-n-Xv) (Přednáška 4)."
+    },
+    {
+      "id": 87,
+      "question": "Na které vrstvě OSI modelu jsou DWDM systémy provozovány?",
+      "options": [
+        "čtvrtá (Transportní)",
+        "druhá (Spojová)",
+        "třetí (Síťová)",
+        "první (Fyzická)"
+      ],
+      "correctIndex": 3,
+      "explanation": "DWDM (Hustý vlnový multiplex) je technologie založená na přenosu optického záření různými vlnovými délkami po optickém vláknu (Přednáška 4, Přednáška 5). Optické vlákno je přenosové médium, které spadá do **Fyzické vrstvy (první vrstva)** referenčního modelu OSI (Přednáška 5, Přednáška 11)."
+    },
+    {
+      "id": 88,
+      "question": "Vyberte typy optických vláken používaných v optických telekomunikačních sítích?",
+      "options": [
+        "jednovidová a mnohavidová se skokovou změnou indexu lomu",
+        "mnohavidová se skokovou změnou indexu lomu",
+        "mnohavidová se skokovou změnou indexu lomu a mnohavidová s gradientní změnou indexu lomu",
+        "jednovidová se skokovou změnou indexu lomu a mnohavidová s gradientní změnou indexu lomu"
+      ],
+      "correctIndex": 3,
+      "explanation": "Mezi kategorie optických vláken patří **jednovidové se skokovou změnou indexu lomu (SM-SI)** a **mnohovidové** vlákna, a to buď **se skokovou (MM-SI) nebo s gradientní změnou indexu lomu (MM-GI)** (Přednáška 5). Pro telekomunikační sítě na dlouhé vzdálenosti a v LAN se používají především SM-SI a MM-GI (Přednáška 5, Přednáška 6)."
+    },
+    {
+      "id": 89,
+      "question": "Státní správu v oblasti elektronických komunikací a poštovních služeb v ČR vykonává:",
+      "options": [
+        "Česká správa radiokomunikací",
+        "Česká správa telekomunikací",
+        "Česká pošta",
+        "Český telekomunikační úřad"
+      ],
+      "correctIndex": 3,
+      "explanation": "Státní správu v oblasti elektronických komunikací a poštovních služeb v ČR vykonává **Český telekomunikační úřad (ČTÚ)**, který je regulátorem a uděluje licence k poskytování telekomunikačních služeb a řeší spory (Přednáška 1, Přednáška 3)."
+    },
+    {
+      "id": 90,
+      "question": "Komunikace podle modelu OSI probíhá v rámci uzlu:",
+      "options": [
+        "libovolně mezi všemi vrstvami",
+        "vždy pouze s nejvyšší vrstvou",
+        "výhradně mezi sousedními vrstvami",
+        "vždy pouze s nejnižší vrstvou"
+      ],
+      "correctIndex": 2,
+      "explanation": "Komunikace v rámci jednoho uzlu (vertikální komunikace) v modelu OSI probíhá tak, že **každá vrstva** (kromě nejvyšší) poskytuje služby nejbližší vyšší vrstvě, což znamená komunikaci **výhradně mezi sousedními vrstvami** (Přednáška 11, Přednáška 10)."
+    },
+    {
+      "id": 91,
+      "question": "Komunikace podle modelu OSI probíhá mezi uzly:",
+      "options": [
+        "vždy pouze s nejvyšší vrstvou",
+        "napříč všemi vrstvami",
+        "vždy se stejnolehlými vrstvami",
+        "vždy pouze s nejnižší vrstvou"
+      ],
+      "correctIndex": 2,
+      "explanation": "Komunikace mezi dvěma uzly (horizontální komunikace) v modelu OSI je řízena protokolem a probíhá **vždy se stejnolehlými vrstvami** (tzn. 3. vrstva s 3. vrstvou, 4. vrstva se 4. vrstvou atd.) (Přednáška 11, Přednáška 8)."
+    },
+    {
+      "id": 92,
+      "question": "Soubor vzájemně propojených telekomunikačních zařízení, který umožňuje přenos informaci mezi koncovými body, nazýváme:",
+      "options": [
+        "telekomunikační služba",
+        "telekomunikační síť",
+        "informační technologie",
+        "telekomunikační technika"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Telekomunikační sítě** se obecně budují za účelem zprostředkování informací (Přednáška 1, Přednáška 13), což přesně odpovídá souboru vzájemně propojených zařízení umožňujících přenos informací mezi koncovými body."
+    },
+    {
+      "id": 93,
+      "question": "Signál E1 se mapuje do:",
+      "options": [
+        "CE-1",
+        "C-12",
+        "TU-12",
+        "C-11"
+      ],
+      "correctIndex": 1,
+      "explanation": "V multiplexní hierarchii SDH se vstupní příspěvkové signály adaptují (mapují) do **kontejnerů (C-nk)** (Přednáška 4). Signál E1 (PCM 1. řádu) se mapuje do **kontejneru C-12** (Přednáška 4)."
+    },
+    {
+      "id": 94,
+      "question": "Pod pojmem DUPLEX rozumíme:",
+      "options": [
+        "následný obousměrný provoz",
+        "jakýkoliv obousměrný provoz",
+        "jednosměrný provoz",
+        "současný obousměrný provoz"
+      ],
+      "correctIndex": 3,
+      "explanation": "Komunikace na telekomunikačním okruhu (obousměrný přenos) se dělí na poloduplexní (následná komunikace) a **duplexní**, což představuje **současný obousměrný provoz** (Přednáška 1, Přednáška 6)."
+    },
+    {
+      "id": 95,
+      "question": "Pod pojmem SIMPLEX rozumíme:",
+      "options": [
+        "jednosměrný provoz",
+        "následný obousměrný provoz",
+        "současný obousměrný provoz",
+        "jednosměrný a následný obousměrný provoz"
+      ],
+      "correctIndex": 0,
+      "explanation": "Simplexní přenos odpovídá jednosměrnému provozu. (Rádio, televize)"
+    },
+    {
+      "id": 96,
+      "question": "Zkratka SDH označuje:",
+      "options": [
+        "sekundární digitální hierarchii",
+        "synchronní digitální hierarchii",
+        "sériovou digitální hierarchii",
+        "systematickou digitální hierarchii"
+      ],
+      "correctIndex": 1,
+      "explanation": "Zkratka **SDH** označuje **Synchronní digitální hierarchii (Synchronous Digital Hierarchy)**, která nahradila starší plesiochronní hierarchii PDH (Přednáška 4)."
+    },
+    {
+      "id": 97,
+      "question": "Jednotkami primárních parametrů homogenního vedení jsou:",
+      "options": [
+        "dB, rad, ohm",
+        "dB/km, rad/km, ohm/km",
+        "ohm, H, F, S",
+        "ohm/km, H/km, F/km, S/km"
+      ],
+      "correctIndex": 3,
+      "explanation": "Primární parametry homogenního vedení (měrný odpor R, měrná indukčnost L, měrná kapacita C, měrný svod G) jsou definovány jako **měrné veličiny** vztažené na jednotku délky, a proto mají jednotky **ohm/km, H/km, F/km, S/km** (Přednáška 6)."
+    },
+    {
+      "id": 98,
+      "question": "Co je charakteristické pro distribuci paketů v běžné IP síti?",
+      "options": [
+        "paketová komunikace je možná díky analýze účastnického čísla cílové stanice",
+        "paketová komunikace je možná bez potřeby vytvářet spojení mezi koncovými body",
+        "pakety prochází IP sítí náhodným způsobem",
+        "před vlastní paketovou komunikací je nutné vytvořit spojení mezi koncovými body"
+      ],
+      "correctIndex": 1,
+      "explanation": "IP sítě jsou založeny na přenosu **datagramů (paketů)** a jsou typickým představitelem **komunikace bez spojování**, kde **není nutné vytvářet spojení mezi koncovými body** před zahájením přenosu (Přednáška 4)."
+    },
+    {
+      "id": 99,
+      "question": "Jak se označuje grafické znázornění rozložení jednotlivých modulačních symbolů?",
+      "options": [
+        "konstelační diagram",
+        "konvoluční diagram",
+        "kooperační diagram",
+        "konspirační diagram"
+      ],
+      "correctIndex": 0,
+      "explanation": "Jednotlivé stavy digitálních modulací, zejména složených modulací jako QAM, lze znázornit jako soubor bodů ležících na jednotkové kružnici, což se nazývá **konstelační diagram** (Přednáška 7)."
+    },
+    {
+      "id": 100,
+      "question": "Jaký je předpokládaný vývoj od systémů xDSL k systémům EFM?",
+      "options": [
+        "směrem k hybridním metalicko-optickým přípojkám xDSL",
+        "žádný, systémy xDSL zaniknou",
+        "systémy EFM nahradí pouze metalické přípojky xDSL",
+        "systémy EFM budou určeny pouze pro úzkopásmové služby"
+      ],
+      "correctIndex": 0,
+      "explanation": "Systémy **EFM (Ethernet in the First Mile)** budou určeny pro širokopásmové služby a jejich nasazování bude probíhat nejprve prostřednictvím stávajících přípojek **xDSL** (EFMC – Ethernet in the First Mile Copper), což je hybridní řešení (Přednáška 7)."
+    },
+    {
+      "id": 101,
+      "question": "Vyberte části telekomunikační sítě, které tvoří její strukturu:",
+      "options": [
+        "metalické kabely, optická vlákna, radioreléové spoje",
+        "PAN, LAN, MAN, WAN",
+        "informační zdroje, spojovací zařízení, přenosová zařízení",
+        "zařízení síťových uzlů, přístupová síť, páteřní síť"
+      ],
+      "correctIndex": 3,
+      "explanation": "Struktura telekomunikační sítě se dělí na tři základní části: **zařízení síťových uzlů** (ústředny, přepínače, směrovače a servery), **páteřní síť** a **přístupová síť** (Přednáška 13)."
+    },
+    {
+      "id": 102,
+      "question": "Proč je výhodné u datových rozhraní využívat pulsně polohové modulace (PPM)?",
+      "options": [
+        "nejvyšší vysílací výkon zajišťující nejvyšší odstup signálu od šumu",
+        "umožňuje digitalizaci přenosu dat",
+        "přenos dat v přeloženém kmitočtovém pásmu",
+        "možnost šifrování přenosu dat"
+      ],
+      "correctIndex": 0,
+      "explanation": "Pulsně polohová modulace (např. 4-PPM u rozhraní IrDA) je výhodná, protože poskytuje **nejvyšší vysílací výkon**, což zajišťuje **větší odstup signálu od šumu** (Přednáška 13)."
+    },
+    {
+      "id": 103,
+      "question": "Co je to \"HANDOVER\"?",
+      "options": [
+        "proces automatického přeladění aktivní stanice při přechodu mezi dvěma buňkami či optimalizace připojení v rámci dané buňky s ohledem na chybovost",
+        "proces ukončení spojení aktivní stanice se základnovou stanicí",
+        "proces automatického přeladění aktivní stanice při optimalizaci připojení v rámci dané buňky s ohledem na chybovost",
+        "proces automatického přeladění aktivní stanice při přechodu mezi dvěma buňkami"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Handover** je automatické přepojení probíhajícího spojení na BTS sousední buňky, pokud se mobilní stanice dostane do oblasti lépe pokryté signálem (Přednáška 12). Rozlišuje se **mezibuňkový** (Inter-cell handover) a **vnitrobuňkový** (Intra-cell handover), který slouží k optimalizaci spojení v rámci dané buňky (Přednáška 12)."
+    },
+    {
+      "id": 104,
+      "question": "Jakému výkonu ve wattech odpovídá 0 dBm?",
+      "options": [
+        "0,01 W",
+        "0.001 W",
+        "1 W",
+        "0 W"
+      ],
+      "correctIndex": 1,
+      "explanation": "Absolutní výkonová úroveň signálu se udává v **dBm**, což je poměr výkonu vztažený k referenčnímu výkonu 1 mW (0,001 W) (Přednáška 1). **0 dBm** tedy odpovídá výkonu **1 mW (0,001 W)** (Přednáška 1)."
+    },
+    {
+      "id": 105,
+      "question": "Jaké parametry ovlivňují přenos po metalických vedeních?",
+      "options": [
+        "minimalizace odstupu signálu od šumu",
+        "přeslechy, vysokofrekvenční a impulsní rušení",
+        "spojité rušení",
+        "nízkofrekvenční rušení"
+      ],
+      "correctIndex": 1,
+      "explanation": "Přenos po metalických vedeních je ovlivňován vedle útlumu i vzájemnými vazbami mezi páry (přeslechy) a rušivými vlivy z okolí, jako je **přeslech (NEXT, FEXT), vysokofrekvenční rušení (RFI) a impulsní rušení** (Přednáška 6)."
+    },
+    {
+      "id": 106,
+      "question": "Jaké veličiny používáme pro hodnocení objemu signálu, resp. propustnosti kanálu?",
+      "options": [
+        "vzorkovací frekvence, doba trvání rámce",
+        "přenosová rychlost, dolní a horní mezní frekvence",
+        "dynamický rozsah, šířka pásma, doba trvání signálového prvku",
+        "symbolová srozumitelnost, výkon"
+      ],
+      "correctIndex": 2,
+      "explanation": "Objem signálu ($V_s$) a propustnost telekomunikačního kanálu ($P_k$) jsou definovány souhrnem tří veličin: **dynamický rozsah, šířka pásma (frekvenčního spektra) a doba trvání signálového prvku** (Přednáška 2)."
+    },
+    {
+      "id": 107,
+      "question": "Jaké typy spojovacích polí lze využít u systémů 4.generace?",
+      "options": [
+        "spojovací systémy 4.generace již nepoužívají spojovací pole",
+        "prostorové a časové",
+        "výhradně časové",
+        "výhradně prostorové"
+      ],
+      "correctIndex": 1,
+      "explanation": "Digitální spojovací pole (DSN) ústředny (IV. generace) musí umožnit jak **prostorové směrování (S - Space)**, tak **časovou změnu polohy (T - Time)** (Přednáška 10). Lze je realizovat samotným časovým polem (T-modul) nebo jako kombinaci S a T polí (STS, TST) (Přednáška 10)."
+    },
+    {
+      "id": 108,
+      "question": "Optický rozbočovač v sítích PON - Splitter provádí:",
+      "options": [
+        "výkonové řízení přenášeného optického toku pomocí metod pro omezení přetížení v datových sítích",
+        "směrování přenášených příspěvků na základě IP adres koncových jednotek",
+        "pasivní slučování (v jednom směru) a rozbočování (v opačném směru) optických toků ke koncovým jednotkám",
+        "regeneraci procházejících optických signálů"
+      ],
+      "correctIndex": 2,
+      "explanation": "Optický rozbočovač (Splitter) v pasivních optických sítích (PON) je pasivní prvek, který provádí **rozdělení optického signálu** (z uzlu k účastníkům) a jeho **slučování** (od účastníků k uzlu), čímž pasivně rozbočuje a slučuje optické toky (Přednáška 5)."
+    },
+    {
+      "id": 109,
+      "question": "Který parametr nepatří mezi sekundární parametry vedení?",
+      "options": [
+        "měrný útlum",
+        "činitel stojatých vln",
+        "měrná vlnová míra přenosu",
+        "charakteristická impedance"
+      ],
+      "correctIndex": 1,
+      "explanation": "Mezi **sekundární parametry vedení** patří charakteristická impedance, měrná vlnová míra přenosu, měrný útlum a měrný fázový posuv (Přednáška 6). **Činitel stojatých vln (SWR)** je veličina, která kvantifikuje stupeň korektnosti impedančního zakončení vedení (Přednáška 6)."
+    },
+    {
+      "id": 110,
+      "question": "Jaká je šířka telefonního kanálu?",
+      "options": [
+        "3,1 kHz",
+        "4 kHz",
+        "300 Hz",
+        "3,4 kHz"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Telefonní kanál** v základním pásmu má kmitočtové pásmo 300 až 3400 Hz (Přednáška 2), což znamená šířku pásma **3100 Hz (3,1 kHz)** (Přednáška 2)."
+    },
+    {
+      "id": 111,
+      "question": "Vrstvový model OSI má:",
+      "options": [
+        "4 vrstvy",
+        "7 vrstev",
+        "4 vrstvy a 3 podvrstvy",
+        "3 vrstvy a 4 podvrstvy"
+      ],
+      "correctIndex": 1,
+      "explanation": "Referenční model OSI (Open Systems Interconnection) je složen ze **sedmi vrstev** (Fyzická, Spojová, Síťová, Transportní, Relační, Prezentační, Aplikační) (Přednáška 11)."
+    },
+    {
+      "id": 112,
+      "question": "Jednotkou absolutní výkonové úrovně signálu je:",
+      "options": [
+        "dBmr",
+        "dBa",
+        "dBm",
+        "dBu"
+      ],
+      "correctIndex": 2,
+      "explanation": "Absolutní výkonová úroveň signálu se v telekomunikacích nejčastěji vyjadřuje v jednotce **dBm** (decibel-milliwatt), která udává výkon vztažený k referenčnímu výkonu 1 mW (Přednáška 1)."
+    },
+    {
+      "id": 113,
+      "question": "Zpoždění přenosu je kritickým parametrem pro služby:",
+      "options": [
+        "konverzační",
+        "běžící na pozadí",
+        "interaktivní",
+        "kontinuální"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Zpoždění přenosu** (Delay) je klíčové pro služby citlivé na zpoždění, jako je **konverzační interakce** (např. videokonference nebo hovor) (Přednáška 1, Přednáška 13, Přednáška 8). Například pro videokonferenci musí být maximální akceptovatelné zpoždění malé (Přednáška 1)."
+    },
+    {
+      "id": 114,
+      "question": "Jakými metodami lze přenášet data v síti GSM?",
+      "options": [
+        "pouze přepojování okruhů",
+        "pouze přepojování paketů",
+        "pomocí přepojování okruhů a paketů",
+        "pouze přepojování zpráv"
+      ],
+      "correctIndex": 2,
+      "explanation": "V základním systému GSM (2. generace) se data přenášela pomocí **přepojování okruhů (CSD)** (Přednáška 12). S nástupem 2.5G (GPRS/EDGE) bylo zavedeno i **přepojování paketů (GPRS)** (Přednáška 12)."
+    },
+    {
+      "id": 115,
+      "question": "Systém GSM (mobilní systém 2. generace) přenos dat:",
+      "options": [
+        "umožňuje pouze s přepojováním okruhů",
+        "umožňuje s přepojováním paketů",
+        "umožňuje nejvýše do rychlosti 9,6 kbit/s",
+        "neumožňuje"
+      ],
+      "correctIndex": 0,
+      "explanation": "Základní systém GSM (2. generace) přenos dat umožňuje, ale pouze s **přepojováním okruhů (CSD – Circuit Switched Data)** (Přednáška 12)."
+    },
+    {
+      "id": 116,
+      "question": "Paketový sniffer je síťové zařízení umožňující:",
+      "options": [
+        "analýzu datových jednotek bez ohledu na nastavená pravidla",
+        "analýzu datových jednotek podle nastavených pravidel",
+        "real-time konfiguraci dalších síťových prvků s ohledem na výsledky analýzy zachyceného datového toku",
+        "záchyt datového toku (datových jednotek)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Paketový sniffer (packet sniffer) je síťové zařízení, které umožňuje **záchyt datového toku (datových jednotek)** (Přednáška 8)."
+    },
+    {
+      "id": 117,
+      "question": "DWDM nejsou",
+      "options": [
+        "voličová",
+        "časová",
+        "vícečlánková",
+        "prostorová"
+      ],
+      "correctIndex": 0,
+      "explanation": "Digitální spojovací pole (DSN) v systémech IV. generace jsou realizována jako **časová (T), prostorová (S)** nebo **vícečlánková** (kombinace T a S) (Přednáška 10). **Voličová pole** patřila k systémům I. generace a nebyla digitální (Přednáška 10)."
+    },
+    {
+      "id": 118,
+      "question": "Integrovaná digitální síť",
+      "options": [
+        "je předstupněm sítí ISDN",
+        "poskytuje digitální spojení od konce ke konci",
+        "je dalším vývojovým stupněm po ISDN",
+        "neobsahuje žádná analogová zařízení"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spojovací systémy IV. generace (digitální) představovaly integrovaný systém, který pracoval se stejným principem digitálního přenosu (PCM) a **poskytuje digitální spojení od konce ke konci** (Přednáška 10)."
+    },
+    {
+      "id": 119,
+      "question": "Objasněte význam pojmu \"VZORKOVACÍ TEORÉM\".",
+      "options": [
+        "Vzorkovací kmitočet musí být teoreticky alespoň dvojnásobný, než je minimální požadovaný kmitočet přenášeného signálu.",
+        "Vzorkovací kmitočet musí být teoreticky maximálně dvojnásobný, než je maximální požadovaný kmitočet přenášeného signálu.",
+        "Vzorkovací kmitočet musí být teoreticky alespoň dvojnásobný, než je maximální požadovaný kmitočet přenášeného signálu.",
+        "Vzorkovací kmitočet musí být teoreticky maximálně dvojnásobný, než je minimální požadovaný kmitočet přenášeného signálu."
+      ],
+      "correctIndex": 2,
+      "explanation": "**Vzorkovací teorém (Shannon-Kotelnikov)** stanovuje, že analogový signál omezený na maximální frekvenci $f_{max}$ může být dokonale rekonstruován, pokud je vzorkován frekvencí $f_s$ **alespoň dvakrát vyšší, než je maximální frekvence ($f_s \\geq 2 \\cdot f_{max}$)** (Přednáška 2)."
+    },
+    {
+      "id": 120,
+      "question": "Systémy UMTS/HSDPA dosahují rychlosti ve směru downlink až:",
+      "options": [
+        "384 kbit/s",
+        "144 kbit/s",
+        "14 Mbit/s",
+        "2 Mbit/s"
+      ],
+      "correctIndex": 2,
+      "explanation": "Systémy UMTS (3. generace mobilních sítí) se orientují na vysokorychlostní datový přenos (Přednáška 12). Systémy UMTS/HSDPA teoreticky dosahují přenosových rychlostí směrem k uživateli (downlink) **až 14 Mbit/s** (Přednáška 12)."
+    },
+    {
+      "id": 121,
+      "question": "Jakým způsobem je u SDH zajištěno přizpůsobení přenosových rychlostí příspěvkových signálů?",
+      "options": [
+        "pomocí kladného a záporného stuffingu",
+        "pomocí kladné a záporné adaptace",
+        "pomocí synchronizace",
+        "pomocí vnitřního generátoru"
+      ],
+      "correctIndex": 1,
+      "explanation": "U synchronní digitální hierarchie (SDH) zajišťuje **ukazatel PTR (Pointer)** vyrovnávání přenosových rychlostí příspěvkových signálů (v případě, že uzly nepracují synchronně) (Přednáška 4). K vyrovnávání dochází pomocí **kladné adaptace** (vynechání pozice) nebo **záporné adaptace** (uložení do rezervy H3) (Přednáška 4)."
+    },
+    {
+      "id": 122,
+      "question": "Jednovidová optická vlákna mají průměr jádra:",
+      "options": [
+        "shodný s vlnovou délkou použitého zdroje záření",
+        "srovnatelný s vlnovou délkou použitého zdroje záření",
+        "mnohem menší, než je vlnová délka použitého zdroje záření",
+        "mnohem větší, než je vlnová délka použitého zdroje záření"
+      ],
+      "correctIndex": 1,
+      "explanation": "Jednovidová optická vlákna (SM-SI) jsou charakteristická velmi malým průměrem jádra (typicky $9 \\mu m$ ), který je **srovnatelný s vlnovou délkou** použitého optického zdroje záření (Přednáška 5)."
+    },
+    {
+      "id": 123,
+      "question": "Gradientní optická vlákna jsou:",
+      "options": [
+        "pouze mnohavidová",
+        "mnohavidová i jednovidová",
+        "bezvidová (jednotlivé vidy se v nich navzájem vyruší)",
+        "pouze jednovidová"
+      ],
+      "correctIndex": 0,
+      "explanation": "Kategorie optických vláken zahrnuje jednovidová vlákna se skokovou změnou indexu lomu (SM-SI) a **mnohovidová** vlákna, a to buď se skokovou (MM-SI) nebo **s gradientní změnou indexu lomu (MM-GI)** (Přednáška 5)."
+    },
+    {
+      "id": 124,
+      "question": "Kmitočtové pásmo GSM je v Evropě:",
+      "options": [
+        "1900 MHz (2100 MHz ve variantě DCS)",
+        "900 MHz (1800 MHz ve variantě DCS)",
+        "450 MHz",
+        "2,4 GHz"
+      ],
+      "correctIndex": 1,
+      "explanation": "Základní aplikace GSM (Global System for Mobile Communication) byly realizovány v pásmu **900 MHz (GSM 900)**. Varianta s vyšší kapacitou je **GSM 1800**, někdy označovaná jako DCS (Digital Communication System) (Přednáška 12)."
+    },
+    {
+      "id": 125,
+      "question": "Signalizace SS7:",
+      "options": [
+        "se používá v tranzitních sítích",
+        "je zjednodušenou verzí signalizace DSS1",
+        "neumožňuje propojení sítí různých operátorů",
+        "je přiřazená hovorovým kanálům"
+      ],
+      "correctIndex": 0,
+      "explanation": "Signalizační systém **SS7 (CCITT č.7)** je síťová signalizace určená pro digitální systémy IV. generace (Přednáška 10). Používá se pro řízení sestavení, udržování a zrušení spojení v síti, včetně **tranzitních spojení** (Přednáška 10)."
+    },
+    {
+      "id": 126,
+      "question": "Jaké jsou důležité parametry optických konektorů?",
+      "options": [
+        "nízký měrný útlum, velká numerická apertura",
+        "vysoký vložný útlum, nízký útlum odrazu",
+        "vysoký měrný útlum, malá numerická apertura",
+        "nízký vložný útlum, vysoký útlum odrazu"
+      ],
+      "correctIndex": 3,
+      "explanation": "Klíčové požadavky na optické konektory zahrnují **malý vložný útlum** ($A_{vl}$) (řádově nižší desetiny dB) (aby signál zeslábl co nejméně při průchodu konektorem) a **velký útlum odrazu** ($A_{odr}$) (řádově vyšší desítky dB) (aby se minimalizoval odraz signálu zpět ke zdroji) (Přednáška 5)."
+    },
+    {
+      "id": 127,
+      "question": "Co označují zkratky BRA a PRA v sítích ISDN?",
+      "options": [
+        "základní a primární přístup",
+        "účastnický a síťový přístup",
+        "primární a sekundární přístup",
+        "základní a rozšířený přístup"
+      ],
+      "correctIndex": 0,
+      "explanation": "V sítích ISDN (Integrated Services Digital Network) se používají zkratky **BRA (Basic Rate Access) - základní přístup** a **PRA (Primary Rate Access) - primární přístup** (Přednáška 7)."
+    },
+    {
+      "id": 128,
+      "question": "DATOVÝ OKRUH je v základním datovém řetězci vymezen:",
+      "options": [
+        "rozhraními I1",
+        "zařízeními DCE",
+        "rozhraními I2",
+        "rozhraními I3"
+      ],
+      "correctIndex": 2,
+      "explanation": "Datový okruh je v základním datovém řetězci vymezen **rozhraními I2** (Poznámka: Detailní schéma datového řetězce DTE/DCE není detailně popsáno v poskytnutých zdrojích)."
+    },
+    {
+      "id": 129,
+      "question": "Datový spoj je v základním datovém řetězci vymezen",
+      "options": [
+        "rozhraními I1",
+        "rozhraními I2",
+        "rozhraním I3",
+        "rozhraními DTE"
+      ],
+      "correctIndex": 2,
+      "explanation": "Datový spoj je v základním datovém řetězci vymezen **rozhraním I3** (Poznámka: Detailní schéma datového řetězce DTE/DCE není detailně popsáno v poskytnutých zdrojích)."
+    },
+    {
+      "id": 130,
+      "question": "Jaký je rozdíl v charakteru komunikace u \"komunikace se spojováním\" v porovnání s \"komunikací bez spojování\"?",
+      "options": [
+        "určitý časový interval (signálový element) příslušný k jedné komunikační relaci se vyskytuje nepravidelně",
+        "určitý časový interval (signálový element) příslušný k jedné komunikační relaci se vyskytuje pravidelně",
+        "u komunikace se spojováním je nutné před vlastní komunikaci sestavit komunikační okruh",
+        "u komunikace se spojováním není nutné před vlastní komunikací sestavit komunikační okruh"
+      ],
+      "correctIndex": 2,
+      "explanation": "Komunikace se spojováním má tři etapy: **vytvoření spojení**, vlastní komunikace, **zrušení spojení** (Přednáška 4). U komunikace bez spojování (např. IP sítě) tento krok není nutný (Přednáška 4)."
+    },
+    {
+      "id": 131,
+      "question": "Spojová vrstva modelu OSI nezajišťuje:",
+      "options": [
+        "spolehlivý přenos rámců",
+        "kódování rámců",
+        "zabezpečený přenos rámců",
+        "synchronizaci na úrovni rámců"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spojová vrstva (druhá vrstva) se zabývá spolehlivým přenosem rámců, synchronizací a řízením přístupu k médiu (MAC) (Přednáška 11, Přednáška 13). **Kódování** (linkové kódy) je primárně funkcí **Fyzické vrstvy** (Přednáška 11)."
+    },
+    {
+      "id": 132,
+      "question": "Jaký význam má operace \"MAPOVÁNÍ\" u SDH?",
+      "options": [
+        "umožňuje zřetězení virtuálních kontejnerů",
+        "slouží k zabezpečení a kontrole přenosu příspěvkového signálu",
+        "vytváří virtuální kontejnery",
+        "přizpůsobení, resp. adaptace příspěvkového signálu formátu signálu SDH"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Mapování (Mapping)** je proces **přizpůsobování (adaptace) uživatelského příspěvkového signálu do formátu signálu SDH** (do kontejneru) (Přednáška 4)."
+    },
+    {
+      "id": 133,
+      "question": "Systém ADSL2+ umožňuje dosáhnout přenosové rychlosti pro downstream:",
+      "options": [
+        "až 2 Mbit/s",
+        "až 24 Mbit/s",
+        "až 8 Mbit/s",
+        "až 12 Mbit/s"
+      ],
+      "correctIndex": 1,
+      "explanation": "ADSL 2+ (3. generace ADSL, ITU-T G.992.5) má dvojnásobně rozšířené kmitočtové pásmo (až 2,208 MHz) a teoreticky dosahuje rychlosti **až 24 Mbit/s** směrem k účastníkovi (downstream) (Přednáška 7)."
+    },
+    {
+      "id": 134,
+      "question": "Má-li být maximalizováno využití přenosové trasy, je nutné využít:",
+      "options": [
+        "Principy časového dělení (TDM)",
+        "Principy frekvenčního dělení (FDM)",
+        "Principy hustého vlnového dělení (DWDM)",
+        "Principy kódového dělení (CDMA)"
+      ],
+      "correctIndex": 2,
+      "explanation": "K maximalizaci využití optické přenosové trasy a dosažení propustnosti řádově Tbit/s se využívají systémy **hustého vlnového dělení (DWDM – Dense WDM)** (Přednáška 4)."
+    },
+    {
+      "id": 135,
+      "question": "Základní rychlost jednoho kanálu PCM je:",
+      "options": [
+        "32 kbit/s",
+        "128 kbit/s",
+        "64 kbit/s",
+        "2048 kbit/s"
+      ],
+      "correctIndex": 2,
+      "explanation": "Základní rychlost jednoho telefonního kanálu je dána digitalizací hovorového signálu: vzorkovací frekvence $8000 \\text{ Hz}$ a $8 \text{ bitů/vzorek}$, což dává $8 \\cdot 8000 = **64 \text{ kbit/s}**$ (Přednáška 2)."
+    },
+    {
+      "id": 136,
+      "question": "Časová poloha 2-6-4 označuje, že uživatelský signál E1 je přenášen v kontejneru STM-1: (Divná otázka)",
+      "options": [
+        "v druhém TUG-3, šestém TUG-2, čtvrtém TU-12.",
+        "v prvním TUG-3, šestém TUG-2, čtvrtém TU-12.",
+        "v druhém TUG-3, čtvrtém TUG-2, šestém TU-12.",
+        "Časová poloha (vzhledem k signálu E1 o 2018kbit/s) nemá smysl"
+      ],
+      "correctIndex": 3,
+      "explanation": "Při multiplexaci signálu E1 (PCM 1. řádu) je standardní přenosová rychlost $2048 \\text{ kbit/s}$ (Přednáška 2). Uvedená rychlost $2018 \\text{ kbit/s}$ neodpovídá standardu E1, a proto je časová poloha v kontextu tohoto rámce neplatná (Přednáška 2)."
+    },
+    {
+      "id": 137,
+      "question": "Na rozhraní PCM 1. řádu (E1) je přenosová rychlost",
+      "options": [
+        "1544 kbit/s",
+        "64 kbit/s",
+        "2048 kbit/s",
+        "34368 kbit/s"
+      ],
+      "correctIndex": 2,
+      "explanation": "Přenosová rychlost signálu **PCM 1. řádu (E1)** se vypočítá jako $32 \\text{ KI} \\cdot 64 \\text{ kbit/s} = **2048 \\text{ kbit/s}**$ (Přednáška 2)."
+    },
+    {
+      "id": 138,
+      "question": "K jakému účelu slouží tvz. telekomunikační vidlice",
+      "options": [
+        "Oddělení signálů o různých frekvencích",
+        "Napájení koncového zařízení",
+        "Umožňuje duplexní provoz po dvoudrátovém vedení",
+        "Zajištění synchronizace"
+      ],
+      "correctIndex": 2,
+      "explanation": "Telekomunikační vidlice (Hybrid) je součástí účastnické sady (BORSCHT) (Přednáška 10). Slouží k **oddělení směrů přenosu** a v systémech potlačení ozvěny (např. ADSL) **umožňuje duplexní provoz po dvoudrátovém vedení** (Přednáška 10, Přednáška 7)."
+    },
+    {
+      "id": 139,
+      "question": "Jaký je typický měrný útlum jednovidového vlákna ?",
+      "options": [
+        "Desítky dB/km",
+        "Jednotky dB/km",
+        "Desetiny dB/km",
+        "Stovky dB/km"
+      ],
+      "correctIndex": 2,
+      "explanation": "Jednovidová optická vlákna (SM-SI) jsou určena pro dlouhé trasy (Přednáška 5). Jejich měrný útlum je velmi nízký, typicky okolo **desetin dB/km** (např. $0,2 \text{ dB/km}$ pro $1550 \text{ nm}$ nebo $0,35 \text{ dB/km}$ pro $1310 \text{ nm}$) (Přednáška 5)."
+    },
+    {
+      "id": 140,
+      "question": "Co je to sběrnice S0",
+      "options": [
+        "Síťová sběrnice",
+        "Účastnická sběrnice",
+        "Vnitřní sběrnice ústředny",
+        "Dálková sběrnice"
+      ],
+      "correctIndex": 1,
+      "explanation": "Sběrnice S0 je označení pro **účastnickou sběrnici**, která se používá pro připojení koncových zařízení u základního přístupu ISDN (ISDN-BRA) (Přednáška 7)."
+    },
+    {
+      "id": 141,
+      "question": "Jaké metody vícenásobného přístupu se v mobilních sítích používají ?",
+      "options": [
+        "Amplitudové, frekvenční a fázové dělení",
+        "Frekvenční, časové a kódové dělení",
+        "Pouze frekvenční dělení",
+        "Pouze časové a frekvenční dělení"
+      ],
+      "correctIndex": 1,
+      "explanation": "V mobilních sítích se používají metody vícenásobného přístupu (**Multiple Access**) pro obsloužení více uživatelů v jedné buňce: **FDMA (frekvenční), TDMA (časové) a CDMA (kódové dělení)** (Přednáška 12)."
+    },
+    {
+      "id": 142,
+      "question": "Ukazatel PTR udává polohu",
+      "options": [
+        "VC v TUG",
+        "VC v TU nebo AUG",
+        "AU v STM",
+        "TU v TUG"
+      ],
+      "correctIndex": 1,
+      "explanation": "Ukazatel **PTR (Pointer)** je součástí Administrační jednotky (AU) a slouží k adresaci a **popisu polohy Virtuálního kontejneru (VC)** v rámci **Tributární jednotky (TU)** nebo **Administrační skupiny (AUG)** (Přednáška 4)."
+    },
+    {
+      "id": 143,
+      "question": "Jakým způsobem lze u modulací zvýšit jejich odolnost proti rušení ?",
+      "options": [
+        "Zvýšením symbolové rychlosti",
+        "Snížením počtu stavů modulace",
+        "Využití mřížkového kódování",
+        "Použitím synchronního přenosu"
+      ],
+      "correctIndex": 2,
+      "explanation": "Pro zvýšení odolnosti modulací s větším počtem stavů proti rušení se často používají pokročilé kódovací techniky, například **mřížkové kódování (TC – Trellis Code)** (Přednáška 7)."
+    },
+    {
+      "id": 144,
+      "question": "Jak je CRC aplikováno u signálu E1",
+      "options": [
+        "Pomocí cyklického součtu",
+        "Pomocí Hammingova kódu",
+        "Pomoci posuvného registru",
+        "Pomocí paritního bitu"
+      ],
+      "correctIndex": 2,
+      "explanation": "CRC (Cyklický redundantní kód) se používá k zabezpečení přenosu multirámce E1 (Přednáška 2). Aplikace kódu CRC (i skrambleru) se realizuje pomocí logických obvodů, zejména **posuvného registru** (Přednáška 2, Přednáška 7)."
+    },
+    {
+      "id": 145,
+      "question": "Kolik příspěvkových signálů typu E1 lze začlenit do transportního modulu STM-1",
+      "options": [
+        "30",
+        "32",
+        "63",
+        "126"
+      ],
+      "correctIndex": 2,
+      "explanation": "Do základního transportního modulu SDH **STM-1** (o rychlosti $155,52 \text{ Mbit/s}$) je možné multiplexovat kapacitu odpovídající přenosu **63 signálů typu E1** (tj. 63 kontejnerů VC-12) (Přednáška 4)."
+    },
+    {
+      "id": 146,
+      "question": "Proč se u PCM využívá nelineárního kvantovaní ?",
+      "options": [
+        "Pro snížení přenosové rychlosti",
+        "Pro zjednodušení dekódování",
+        "Pro zvýšení maximálního dynamického rozsahu",
+        "Pro zajištění konstantního odstupu od kvantizačního zkreslení u všech kvantizačních stupňů"
+      ],
+      "correctIndex": 3,
+      "explanation": "Nelineární kvantování (pomocí logaritmické funkce, např. A-zákon) je používáno proto, aby se zajistil **konstantní odstup užitečného signálu od kvantizačního zkreslení ($A_{S/Q}$) u všech kvantizačních úrovní** (Přednáška 2)."
+    },
+    {
+      "id": 147,
+      "question": "Zkratka PDH označuje:",
+      "options": [
+        "Primární digitální hierarchii",
+        "Plynulou digitální hierarchii",
+        "Plesiochronní digitální hierarchii",
+        "Protokol pro digitální harmonizaci"
+      ],
+      "correctIndex": 2,
+      "explanation": "Zkratka **PDH** označuje **Plesiochronní digitální hierarchii (Plesiochronous Digital Hierarchy)**, která byla historickým předchůdcem synchronní hierarchie SDH (Přednáška 4)."
+    },
+    {
+      "id": 148,
+      "question": "Mezi modemy nepatří zařízení",
+      "options": [
+        "ADSL",
+        "HDSL",
+        "VDSL",
+        "Dial-up modem"
+      ],
+      "correctIndex": 1,
+      "explanation": "ADSL, VDSL a Dial-up modem jsou přímo modemy (Přednáška 7). **HDSL (High-bit-rate DSL)** je označován jako **systém xDSL** (Přednáška 7), který pro přenos používá transceivery."
+    },
+    {
+      "id": 149,
+      "question": "Co je to homogenní vedení",
+      "options": [
+        "Vedení bez jakéhokoli útlumu",
+        "Vedení s paralelními vodiči",
+        "Má ve všech svých částech stejné elektrické vlastnosti",
+        "Vedení s vlnovou impedancí rovnou zatěžovací"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Homogenní vedení** je zjednodušený model telekomunikačního vedení, který má **ve všech svých částech stejné elektrické vlastnosti** (rovnoměrně rozložené primární parametry) (Přednáška 6)."
+    },
+    {
+      "id": 150,
+      "question": "Vyberte které přenosové veličiny lze měřit na fyzické vrstvě ?",
+      "options": [
+        "Útlum, MAC adresa, IP adresa",
+        "Útlum, přenosová rychlost, chybovost",
+        "Latence, fragmentace, segmentace",
+        "Jitter, přeslech, socket"
+      ],
+      "correctIndex": 1,
+      "explanation": "Fyzická vrstva modelu OSI je nejnižší vrstva, která zajišťuje interpretaci signálů na přenosovém médiu (Přednáška 11). Měřitelné fyzické veličiny zahrnují **útlum**, **přenosovou rychlost** a **chybovost** (Přednáška 6, Přednáška 13)."
+    },
+    {
+      "id": 151,
+      "question": "Pod pojmem telekomunikační okruh rozumíme",
+      "options": [
+        "Jednosměrná cesta",
+        "Obousměrná přenosová cesta",
+        "Logické spojení",
+        "Okruh sestavený před přenosem dat"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Telekomunikační okruh** je definován jako soubor technických prostředků umožňující **obousměrný přenos signálu** mezi dvěma místy (Přednáška 1)."
+    },
+    {
+      "id": 152,
+      "question": "Které operace se využívají pro digitalizaci telefonního signálu",
+      "options": [
+        "Modulace, multiplexování, kódování",
+        "Vzorkování, kvantování, kódování",
+        "Regenerace, rekonstituce, modulace",
+        "Časové dělení, multiplexování, kódování"
+      ],
+      "correctIndex": 1,
+      "explanation": "Proces digitalizace analogového signálu (PCM) je rozdělen do tří fází: **vzorkování** (diskrétní v čase), **kvantování** vzorků (diskrétní v amplitudě) a **kódování** binárním kódem (vznik digitálního signálu PCM) (Přednáška 2, Přednáška 8)."
+    },
+    {
+      "id": 153,
+      "question": "Přímé řízení je charakteris-tickým znakem spojovacích systémů:",
+      "options": [
+        "4. Generace",
+        "3. Generace",
+        "2. Generace",
+        "1. Generace"
+      ],
+      "correctIndex": 3,
+      "explanation": "Spojovací systémy **I. generace** (voličové systémy) pracovaly s **plně decentralizovaným řízením** od spojovacích cest, což odpovídá **přímému řízení**, kdy je každá spojovací cesta vybavena řídicími složkami (Přednáška 10)."
+    },
+    {
+      "id": 154,
+      "question": "Jaký útlum má vedení při poklesu výkonu na polovinu ?",
+      "options": [
+        "1 dB",
+        "6 dB",
+        "10 dB",
+        "3 dB"
+      ],
+      "correctIndex": 3,
+      "explanation": "Útlum výkonu v dB se počítá jako $10 \\cdot \\log_{10}(P_{vstup}/P_{výstup})$. Při poklesu výkonu na polovinu ($P_{vstup}/P_{výstup} = 2$) je útlum přibližně **3 dB** (Přednáška 1)."
+    },
+    {
+      "id": 155,
+      "question": "Jaký útlum má vedení při poklesu výstupního napětí na polovinu oproti vstupnímu?",
+      "options": [
+        "2 dB",
+        "3 dB",
+        "10 dB",
+        "6 dB"
+      ],
+      "correctIndex": 3,
+      "explanation": "Útlum napětí v dB se počítá jako $20 \\cdot \\log_{10}(U_{vstup}/U_{výstup})$. Při poklesu napětí na polovinu ($U_{vstup}/U_{výstup} = 2$) je útlum přibližně **6 dB** (Přednáška 1)."
+    },
+    {
+      "id": 156,
+      "question": "Vysvětlete pojem stuffing",
+      "options": [
+        "Proces vkládání datových bajtů do rámce",
+        "Kódování pro zvýšení odolnosti proti chybám",
+        "Umožňuje kompenzaci odchylek přenosových rychlostí příspěvkových signálů v PDH",
+        "Algoritmus pro nelineární kvantování"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Stuffing** je metoda používaná v **PDH** (Plesiochronní digitální hierarchie) pro **vyrovnávání odchylek přenosových rychlostí** sdružovaných signálů (Přednáška 4). Rámy nadřazeného signálu obsahují rezervu pro tuto kompenzaci (Přednáška 4)."
+    },
+    {
+      "id": 157,
+      "question": "Vrstvový model TCP/IP má",
+      "options": [
+        "7 vrstev",
+        "5 vrstev",
+        "3 vrstvy",
+        "4 vrstvy"
+      ],
+      "correctIndex": 3,
+      "explanation": "Model **TCP/IP** je typicky popsán se **čtyřmi vrstvami**: vrstva síťového rozhraní, síťová vrstva, transportní vrstva a aplikační vrstva (Přednáška 8, Přednáška 11)."
+    },
+    {
+      "id": 158,
+      "question": "Co neumožňuje technologie WDM",
+      "options": [
+        "Zvýšení kapacity",
+        "Paralelní přenos dat",
+        "Vysokou míru zabezpečení přenosu příspěvkových signálů",
+        "Různé přenosové rychlosti"
+      ],
+      "correctIndex": 2,
+      "explanation": "Technologie **WDM** (Vlnový multiplex) primárně umožňuje zvýšení kapacity, **paralelní přenos dat** a **různé přenosové rychlosti** (Přednáška 4, Přednáška 5). Nejedná se o primární mechanismus pro zajištění **vysoké míry zabezpečení přenosu**."
+    },
+    {
+      "id": 159,
+      "question": "Jaký je rozdíl mezi symetrickým a koaxiální vedení",
+      "options": [
+        "Symetrické vedení je elektricky nesymetrické",
+        "Symetrické vedení má vodiče s téměř shodnou impedancí vůči zemi",
+        "Koaxiální vedení má vždy menší útlum",
+        "Koaxiální vedení je geometricky symetrické"
+      ],
+      "correctIndex": 1,
+      "explanation": "U **symetrického vedení** (např. kroucené páry) mají vodiče vůči zemi **téměř shodnou impedanci (elektrická symetrie)**, což minimalizuje vnější rušení (Přednáška 6). Koaxiální vedení je elektricky nesymetrické (Přednáška 6)."
+    },
+    {
+      "id": 160,
+      "question": "Obousměrný přenos dat v sítích PON je nejčastěji realizován pomocí",
+      "options": [
+        "FDMA",
+        "TDMA",
+        "CDMA",
+        "WDMA (Wavelength Division Multiple Access)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Obousměrný přenos dat v optických sítích PON (Passive Optical Network) je nejčastěji realizován pomocí **WDMA (Wavelength Division Multiple Access)**, tedy vlnového dělení, kde jsou pro upstream a downstream použity různé vlnové délky (Přednáška 4)."
+    },
+    {
+      "id": 161,
+      "question": "Mnohavidová optická vlákna se skokovou změnou indexu lomu mají průměr jádra",
+      "options": [
+        "Shodný s vlnovou délkou",
+        "Srovnatelný s vlnovou délkou",
+        "Mnohem menší, než vlnová délka",
+        "Mnohem větší, než je vlnová délka použitého zdroje"
+      ],
+      "correctIndex": 3,
+      "explanation": "Na rozdíl od jednovidových vláken (kde je průměr srovnatelný s vlnovou délkou) (Přednáška 5) musí mít **mnohovidová vlákna** (MM-SI) průměr jádra **mnohem větší, než je vlnová délka** použitého zdroje záření (Přednáška 5), aby se v nich mohlo šířit více vidů."
+    },
+    {
+      "id": 162,
+      "question": "Z jakého důvodu jsou zaváděny technologie Frame relay a MPLS",
+      "options": [
+        "Zvýšení zabezpečení přenosu",
+        "Zjednodušení směrování informace, zvýšení přenosové rychlosti",
+        "Umožnění přepojování okruhů",
+        "Pouze pro hlasové služby"
+      ],
+      "correctIndex": 1,
+      "explanation": "Technologie Frame Relay a **MPLS** (Multi-Protocol Label Switching) byly zavedeny za účelem **zjednodušení směrování** v síti (pomocí značky/labelu) a pro **zvýšení přenosové rychlosti** (Přednáška 11)."
+    },
+    {
+      "id": 163,
+      "question": "Bajty pro vyrovnávání přenosových rychlostí jsou umístěny v:",
+      "options": [
+        "V rámu STM-1",
+        "V záhlaví virtuálního kontejneru",
+        "V ukazateli (Pointer)",
+        "V přenosovém médiu"
+      ],
+      "correctIndex": 2,
+      "explanation": "V SDH je vyrovnávání přenosových rychlostí řízeno **Ukazatelem (PTR)** (Přednáška 4). Konkrétní **rezervní byty (např. H3)**, které se použijí pro zápornou adaptaci, jsou umístěny v těsné blízkosti ukazatele v rámci Informačního pole (Přednáška 4)."
+    },
+    {
+      "id": 164,
+      "question": "Co je to Grooming",
+      "options": [
+        "Šifrování dat",
+        "Třídění provozní zátěže",
+        "Zabezpečený přenos optických signálů",
+        "Sdružování hovorových kanálů v rámci PCM"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Grooming** (třídění provozní zátěže) je funkce přístupové sítě. Umožňuje směrovat sdružené signály na příslušná rozhraní poskytovatelů služeb (Přednáška 13)."
+    },
+    {
+      "id": 165,
+      "question": "Vyberte klíčové vlastnosti plesiochronní digitální hierarchie (PDH)",
+      "options": [
+        "Synchronní sdružování, bitové řízení",
+        "Asynchronní sdružování, bajtové řízení",
+        "Synchronní sdružování, prokládání bajt po bajtu",
+        "Asynchronní sdružování, prokládání bit po bitu"
+      ],
+      "correctIndex": 3,
+      "explanation": "Klíčové vlastnosti **PDH** (Plesiochronní digitální hierarchie) jsou: **asynchronní sdružování** signálů (chybí centrální taktování) a **volné prokládání bit po bitu** (Přednáška 4)."
+    },
+    {
+      "id": 166,
+      "question": "Jaké jsou nutné podmínky pro vytvoření digitální integrované služby (ISDN)",
+      "options": [
+        "Náhrada FDM za TDM, zavedení centralizované signalizace SS7, integrace nových služeb",
+        "Pouze náhrada FDM za TDM",
+        "Zavedení pouze paketového přenosu",
+        "Zavedení pouze signalizace CAS"
+      ],
+      "correctIndex": 0,
+      "explanation": "Pro vytvoření digitální integrované sítě a služby **ISDN** bylo nutné provést **náhradu frekvenčního multiplexu (FDM) za časový multiplex (TDM)** (PCM), zavést **centralizovanou signalizaci (SS7)** a umožnit **integraci nových služeb** (hlas, data) (Přednáška 10)."
+    },
+    {
+      "id": 167,
+      "question": "Co znamená STP",
+      "options": [
+        "Segment Transport Protocol",
+        "Shielded Twisted Pair",
+        "Spanning Tree Protocol",
+        "Signal Transfer Point"
+      ],
+      "correctIndex": 1,
+      "explanation": "Zkratka **STP** v kontextu metalických kabelových vedení (strukturovaná kabeláž) označuje **Shielded Twisted Pair**, tedy **stíněný kroucený pár** (Přednáška 6)."
+    },
+    {
+      "id": 168,
+      "question": "Co znamená zkratka UTP",
+      "options": [
+        "Unshielded Twisted Pair",
+        "User Transfer Protocol",
+        "Universal Transport Port",
+        "Unicast Transmission Protocol"
+      ],
+      "correctIndex": 0,
+      "explanation": "Zkratka **UTP** v kontextu metalických kabelových vedení (strukturovaná kabeláž) označuje **Unshielded Twisted Pair**, tedy **nestíněný kroucený pár** (Přednáška 6)."
+    },
+    {
+      "id": 169,
+      "question": "Veřejná pevná telefonní síť v ČR je v současnosti",
+      "options": [
+        "Tříúrovňová",
+        "Čtyřúrovňová",
+        "Dvouúrovňová",
+        "Jednoúrovňová"
+      ],
+      "correctIndex": 2,
+      "explanation": "Veřejná pevná telefonní síť v ČR je v současnosti **dvouúrovňová** (Poznámka: Detailní topologie sítě není v poskytnutých zdrojích detailně popsána)."
+    },
+    {
+      "id": 170,
+      "question": "Jaká je doba trvání jednoho rámce signálu PCM (E1)",
+      "options": [
+        "1544 us",
+        "2048 us",
+        "125 us",
+        "500 us"
+      ],
+      "correctIndex": 2,
+      "explanation": "Doba trvání jednoho rámce signálu **PCM (E1)** je shodná s dobou vzorkovací periody $T_s$, která je $T_s = 1/f_s = 1/8000 \text{ Hz} = **125 \\mu s**$ (Přednáška 2)."
+    },
+    {
+      "id": 171,
+      "question": "Jaký je rozdíl mezi systémy ADSL a VDSL",
+      "options": [
+        "VDSL používá pouze přepojování okruhů",
+        "ADSL používá užší kmitočtové pásmo",
+        "ADSL má vyšší rychlost upstreamu",
+        "VDSL je asymetrický"
+      ],
+      "correctIndex": 1,
+      "explanation": "**VDSL** (Very-high-bit-rate DSL) dosahuje vyšších rychlostí díky tomu, že využívá **širší frekvenční pásmo** (až 12 MHz, VDSL 2 až 30 MHz) (Přednáška 7). **ADSL** naproti tomu používá **užší kmitočtové pásmo** (max. 2,208 MHz u ADSL 2+) (Přednáška 7)."
+    },
+    {
+      "id": 172,
+      "question": "Jaký typ kvantování je používán pro digitalizaci telefonního signálu",
+      "options": [
+        "Lineární",
+        "Adaptivní",
+        "Diferenciální",
+        "Nelineární"
+      ],
+      "correctIndex": 3,
+      "explanation": "Pro digitalizaci telefonního signálu (PCM) se používá **nelineární kvantování** (s nerovnoměrným rozložením stupňů) (Přednáška 2), což zajišťuje konstantní odstup od kvantizačního zkreslení."
+    },
+    {
+      "id": 173,
+      "question": "Jednou z důležitých vlastností SDH technologie je",
+      "options": [
+        "Paketově řízené přepínání",
+        "Asynchronní multiplexování",
+        "Vlnové dělení (WDM)",
+        "Bytově řízené prokládání"
+      ],
+      "correctIndex": 3,
+      "explanation": "Klíčovou vlastností **SDH** je **řízené prokládání po celých bytech** (8 bitů) (Přednáška 4), což se liší od PDH, které používá prokládání bit po bitu (Přednáška 4)."
+    },
+    {
+      "id": 174,
+      "question": "Jaké typy propojení umožňují zpracovat spojovací systémy?",
+      "options": [
+        "Simplex, Duplex, Half-duplex",
+        "Okruhy, pakety, zprávy",
+        "Vnitřní, odchozí a příchozí, tranzitní",
+        "Pouze okruhové"
+      ],
+      "correctIndex": 2,
+      "explanation": "Spojovací systémy (ústředny) slouží k propojování účastnických přípojek pro **vnitřní spojení**, k propojování s odchozím/příchozím vedením (odchozí/příchozí spojení) a ke vzájemnému propojování vedení (**tranzitní spojení**) (Přednáška 10)."
+    },
+    {
+      "id": 175,
+      "question": "Důvodem pro použití vícečlánkových spojovacích polí je mimo jiné:",
+      "options": [
+        "Zvýšení spolehlivosti",
+        "Omezení vlivu vnitřního blokování",
+        "Zjednodušení signalizace",
+        "Snížení útlumu"
+      ],
+      "correctIndex": 1,
+      "explanation": "U vícečlánkových digitálních spojovacích polí vzniká **vnitřní blokování** (Přednáška 10). Ztráty způsobené vnitřním blokováním lze omezit a snížit **zvětšením počtu článků** (Přednáška 10)."
+    },
+    {
+      "id": 176,
+      "question": "Rámec STM-1 se skládá z:",
+      "options": [
+        "8 řádků a 260 sloupců",
+        "9 řádků a 260 sloupců",
+        "8 řádků a 270 sloupců",
+        "9 řádků a 270 sloupců"
+      ],
+      "correctIndex": 3,
+      "explanation": "Rámec STM-1 (Synchronous Transport Module 1) v SDH má pevnou strukturu, která se skládá z **9 řádků a 270 sloupců** (Přednáška 4)."
+    },
+    {
+      "id": 177,
+      "question": "Co je kvantizační (tvarové) zkreslení resp. Kvantizační šum",
+      "options": [
+        "Rozdíl mezi původní a zakódovanou (kvantovanou) hodnotou vzorku signálu",
+        "Rušení způsobené přeslechy na metalickém vedení",
+        "Zpoždění způsobené asynchronním přenosem",
+        "Chyba v kódování signálu"
+      ],
+      "correctIndex": 0,
+      "explanation": "**Kvantizační zkreslení** vzniká jako negativní vlastnost kvantizace a je způsobeno **rozdílem mezi původní (spojitou) a kvantovanou (diskrétní) hodnotou vzorku signálu** (Přednáška 2)."
+    },
+    {
+      "id": 178,
+      "question": "Vysvětlete pojem statistické multiplexování",
+      "options": [
+        "Zajišťuje stálou rychlost pro všechny kanály",
+        "Umožňuje vytvářet přenosové kanály s proměnnou přenosovou rychlostí",
+        "Využívá fixní časové sloty",
+        "Je synonymem pro TDM"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Statistické multiplexování** (používané u asynchronního časového multiplexu) spočívá v tom, že přenosové prostředky jsou obsazovány pouze v případě aktivního dialogu (komunikace), což **umožňuje vytvářet přenosové kanály s proměnnou přenosovou rychlostí** (Přednáška 4)."
+    },
+    {
+      "id": 179,
+      "question": "Základním principem DWDM je:",
+      "options": [
+        "Využití optického zesilovače EDFA",
+        "Použití linkového kódu NRZ",
+        "Sdružování dat do STM-1 rámce",
+        "Paralelní využití více vlnových délek v jediném optickém vlákně"
+      ],
+      "correctIndex": 3,
+      "explanation": "Základním principem **DWDM** (Hustý vlnový multiplex) je sdružení několika optických kanálů (každý na jiné vlnové délce) do jednoho optického vlákna (Přednáška 5), tedy **paralelní využití více vlnových délek v jediném optickém vlákně** (Přednáška 4)."
+    },
+    {
+      "id": 180,
+      "question": "Charakteristická impedance homogenního vedení je:",
+      "options": [
+        "Závislá na délce vedení a nezávislá na kmitočtu",
+        "Nezávislá na kmitočtu i délce vedení",
+        "Závislá na kmitočtu i délce vedení",
+        "Závislá na kmitočtu a nezávislá na délce vedení"
+      ],
+      "correctIndex": 3,
+      "explanation": "Charakteristická impedance ($Z_c$) je poměr napětí a proudu v libovolném bodě vedení (Přednáška 6). Je **nezávislá na délce vedení**, ale je **závislá na kmitočtu** (protože primární parametry jsou na kmitočtu závislé) (Přednáška 6)."
+    },
+    {
+      "id": 181,
+      "question": "Metoda charakteristiky optických vláken OTDR je metoda",
+      "options": [
+        "Destruktivní",
+        "Přímá",
+        "Aktivní",
+        "Nepřímá"
+      ],
+      "correctIndex": 3,
+      "explanation": "Metoda OTDR (Optical Time-Domain Reflectometer) se používá k měření charakteristik optických vláken a je řazena mezi **nepřímé metody** (Přednáška 5)."
+    },
+    {
+      "id": 182,
+      "question": "Mezi procesy spojené s impulsní modulací nepatří",
+      "options": [
+        "Vzorkování",
+        "Kvantování",
+        "Kódování",
+        "Multiplexování"
+      ],
+      "correctIndex": 3,
+      "explanation": "Impulsní modulace je spojena s digitalizací signálu, která zahrnuje **vzorkování, kvantování a kódování** (Přednáška 2). **Multiplexování** je následný proces sdružování signálů (Přednáška 2), ale není součástí vlastního převodu zprávy do fyzikální formy (modulace)."
+    },
+    {
+      "id": 183,
+      "question": "Vyberte správný seznam funkční účastnické sady",
+      "options": [
+        "Napájení, ochrana proti přepětí, vyzvánění, dohled, dekódování, vidlice, diagnostika",
+        "Router, Switch, Firewall",
+        "Modulace, Multiplexování, Kódování",
+        "IP adresa, MAC adresa, Port"
+      ],
+      "correctIndex": 0,
+      "explanation": "Účastnická sada musí plnit funkce BORSCHT: **Napájení** (B), **ochrana proti přepětí** (O), **vyzvánění** (R), **dohled** (S), **kódování/dekódování** (C), **vidlice** (H) a **diagnostika** (T) (Přednáška 10)."
+    },
+    {
+      "id": 184,
+      "question": "Který typ optických vláken je využíván na dlouhé vzdálenosti",
+      "options": [
+        "Mnohovidová skoková",
+        "Mnohovidová gradientní",
+        "Jednovidová vlákna (SM-SI)",
+        "Plastová optická vlákna"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Jednovidová vlákna (SM-SI)** jsou charakteristická nejnižším útlumem a jsou určena pro přenosy na **velké vzdálenosti** (i více než $100 \text{ km}$) a pro nejvyšší přenosové rychlosti (Přednáška 5)."
+    },
+    {
+      "id": 185,
+      "question": "Uveďte vrstvy RM-OSI ve správném pořadí od nejnižší po nejvyšší",
+      "options": [
+        "Aplikační, Prezentační, Relační, Transportní, Síťová, Spojová, Fyzická",
+        "Fyzická, Spojová, Síťová, Transportní, Relační, Prezentační, Aplikační",
+        "Relační, Prezentační, Aplikační, Transportní, Síťová, Spojová, Fyzická",
+        "Fyzická, Transportní, Síťová, Spojová, Relační, Prezentační, Aplikační"
+      ],
+      "correctIndex": 1,
+      "explanation": "Referenční model OSI má sedm vrstev (Přednáška 11). Správné pořadí od nejnižší (1) po nejvyšší (7) je: **Fyzická, Spojová, Síťová, Transportní, Relační, Prezentační, Aplikační** (Přednáška 11)."
+    },
+    {
+      "id": 186,
+      "question": "Koaxiální kabel je:",
+      "options": [
+        "Geometricky i elektricky symetrický",
+        "Geometricky i elektricky nesymetrický",
+        "Geometricky symetrický, elektricky nesymetrický",
+        "Geometricky nesymetrický, elektricky symetrický"
+      ],
+      "correctIndex": 2,
+      "explanation": "Koaxiální pár je tvořen dvěma souosými vodiči (Přednáška 6), a je tedy **geometricky symetrický**. Jelikož ale vodiče nemají stejnou impedanci vůči zemi, je **elektricky nesymetrický** (Přednáška 6)."
+    },
+    {
+      "id": 187,
+      "question": "Jaký rozdíl je mezi korektně a nekorektně zakončeným vedením",
+      "options": [
+        "V nekorektně zakončeném vedení je nižší útlum",
+        "U korektně zakončeného vedení nevzniká odražená vlna",
+        "Korektně zakončené vedení má vyšší přeslech",
+        "U nekorektně zakončeného vedení je menší útlum"
+      ],
+      "correctIndex": 1,
+      "explanation": "Vedení je korektně (bezodrazově) zakončeno, pokud se impedance zakončení rovná vlnové impedanci ($Z_c = Z_2$) (Přednáška 6). V takovém případě **nevzniká odražená vlna** (Přednáška 6)."
+    },
+    {
+      "id": 188,
+      "question": "Vysvětlete pojem Telefonní kanál",
+      "options": [
+        "Obousměrná cesta pro digitální signál",
+        "Jednosměrná cesta umožňující přenos hovorového nebo jiného signálu",
+        "Pásmo 8 kHz",
+        "Pásmo 300-3400 Hz"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Telefonní kanál** v přenosové technice označuje právě jednu **jednosměrnou cestu** umožňující přenos hovorového nebo jiného signálu (např. v pásmu 300 až 3400 Hz) (Přednáška 2)."
+    },
+    {
+      "id": 189,
+      "question": "Pokud je bitová chybovost datového okruhu rychlosti 1Mbit/s BER = 10^-6, pak za 1 sekundu je detekován:",
+      "options": [
+        "0 chybných bitů",
+        "1 chybný bit",
+        "10 chybných bitů",
+        "100 chybných bitů"
+      ],
+      "correctIndex": 1,
+      "explanation": "Bitová chybovost (**BER**) je poměr chybných bitů k celkovému počtu přenesených bitů ($v_p \\cdot t$) (Přednáška 1). Za $1 \text{ sekundu}$ je přeneseno $10^6 \\text{ bitů}$. Očekávaný počet chybných bitů je $10^{-6} \\cdot 10^6 \\cdot 1 = **1 \text{ chybný bit}**$."
+    },
+    {
+      "id": 190,
+      "question": "Pokud je bitová chybovost datového okruhu s přenosovou rychlostí 1 Mbit/s rovna BER = 1*10E-6, pak za 10 sekund provozu bylo detekováno:",
+      "options": [
+        "1 chybný bit",
+        "10 chybných bitů",
+        "100 chybných bitů",
+        "0,1 chybných bitů"
+      ],
+      "correctIndex": 1,
+      "explanation": "Za $10 \\text{ sekund}$ je přeneseno $10^7 \\text{ bitů}$. Očekávaný počet chybných bitů je $10^{-6} \\cdot 10^7 = **10 \text{ chybných bitů}**$."
+    },
+    {
+      "id": 191,
+      "question": "Která struktura PDH má více stupňů (řádů) - evropská nebo japonská",
+      "options": [
+        "Evropská",
+        "Japonská",
+        "Obě jich mají stejně",
+        "Americká"
+      ],
+      "correctIndex": 2,
+      "explanation": "Plesiochronní digitální hierarchie (PDH) má regionální standardy (Evropský E, Japonský J). Z hlediska počtu multiplexních stupňů (řádů) mají obě hierarchie **stejný počet stupňů** (Přednáška 4)."
+    },
+    {
+      "id": 192,
+      "question": "Co definuje Komunikační protokol",
+      "options": [
+        "Fyzické zapojení kabelů",
+        "Formát datové jednotky",
+        "Soubor pravidel pro komunikaci mezi dvěma stejnolehlými vrstvami",
+        "Vzorkovací frekvenci signálu"
+      ],
+      "correctIndex": 2,
+      "explanation": "Komunikační **protokol** je jednoznačně definovaný **soubor pravidel**, podle kterého probíhá výměna dat (Přednáška 8), a řídí komunikaci mezi dvěma **stejnolehlými vrstvami** v síťovém modelu (Přednáška 8, Přednáška 11)."
+    },
+    {
+      "id": 193,
+      "question": "Mezi standardizační instituce s celosvětovou působností patří:",
+      "options": [
+        "ČTÚ",
+        "ITU",
+        "ETSI",
+        "IETF"
+      ],
+      "correctIndex": 1,
+      "explanation": "Mezi mezinárodní standardizační organizace s celosvětovou působností patří **ITU (International Telecommunication Union)**, ISO a IEC (Přednáška 1)."
+    },
+    {
+      "id": 194,
+      "question": "ITU-T vydává",
+      "options": [
+        "Zákony",
+        "Normy",
+        "Doporučení",
+        "Technické zprávy"
+      ],
+      "correctIndex": 2,
+      "explanation": "Sektor telekomunikační normalizace **ITU-T** (Mezinárodní telekomunikační unie) vydává **doporučení** (např. řady G, V, X) (Přednáška 1)."
+    },
+    {
+      "id": 195,
+      "question": "Vyberte, které metody přenosu se používají u sytému ADSL",
+      "options": [
+        "Časové dělení a kódování",
+        "Potlačení ozvěny a frekvenční dělení",
+        "Pouze frekvenční dělení",
+        "Kódové dělení"
+      ],
+      "correctIndex": 1,
+      "explanation": "V modemu **ADSL** se pro vytvoření dvou nezávislých kanálů (UPLINK/DOWNLINK) používá metoda **frekvenčního dělení (FDD)** nebo metoda **potlačení ozvěny (EC)** (Přednáška 7)."
+    },
+    {
+      "id": 196,
+      "question": "Pokud hovoříme o datových jednotkách u technologie Ethernet(100base-Tx), hovoříme o:",
+      "options": [
+        "Paketech",
+        "Segmentach",
+        "Datagramech",
+        "Ethernetových rámcích"
+      ],
+      "correctIndex": 3,
+      "explanation": "Technologie Ethernet (standard IEEE 802.3) používá pro přenos dat na Spojové vrstvě datové jednotky nazývané **Ethernetové rámce**."
+    },
+    {
+      "id": 197,
+      "question": "Nultý kanálový interval rámce PCM přenáší:",
+      "options": [
+        "Signalizaci CAS",
+        "Údaje pro údržbu a správu",
+        "Hovorový kanál",
+        "Synchroskupinu rámcového souběhu FAS"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Nultý kanálový interval (KI 0)** rámce PCM 1. řádu (E1) přenáší především **synchroskupinu rámcového souběhu (FAS – Frame Alignment Signal)**, která zajišťuje rozeznání začátku rámce (Přednáška 2)."
+    },
+    {
+      "id": 198,
+      "question": "Šestnáctý kanálový interval rámce PCM přenáší:",
+      "options": [
+        "Synchroskupinu rámcového souběhu FAS",
+        "Údaje pro údržbu a správu",
+        "Hovorový kanál",
+        "Signalizaci CAS (Channel Associated Signalling)"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Šestnáctý kanálový interval (KI 16)** rámce PCM 1. řádu (E1) je vyhrazen pro **signalizaci přidruženou hovorovým kanálům (CAS – Channel Associated Signalling)** (Přednáška 2)."
+    },
+    {
+      "id": 199,
+      "question": "Jaký z dále uvedených rozptylů využívá metoda OTDR?",
+      "options": [
+        "Comptonův",
+        "Mieův",
+        "Fresnelův",
+        "Rayleighův"
+      ],
+      "correctIndex": 3,
+      "explanation": "Metoda OTDR (Optical Time-Domain Reflectometer) je založena na měření odraženého světla, přičemž klíčový pro tuto metodu je **Rayleighův rozptyl** (Přednáška 5)."
+    },
+    {
+      "id": 200,
+      "question": "Časová poloha 1-4-2 označuje, že uživatelský signál (E1, 2048 kbit/s) je přenášen v kontejneru STM-1:",
+      "options": [
+        "v prvním TUG-3, čtvrtém TUG-2, druhém TU-12.",
+        "v druhém TUG-3, prvním TUG-2, čtvrtém TU-12.",
+        "v druhém TUG-3, čtvrtém TUG-2, prvním TU-12.",
+        "v prvním TUG-2, čtvrtém TU-12, druhém TUG-3."
+      ],
+      "correctIndex": 0,
+      "explanation": "V multiplexní struktuře SDH (STM-1) je poloha kontejneru VC-12 (nesoucího signál E1) adresována hierarchicky pomocí jednotek TUG-3, TUG-2 a TU-12. Označení **1-4-2** znamená: **první TUG-3, čtvrtý TUG-2, druhý TU-12** (Přednáška 4)."
+    },
+    {
+      "id": 201,
+      "question": "Jakým způsobem lze klasifikovat linkové kódy?",
+      "options": [
+        "Podle šířky pásma",
+        "Podle modulační rychlosti",
+        "Podle typu použitého kabelu",
+        "Podle počtu úrovní (např. binární, ternární)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Linkové kódy (vyjádření digitálního signálu) se klasifikují mimo jiné **podle počtu úrovní** (např. binární kódy se dvěma úrovněmi, bipolární kódy se třemi úrovněmi) (Přednáška 11)."
+    },
+    {
+      "id": 202,
+      "question": "Vyberte pravdivé tvrzení pro mechanismus komunikace mezi vrstvami.",
+      "options": [
+        "Vertikální komunikace probíhá mezi nesousedními vrstvami",
+        "Každá vrstva komunikuje přímo jen s aplikační vrstvou",
+        "Přímá komunikace (přenos dat) je realizována jen na úrovni nejnižší vrstvy (Fyzické)",
+        "Všechny vrstvy komunikují přímo horizontálně i vertikálně"
+      ],
+      "correctIndex": 2,
+      "explanation": "Přestože komunikace mezi uzly probíhá koncepčně na stejnolehlých vrstvách, **přímá komunikace (fyzický přenos dat)** se uskutečňuje pouze na úrovni **nejnižší, tedy Fyzické vrstvy** (Přednáška 11)."
+    },
+    {
+      "id": 203,
+      "question": "Imaginární část měrné vlnové míry přenosu se nazývá:",
+      "options": [
+        "měrný útlum",
+        "charakteristická impedance",
+        "měrný fázový posuv",
+        "činitel stojatých vln"
+      ],
+      "correctIndex": 2,
+      "explanation": "Měrná vlnová míra přenosu ($\\gamma$) je komplexní veličina. Její imaginární část ($\\beta$) se nazývá **měrný fázový posuv** (Přednáška 6)."
+    },
+    {
+      "id": 204,
+      "question": "Reálná část měrné vlnové míry přenosu se nazývá:",
+      "options": [
+        "měrný útlum",
+        "charakteristická impedance",
+        "měrný fázový posuv",
+        "činitel stojatých vln"
+      ],
+      "correctIndex": 0,
+      "explanation": "Měrná vlnová míra přenosu ($\\gamma$) je komplexní veličina. Její reálná část ($\\alpha$) se nazývá **měrný útlum** (Přednáška 6)."
+    },
+    {
+      "id": 205,
+      "question": "Které typy základních modulací znáte?",
+      "options": [
+        "ASK, PSK, QAM",
+        "PCM, ADSL, VDSL",
+        "OFDM, DMT, FDM",
+        "Amplitudová, Frekvenční a Fázová"
+      ],
+      "correctIndex": 3,
+      "explanation": "Základní typy analogových (spojitých) modulací, které ovlivňují nosnou vlnu, jsou **amplitudová (AM), frekvenční (FM) a fázová (PM)** (Přednáška 7)."
+    },
+    {
+      "id": 206,
+      "question": "Uveďte všechny primární parametry vedení.",
+      "options": [
+        "Měrný útlum, fázový posuv, charakteristická impedance",
+        "Měrný odpor, měrná indukčnost, měrná kapacita, měrný svod",
+        "Měrná vlnová míra přenosu, činitel stojatých vln",
+        "Výkon, napětí, proud"
+      ],
+      "correctIndex": 1,
+      "explanation": "Primární parametry homogenního vedení jsou čtyři elektrické veličiny rozložené po délce: **měrný odpor (R), měrná indukčnost (L), měrná kapacita (C) a měrný svod (G)** (Přednáška 6)."
+    },
+    {
+      "id": 207,
+      "question": "Jaké typy signalizací se využívají ve spojovacích systémech?",
+      "options": [
+        "Digitální, analogová, optická",
+        "Se spojováním, bez spojování, paketová",
+        "Informační, dohlížecí, nečíslovaná",
+        "Účastnická, vnitřní a síťová"
+      ],
+      "correctIndex": 3,
+      "explanation": "Signalizace ve spojovacích systémech se dělí podle místa přenosu řídicích signálů na **účastnickou** (vedení účastníka), **vnitřní** (v ústředně) a **síťovou** (mezi ústřednami) (Přednáška 10)."
+    },
+    {
+      "id": 208,
+      "question": "Jaká je vzorkovací frekvence použitá pro digitalizaci hovorového signálu?",
+      "options": [
+        "4 kHz",
+        "3,4 kHz",
+        "16 kHz",
+        "8 kHz"
+      ],
+      "correctIndex": 3,
+      "explanation": "Pro digitalizaci telefonního signálu (PCM) byla zvolena vzorkovací frekvence **$f_s = 8000 \text{ Hz (8 kHz)}$**, což je více než dvojnásobek maximální frekvence telefonního kanálu ($3400 \text{ Hz}$) (Přednáška 2)."
+    },
+    {
+      "id": 209,
+      "question": "Zkratka NRZ označuje:",
+      "options": [
+        "Protokol pro síťové řízení",
+        "Modulaci s návratem k nule",
+        "Kódování s posuvným registrem",
+        "Linkový kód bez návratu k nule"
+      ],
+      "correctIndex": 3,
+      "explanation": "Zkratka **NRZ (Non-Return to Zero)** označuje typ **linkového kódu bez návratu k nule** (Přednáška 11)."
+    },
+    {
+      "id": 210,
+      "question": "Vyberte typy rámců, které jsou definovány u protokolu HDLC.",
+      "options": [
+        "Data, Řídící, Chybový",
+        "Spojový, Síťový, Aplikační",
+        "Nečíslovaný, Dohlížecí a Informační",
+        "START, DATA, STOP"
+      ],
+      "correctIndex": 2,
+      "explanation": "U protokolu **HDLC** (High-level Data Link Control) jsou definovány tři typy rámců: **Informační (I), Dohlížecí (S) a Nečíslovaný (U)** (Přednáška 11)."
+    },
+    {
+      "id": 211,
+      "question": "Výstupem E-modelu jako metody hodnocení kvality je:",
+      "options": [
+        "BER",
+        "QOS",
+        "R-faktor",
+        "MOS"
+      ],
+      "correctIndex": 2,
+      "explanation": "E-model je komplexní nástroj pro stanovení kvality hovoru s efektivním zohledněním vlivu zpoždění (Přednáška 1, Přednáška 8). Výstupem jeho výpočtu je bezrozměrný koeficient, tzv. **R-faktor (Rating-factor)** (Přednáška 1, Přednáška 8)."
+    },
+    {
+      "id": 212,
+      "question": "Vysvětlete pojem „VNITŘNÍ BLOKOVÁNÍ“.",
+      "options": [
+        "Blokování na vstupních portech ústředny",
+        "Blokování na výstupních portech ústředny",
+        "Stav, kdy je znemožněn přístup k portům/časovým polohám vlivem obsazených spojek/časových poloh (v rámci spojovacího pole)",
+        "Blokování způsobené špatnou adresací"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Vnitřní blokování** nastává u vícečlánkových spojovacích polí, když je **znemožněn přístup k určité skupině portů, resp. časových poloh, vlivem již obsazených spojek, resp. již obsazených časových poloh** (Přednáška 10)."
+    },
+    {
+      "id": 213,
+      "question": "V číslovacím plánu používaném v telefonní síti v ČR má národní číslo (NSN):",
+      "options": [
+        "7 číslic",
+        "8 číslic",
+        "9 číslic",
+        "10 číslic"
+      ],
+      "correctIndex": 2,
+      "explanation": "Národní číslo (NSN) používané v telefonní síti v ČR má **9 číslic** (Poznámka: Tato informace pochází ze sady otázek, protože není v přednáškových materiálech explicitně uvedena)."
+    },
+    {
+      "id": 214,
+      "question": "V modelu RM-OSI:",
+      "options": [
+        "Jen Fyzická vrstva poskytuje služby vyšší vrstvě",
+        "Nejnižší vrstva poskytuje služby všem ostatním vrstvám",
+        "Každá vrstva (kromě nejvyšší) poskytuje služby nejbližší vyšší vrstvě",
+        "Vrstvy spolu navzájem nekomunikují"
+      ],
+      "correctIndex": 2,
+      "explanation": "Komunikace v rámci uzlu probíhá hierarchicky, kde **každá vrstva (kromě nejvyšší Aplikační vrstvy) poskytuje služby nejbližší vyšší vrstvě** (Přednáška 10, Přednáška 11)."
+    },
+    {
+      "id": 215,
+      "question": "Uveďte základní charakteristiky datových rozhraní.",
+      "options": [
+        "Přenosová rychlost, útlum, přeslech a šum",
+        "DUPLEX, SIMPLEX a HALF DUPLEX",
+        "Rámec, paket, segment a bit",
+        "Mechanické, elektrické, funkční a protokolové"
+      ],
+      "correctIndex": 3,
+      "explanation": "Datová rozhraní (např. sériová, paralelní, bezdrátová) jsou definována souborem charakteristik, které zahrnují: **mechanické, elektrické, funkční a protokolové** (Přednáška 13)."
+    },
+    {
+      "id": 216,
+      "question": "Časové dělení spojovacích cest:",
+      "options": [
+        "lze použít pro analogové i digitální signály",
+        "lze použít pouze pro analogové signály",
+        "lze použít pouze pro digitální signály",
+        "se již nepoužívá"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Časové dělení** (TDM) souvisí s rozvojem digitální techniky a je využíváno pro spojovací pole IV. generace (digitální systémy) (Přednáška 10). Lze jej tedy použít **pouze pro digitální signály** (Přednáška 2, Přednáška 10)."
+    },
+    {
+      "id": 217,
+      "question": "Co je to „LINKOVÝ KÓD“?",
+      "options": [
+        "Soubor pravidel pro zabezpečený přenos dat",
+        "Protokol pro směrování paketů na síťové vrstvě",
+        "Algoritmus pro potlačení ozvěny",
+        "Vyjádření digitálního signálu v podobě, která je vhodná pro přenos v rámci telekomunikačního kanálu"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Linkový kód** je způsob **vyjádření digitálního signálu v podobě, která je vhodná pro přenos** v rámci telekomunikačního kanálu, a je součástí Fyzické vrstvy (Přednáška 11)."
+    },
+    {
+      "id": 218,
+      "question": "Počet kanálů v jednom rámci PCM 1. řádu (E1) je:",
+      "options": [
+        "30 kanálů",
+        "24 kanálů",
+        "32 kanálů",
+        "30+2 (30 hovorových + 2 signalizační/synchronizační)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Signál **PCM 1. řádu** (E1) se nazývá **PCM 30/32**, jelikož obsahuje **32 kanálových intervalů (KI)**, z toho je **30 hovorových** (pro uživatele) a 2 kanály pro signalizaci a synchronizaci (Přednáška 2)."
+    },
+    {
+      "id": 219,
+      "question": "Jak se z hlediska teorie vedení chová koaxiální vedení?",
+      "options": [
+        "jako vedení při nízkých kmitočtech",
+        "jako vedení při vysokých kmitočtech",
+        "jako symetrické vedení",
+        "jako vlnovod"
+      ],
+      "correctIndex": 1,
+      "explanation": "Koaxiální páry pracují při podmínkách, kdy je vliv měrného odporu (R) a měrného svodu (G) zanedbatelný ($R \\ll \\omega L$ a $G \\ll \\omega C$), a proto se chovají **jako vedení při velmi vysokých kmitočtech** (jako bezeztrátové vedení) (Přednáška 6)."
+    },
+    {
+      "id": 220,
+      "question": "Proces mapování (mapping) se uskutečňuje:",
+      "options": [
+        "v Transportní vrstvě",
+        "mezi koncovým uživatelem a příspěvkovým portem uzlu SDH",
+        "pouze v rámci SDH křížového propojení",
+        "mezi stejnými vrstvami modelu OSI"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Mapování (Mapping)** je proces **přizpůsobení uživatelského příspěvkového signálu** do formátu SDH (Přednáška 4). Uskutečňuje se tedy **mezi koncovým uživatelem a příspěvkovým portem** uzlu SDH (Přednáška 4)."
+    },
+    {
+      "id": 221,
+      "question": "Fyzická vrstva modelu OSI nezajišťuje:",
+      "options": [
+        "Elektrické a mechanické charakteristiky",
+        "Kódování signálu",
+        "Synchronizaci bitů",
+        "Řízení přístupu k médiu (MAC)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Fyzická vrstva se zabývá přenosem bitů, elektrickými a mechanickými charakteristikami a synchronizací (Přednáška 11, Přednáška 13). **Řízení přístupu k médiu (MAC)** je funkcí **Spojové vrstvy** (Link Layer) (Přednáška 11)."
+    },
+    {
+      "id": 222,
+      "question": "Na jakém matematickém principu je založena modulace DMT?",
+      "options": [
+        "Z-transformaci",
+        "Laplaceově transformaci",
+        "Vlnkové transformaci",
+        "inverzní rychlé Fourierově transformaci (IFFT)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Modulace **DMT** (Discrete Multi-Tone), která patří mezi modulace s více nosnými (MCM), je realizována pomocí signálových procesorů s využitím **inverzní rychlé Fourierovy transformace (IFFT)** (Přednáška 7)."
+    },
+    {
+      "id": 223,
+      "question": "Pokud bychom měli realizovat datový okruh bez opakovačů či zesilovačů s přenosovou rychlostí 10 Gbit/s na vzdálenost 50 km, jako přenosové médium využijeme:",
+      "options": [
+        "koaxiální vedení",
+        "jednovidové optické vlákno",
+        "mnohovidové optické vlákno",
+        "kroucenou dvojlinku STP"
+      ],
+      "correctIndex": 1,
+      "explanation": "Pro přenos dat na dlouhé vzdálenosti ($50 \text{ km}$) a vysoké rychlosti ($10 \text{ Gbit/s}$) bez nutnosti opakovačů je nutné použít médium s minimálním útlumem. Tímto médiem je **jednovidové optické vlákno (SM-SI)**, které je určeno pro dlouhé trasy (Přednáška 5)."
+    },
+    {
+      "id": 224,
+      "question": "Jakou hodnotu numerické apertury vykazují jednovidová optická vlákna?",
+      "options": [
+        "0,2 - 0,3",
+        "0,08 - 0,1",
+        "0,4 - 0,5",
+        "0,5 - 0,6"
+      ],
+      "correctIndex": 1,
+      "explanation": "Numerická apertura (**NA**) vyjadřuje schopnost optického vlákna sbírat světlo (Přednáška 5). U **jednovidových optických vláken (SM-SI)** vykazuje nízké hodnoty, typicky **0,08 až 0,1** (Přednáška 5)."
+    },
+    {
+      "id": 225,
+      "question": "Co je charakteristické pro distribuci paketů v síti MPLS?",
+      "options": [
+        "pakety jsou směrovány podle IP adresy",
+        "pakety jsou v síti MPLS směrovány na základě značky (label)",
+        "pakety prochází sítí náhodným způsobem",
+        "před přenosem je nutné sestavit spojení"
+      ],
+      "correctIndex": 1,
+      "explanation": "Technologie **MPLS** (Multi-Protocol Label Switching) je koncepce směrování, kde jsou pakety směrovány **na základě značky (label)** (Přednáška 11)."
+    },
+    {
+      "id": 226,
+      "question": "Na jakém principu je založena funkce zesilovače EDFA?",
+      "options": [
+        "Na pasivním dělení optického signálu",
+        "Na regeneraci bitového toku",
+        "Na korekci chyb (FEC)",
+        "Na zesílení světla stimulovanou emisí záření"
+      ],
+      "correctIndex": 3,
+      "explanation": "**Optický zesilovač EDFA** (Erbium Doped Fiber Amplifier) je vláknový zesilovač založený na laserovém principu, tj. **zesílení světla stimulovanou emisí záření** (Přednáška 5)."
+    },
+    {
+      "id": 227,
+      "question": "Principiálním přínosem technologie GPRS je v porovnání s HSCSD:",
+      "options": [
+        "vyšší rychlost",
+        "pouze přepojování okruhů",
+        "paketový způsob přenosu dat",
+        "využití kódového dělení (CDMA)"
+      ],
+      "correctIndex": 2,
+      "explanation": "Zatímco HSCSD (High Speed Circuit Switched Data) stále používalo přepojování okruhů (Přednáška 12), **GPRS (General Packet Radio Service)** zavedlo **paketový způsob přenosu dat** (2.5G) (Přednáška 12)."
+    },
+    {
+      "id": 228,
+      "question": "Co je základním kritériem kvality při přenosu digitálního signálu?",
+      "options": [
+        "Zpoždění",
+        "Kolísání zpoždění (Jitter)",
+        "Chybovost",
+        "Průchodnost"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Chybovost (BER – Bit Error Rate)** je **základním měřítkem kvality** při přenosu digitálního signálu (Přednáška 1)."
+    },
+    {
+      "id": 229,
+      "question": "Jaká součást tvoří jádro muldexu SDH?",
+      "options": [
+        "Optický zesilovač EDFA",
+        "Konstelační diagram",
+        "Vlnový multiplexor",
+        "Digitální rozvaděč (Digital Cross-connect)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Jádro muldexu SDH (např. ADM - Add-Drop Muldex) tvoří **Digitální rozvaděč (Digital Cross-connect)**, který realizuje časoprostorové spojovací pole (Přednáška 4)."
+    },
+    {
+      "id": 230,
+      "question": "Proč klesá hodnota přenosové rychlosti na vyšších komunikačních vrstvách?",
+      "options": [
+        "Z důvodu kolísání zpoždění (Jitter)",
+        "Z důvodu ztráty paketů",
+        "Klesá díky režii komunikačních protokolů (princip encapsulace)",
+        "Kvůli hardwarovým omezením"
+      ],
+      "correctIndex": 2,
+      "explanation": "Hodnota přenosové rychlosti klesá na vyšších vrstvách **díky režii komunikačních protokolů** (data + záhlaví každé vrstvy), což je princip **encapsulace** (Přednáška 11)."
+    },
+    {
+      "id": 231,
+      "question": "Jaký význam má „SEKTORIZACE“ v mobilní síti?",
+      "options": [
+        "Zvyšuje dosah signálu jedné buňky",
+        "Zajišťuje plynulý Handover",
+        "Umožňuje optimalizovat počet základnových stanic a zvyšuje kapacitu sítě",
+        "Slouží k šifrování dat"
+      ],
+      "correctIndex": 2,
+      "explanation": "Sektorizace dělí buňku na menší sektory (Přednáška 12), čímž se **optimalizuje počet základnových stanic** a zároveň se **zvyšuje kapacita sítě** (Přednáška 12)."
+    },
+    {
+      "id": 232,
+      "question": "Která funkce zajišťuje konstantní odstup od kvantizačního zkreslení u všech kvantizačních stupňů?",
+      "options": [
+        "Exponenciální",
+        "Lineární",
+        "Logaritmická",
+        "Sinusoidní"
+      ],
+      "correctIndex": 2,
+      "explanation": "Konstantní odstup signálu od kvantizačního zkreslení ($A_{S/Q}$) u všech úrovní se u PCM dosahuje použitím **logaritmické funkce** (nelineární kvantování, např. A-zákon) (Přednáška 2)."
+    },
+    {
+      "id": 233,
+      "question": "V čem se liší sítě UMTS od sítí GSM?",
+      "options": [
+        "Využitím pouze paketového přenosu",
+        "Využitím pouze signalizace SS7",
+        "Použitou metodou vícenásobného přístupu (GSM = TDMA, UMTS = CDMA)",
+        "Použitím optických vláken pro připojení účastníků"
+      ],
+      "correctIndex": 2,
+      "explanation": "Zásadní rozdíl mezi systémy GSM (2. generace) a UMTS (3. generace) je v **použité metodě vícenásobného přístupu**: GSM používá TDMA (a FDMA) (Přednáška 12), zatímco UMTS používá **CDMA (WideBand CDMA)** (Přednáška 12)."
+    },
+    {
+      "id": 234,
+      "question": "Ukazatel u SDH slouží k:",
+      "options": [
+        "Kódování chyb (CRC)",
+        "Řízení přístupu k médiu",
+        "K popisu vztahu multiplexních jednotek a zároveň k vyrovnání přenosových rychlostí",
+        "Adresaci koncových zařízení"
+      ],
+      "correctIndex": 2,
+      "explanation": "**Ukazatel (PTR)** u SDH slouží k **popisu polohy Virtuálního kontejneru (VC)** a plní funkci **vyrovnávání přenosových rychlostí** (Přednáška 4)."
+    },
+    {
+      "id": 235,
+      "question": "Jaký je rozsah vlnových délek pásma C ve 3. optickém okně?",
+      "options": [
+        "1310-1390 nm",
+        "850-900 nm",
+        "1600-1650 nm",
+        "1530-1565 nm"
+      ],
+      "correctIndex": 3,
+      "explanation": "Pásmo **C (Conventional Band)**, které je využíváno optickými zesilovači EDFA, má rozsah vlnových délek **1530 nm až 1565 nm** (v rámci 3. optického okna) (Přednáška 5)."
+    },
+    {
+      "id": 236,
+      "question": "Technicky specifikované místo přístupu k telekomunikační síti, ve kterém lze připojit koncové telekomunikační zařízení nebo jinou telekomunikační síť, nazýváme:",
+      "options": [
+        "Přípojka",
+        "Koncový bod sítě",
+        "Rozhraní",
+        "Telekomunikační okruh"
+      ],
+      "correctIndex": 1,
+      "explanation": "Technicky specifikované místo, ve kterém lze připojit koncové telekomunikační zařízení nebo jinou telekomunikační síť, se nazývá **Koncový bod sítě** (Přednáška 13)."
+    },
+    {
+      "id": 237,
+      "question": "Jaká hodnota bitové chybovosti je typicky požadována pro přenos na optickém vlákně:",
+      "options": [
+        "10^-6",
+        "10^-9",
+        "10^-3",
+        "10^-12"
+      ],
+      "correctIndex": 3,
+      "explanation": "Pro přenos dat po optickém vláknu, které poskytuje velmi vysokou kvalitu přenosu, je typicky požadována extrémně nízká bitová chybovost (BER) v řádu **$10^{-12}$** (Přednáška 1)."
+    },
+    {
+      "id": 238,
+      "question": "Jaký je typický průměr jádra/pláště jednovidového vlákna?",
+      "options": [
+        "50/125 mikrometru",
+        "62.5/125 mikrometru",
+        "10/50 mikrometru",
+        "9/125 mikrometru"
+      ],
+      "correctIndex": 3,
+      "explanation": "Typické **jednovidové optické vlákno (SM-SI)** má velmi malý průměr jádra ($9 \\mu m$) pro zajištění šíření pouze jednoho vidu a standardní průměr pláště $125 \\mu m$, tedy **$9/125 \\mu m$** (Přednáška 5)."
+    },
+    {
+      "id": 239,
+      "question": "Jaká topologie sítě je nejpoužívanější pro páteřní sítě SDH/OTH?",
+      "options": [
+        "Hvězdicová topologie",
+        "Kruhová topologie",
+        "Sběrnicová topologie",
+        "Stromová topologie"
+      ],
+      "correctIndex": 1,
+      "explanation": "Pro **páteřní sítě SDH/OTH** je nejpoužívanější **kruhová topologie** (Přednáška 4, Přednáška 13), která zajišťuje zálohování provozu a automatické ochranné přepínání (Přednáška 4)."
+    },
+    {
+      "id": 240,
+      "question": "Vyberte sekundární parametry vedení.",
+      "options": [
+        "Měrný odpor, měrná indukčnost, měrná kapacita, měrný svod",
+        "Charakteristická impedance, měrný útlum, měrný fázový posuv, měrná vlnová míra přenosu",
+        "Napětí, proud, výkon",
+        "Činitel stojatých vln, odrazová míra"
+      ],
+      "correctIndex": 1,
+      "explanation": "**Sekundární parametry vedení** jsou odvozeny od primárních parametrů a zahrnují **charakteristickou impedanci, měrnou vlnovou míru přenosu, měrný útlum a měrný fázový posuv** (Přednáška 6)."
+    },
+    {
+      "id": 241,
+      "question": "Vedení s paralelními vodiči je",
+      "options": [
+        "geometricky i elektricky symetrické",
+        "geometricky i elektricky nesymetrické",
+        "geometricky symetrické, elektricky nesymetrické",
+        "geometricky nesymetrické, elektricky symetrické"
+      ],
+      "correctIndex": 0,
+      "explanation": "Telekomunikační vedení je tvořeno dvojicí souběžných metalických vodičů (Přednáška 6). Vedení s paralelními vodiči je **geometricky i elektricky symetrické** (mají vůči zemi téměř shodnou impedanci) (Přednáška 6)."
+    },
+    {
+      "id": 242,
+      "question": "Transportní sítě využívají jako přenosová média především:",
+      "options": [
+        "Metalická přenosová média",
+        "Optická přenosová média",
+        "Bezdrátová přenosová média",
+        "Radioreléové spoje"
+      ],
+      "correctIndex": 1,
+      "explanation": "Páteřní (transportní) sítě jsou v současnosti budovány primárně na **optických přenosových médiích** (Přednáška 13), která umožňují přenos signálů na velké vzdálenosti vysokými rychlostmi (Přednáška 13)."
+    },
+    {
+      "id": 243,
+      "question": "Relační, prezentační a aplikační vrstvu modelu OSI označujeme společně jako vrstvy:",
+      "options": [
+        "Síťové",
+        "Transportní",
+        "Fyzické",
+        "Aplikační"
+      ],
+      "correctIndex": 3,
+      "explanation": "Tři nejvyšší vrstvy modelu OSI, tj. Relační, Prezentační a **Aplikační vrstva**, se označují společně jako **Aplikační vrstvy** (Přednáška 11)."
+    },
+    {
+      "id": 244,
+      "question": "Kód AMI patří mezi kódy:",
+      "options": [
+        "Binární",
+        "Kvartérní",
+        "Jednopólové",
+        "Bipolární (využívá tři úrovně napětí: +, -, 0)"
+      ],
+      "correctIndex": 3,
+      "explanation": "Kód **AMI (Alternate Mark Inversion)** je typ **bipolárního kódu**, který využívá tři úrovně napětí (+, -, 0) (Přednáška 11)."
+    },
+    {
+      "id": 245,
+      "question": "Jakou výhodu přináší konvoluční kódování a diagonální prokládání při zpracování signálu v mobilní síti?",
+      "options": [
+        "Vyšší přenosová rychlost",
+        "Vyšší odolnost proti rušivému působení shluků chyb",
+        "Zjednodušení dekódování",
+        "Snížení spotřeby energie"
+      ],
+      "correctIndex": 1,
+      "explanation": "Kódování a prokládání (interleaving) v mobilních sítích se používá k zajištění **vyšší odolnosti proti rušivému působení shluků chyb** (burst errors), které vznikají například kvůli impulsnímu rušení (Přednáška 6). Prokládání rozprostře chybné bity v čase, aby byly snáze opravitelné konvolučním kódováním."
+    },
+    {
+      "id": 246,
+      "question": "Jaké dva základní kanály se používají v typu ISDN?",
+      "options": [
+        "A-kanál a C-kanál",
+        "E-kanál a F-kanál",
+        "B-kanál a D-kanál",
+        "S-kanál a T-kanál"
+      ],
+      "correctIndex": 2,
+      "explanation": "V sítích ISDN (Integrated Services Digital Network) se používají dva základní kanály: **B-kanál** (Bearer, pro přenos dat/hlasu, $64 \text{ kbit/s}$) a **D-kanál** (Data, pro signalizaci) (Přednáška 12)."
+    },
+    {
+      "id": 247,
+      "question": "Ukazatel PTR (Pointer) adresuje v rámci informačního pole STM-1 začátek:",
+      "options": [
+        "Tributární jednotky TU-12",
+        "Administrační jednotky AU-4",
+        "Virtuálního kontejneru VC-4",
+        "Sekce regenerátoru SOH-RS"
+      ],
+      "correctIndex": 2,
+      "explanation": "Ukazatel **PTR (Pointer)** je součástí AU-4 a adresuje v rámci informačního pole STM-1 **začátek Virtuálního kontejneru VC-4** (Přednáška 4)."
+    },
+    {
+      "id": 248,
+      "question": "Která topologie sítě je typická pro sítě SDH?",
+      "options": [
+        "Hvězda",
+        "Kruh",
+        "Sběrnice",
+        "Mřížka"
+      ],
+      "correctIndex": 1,
+      "explanation": "Pro sítě SDH je typická **kruhová topologie** (Přednáška 4, Přednáška 13), která umožňuje zálohování provozu pomocí ochranného přepínání (Přednáška 4)."
+    },
+    {
+      "id": 249,
+      "question": "Co je to „KOMUTOVANÝ OKRUH“?",
+      "options": [
+        "Okruh s pevnou délkou",
+        "Okruh, který se sestavuje předem",
+        "Okruh sestavený automaticky až při příchodu požadavku na přenos dat, po skončení přenosu automaticky zaniká",
+        "Okruh pro paketový přenos"
+      ],
+      "correctIndex": 2,
+      "explanation": "Komutovaný okruh je charakteristický pro komunikaci se spojováním. Je to **okruh sestavený automaticky** na základě požadavku a **po skončení přenosu automaticky zaniká** (Přednáška 10)."
+    },
+    {
+      "id": 250,
+      "question": "Jaké spektrum má periodický digitální signál?",
+      "options": [
+        "Spojité",
+        "Diskrétní a aperiodické",
+        "Spojité a periodické",
+        "Diskrétní a periodické"
+      ],
+      "correctIndex": 3,
+      "explanation": "Periodický digitální signál má **diskrétní a periodické spektrum** (Poznámka: Tato informace pochází ze sady otázek, protože není v přednáškových materiálech detailně popsána)."
+    },
+    {
+      "id": 251,
+      "question": "Digitální spojovací pole nejsou:",
+      "options": [
+        "Prostorová",
+        "Časová",
+        "Kombinovaná (P-Č-P)",
+        "Voličová"
+      ],
+      "correctIndex": 3,
+      "explanation": "Digitální spojovací pole (DSN, systémy IV. generace) jsou **časová (T), prostorová (S)** nebo jejich kombinace (vícečlánková, např. TST) (Přednáška 10). **Voličová pole** patřila k analogovým spojovacím systémům I. generace (Přednáška 10)."
+    }
+  ]
+}
