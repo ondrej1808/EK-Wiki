@@ -12,7 +12,10 @@
   let restoredFormState = null;
   let autosaveTimer = null;
   let draggedCardIndex = null;
-  let listSubjectFilter = '';
+  let listSearchQuery = '';
+  let expandedSubjects = new Set();
+  let serverWritable = false;
+  let listSearchDebounce = null;
 
   const q = sel => document.querySelector(sel);
   const qa = sel => document.querySelectorAll(sel);
@@ -89,7 +92,7 @@
     return {
       title: typeof source.title === 'string' ? source.title : '',
       text: typeof source.text === 'string' ? source.text : '',
-      imageSrc: extractImageSrc(source.image),
+      imageSrc: extractImageSrc(source.image) || (typeof source.imageSrc === 'string' ? source.imageSrc : null) || null,
       raw: cloneJson(source) || {},
     };
   }
@@ -266,13 +269,12 @@
     imageInput.addEventListener('change', event=>{
       const file = event.target.files && event.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = loadEvent => {
-        setAnswerPartImage(row, loadEvent.target.result);
+      uploadImageToServer(file).then(path => {
+        if (!path) return;
+        setAnswerPartImage(row, path);
         renderPreview();
         scheduleAutosave();
-      };
-      reader.readAsDataURL(file);
+      });
     });
 
     titleInput.addEventListener('input', ()=>{ renderPreview(); scheduleAutosave(); });
@@ -367,7 +369,7 @@
 
   function captureCardRects(){
     const rects = new Map();
-    Array.from(els.cardsList.querySelectorAll('.card-row')).forEach(row => {
+    Array.from(els.listTree.querySelectorAll('.card-row')).forEach(row => {
       const id = row.dataset.cardId;
       if (!id) return;
       rects.set(id, row.getBoundingClientRect());
@@ -377,7 +379,7 @@
 
   function animateCardMoves(previousRects){
     if (!previousRects || !previousRects.size) return;
-    Array.from(els.cardsList.querySelectorAll('.card-row')).forEach(row => {
+    Array.from(els.listTree.querySelectorAll('.card-row')).forEach(row => {
       const id = row.dataset.cardId;
       const first = id ? previousRects.get(id) : null;
       if (!first) return;
@@ -418,12 +420,14 @@
     newSetBtn: q('#newSetBtn'),
     importBtn: q('#importBtn'),
     exportBtn: q('#exportBtn'),
+    exportZipBtn: q('#exportZipBtn'),
     saveSessionBtn: q('#saveSessionBtn'),
     openInCardsBtn: q('#openInCardsBtn'),
     exportFilename: q('#exportFilename'),
-    listFilterSelect: q('#listFilterSelect'),
+    uploadBanner: q('#uploadBanner'),
+    listSearchInput: q('#listSearchInput'),
+    listTree: q('#listTree'),
     importFile: q('#importFile'),
-    cardsList: q('#cardsList'),
     cardType: q('#cardType'),
     subsetPath: q('#subsetPath'),
     subsetPathBuilder: q('#subsetPathBuilder'),
@@ -461,6 +465,15 @@
     bind();
     if (!sessionLoaded) loadDraft();
     debugLog('init:loaded', { sessionLoaded, cards: cards.length, editingIndex });
+    // Check server upload capability
+    fetch('/api/writable').then(r => r.json()).then(data => {
+      serverWritable = !!data.writable;
+      if (els.uploadBanner) els.uploadBanner.style.display = serverWritable ? 'none' : 'block';
+      debugLog('init:writable', { serverWritable });
+    }).catch(() => {
+      serverWritable = false;
+      if (els.uploadBanner) els.uploadBanner.style.display = 'block';
+    });
     renderList();
     if (restoredFormState) {
       applyFormState(restoredFormState);
@@ -478,7 +491,12 @@
     els.exportBtn.addEventListener('click', ()=>{ debugLog('event:exportBtn'); exportJSON(); });
     if(els.saveSessionBtn) els.saveSessionBtn.addEventListener('click', saveSessionAsUrl);
     if(els.openInCardsBtn) els.openInCardsBtn.addEventListener('click', openInCards);
-    if(els.listFilterSelect) els.listFilterSelect.addEventListener('change', ()=>{ listSubjectFilter = els.listFilterSelect.value || ''; renderList(); });
+    if(els.exportZipBtn) els.exportZipBtn.addEventListener('click', exportZIP);
+    if(els.listSearchInput) els.listSearchInput.addEventListener('input', ()=>{
+      clearTimeout(listSearchDebounce);
+      listSearchDebounce = setTimeout(()=>{ listSearchQuery = els.listSearchInput.value; renderList(); }, 150);
+    });
+    if(els.listTree) els.listTree.addEventListener('keydown', handleTreeKeydown);
     els.cardType.addEventListener('change', ()=>{ debugLog('event:cardType change', { value: els.cardType.value }); toggleType(); });
     els.addOptionBtn.addEventListener('click', ()=>{ debugLog('event:addOptionBtn'); addOptionField(); });
     els.saveCardBtn.addEventListener('click', ()=>{ debugLog('event:saveCardBtn'); saveCardFromForm(); });
@@ -891,134 +909,228 @@
     });
   }
 
+  function createCardRow(c, i){
+    const el = document.createElement('div');
+    el.className = 'card-row';
+    if (i === editingIndex) el.classList.add('active-card');
+    el.draggable = true;
+    el.dataset.index = String(i);
+    el.dataset.cardId = getCardId(c) || '';
+    el.tabIndex = -1;
+
+    const titleWrap = document.createElement('div');
+    titleWrap.className = 'card-row-text';
+    const subset = document.createElement('div');
+    subset.className = 'card-row-subset';
+    // Show sub-levels beyond the subject (index 1+)
+    const path = Array.isArray(c.subsetPath) ? c.subsetPath : [];
+    subset.textContent = path.length > 1 ? path.slice(1).join(' / ') : (path[0] || 'No subset');
+    const title = document.createElement('div');
+    title.className = 'card-row-question';
+    title.textContent = (c.question || '[no question]').slice(0, 60);
+    titleWrap.appendChild(subset);
+    titleWrap.appendChild(title);
+
+    const actions = document.createElement('div');
+    const dupBtn = document.createElement('button');
+    dupBtn.className = 'copy-btn'; dupBtn.type = 'button'; dupBtn.title = 'Copy card';
+    dupBtn.setAttribute('aria-label', 'Copy card'); dupBtn.textContent = '⧉';
+    dupBtn.addEventListener('click', ()=>{ cards.splice(i+1,0,attachCardId(JSON.parse(JSON.stringify(c)))); saveDraft(); renderList(); });
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn'; delBtn.type = 'button'; delBtn.title = 'Delete card';
+    delBtn.setAttribute('aria-label', 'Delete card'); delBtn.textContent = '🗑';
+    delBtn.addEventListener('click', ()=>{ cards.splice(i,1); saveDraft(); renderList(); });
+    actions.appendChild(dupBtn); actions.appendChild(delBtn);
+    el.appendChild(titleWrap); el.appendChild(actions);
+
+    el.addEventListener('click', (event)=>{ if (event.target.closest('button')) return; openCardAtIndex(i); });
+    el.addEventListener('dragstart', ()=>{ draggedCardIndex = i; el.classList.add('dragging'); });
+    el.addEventListener('dragend', ()=>{
+      draggedCardIndex = null; el.classList.remove('dragging');
+      if (els.listTree) {
+        els.listTree.querySelectorAll('.card-drop-slot').forEach(s => s.classList.remove('active'));
+      }
+    });
+    return el;
+  }
+
+  function createDropSlot(insertIndex, label){
+    const slot = document.createElement('div');
+    slot.className = 'card-drop-slot';
+    slot.dataset.insertIndex = String(insertIndex);
+    const line = document.createElement('div'); line.className = 'card-drop-slot-line';
+    const text = document.createElement('div'); text.className = 'card-drop-slot-text'; text.textContent = label;
+    slot.appendChild(line); slot.appendChild(text);
+    slot.addEventListener('dragenter', e=>{ if(draggedCardIndex===null)return; e.preventDefault(); slot.classList.add('active'); });
+    slot.addEventListener('dragover', e=>{ if(draggedCardIndex===null)return; e.preventDefault(); slot.classList.add('active'); });
+    slot.addEventListener('dragleave', ()=>slot.classList.remove('active'));
+    slot.addEventListener('drop', e=>{ e.preventDefault(); slot.classList.remove('active'); if(draggedCardIndex===null)return; moveCardToIndex(draggedCardIndex, insertIndex); });
+    return slot;
+  }
+
   function renderList(){
     debugLog('renderList:start', { cards: cards.length, editingIndex });
-    populateListFilterOptions();
-    const visibleCards = getVisibleCards();
-    const previousRects = captureCardRects();
-    els.cardsList.innerHTML = '';
+    if (!els.listTree) return;
+    const tree = buildSubjectTree();
+    els.listTree.innerHTML = '';
 
-    const getInsertIndexForPosition = (position) => {
-      if (!visibleCards.length) return 0;
-      if (position <= 0) return visibleCards[0].index;
-      if (position >= visibleCards.length) return cards.length;
-      return visibleCards[position].index;
-    };
-
-    function createDropSlot(insertIndex, label){
-      const slot = document.createElement('div');
-      slot.className = 'card-drop-slot';
-      slot.dataset.insertIndex = String(insertIndex);
-      const line = document.createElement('div');
-      line.className = 'card-drop-slot-line';
-      const text = document.createElement('div');
-      text.className = 'card-drop-slot-text';
-      text.textContent = label;
-      slot.appendChild(line);
-      slot.appendChild(text);
-      slot.addEventListener('dragenter', (event)=>{
-        if (draggedCardIndex === null) return;
-        event.preventDefault();
-        slot.classList.add('active');
-      });
-      slot.addEventListener('dragover', (event)=>{
-        if (draggedCardIndex === null) return;
-        event.preventDefault();
-        slot.classList.add('active');
-      });
-      slot.addEventListener('dragleave', ()=> slot.classList.remove('active'));
-      slot.addEventListener('drop', (event)=>{
-        event.preventDefault();
-        slot.classList.remove('active');
-        if (draggedCardIndex === null) return;
-        moveCardToIndex(draggedCardIndex, insertIndex);
-      });
-      return slot;
-    }
-
-    if (!visibleCards.length) {
-      animateCardMoves(previousRects);
+    if (!tree.length) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'padding:16px;color:#94a3b8;font-size:13px;text-align:center';
+      empty.textContent = cards.length ? 'No cards match your search.' : 'No cards yet. Click "+ New Card" to start.';
+      els.listTree.appendChild(empty);
       return;
     }
 
-    els.cardsList.appendChild(createDropSlot(getInsertIndexForPosition(0), 'Before first'));
-    visibleCards.forEach((entry, visibleIndex)=>{
-      const c = entry.card;
-      const i = entry.index;
-      if (!c) {
-        debugLog('renderList:skipNullCard', { index: i, cardsSnapshot: cards.length });
-        return;
+    tree.forEach(({ subject, cards: subjectCards, expanded }) => {
+      // Subject header
+      const header = document.createElement('div');
+      header.className = 'tree-subject-header';
+      header.setAttribute('role', 'treeitem');
+      header.setAttribute('aria-expanded', String(expanded));
+      header.dataset.subject = subject;
+      header.tabIndex = -1;
+
+      const arrow = document.createElement('span');
+      arrow.className = 'tree-arrow';
+      arrow.textContent = '▶';
+      const label = document.createElement('span');
+      label.textContent = subject;
+      const count = document.createElement('span');
+      count.className = 'tree-count';
+      count.textContent = String(subjectCards.length);
+      header.appendChild(arrow); header.appendChild(label); header.appendChild(count);
+
+      header.addEventListener('click', ()=>{
+        if (expandedSubjects.has(subject)) expandedSubjects.delete(subject);
+        else expandedSubjects.add(subject);
+        renderList();
+        // restore focus
+        const h = els.listTree.querySelector(`.tree-subject-header[data-subject="${CSS.escape(subject)}"]`);
+        if (h) setTreeFocus(h);
+      });
+
+      els.listTree.appendChild(header);
+
+      // Children container
+      const children = document.createElement('div');
+      children.className = 'tree-children';
+      children.setAttribute('role', 'group');
+
+      if (subjectCards.length) {
+        children.appendChild(createDropSlot(subjectCards[0].index, 'Before first'));
       }
-      const el = document.createElement('div'); el.className='card-row';
-      if(i === editingIndex) el.classList.add('active-card');
-      el.draggable = true;
-      el.dataset.index = String(i);
-      el.dataset.cardId = getCardId(c) || '';
-      const titleWrap = document.createElement('div');
-      titleWrap.className = 'card-row-text';
-      const subset = document.createElement('div');
-      subset.className = 'card-row-subset';
-      subset.textContent = Array.isArray(c.subsetPath) && c.subsetPath.length ? c.subsetPath.join(' / ') : 'No subset';
-      const title = document.createElement('div'); title.className = 'card-row-question'; title.textContent = (c.question||'[no question]').slice(0,60);
-      titleWrap.appendChild(subset);
-      titleWrap.appendChild(title);
-      const actions = document.createElement('div');
-      const dupBtn = document.createElement('button'); dupBtn.className = 'copy-btn'; dupBtn.type = 'button'; dupBtn.title = 'Copy card'; dupBtn.setAttribute('aria-label', 'Copy card'); dupBtn.textContent='⧉'; dupBtn.addEventListener('click', ()=>{ cards.splice(i+1,0,attachCardId(JSON.parse(JSON.stringify(c)))); saveDraft(); renderList(); });
-      const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.type = 'button'; delBtn.title = 'Delete card'; delBtn.setAttribute('aria-label', 'Delete card'); delBtn.textContent='🗑'; delBtn.addEventListener('click', ()=>{ cards.splice(i,1); saveDraft(); renderList(); });
-      actions.appendChild(dupBtn); actions.appendChild(delBtn);
-      el.appendChild(titleWrap); el.appendChild(actions); els.cardsList.appendChild(el);
-
-      el.addEventListener('click', (event)=>{
-        if (event.target.closest('button')) return;
-        openCardAtIndex(i);
+      subjectCards.forEach((entry, vi) => {
+        const { card: c, index: i } = entry;
+        if (!c) return;
+        children.appendChild(createCardRow(c, i));
+        const nextInsert = vi === subjectCards.length - 1 ? cards.length : subjectCards[vi + 1].index;
+        children.appendChild(createDropSlot(nextInsert, vi === subjectCards.length - 1 ? 'After last' : 'Between cards'));
       });
 
-      el.addEventListener('dragstart', ()=>{
-        draggedCardIndex = i;
-        el.classList.add('dragging');
-      });
-      el.addEventListener('dragend', ()=>{
-        draggedCardIndex = null;
-        el.classList.remove('dragging');
-        Array.from(els.cardsList.querySelectorAll('.card-row')).forEach(row => row.classList.remove('drop-target'));
-        Array.from(els.cardsList.querySelectorAll('.card-drop-slot')).forEach(slot => slot.classList.remove('active'));
-      });
-
-      const nextInsertIndex = getInsertIndexForPosition(visibleIndex + 1);
-      els.cardsList.appendChild(createDropSlot(nextInsertIndex, visibleIndex === visibleCards.length - 1 ? 'After last' : 'Between cards'));
+      els.listTree.appendChild(children);
     });
 
-    animateCardMoves(previousRects);
+    // Set first focusable item to tabIndex 0
+    const firstFocusable = els.listTree.querySelector('.tree-subject-header, .card-row');
+    if (firstFocusable) firstFocusable.tabIndex = 0;
   }
 
-  function populateListFilterOptions(){
-    if (!els.listFilterSelect) return;
-    const subjects = getAvailableSubjects();
-    const prevValue = listSubjectFilter;
-    els.listFilterSelect.innerHTML = '<option value="">Všechny předměty</option>';
-    subjects.forEach(subject => {
-      const option = document.createElement('option');
-      option.value = subject;
-      option.textContent = subject;
-      els.listFilterSelect.appendChild(option);
+  function buildSubjectTree(){
+    const q = listSearchQuery.toLowerCase();
+    const subjectMap = new Map(); // subject → [{card, index}]
+    cards.forEach((card, index) => {
+      const subject = getCardSubject(card) || '(no subject)';
+      if (!subjectMap.has(subject)) subjectMap.set(subject, []);
+      subjectMap.get(subject).push({ card, index });
     });
-    if (prevValue && subjects.includes(prevValue)) {
-      listSubjectFilter = prevValue;
-      els.listFilterSelect.value = prevValue;
-    } else {
-      listSubjectFilter = '';
-      els.listFilterSelect.value = '';
+    const tree = [];
+    subjectMap.forEach((entries, subject) => {
+      const filtered = q
+        ? entries.filter(({ card }) => {
+            const haystack = (card.question || '') + ' ' + (Array.isArray(card.subsetPath) ? card.subsetPath.join(' ') : '');
+            return haystack.toLowerCase().includes(q);
+          })
+        : entries;
+      if (!filtered.length) return;
+      tree.push({ subject, cards: filtered, expanded: expandedSubjects.has(subject) || !!q });
+    });
+    return tree;
+  }
+
+  function getFocusableTreeItems(){
+    if (!els.listTree) return [];
+    return Array.from(els.listTree.querySelectorAll('.tree-subject-header[tabindex], .card-row[tabindex]'));
+  }
+
+  function handleTreeKeydown(e){
+    const items = getFocusableTreeItems();
+    const focused = document.activeElement;
+    const idx = items.indexOf(focused);
+    if (idx === -1 && !['ArrowDown','ArrowUp'].includes(e.key)) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = items[idx + 1];
+      if (next) { setTreeFocus(next); }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = items[idx - 1];
+      if (prev) { setTreeFocus(prev); }
+    } else if (e.key === 'ArrowRight') {
+      if (focused && focused.classList.contains('tree-subject-header')) {
+        const expanded = focused.getAttribute('aria-expanded') === 'true';
+        if (!expanded) {
+          e.preventDefault();
+          const subject = focused.dataset.subject;
+          expandedSubjects.add(subject);
+          renderList();
+          // re-focus the same header after render
+          const header = els.listTree.querySelector(`.tree-subject-header[data-subject="${CSS.escape(subject)}"]`);
+          if (header) setTreeFocus(header);
+        } else {
+          e.preventDefault();
+          // Move to first child
+          const children = focused.nextElementSibling;
+          const firstChild = children && children.querySelector('.card-row');
+          if (firstChild) setTreeFocus(firstChild);
+        }
+      }
+    } else if (e.key === 'ArrowLeft') {
+      if (focused && focused.classList.contains('card-row')) {
+        e.preventDefault();
+        // Move to parent subject header
+        const children = focused.closest('.tree-children');
+        const header = children && children.previousElementSibling;
+        if (header) setTreeFocus(header);
+      } else if (focused && focused.classList.contains('tree-subject-header')) {
+        const expanded = focused.getAttribute('aria-expanded') === 'true';
+        if (expanded) {
+          e.preventDefault();
+          const subject = focused.dataset.subject;
+          expandedSubjects.delete(subject);
+          renderList();
+          const header = els.listTree.querySelector(`.tree-subject-header[data-subject="${CSS.escape(subject)}"]`);
+          if (header) setTreeFocus(header);
+        }
+      }
     }
-    els.listFilterSelect.disabled = subjects.length === 0;
+  }
+
+  function setTreeFocus(el){
+    getFocusableTreeItems().forEach(item => item.tabIndex = -1);
+    el.tabIndex = 0;
+    el.focus();
   }
 
   function getVisibleCards(){
-    if (!listSubjectFilter) {
-      return cards.map((card, index) => ({ card, index }));
-    }
-    return cards
-      .map((card, index) => ({ card, index }))
-      .filter(entry => getCardSubject(entry.card) === listSubjectFilter);
+    // Legacy helper used by drag-and-drop; return all when no filter active
+    if (!listSearchQuery) return cards.map((card, index) => ({ card, index }));
+    const q = listSearchQuery.toLowerCase();
+    return cards.map((card, index) => ({ card, index })).filter(({ card }) => {
+      const h = (card.question || '') + ' ' + (Array.isArray(card.subsetPath) ? card.subsetPath.join(' ') : '');
+      return h.toLowerCase().includes(q);
+    });
   }
 
   function moveCardToIndex(fromIndex, insertIndex){
@@ -1214,7 +1326,52 @@
 
   function clearDraft(){ if(confirm('Clear draft?')){ localStorage.removeItem(LS_KEY); cards=[]; editingIndex=-1; currentImageData=null; restoredFormState=null; renderList(); renderFormFromCard(null); } }
 
-  function handleImageFile(e){ const f = e.target.files && e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ currentImageData = ev.target.result; renderImageThumb(); renderPreview(); scheduleAutosave(); }; r.readAsDataURL(f); }
+  function showToast(msg, isError = false){
+    let toast = document.getElementById('creator-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'creator-toast';
+      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 18px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:opacity .3s';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.background = isError ? '#dc2626' : '#1e293b';
+    toast.style.color = '#fff';
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+  }
+
+  async function uploadImageToServer(file){
+    if (!serverWritable) {
+      showToast('Upload not available — connect via VPN to enable.', true);
+      return null;
+    }
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch('/upload_image', { method: 'POST', body: form });
+      if (res.status === 403) { showToast('Upload denied by server.', true); return null; }
+      if (!res.ok) { showToast(`Upload failed: ${res.status}`, true); return null; }
+      const data = await res.json();
+      return data.path || null;
+    } catch(e) {
+      showToast('Upload error: ' + e.message, true);
+      return null;
+    }
+  }
+
+  function handleImageFile(e){
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    uploadImageToServer(f).then(path => {
+      if (!path) return;
+      currentImageData = path;
+      renderImageThumb();
+      renderPreview();
+      scheduleAutosave();
+    });
+  }
 
   function clearCurrentImage(){
     currentImageData = null;
@@ -1234,23 +1391,22 @@
     if (!file) return;
 
     e.preventDefault();
-    const reader = new FileReader();
-    reader.onload = ev => {
+    uploadImageToServer(file).then(path => {
+      if (!path) return;
       if (els.cardType.value === 'open') {
         let row = getFocusedAnswerPartRow();
         if (!row) {
           if (!getAnswerPartRows().length) appendAnswerPart();
           row = getAnswerPartRows()[0];
         }
-        if (row) setAnswerPartImage(row, ev.target.result);
+        if (row) setAnswerPartImage(row, path);
       } else {
-        currentImageData = ev.target.result;
+        currentImageData = path;
         renderImageThumb();
       }
       renderPreview();
       scheduleAutosave();
-    };
-    reader.readAsDataURL(file);
+    });
   }
 
   function renderImageThumb(){
@@ -1399,6 +1555,54 @@
   };
 
   function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\n','<br>'); }
+
+  async function exportZIP(){
+    if (typeof JSZip === 'undefined') {
+      showToast('JSZip not loaded — cannot export ZIP.', true);
+      return;
+    }
+    const zip = new JSZip();
+    const out = { title: 'Created with cards_creator', questions: cards };
+    const jsonStr = JSON.stringify(out, null, 2);
+    const baseName = (els.exportFilename && els.exportFilename.value.trim()) || 'cards_export';
+    const jsonName = baseName.replace(/\.json$/i, '') + '.json';
+    zip.file(jsonName, jsonStr);
+
+    // Collect unique relative image paths
+    const imagePaths = new Set();
+    cards.forEach(card => {
+      (card.answer_parts || []).forEach(part => {
+        const src = part.imageSrc || (part.image && part.image.src);
+        if (src && typeof src === 'string' && !src.startsWith('data:')) imagePaths.add(src);
+      });
+      if (card.imageSrc && typeof card.imageSrc === 'string' && !card.imageSrc.startsWith('data:')) imagePaths.add(card.imageSrc);
+    });
+
+    const figsFolder = zip.folder('figs');
+    const fetches = Array.from(imagePaths).map(async path => {
+      try {
+        const res = await fetch(path);
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const filename = path.replace(/^.*\//, '');
+        figsFolder.file(filename, blob);
+      } catch(e) {
+        debugLog('exportZIP:fetchError', { path, error: e.message });
+      }
+    });
+    await Promise.all(fetches);
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = baseName.replace(/\.json$/i, '') + '.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showToast(`ZIP exported with ${imagePaths.size} image(s).`);
+  }
 
   // init on DOM ready
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();

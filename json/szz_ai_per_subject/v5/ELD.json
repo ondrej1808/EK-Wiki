@@ -25,7 +25,7 @@
       "answer_parts": [
         {
           "title": "Formulace",
-          "text": "Vztahy odvozené pomocí integrálních vět pro pole s rozptýlenými parametry:\n$1) ∇ · D = ρ_Q$\n$2) ∇ · B = 0$\n$3) ∇ × H = J_Q + ∂D/∂t$\n$4) ∇ × E = -∂B/∂t$"
+          "text": "Vztahy odvozené pomocí integrálních vět pro pole s rozptýlenými parametry:\n1) $\\nabla \\cdot \\mathbf{D} = \\rho_Q$\n2) $\\nabla \\cdot \\mathbf{B} = 0$\n3) $\\nabla \\times \\mathbf{H} = \\mathbf{J}_Q + \\dfrac{\\partial \\mathbf{D}}{\\partial t}$\n4) $\\nabla \\times \\mathbf{E} = -\\dfrac{\\partial \\mathbf{B}}{\\partial t}$"
         }
       ]
     },
@@ -39,7 +39,7 @@
       "answer_parts": [
         {
           "title": "Vztahy",
-          "text": "Doplňují Maxwellovy rovnice pro popis prostředí:\n$D = ε_0 E + P$\n$B = μ_0 (H + M)$\n$Rovnice kontinuity vyjadřující zákon zachování náboje: ∂ρ_Q/∂t + ∇ · J_Q = 0$"
+          "text": "Doplňují Maxwellovy rovnice pro popis prostředí:\n$\\mathbf{D} = \\varepsilon_0 \\mathbf{E} + \\mathbf{P}$\n$\\mathbf{B} = \\mu_0 (\\mathbf{H} + \\mathbf{M})$\nRovnice kontinuity vyjadřující zákon zachování náboje: $\\dfrac{\\partial \\rho_Q}{\\partial t} + \\nabla \\cdot \\mathbf{J}_Q = 0$"
         }
       ]
     },
@@ -67,7 +67,7 @@
       "answer_parts": [
         {
           "title": "Tvar rovnice",
-          "text": "$Odvozuje se aplikací rotace na Faradayův zákon při nulových zdrojích (ρ_Q = 0, J_Q = 0):$\n$∇^2 E - (1/c^2) * (∂^2 E/∂t^2) = 0$"
+          "text": "Odvozuje se aplikací rotace na Faradayův zákon při nulových zdrojích ($\\rho_Q = 0$, $\\mathbf{J}_Q = 0$):\n$\\nabla^2 \\mathbf{E} - \\dfrac{1}{c^2} \\dfrac{\\partial^2 \\mathbf{E}}{\\partial t^2} = 0$"
         }
       ]
     },
@@ -81,7 +81,7 @@
       "answer_parts": [
         {
           "title": "Ortogonalita a disperze",
-          "text": "Vektory E, B a vlnový vektor k tvoří pravoúhlý souřadný systém (jsou na sebe kolmé).\n$Disperzní relace pro vakuum je ω = c * ||k||.$"
+          "text": "Vektory $\\mathbf{E}$, $\\mathbf{B}$ a vlnový vektor $\\mathbf{k}$ tvoří pravoúhlý souřadný systém (jsou na sebe kolmé).\nDisperzní relace pro vakuum je $\\omega = c \\|\\mathbf{k}\\|$."
         }
       ]
     },
@@ -95,7 +95,7 @@
       "answer_parts": [
         {
           "title": "Definice",
-          "text": "$Komplexní číslo k vyjádřené jako k^2 = -iωμ(iωε + σ) = β - iα.$\n$β je fázová konstanta, α je měrný útlum.$"
+          "text": "Komplexní číslo $k$ vyjádřené jako $k^2 = -i\\omega\\mu(i\\omega\\varepsilon + \\sigma) = \\beta - i\\alpha$.\n$\\beta$ je fázová konstanta, $\\alpha$ je měrný útlum."
         }
       ]
     },
@@ -109,7 +109,7 @@
       "answer_parts": [
         {
           "title": "Vztah",
-          "text": "$Vyjadřuje poměr mezi elektrickou a magnetickou intenzitou: Z = √(iωμ / (iωε + σ)).$\n$Pro vakuum nabývá hodnoty Z_0 = 120π Ω.$"
+          "text": "Vyjadřuje poměr mezi elektrickou a magnetickou intenzitou: $Z = \\sqrt{\\dfrac{i\\omega\\mu}{i\\omega\\varepsilon + \\sigma}}$.\nPro vakuum nabývá hodnoty $Z_0 = 120\\pi\\,\\Omega$."
         }
       ]
     },
@@ -123,7 +123,7 @@
       "answer_parts": [
         {
           "title": "Definice a vzorec",
-          "text": "$Vzdálenost, na které se amplituda vlny utlumí na e^(-1) své původní hodnoty.$\n$V dobře vodivém prostředí (ωε << σ) je δ = 1/α = √(2 / (ωμσ)).$"
+          "text": "Vzdálenost, na které se amplituda vlny utlumí na $e^{-1}$ své původní hodnoty.\nV dobře vodivém prostředí ($\\omega\\varepsilon \\ll \\sigma$) je $\\delta = 1/\\alpha = \\sqrt{\\dfrac{2}{\\omega\\mu\\sigma}}$."
         }
       ]
     },
@@ -137,7 +137,7 @@
       "answer_parts": [
         {
           "title": "Podmínka vzniku",
-          "text": "$Nastává, pokud prostorové frekvence složek splňují k^2 < k_x^2 + k_y^2.$\n$Vlnové číslo k_z se stává imaginárním a vlna ve směru osy z se nešíří, nýbrž exponenciálně klesá.$"
+          "text": "Nastává, pokud prostorové frekvence složek splňují $k^2 < k_x^2 + k_y^2$.\nVlnové číslo $k_z$ se stává imaginárním a vlna ve směru osy $z$ se nešíří, nýbrž exponenciálně klesá."
         }
       ]
     },
@@ -151,7 +151,7 @@
       "answer_parts": [
         {
           "title": "Charakteristika",
-          "text": "Vlna, která má na rovinné ploše konstantní fázi.\n$Skalární řešení je úměrné e^(i x · k). Amplituda je s rostoucí vzdáleností konstantní.$"
+          "text": "Vlna, která má na rovinné ploše konstantní fázi.\nSkalární řešení je úměrné $e^{i\\,\\mathbf{x} \\cdot \\mathbf{k}}$. Amplituda je s rostoucí vzdáleností konstantní."
         }
       ]
     },
@@ -165,7 +165,7 @@
       "answer_parts": [
         {
           "title": "Charakteristika",
-          "text": "Vlna s konstantní fází na válcové ploše.\n$Řešení v cylindrických souřadnicích je popsáno pomocí Hankelovy funkce druhého druhu H_m^(2)(k_ρ * ρ).$\n$Ve vzdáleném poli klesá její amplituda s rostoucí vzdáleností jako 1/√ρ.$"
+          "text": "Vlna s konstantní fází na válcové ploše.\nŘešení v cylindrických souřadnicích je popsáno pomocí Hankelovy funkce druhého druhu $H_m^{(2)}(k_\\rho \\cdot \\rho)$.\nVe vzdáleném poli klesá její amplituda s rostoucí vzdáleností jako $1/\\sqrt{\\rho}$."
         }
       ]
     },
@@ -179,7 +179,7 @@
       "answer_parts": [
         {
           "title": "Charakteristika",
-          "text": "Vlna s konstantní fází na sféře.\n$Řešení je vyjádřeno pomocí sférické Hankelovy funkce druhého druhu h_m^(2)(kr) a sférických harmonik Y_mn(ψ,θ).$\n$Ve velké vzdálenosti od počátku klesá amplituda jako 1/r a řešení lze aproximovat jako e^(-ikr)/r.$"
+          "text": "Vlna s konstantní fází na sféře.\nŘešení je vyjádřeno pomocí sférické Hankelovy funkce druhého druhu $h_m^{(2)}(kr)$ a sférických harmonik $Y_{mn}(\\psi, \\theta)$.\nVe velké vzdálenosti od počátku klesá amplituda jako $1/r$ a řešení lze aproximovat jako $e^{-ikr}/r$."
         }
       ]
     },
@@ -193,7 +193,7 @@
       "answer_parts": [
         {
           "title": "Popis",
-          "text": "Vlna s Gaussovým rozložením energie, rotačně symetrickou strukturou a malou rozbíhavostí ve směru šíření z.\n$Ze začátku se chová jako rovinná vlna, od Rayleighovy vzdálenosti z_R se projevuje jako kulová vlna s výrazným útlumem v radiálním směru.$"
+          "text": "Vlna s Gaussovým rozložením energie, rotačně symetrickou strukturou a malou rozbíhavostí ve směru šíření $z$.\nZe začátku se chová jako rovinná vlna, od Rayleighovy vzdálenosti $z_R$ se projevuje jako kulová vlna s výrazným útlumem v radiálním směru."
         }
       ]
     },
@@ -207,7 +207,7 @@
       "answer_parts": [
         {
           "title": "Definice",
-          "text": "$Vzdálenost z_R = 1/2 * k * w_0^2 = (π * w_0^2) / λ, kde w_0 je apertura svazku.$\nUrčuje bod, od kterého se paprsek začíná výrazněji rozbíhat a měnit z rovinného charakteru na kulový."
+          "text": "Vzdálenost $z_R = \\dfrac{1}{2} k w_0^2 = \\dfrac{\\pi w_0^2}{\\lambda}$, kde $w_0$ je apertura svazku.\nUrčuje bod, od kterého se paprsek začíná výrazněji rozbíhat a měnit z rovinného charakteru na kulový."
         }
       ]
     },
@@ -249,7 +249,7 @@
       "answer_parts": [
         {
           "title": "Zákony",
-          "text": "$Zákon odrazu: θ_I = θ_R (úhel dopadu se rovná úhlu odrazu).$\n$Snellův zákon lomu: n_1 * sin(θ_1) = n_2 * sin(θ_2), kde n_1, n_2 jsou indexy lomu prostředí.$"
+          "text": "Zákon odrazu: $\\theta_I = \\theta_R$ (úhel dopadu se rovná úhlu odrazu).\nSnellův zákon lomu: $n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2$, kde $n_1$, $n_2$ jsou indexy lomu prostředí."
         }
       ]
     },
@@ -263,7 +263,7 @@
       "answer_parts": [
         {
           "title": "Podmínka",
-          "text": "Jev, kdy se do druhého média nepřenáší žádný reálný výkon a vše se odrazí.\n$Nastává při přechodu z opticky hustšího do opticky redšího prostředí (n_1 > n_2) pro úhel lomu θ_2 = π/2.$\n$Kritický úhel splňuje vztah: sin(θ_C) = n_2 / n_1.$"
+          "text": "Jev, kdy se do druhého média nepřenáší žádný reálný výkon a vše se odrazí.\nNastává při přechodu z opticky hustšího do opticky řidšího prostředí ($n_1 > n_2$) pro úhel lomu $\\theta_2 = \\pi/2$.\nKritický úhel splňuje vztah: $\\sin(\\theta_C) = n_2 / n_1$."
         }
       ]
     },
@@ -277,7 +277,7 @@
       "answer_parts": [
         {
           "title": "Vlastnosti",
-          "text": "$Vzniká při totálním odrazu (dopad pod úhlem θ_1 > θ_C).$\nVlna se šíří podél rozhraní a zajišťuje splnění spojitostních podmínek na rozhraní, přičemž její amplituda exponenciálně klesá se vzdáleností od rozhraní do vnitřku druhého prostředí."
+          "text": "Vzniká při totálním odrazu (dopad pod úhlem $\\theta_1 > \\theta_C$).\nVlna se šíří podél rozhraní a zajišťuje splnění spojitostních podmínek na rozhraní, přičemž její amplituda exponenciálně klesá se vzdáleností od rozhraní do vnitřku druhého prostředí."
         }
       ]
     },
@@ -291,7 +291,7 @@
       "answer_parts": [
         {
           "title": "Princip",
-          "text": "$Při dopadu nepolarizované vlny na rozhraní se činitelé odrazu R_p a R_s liší.$\nZa určitých podmínek se jedna složka odrazí více a druhá méně (případně projde), čímž dochází k polarizaci odražené vlny."
+          "text": "Při dopadu nepolarizované vlny na rozhraní se činitelé odrazu $R_p$ a $R_s$ liší.\nZa určitých podmínek se jedna složka odrazí více a druhá méně (případně projde), čímž dochází k polarizaci odražené vlny."
         }
       ]
     },
@@ -305,7 +305,7 @@
       "answer_parts": [
         {
           "title": "Klasifikace",
-          "text": "Určuje se podle prostorového chování vektoru E:\n$1) Lineární: složky intenzity nemají vůči sobě fázový posun (φ = 0).$\n$2) Kruhová: fázový posun mezi složkami je π/2 a mají stejnou amplitudu.$\n3) Eliptická: obecný případ s libovolným fázovým posunem či rozdílnými amplitudami."
+          "text": "Určuje se podle prostorového chování vektoru $\\mathbf{E}$:\n1) Lineární: složky intenzity nemají vůči sobě fázový posun ($\\varphi = 0$).\n2) Kruhová: fázový posun mezi složkami je $\\pi/2$ a mají stejnou amplitudu.\n3) Eliptická: obecný případ s libovolným fázovým posunem či rozdílnými amplitudami."
         }
       ]
     },
@@ -333,7 +333,7 @@
       "answer_parts": [
         {
           "title": "Definice",
-          "text": "$TE (Transverzálně Elektrické): podélná složka elektrického pole je nulová (E_z = 0). Elektrická intenzita má pouze složky kolmé na směr šíření.$\n$TM (Transverzálně Magnetické): podélná složka magnetického pole je nulová (H_z = 0). Magnetická intenzita má pouze složky kolmé na směr šíření.$"
+          "text": "TE (Transverzálně Elektrické): podélná složka elektrického pole je nulová ($E_z = 0$). Elektrická intenzita má pouze složky kolmé na směr šíření.\nTM (Transverzálně Magnetické): podélná složka magnetického pole je nulová ($H_z = 0$). Magnetická intenzita má pouze složky kolmé na směr šíření."
         }
       ]
     },
@@ -347,7 +347,7 @@
       "answer_parts": [
         {
           "title": "Vztah",
-          "text": "$ω_c,mn = (c / ·√(μ_r * ε_r)) * √((mπ/a)^2 + (nπ/b)^2), kde a, b jsou rozměry vlnovodu.$\n$Mod TE_mn nebo TM_mn se vybudí a šíří pouze tehdy, pokud je pracovní frekvence vyšší než mezní (ω > ω_c,mn).$"
+          "text": "$\\omega_{c,mn} = \\dfrac{c}{\\sqrt{\\mu_r \\varepsilon_r}}\\sqrt{\\left(\\dfrac{m\\pi}{a}\\right)^2 + \\left(\\dfrac{n\\pi}{b}\\right)^2}$, kde $a$, $b$ jsou rozměry vlnovodu.\nMod $\\mathrm{TE}_{mn}$ nebo $\\mathrm{TM}_{mn}$ se vybudí a šíří pouze tehdy, pokud je pracovní frekvence vyšší než mezní ($\\omega > \\omega_{c,mn}$)."
         }
       ]
     },
@@ -361,7 +361,7 @@
       "answer_parts": [
         {
           "title": "Podmínka existence",
-          "text": "$Transverzálně-elektromagnetické vlny, kde jsou obě podélné složky nulové (E_z = 0, H_z = 0).$\nPro jejich existenci jsou vyžadována alespoň dva oddělené vodiče (např. koaxiální kabel, symetrický pár).\n$Na rozdíl od TE/TM vln se mohou šířit již od nulové frekvence (ω_c = 0).$"
+          "text": "Transverzálně-elektromagnetické vlny, kde jsou obě podélné složky nulové ($E_z = 0$, $H_z = 0$).\nPro jejich existenci jsou vyžadována alespoň dva oddělené vodiče (např. koaxiální kabel, symetrický pár).\nNa rozdíl od TE/TM vln se mohou šířit již od nulové frekvence ($\\omega_c = 0$)."
         }
       ]
     },
@@ -375,7 +375,7 @@
       "answer_parts": [
         {
           "title": "Diferenciální tvar",
-          "text": "Odvozeno z náhradního modelu s parametry R, L, G, C:\n$d^2 U(z) / dz^2 - (R + iωL)(G + iωC) * U(z) = 0$\n$Řešení má tvar U(z) = C_1 * e^(-γz) + C_2 * e^(γz), kde γ je konstanta šíření vedení.$"
+          "text": "Odvozeno z náhradního modelu s parametry $R$, $L$, $G$, $C$:\n$\\dfrac{d^2 U(z)}{dz^2} - (R + i\\omega L)(G + i\\omega C)\\cdot U(z) = 0$\nŘešení má tvar $U(z) = C_1 e^{-\\gamma z} + C_2 e^{\\gamma z}$, kde $\\gamma$ je konstanta šíření vedení."
         }
       ]
     },
@@ -389,7 +389,7 @@
       "answer_parts": [
         {
           "title": "Vzorec",
-          "text": "$Z_0 = √((R + iωL) / (G + iωC)).$\n$Pro bezeztrátové vedení (R = 0, G = 0) se zjednodušuje na Z_0 = √(L / C).$"
+          "text": "$Z_0 = \\sqrt{\\dfrac{R + i\\omega L}{G + i\\omega C}}$\nPro bezeztrátové vedení ($R = 0$, $G = 0$) se zjednodušuje na $Z_0 = \\sqrt{L/C}$."
         }
       ]
     },
@@ -403,7 +403,7 @@
       "answer_parts": [
         {
           "title": "Definice",
-          "text": "$Činitel odrazu na konci vedení: Γ = (Z_K - Z_0) / (Z_K + Z_0), kde Z_K je zátěž.$\n$Činitel stojatého vlnění: SWR = (1 + ||Γ||) / (1 - ||Γ||).$\n$Ideální stav (přizpůsobení) nastává pro Z_K = Z_0, kdy Γ = 0 a SWR = 1.$"
+          "text": "Činitel odrazu na konci vedení: $\\Gamma = \\dfrac{Z_K - Z_0}{Z_K + Z_0}$, kde $Z_K$ je zátěž.\nČinitel stojatého vlnění: $\\mathrm{SWR} = \\dfrac{1 + |\\Gamma|}{1 - |\\Gamma|}$.\nIdeální stav (přizpůsobení) nastává pro $Z_K = Z_0$, kdy $\\Gamma = 0$ a $\\mathrm{SWR} = 1$."
         }
       ]
     },
@@ -417,7 +417,7 @@
       "answer_parts": [
         {
           "title": "Vztahy",
-          "text": "$Z_TE = √(μ/ε) * (1 / √(1 - (ω_c/ω)^2))$\n$Z_TM = √(μ/ε) * √(1 - (ω_c/ω)^2)$\nVyjadřují vlnovou impedanci v závislosti na pracovní frekvenci vůči mezní frekvenci daného modu."
+          "text": "$Z_\\mathrm{TE} = \\sqrt{\\dfrac{\\mu}{\\varepsilon}} \\cdot \\dfrac{1}{\\sqrt{1 - (\\omega_c/\\omega)^2}}$\n$Z_\\mathrm{TM} = \\sqrt{\\dfrac{\\mu}{\\varepsilon}} \\cdot \\sqrt{1 - (\\omega_c/\\omega)^2}$\nVyjadřují vlnovou impedanci v závislosti na pracovní frekvenci vůči mezní frekvenci daného modu."
         }
       ]
     },
@@ -431,7 +431,7 @@
       "answer_parts": [
         {
           "title": "Definice a relace",
-          "text": "$Fázová rychlost v_f = ω/β vyjadřuje rychlost postupu vlnoplochy s konstantní fází (může být větší než c).$\n$Grupová rychlost v_g = ∂ω/∂β vyjadřuje rychlost přenosu energie či vlnového balíku (vždy menší než c).$\n$Pro TE a TM mody platí součinový vztah: v_f * v_g = c^2 / (μ_r * ε_r).$"
+          "text": "Fázová rychlost $v_f = \\omega/\\beta$ vyjadřuje rychlost postupu vlnoplochy s konstantní fází (může být větší než $c$).\nGrupová rychlost $v_g = \\partial\\omega/\\partial\\beta$ vyjadřuje rychlost přenosu energie či vlnového balíku (vždy menší než $c$).\nPro TE a TM mody platí součinový vztah: $v_f \\cdot v_g = c^2 / (\\mu_r \\varepsilon_r)$."
         }
       ]
     },
@@ -445,7 +445,7 @@
       "answer_parts": [
         {
           "title": "Popis",
-          "text": "Prostředí, kde materiálové vlastnosti závisí na směru. Permitivita a permeabilita již nejsou skalární konstanty, ale zavedou se jako tenzory.\n$Materiálové vztahy pak mají tvar D(r) = ε(r)E(r) a B(r) = μ(r)H(r).$"
+          "text": "Prostředí, kde materiálové vlastnosti závisí na směru. Permitivita a permeabilita již nejsou skalární konstanty, ale zavedou se jako tenzory.\nMateriálové vztahy pak mají tvar $\\mathbf{D}(\\mathbf{r}) = \\boldsymbol{\\varepsilon}(\\mathbf{r})\\mathbf{E}(\\mathbf{r})$ a $\\mathbf{B}(\\mathbf{r}) = \\boldsymbol{\\mu}(\\mathbf{r})\\mathbf{H}(\\mathbf{r})$."
         }
       ]
     }

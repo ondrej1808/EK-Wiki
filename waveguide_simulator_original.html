@@ -1,0 +1,350 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.tab{padding:7px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .15s}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+.mode-tabs{display:flex;gap:6px;margin-bottom:1rem}
+.mode-tab{padding:5px 12px;border:0.5px solid var(--color-border-secondary);border-radius:20px;font-size:12px;cursor:pointer;background:transparent;color:var(--color-text-secondary);transition:all .15s}
+.mode-tab.active{border-color:var(--color-border-primary);color:var(--color-text-primary);background:var(--color-background-secondary)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem}
+.card h3{font-size:13px;font-weight:500;margin-bottom:.75rem;color:var(--color-text-secondary)}
+canvas{display:block;width:100%;border-radius:6px}
+.legend{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.info-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem 1rem;font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:12px}
+.info-box strong{color:var(--color-text-primary);font-weight:500}
+.anim-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.anim-ctrl label{font-size:12px;color:var(--color-text-secondary)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;margin-right:4px}
+.badge-e{background:#FAECE7;color:#993C1D}
+.badge-h{background:#E6F1FB;color:#0C447C}
+.badge-z{background:#EAF3DE;color:#3B6D11}
+@media(prefers-color-scheme:dark){
+.badge-e{background:#4A1B0C;color:#F0997B}
+.badge-h{background:#042C53;color:#85B7EB}
+.badge-z{background:#173404;color:#97C459}
+}
+</style>
+<h2 class="sr-only">Simulace elektromagnetických vidů v koaxiálním kabelu a obdélníkovém vlnovodu</h2>
+
+<div style="padding:1rem 0 0">
+<div class="tabs">
+  <button class="tab active" onclick="setGuide('coax')">Koaxiální kabel</button>
+  <button class="tab" onclick="setGuide('rect')">Obdélníkový vlnovod</button>
+</div>
+
+<div id="info-coax" class="info-box">
+  <strong>Koaxiální kabel</strong> — vede TEM vid od DC do vysokých frekvencí. TE a TM vidy vznikají až nad mezní frekvencí. Dominantní vid je <strong>TEM</strong>.
+</div>
+<div id="info-rect" class="info-box" style="display:none">
+  <strong>Obdélníkový vlnovod</strong> — TEM vid <em>nelze</em> vést (není druhý vodič). Dominantní vid je <strong>TE₁₀</strong>. TE a TM vidy mají mezní frekvenci f<sub>c</sub>.
+</div>
+
+<div class="mode-tabs" id="mode-tabs-coax">
+  <button class="mode-tab active" onclick="setMode('TEM')">TEM</button>
+  <button class="mode-tab" onclick="setMode('TE11')">TE₁₁</button>
+  <button class="mode-tab" onclick="setMode('TM01')">TM₀₁</button>
+</div>
+<div class="mode-tabs" id="mode-tabs-rect" style="display:none">
+  <button class="mode-tab active" onclick="setMode('TE10')">TE₁₀</button>
+  <button class="mode-tab" onclick="setMode('TE20')">TE₂₀</button>
+  <button class="mode-tab" onclick="setMode('TM11')">TM₁₁</button>
+</div>
+
+<div class="anim-ctrl">
+  <label>Animace:</label>
+  <input type="range" id="phase-slider" min="0" max="360" value="0" style="width:140px" oninput="setPhase(+this.value)">
+  <button onclick="toggleAnim()" id="anim-btn" style="font-size:12px;padding:4px 10px">▶ Přehrát</button>
+  <span style="font-size:12px;color:var(--color-text-secondary)" id="phase-label">φ = 0°</span>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3 id="lbl-cross">Příčný průřez — E a H pole</h3>
+    <canvas id="cv-cross" width="280" height="280"></canvas>
+    <div class="legend">
+      <div class="leg"><div class="dot" style="background:#D85A30"></div>E pole (elektrické)</div>
+      <div class="leg"><div class="dot" style="background:#378ADD"></div>H pole (magnetické)</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 id="lbl-long">Podélný řez — šíření vlny</h3>
+    <canvas id="cv-long" width="280" height="280"></canvas>
+    <div class="legend">
+      <div class="leg"><div class="dot" style="background:#D85A30"></div>E</div>
+      <div class="leg"><div class="dot" style="background:#378ADD"></div>H</div>
+      <div class="leg"><div class="dot" style="background:#639922"></div>Poynting S</div>
+    </div>
+  </div>
+</div>
+
+<div id="mode-desc" class="info-box" style="margin-top:12px;margin-bottom:0"></div>
+</div>
+
+<script>
+const W=280,H=280,cx=W/2,cy=H/2;
+let guide='coax',mode='TEM',phase=0,animId=null,animRunning=false;
+
+const modeInfo={
+  TEM:{title:'TEM (Transverse ElectroMagnetic)',badges:['E: radiální','H: azimutální','E_z=0, H_z=0'],
+    desc:'Oba vektory leží v příčné rovině. E je radiální (od osy), H je azimutální (kruhy). Neexistuje mezní frekvence — přenáší i DC. Vlnová impedance η = √(μ/ε).'},
+  TE11:{title:'TE₁₁ (Transverse Electric, m=1 n=1)',badges:['H: axiální složka','E: jen příčná','f_c > 0'],
+    desc:'E_z = 0, ale H_z ≠ 0. Elektrické pole nemá složku podél osy. Vzniká nad mezní frekvencí. V koaxu jde o první vyšší vid.'},
+  TM01:{title:'TM₀₁ (Transverse Magnetic, m=0 n=1)',badges:['E: axiální složka','H: jen příčná','f_c > 0'],
+    desc:'H_z = 0, ale E_z ≠ 0. Magnetické pole leží celé v příčné rovině. Symetrický vid (azimutálně nezávislý).'},
+  TE10:{title:'TE₁₀ — dominantní vid vlnovodu',badges:['Nejnižší f_c','E: jen E_y','H: H_x + H_z'],
+    desc:'Dominantní vid obdélníkového vlnovodu. E_z = 0, E_x = 0 — elektrické pole je lineárně polarizováno podél kratší strany. H má složky H_x a H_z. Mezní frekvence f_c = c/(2a).'},
+  TE20:{title:'TE₂₀ (m=2, n=0)',badges:['2× perioda v ose x','f_c = c/a','E: jen E_y'],
+    desc:'Druhý TE vid. Elektrické pole se mění jako sin(2πx/a) — má dvě půlvlny podél širší strany. Mezní frekvence je dvojnásobek TE₁₀.'},
+  TM11:{title:'TM₁₁ (m=1, n=1)',badges:['Nejnižší TM vid','E_z ≠ 0','H_z = 0'],
+    desc:'Nejnižší TM vid vlnovodu. H_z = 0, E_z ~ sin(πx/a)·sin(πy/b). E pole má složky ve všech třech osách. Na stěnách musí E_z = 0.'}
+};
+
+function setGuide(g){
+  guide=g;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('info-coax').style.display=g==='coax'?'':'none';
+  document.getElementById('info-rect').style.display=g==='rect'?'':'none';
+  document.getElementById('mode-tabs-coax').style.display=g==='coax'?'':'none';
+  document.getElementById('mode-tabs-rect').style.display=g==='rect'?'':'none';
+  const defaultMode=g==='coax'?'TEM':'TE10';
+  document.querySelectorAll('#mode-tabs-'+g+' .mode-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('#mode-tabs-'+g+' .mode-tab').classList.add('active');
+  mode=defaultMode;
+  draw();
+}
+
+function setMode(m){
+  mode=m;
+  const tabs=document.querySelectorAll('#mode-tabs-'+(guide)+' .mode-tab');
+  tabs.forEach(t=>{t.classList.remove('active');if(t.textContent.replace('₀','0').replace('₁','1').replace('₂','2')===m.replace('₀','0').replace('₁','1').replace('₂','2'))t.classList.add('active');});
+  draw();
+}
+
+function setPhase(v){phase=v*Math.PI/180;document.getElementById('phase-label').textContent='φ = '+v+'°';draw();}
+
+function toggleAnim(){
+  if(animRunning){cancelAnimationFrame(animId);animRunning=false;document.getElementById('anim-btn').textContent='▶ Přehrát';}
+  else{animRunning=true;document.getElementById('anim-btn').textContent='⏸ Pauza';animLoop();}
+}
+function animLoop(){
+  phase+=0.04;if(phase>2*Math.PI)phase-=2*Math.PI;
+  const deg=Math.round(phase*180/Math.PI);
+  document.getElementById('phase-slider').value=deg;
+  document.getElementById('phase-label').textContent='φ = '+deg+'°';
+  draw();animId=requestAnimationFrame(animLoop);
+}
+
+function arrow(ctx,x,y,dx,dy,col,alpha=1){
+  const len=Math.sqrt(dx*dx+dy*dy);if(len<1)return;
+  const nx=dx/len,ny=dy/len;
+  ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=col;ctx.fillStyle=col;
+  ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+dx,y+dy);ctx.stroke();
+  const hx=x+dx,hy=y+dy;const s=5;
+  ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(hx-s*(nx-ny*.5),hy-s*(ny+nx*.5));ctx.lineTo(hx-s*(nx+ny*.5),hy-s*(ny-nx*.5));ctx.closePath();ctx.fill();
+  ctx.restore();
+}
+
+function circle(ctx,x,y,r,col,alpha=1){ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(x,y,r,0,2*Math.PI);ctx.stroke();ctx.restore();}
+
+function drawCross(){
+  const cv=document.getElementById('cv-cross');
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const bg=dark?'#1a1a18':'#f8f7f5';
+  const wall=dark?'#444':'#aaa';
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  if(guide==='coax'){
+    const R2=cx-20,R1=30;
+    ctx.strokeStyle=wall;ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(cx,cy,R2,0,2*Math.PI);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,R1,0,2*Math.PI);ctx.stroke();
+    ctx.fillStyle=dark?'#2a2a28':'#e8e8e4';
+    ctx.beginPath();ctx.arc(cx,cy,R1,0,2*Math.PI);ctx.fill();
+
+    if(mode==='TEM'){
+      const N=12;
+      for(let i=0;i<N;i++){
+        const ang=i*2*Math.PI/N;
+        for(let r=R1+18;r<R2-10;r+=22){
+          const px=cx+r*Math.cos(ang),py=cy+r*Math.sin(ang);
+          const scale=15;
+          arrow(ctx,px-Math.cos(ang)*scale*.5,py-Math.sin(ang)*scale*.5,Math.cos(ang)*scale,Math.sin(ang)*scale,'#D85A30',.85);
+        }
+      }
+      const NM=10;
+      for(let ri=1;ri<=3;ri++){
+        const r=R1+ri*(R2-R1)/4;circle(ctx,cx,cy,r,'#378ADD',.7+ri*.05);}
+    } else if(mode==='TE11'){
+      const N=16;
+      for(let i=0;i<N;i++){
+        const ang=i*2*Math.PI/N;
+        for(let ri=0;ri<2;ri++){
+          const r=R1+30+ri*28;
+          const px=cx+r*Math.cos(ang),py=cy+r*Math.sin(ang);
+          const tx=-Math.sin(ang),ty=Math.cos(ang);
+          const s=Math.cos(ang+phase)*12;
+          if(Math.abs(s)>2)arrow(ctx,px-tx*s*.5,py-ty*s*.5,tx*s,ty*s,'#378ADD',.75);
+          const er=Math.sin(ang+phase)*12;
+          if(Math.abs(er)>2)arrow(ctx,px-Math.cos(ang)*er*.5,py-Math.sin(ang)*er*.5,Math.cos(ang)*er,Math.sin(ang)*er,'#D85A30',.7);
+        }
+      }
+    } else {
+      const N=10;
+      for(let i=0;i<N;i++){
+        const ang=i*2*Math.PI/N;
+        for(let r=R1+20;r<R2-10;r+=24){
+          const px=cx+r*Math.cos(ang),py=cy+r*Math.sin(ang);
+          const s=12*Math.cos(phase);
+          if(Math.abs(s)>1)arrow(ctx,px-Math.cos(ang)*s*.5,py-Math.sin(ang)*s*.5,Math.cos(ang)*s,Math.sin(ang)*s,'#D85A30',.75);
+        }
+      }
+      const NM=10;
+      for(let ri=1;ri<=3;ri++){
+        const r=R1+ri*(R2-R1)/4;
+        const al=(.5+.2*Math.cos(phase+ri))*.9;
+        circle(ctx,cx,cy,r,'#378ADD',al);
+      }
+    }
+    ctx.strokeStyle=wall;ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(cx,cy,R2,0,2*Math.PI);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,R1,0,2*Math.PI);ctx.stroke();
+  } else {
+    const a=W-40,b=H-80,ox=20,oy=40;
+    ctx.fillStyle=dark?'#2a2a28':'#eeeee8';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle=wall;ctx.lineWidth=2;ctx.strokeRect(ox,oy,a,b);
+    ctx.fillStyle=bg;ctx.fillRect(ox+2,oy+2,a-4,b-4);
+    const NX=8,NY=6;
+    if(mode==='TE10'){
+      for(let ix=0;ix<=NX;ix++){
+        for(let iy=0;iy<=NY;iy++){
+          const x=ox+ix*a/NX,y=oy+iy*b/NY;
+          const Ey=-Math.sin(Math.PI*ix/NX)*Math.cos(phase);
+          if(Math.abs(Ey)>0.05){const s=Ey*18;arrow(ctx,x,y-s*.5,0,s,'#D85A30',.7+.3*Math.abs(Ey));}
+          const Hx=Math.cos(Math.PI*ix/NX)*Math.sin(phase)*10;
+          if(Math.abs(Hx)>0.5)arrow(ctx,x-Hx*.5,y,Hx,0,'#378ADD',.5+.4*Math.abs(Ey));
+        }
+      }
+    } else if(mode==='TE20'){
+      for(let ix=0;ix<=NX;ix++){
+        for(let iy=0;iy<=NY;iy++){
+          const x=ox+ix*a/NX,y=oy+iy*b/NY;
+          const Ey=-Math.sin(2*Math.PI*ix/NX)*Math.cos(phase);
+          if(Math.abs(Ey)>0.05){const s=Ey*16;arrow(ctx,x,y-s*.5,0,s,'#D85A30',.65+.3*Math.abs(Ey));}
+          const Hx=Math.cos(2*Math.PI*ix/NX)*Math.sin(phase)*8;
+          if(Math.abs(Hx)>0.5)arrow(ctx,x-Hx*.5,y,Hx,0,'#378ADD',.5+.3*Math.abs(Ey));
+        }
+      }
+    } else {
+      for(let ix=0;ix<=NX;ix++){
+        for(let iy=0;iy<=NY;iy++){
+          const x=ox+ix*a/NX,y=oy+iy*b/NY;
+          const Ey=Math.sin(Math.PI*ix/NX)*Math.cos(Math.PI*iy/NY)*Math.cos(phase)*14;
+          const Ex=Math.cos(Math.PI*ix/NX)*Math.sin(Math.PI*iy/NY)*Math.cos(phase)*14;
+          if(Math.abs(Ex)>0.5||Math.abs(Ey)>0.5){
+            const len=Math.sqrt(Ex*Ex+Ey*Ey);
+            arrow(ctx,x-Ex*.5,y-Ey*.5,Ex,Ey,'#D85A30',.5+.4*len/14);}
+          const Hx=-Math.cos(Math.PI*ix/NX)*Math.sin(Math.PI*iy/NY)*Math.sin(phase)*12;
+          const Hy=Math.sin(Math.PI*ix/NX)*Math.cos(Math.PI*iy/NY)*Math.sin(phase)*12;
+          if(Math.abs(Hx)>0.5||Math.abs(Hy)>0.5)arrow(ctx,x-Hx*.5,y-Hy*.5,Hx,Hy,'#378ADD',.5);
+        }
+      }
+    }
+    ctx.strokeStyle=wall;ctx.lineWidth=2;ctx.strokeRect(ox,oy,a,b);
+  }
+}
+
+function drawLong(){
+  const cv=document.getElementById('cv-long');
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const bg=dark?'#1a1a18':'#f8f7f5';
+  const wall=dark?'#444':'#ccc';
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  const NZ=12;
+  const y1=guide==='coax'?cy-30:60,y2=guide==='coax'?cy+30:H-60;
+  const yc=(y1+y2)/2;
+  ctx.strokeStyle=wall;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(20,y1);ctx.lineTo(W-20,y1);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(20,y2);ctx.lineTo(W-20,y2);ctx.stroke();
+  if(guide==='coax'){
+    const y1i=cy-12,y2i=cy+12;
+    ctx.strokeStyle=wall;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(20,y1i);ctx.lineTo(W-20,y1i);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(20,y2i);ctx.lineTo(W-20,y2i);ctx.stroke();
+    ctx.fillStyle=dark?'#2a2a28':'#ddd';
+    ctx.fillRect(20,y1i,W-40,y2i-y1i);
+  }
+
+  for(let i=0;i<=NZ;i++){
+    const xp=20+i*(W-40)/NZ;
+    const kz=i*2*Math.PI/NZ;
+    const val=Math.cos(kz-phase);
+    const abs=Math.abs(val);
+
+    if(mode==='TEM'){
+      const Ey=val*(y2-y1)*0.38;
+      arrow(ctx,xp,yc-Ey*.5,0,Ey,'#D85A30',.5+.5*abs);
+      const dotR=2.5*abs;
+      ctx.fillStyle='#378ADD';ctx.globalAlpha=.5+.4*abs;
+      ctx.beginPath();ctx.arc(xp,yc,dotR,0,2*Math.PI);ctx.fill();ctx.globalAlpha=1;
+    } else if(mode==='TE10'||mode==='TE11'){
+      const Ey=val*(y2-y1)*0.38;
+      arrow(ctx,xp,yc-Ey*.5,0,Ey,'#D85A30',.5+.5*abs);
+      const Hz=Math.sin(kz-phase)*(y2-y1)*0.3;
+      if(Math.abs(Hz)>2)arrow(ctx,xp-Hz*.5,yc+14,Hz,0,'#378ADD',.4+.5*abs);
+    } else if(mode==='TE20'){
+      const Ey=val*(y2-y1)*0.35;
+      arrow(ctx,xp,yc-Ey*.5,0,Ey,'#D85A30',.5+.5*abs);
+      const Hz=Math.sin(kz-phase)*(y2-y1)*0.25;
+      if(Math.abs(Hz)>2)arrow(ctx,xp-Hz*.5,yc+14,Hz,0,'#378ADD',.4+.5*abs);
+    } else {
+      const Ez=val*(y2-y1)*0.3;
+      arrow(ctx,xp-Ez*.5,yc,Ez,0,'#D85A30',.5+.5*abs);
+      const Hy=Math.sin(kz-phase)*(y2-y1)*0.3;
+      if(Math.abs(Hy)>2)arrow(ctx,xp,yc-Hy*.5,0,Hy,'#378ADD',.4+.5*abs);
+    }
+
+    const S=abs*16;
+    if(S>1){ctx.fillStyle='#639922';ctx.globalAlpha=.35+.35*abs;ctx.beginPath();ctx.arc(xp,y2+16,S*.5,0,2*Math.PI);ctx.fill();ctx.globalAlpha=1;}
+  }
+
+  ctx.save();ctx.strokeStyle='#639922';ctx.lineWidth=1;ctx.setLineDash([3,4]);ctx.globalAlpha=.45;
+  ctx.beginPath();
+  for(let i=0;i<=NZ*4;i++){
+    const xp=20+i*(W-40)/(NZ*4);const kz=i*2*Math.PI/(NZ*4);
+    const s=Math.pow(Math.cos(kz-phase),2)*(y2-y1)*0.15;
+    if(i===0)ctx.moveTo(xp,y2+12-s);else ctx.lineTo(xp,y2+12-s);
+  }
+  ctx.stroke();ctx.restore();
+
+  const info=modeInfo[mode];
+  ctx.save();ctx.font='11px var(--font-sans)';ctx.fillStyle=dark?'#888':'#666';
+  ctx.fillText('z →',W-28,yc+4);
+  ctx.restore();
+}
+
+function draw(){
+  drawCross();drawLong();
+  const info=modeInfo[mode];
+  let d=`<strong>${info.title}</strong><br>`;
+  info.badges.forEach(b=>{
+    const cls=b.includes('E:')||b.includes('E_z')?'badge-e':b.includes('H:')||b.includes('H_z')?'badge-h':'badge-z';
+    d+=`<span class="badge ${cls}">${b}</span>`;
+  });
+  d+=`<br><span style="font-size:11px">${info.desc}</span>`;
+  document.getElementById('mode-desc').innerHTML=d;
+}
+
+draw();
+</script>

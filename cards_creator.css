@@ -24,13 +24,23 @@ header h1{margin:0;font-size:20px}
 .toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .toolbar-row-secondary{margin-top:0}
 .filename-input{width:160px}
-.list-filter-select{width:180px}
+.upload-banner{background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;color:#92400e;font-size:12px;padding:6px 10px;margin-bottom:8px}
+.list-search-row{margin-bottom:6px}
+.list-search-row input{width:100%;padding:8px 10px;border:1px solid #d7e0ea;border-radius:8px;background:#fff;font-size:13px}
 .toolbar-row button,.toolbar-row input,.editor-legend{font-size:13px}
 .toolbar-row button{padding:8px 12px;border-radius:10px;border:1px solid #d7e0ea;background:linear-gradient(180deg,#ffffff,#f5f7fb);box-shadow:0 1px 2px rgba(15,23,42,0.05);transition:transform .15s ease, box-shadow .15s ease, background .15s ease}
 .toolbar-row button:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,23,42,0.10);background:linear-gradient(180deg,#ffffff,#eef3ff)}
 .toolbar-row button:active{transform:translateY(0)}
 .toolbar-row input{padding:8px 10px;border:1px solid #d7e0ea;border-radius:10px;background:#fff}
-#cardsList{background:var(--panel);box-shadow:var(--card-shadow);border-radius:8px;overflow:auto;flex:1;min-height:0}
+.list-tree{background:var(--panel);box-shadow:var(--card-shadow);border-radius:8px;overflow:auto;flex:1;min-height:0}
+.tree-subject-header{padding:8px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;border-bottom:1px solid #f1f5f9;font-size:13px;font-weight:600;color:#0f172a;letter-spacing:.03em}
+.tree-subject-header:hover{background:#f8fafc}
+.tree-subject-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:4px}
+.tree-arrow{display:inline-block;font-size:10px;color:#94a3b8;transition:transform 90ms;width:14px;text-align:center;flex-shrink:0}
+.tree-subject-header[aria-expanded="true"] .tree-arrow{transform:rotate(90deg)}
+.tree-count{margin-left:auto;background:#e2e8f0;color:#475569;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px}
+.tree-children{display:none}
+.tree-subject-header[aria-expanded="true"] + .tree-children{display:block}
 .card-row{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f1f5f9;gap:8px;transition:transform .18s cubic-bezier(0.2,0,0,1), box-shadow .15s ease, background .15s ease}
 .card-row.active-card{background:#eff6ff;border-left:4px solid var(--accent)}
 .card-row{cursor:grab}
@@ -115,7 +125,7 @@ button{cursor:pointer}
   .creator-list{width:100%}
   .editor-legend-grid{grid-template-columns:1fr}
   .help-dialog-body{grid-template-columns:1fr}
-  #cardsList{max-height:none}
+  .list-tree{max-height:none}
   .creator-editor{overflow:visible}
   .preview{min-height:520px}
 }

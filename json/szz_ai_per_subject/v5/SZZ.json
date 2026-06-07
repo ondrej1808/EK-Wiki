@@ -2639,7 +2639,7 @@
       ],
       "answer_parts": [
         {
-          "text": "Metoda odhadu parametru $\\theta$ na základě věrohodnostní funkce $L(\\theta) = \\prod P(X_i = x_i)$. Parametr $\\theta$ se získá jako řešení rovnice $\\dfrac{d}{d\\theta}(\\ln L(\\theta)) = 0$."
+          "text": "Metoda odhadu parametru $\\theta$ na základě věrohodnostní funkce $L(\\theta) = \\prod_{i=1}^{n} f(x_i;\\,\\theta)$, kde $f$ je pravděpodobnostní funkce (diskrétní případ) nebo hustota (spojitý případ). Parametr $\\theta$ se získá jako řešení věrohodnostní rovnice $\\dfrac{d}{d\\theta}\\ln L(\\theta) = 0$."
         }
       ]
     },
@@ -2665,7 +2665,7 @@
       ],
       "answer_parts": [
         {
-          "text": "Distribuční funkce $F_X(x)$ je neklesající, zprava spojitá, $\\lim_{x \\to -\\infty} F_X(x) = 0$ a $\\lim_{x \\to \\infty} F_X(x) = 1$."
+          "text": "Distribuční funkce $F_X(x)$ splňuje:\n1. Neklesající: $x_1 < x_2 \\Rightarrow F_X(x_1) \\le F_X(x_2)$\n2. Zprava spojitá: $\\lim_{h \\to 0^+} F_X(x+h) = F_X(x)$\n3. $\\lim_{x \\to -\\infty} F_X(x) = 0$, $\\quad\\lim_{x \\to \\infty} F_X(x) = 1$\n4. $P(a < X \\le b) = F_X(b) - F_X(a)$"
         }
       ]
     },
@@ -2691,7 +2691,7 @@
       ],
       "answer_parts": [
         {
-          "text": "Definována jako $EX = \\int_{-\\infty}^{\\infty} x\\, f_X(x)\\, dx$ (pro spojité rozdělení)."
+          "text": "Pro spojité rozdělení: $EX = \\int_{-\\infty}^{\\infty} x\\, f_X(x)\\, dx$.\nPro diskrétní rozdělení: $EX = \\sum_{i} x_i\\, P(X = x_i)$."
         }
       ]
     },
@@ -2717,7 +2717,7 @@
       ],
       "answer_parts": [
         {
-          "text": "Výběrový průměr $\\bar{X}_n = \\dfrac{1}{n} \\sum X_j$ a výběrový rozptyl $S_n^2 = \\dfrac{1}{n-1} \\sum (X_j - \\bar{X}_n)^2$."
+          "text": "Výběrový průměr $\\bar{X}_n = \\dfrac{1}{n} \\sum_{j=1}^{n} X_j$ a výběrový rozptyl $S_n^2 = \\dfrac{1}{n-1} \\sum_{j=1}^{n} (X_j - \\bar{X}_n)^2$."
         }
       ]
     },
