@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════
  *  EK Wiki – unified subject-ordered index
- *  Renders: markdown (marked.js), LaTeX (KaTeX), TikZ (tikzjax)
+ *  Renders: markdown (marked.js), LaTeX (KaTeX),
+ *           TikZ (pre-rendered SVGs from tikz-cache/)
  *  PDF files open in an embedded iframe
  * ═══════════════════════════════════════════════════════ */
 (() => {
@@ -233,27 +234,28 @@
           code: 'B2B37SAS', title: 'Signály a soustavy',
           resources: [
             { type: 'note', label: '19 – Signály, reprezentace, vzorkování, náhodné procesy', src: SZZ + 'SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md' },
-            { type: 'note', label: '20 – Soustavy LTI, konvoluce, stabilita, modulace',       src: SZZ + 'SAS/20 Soustavy LTI konvoluce stabilita pasmove signaly modulace.md' },
+            { type: 'note', label: '19a – Srovnání spektrálních reprezentací',                  src: SZZ + 'SAS/19a Srovnani spektralnich reprezentaci signalu.md' },
+            { type: 'note', label: '20 – Soustavy LTI, konvoluce, stabilita, modulace',         src: SZZ + 'SAS/20 Soustavy LTI konvoluce stabilita pasmove signaly modulace.md' },
             { type: 'pdf',  label: 'SAS cvičení v0.96 (zápisky)', src: SZZ + 'SAS/sas_cviceni_v0.96_250225.pdf' },
-            { type: 'sum',  label: 'HEX – shrnutí okruhů',         src: AQ  + 'B2B37SAS.md' },
-            { type: 'sum',  label: 'Otázka 1 (detail)',             src: AM  + 'B2B37SAS-01.md' },
-            { type: 'sum',  label: 'Otázka 2 (detail)',             src: AM  + 'B2B37SAS-02.md' },
           ],
         },
         {
           code: 'B2B17TBK', title: 'Teorie bezdrátové komunikace',
           resources: [
-            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B17TBK.md' },
-            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B17TBK-01.md' },
-            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B17TBK-02.md' },
+            { type: 'note', label: '21 – Bezdrátová komunikace, modulace, VF parametry', src: SZZ + 'TBK/21 Bezdratova komunikace modulace VF parametry vysilace prijimace.md' },
+            { type: 'note', label: '22 – Antény, šíření, návrh rádiových spojů',          src: SZZ + 'TBK/22 Anteny sireni navrh radiovych spoju vykonova bilance.md' },
           ],
         },
         {
           code: 'B2B31CZS', title: 'Číslicové zpracování signálů',
           resources: [
-            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B31CZS.md' },
-            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B31CZS-01.md' },
-            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B31CZS-02.md' },
+            { type: 'note', label: '23 – Konvoluce, DFT, váhování, filtry, kvantování', src: SZZ + 'CZS/23 Konvoluce DFT vahovani casove frekvencni analyza filtry kvantovani.md' },
+            { type: 'note', label: '24 – Filtrace, převzorkování, banky filtrů, predikce', src: SZZ + 'CZS/24 Filtrace ve frekvencni oblasti prevzorkovani banky filtru odhady analyza predikce.md' },
+            { type: 'pdf',  label: 'CZS přednášky pr0',  src: SZZ + 'CZS/b2b31czs_pr0.pdf' },
+            { type: 'pdf',  label: 'CZS přednášky pr1',  src: SZZ + 'CZS/b2b31czs_pr1_HANDOUT.pdf' },
+            { type: 'pdf',  label: 'CZS DFT (pr3)',       src: SZZ + 'CZS/b2b31czs_pr3_DFT_HANDOUT.pdf' },
+            { type: 'pdf',  label: 'CZS spektrum (pr4)',  src: SZZ + 'CZS/b2b31czs_pr4_spectrum_HANDOUT.pdf' },
+            { type: 'pdf',  label: 'CZS filtry (pr5–8)',  src: SZZ + 'CZS/b2b31czs_pr5_filters_intro_HANDOUT.pdf' },
           ],
         },
         {
@@ -280,9 +282,8 @@
         {
           code: 'B2B32TSI', title: 'Telefonní a mobilní sítě',
           resources: [
-            { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B32TSI.md' },
-            { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B32TSI-01.md' },
-            { type: 'sum', label: 'Otázka 2 (detail)',    src: AM + 'B2B32TSI-02.md' },
+            { type: 'note', label: '29 – Komunikační kanál, digitální přenosy, telefonie, xDSL', src: SZZ + 'TSI/29 Komunikacni kanal digitalni prenosy telefonie xDSL.md' },
+            { type: 'note', label: '30 – Buňkové mobilní sítě, GSM, GPRS, UMTS',                  src: SZZ + 'TSI/30 Bunkove mobilni site GSM GPRS EDGE UMTS.md' },
           ],
         },
       ],
@@ -375,78 +376,59 @@
   }
 
   /* ═══════════════════════════════════════════════════════
-   *  TikZ handling
+   *  TikZ — pre-rendered SVG cache
+   *  SVGs are produced by tools/render_tikz.py in CI (GitHub Actions).
+   *  tikz-cache/index.json maps SHA256(source) → "tikz-cache/HASH.svg"
    * ═══════════════════════════════════════════════════════ */
 
-  // Whether tikzjax's CDN script has loaded and its MutationObserver is ready
-  let tikzjaxReady = false;
-  // Queue of elements waiting to be rendered once tikzjax loads
-  const tikzPendingEls = [];
+  let tikzIndex = null;  // loaded once from tikz-cache/index.json
+
+  async function loadTikzIndex() {
+    try {
+      const res = await fetch('tikz-cache/index.json', { cache: 'no-cache' });
+      if (res.ok) tikzIndex = await res.json();
+    } catch { /* no cache yet — show source fallback */ }
+  }
+
+  /** SHA-256 hash of a string, first 16 hex chars (matches render_tikz.py) */
+  async function tikzHash(src) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(src.trim()));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  }
+
+  /**
+   * Replace tikz placeholder spans with pre-rendered SVG <img> tags.
+   * Falls back to a nicely formatted code block if SVG not in cache.
+   */
+  async function resolveTikzPlaceholders(placeholders) {
+    for (const ph of placeholders) {
+      const src = ph.dataset.tikzSrc;
+      const h = await tikzHash(src);
+      const svgPath = tikzIndex && tikzIndex[h];
+
+      if (svgPath) {
+        const img = document.createElement('img');
+        img.src = svgPath;
+        img.alt = 'TikZ diagram';
+        img.className = 'tikz-svg';
+        img.loading = 'lazy';
+        ph.replaceWith(img);
+      } else {
+        // Not in cache — show formatted source with copy button
+        const wrap = document.createElement('div');
+        wrap.className = 'tikz-fallback';
+        wrap.innerHTML =
+          '<div class="tikz-fallback-hdr">TikZ <span class="tikz-note">(diagram — not yet rendered)</span></div>' +
+          '<pre class="tikz-src"><code>' + esc(src) + '</code></pre>';
+        ph.replaceWith(wrap);
+      }
+    }
+  }
 
   function setupTikzjax() {
-    if (!window.crossOriginIsolated) {
-      const banner = document.getElementById('coiBanner');
-      if (banner) banner.style.display = 'block';
-      return;
-    }
-
-    // Load tikzjax from wiki.js (NOT inline in HTML) to avoid CSP violations
-    const s = document.createElement('script');
-    s.src = 'https://tikzjax.com/v1/tikzjax.js';
-    s.addEventListener('load', () => {
-      tikzjaxReady = true;
-      tikzPendingEls.forEach(insertTikzScript);
-      tikzPendingEls.length = 0;
-      document.dispatchEvent(new CustomEvent('tikzjax-script-loaded'));
-    });
-    s.addEventListener('error', () => {
-      console.warn('[wiki] tikzjax failed to load from CDN');
-    });
-    document.head.appendChild(s);
-
-    // Also handle tikzjax-load-finished (fires after initial render pass)
-    document.addEventListener('tikzjax-load-finished', () => {
-      tikzjaxReady = true;
-    }, { once: true });
-  }
-
-  /**
-   * Insert a tikz script element into the document so tikzjax's MutationObserver
-   * processes it. Replaces the placeholder <span> that sits in its place.
-   */
-  function insertTikzScript(placeholder) {
-    const script = document.createElement('script');
-    script.type = 'text/tikz';
-    script.textContent = placeholder.dataset.tikzSrc;
-    placeholder.replaceWith(script);
-  }
-
-  /**
-   * Schedule TikZ elements for rendering. If tikzjax is ready, insert immediately;
-   * otherwise queue them (setupTikzjax will flush when ready).
-   */
-  function scheduleTikz(placeholders) {
-    if (placeholders.length === 0) return;
-
-    if (!window.crossOriginIsolated) {
-      // Replace placeholders with a friendly "no COI" message
-      placeholders.forEach(ph => {
-        const msg = document.createElement('div');
-        msg.className = 'tikz-nocoi';
-        msg.innerHTML =
-          '⚠️ TikZ diagram — rendering unavailable ' +
-          '(Cross-Origin Isolation not active). ' +
-          '<a href="javascript:location.reload()" style="color:inherit;font-weight:600">Obnovit stránku</a>.';
-        ph.replaceWith(msg);
-      });
-      return;
-    }
-
-    if (tikzjaxReady) {
-      placeholders.forEach(insertTikzScript);
-    } else {
-      tikzPendingEls.push(...placeholders);
-    }
+    // No runtime TeX engine needed — SVGs come from pre-rendering in CI.
+    // Just kick off the index load.
+    loadTikzIndex();
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -463,12 +445,11 @@
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
 
-    // Convert ```tikz blocks → placeholder <span>s (actual script elements
-    // are inserted by scheduleTikz() to control timing relative to tikzjax)
+    // Convert ```tikz blocks → placeholder <span>s with source stored in dataset
     wrapper.querySelectorAll('pre > code.language-tikz').forEach(code => {
       const ph = document.createElement('span');
       ph.className = 'tikz-loading';
-      ph.textContent = '⏳ TikZ — renderuji diagram…';
+      ph.textContent = '⏳ TikZ…';
       ph.dataset.tikzSrc = code.textContent;
       code.closest('pre').replaceWith(ph);
     });
@@ -536,8 +517,8 @@
         });
       }
 
-      // Schedule TikZ rendering (waits for tikzjax if not ready yet)
-      scheduleTikz(tikzPlaceholders);
+      // Resolve TikZ placeholders → pre-rendered SVGs (or source fallback)
+      resolveTikzPlaceholders(tikzPlaceholders);
 
       updateHash(key);
     } catch (err) {

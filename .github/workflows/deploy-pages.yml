@@ -22,11 +22,33 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (with submodules)
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
+      # ── LaTeX + pdf2svg for TikZ pre-rendering ──────────────────────────
+      - name: Cache LaTeX packages
+        uses: actions/cache@v4
+        id: latex-cache
+        with:
+          path: /var/cache/apt/archives
+          key: latex-tikz-${{ runner.os }}-v1
+
+      - name: Install LaTeX and pdf2svg
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-pictures \
+            texlive-fonts-recommended \
+            pdf2svg
+
+      - name: Pre-render TikZ blocks to SVG
+        run: python3 tools/render_tikz.py
+
+      # ── GitHub Pages deploy ─────────────────────────────────────────────
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
