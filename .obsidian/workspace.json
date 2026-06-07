@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+                "file": "assets/okruhy.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy"
+              "title": "okruhy"
             }
           }
         ]
@@ -185,6 +185,12 @@
   },
   "active": "60528f00d8b92b87",
   "lastOpenFiles": [
+    "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+    "assets/okruhy.md",
+    "wiki.js.tmp.19656.82d06fd8e154",
+    "wiki.js.tmp.19656.023e70d78110",
+    "wiki.js.tmp.19656.5f2052798fb9",
+    "wiki.html.tmp.19656.dba7ea447e6a",
     "SZZ/TSI/30 Bunkove mobilni site GSM GPRS EDGE UMTS.md",
     "SZZ/TSI/29 Komunikacni kanal digitalni prenosy telefonie xDSL.md",
     "SZZ/TSI/13.přednáška (B2B32TSI)_print.pdf",
@@ -193,15 +199,10 @@
     "SZZ/TSI/10.přednáška (B2B32TSI)_print.pdf",
     "SZZ/TSI/08.přednáška (B2B32TSI)_print.pdf",
     "SZZ/TSI/07.přednáška (B2B32TSI)_print.pdf",
-    "SZZ/TSI/06.přednáška (B2B32TSI)_print.pdf",
-    "SZZ/TSI/05.přednáška (B2B32TSI)_print.pdf",
-    "SZZ/TSI/04.přednáška (B2B32TSI)_print.pdf",
-    "SZZ/TSI/02.přednáška (B2B32TSI)_print.pdf",
     "SZZ/TBK/22 Anteny sireni navrh radiovych spoju vykonova bilance.md",
     "SZZ/TBK/21 Bezdratova komunikace modulace VF parametry vysilace prijimace.md",
     "SZZ/SAS/19a Srovnani spektralnich reprezentaci signalu.md",
     "SZZ/CZS/24 Filtrace ve frekvencni oblasti prevzorkovani banky filtru odhady analyza predikce.md",
-    "SZZ/CZS/23 Konvoluce DFT vahovani casove frekvencni analyza filtry kvantovani.md",
-    "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md"
+    "SZZ/CZS/23 Konvoluce DFT vahovani casove frekvencni analyza filtry kvantovani.md"
   ]
 }
