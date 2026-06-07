@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "9b551bba082c5deb",
+        "id": "01bf03b64793b61f",
         "type": "tabs",
         "children": [
           {
-            "id": "60528f00d8b92b87",
+            "id": "fe5b4667b296f67d",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -183,8 +183,17 @@
       "bases:Create new base": false
     }
   },
-  "active": "60528f00d8b92b87",
+  "active": "fe5b4667b296f67d",
   "lastOpenFiles": [
+    "tikz-cache/1c4a4a6a8516c412.svg",
+    "tikz-cache/0ea38df04c757e7b.svg",
+    "SZZ/SZZ - Odborné okruhy.md",
+    "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+    "assets/okruhy.md",
+    "wiki.js.tmp.19656.254b55e58aae",
+    "wiki.html.tmp.19656.2c2eb32c33c9",
+    "wiki.js.tmp.19656.f264e4bd46ab",
+    "wiki.html.tmp.19656.a65076e635fa",
     "tikz-cache/66c0982845b1e2e3.svg",
     "tikz-cache/45ffa59564e24712.svg",
     "tikz-cache/9bb3563b4047b0a6.svg",
@@ -194,20 +203,12 @@
     "tikz-cache/86f7392b22a73733.svg",
     "tikz-cache/46dc2d48d14fe96c.svg",
     "tikz-cache/44a488b98386d7e3.svg",
-    "tikz-cache/8799b77f5823a432.svg",
-    "tikz-cache/cb6cdac8e5e4cb88.svg",
     "render_tikz.sh",
     "render_tikz.ps1",
     "tikz-cache/index.json",
     "tikz-cache",
     "wiki.html.tmp.19656.9ce809624e3e",
     "wiki.html.tmp.19656.f81c27a904f9",
-    "wiki.html.tmp.19656.13d7ab1eb70a",
-    "wiki.js.tmp.19656.8bc2919058b3",
-    "wiki.js.tmp.19656.ad1cabfdcae9",
-    "wiki.js.tmp.19656.6acf02ec1e37",
-    "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
-    "assets/okruhy.md",
     "SZZ/TSI/30 Bunkove mobilni site GSM GPRS EDGE UMTS.md",
     "SZZ/TSI/29 Komunikacni kanal digitalni prenosy telefonie xDSL.md",
     "SZZ/TBK/22 Anteny sireni navrh radiovych spoju vykonova bilance.md",

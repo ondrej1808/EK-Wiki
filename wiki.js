@@ -355,10 +355,18 @@
   function extractMath(text) {
     const blocks = [];
     const save = (type, math) => { const id = blocks.length; blocks.push({ type, math }); return `\x00M${id}\x00`; };
-    text = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => save('display', m));
-    text = text.replace(/\\\[([\s\S]+?)\\\]/g, (_, m) => save('display', m));
-    text = text.replace(/\\\((.+?)\\\)/g, (_, m) => save('inline', m));
-    text = text.replace(/(?<!\$)\$(?!\$)([^\n$]+?)(?<!\$)\$(?!\$)/g, (_, m) => save('inline', m));
+    const extract = seg => {
+      seg = seg.replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => save('display', m));
+      seg = seg.replace(/\\\[([\s\S]+?)\\\]/g, (_, m) => save('display', m));
+      seg = seg.replace(/\\\((.+?)\\\)/g, (_, m) => save('inline', m));
+      seg = seg.replace(/(?<!\$)\$(?!\$)([^\n$]+?)(?<!\$)\$(?!\$)/g, (_, m) => save('inline', m));
+      return seg;
+    };
+    // Skip fenced code blocks (```...```) — math-like `$...$` inside TikZ/code
+    // sources must reach marked/tikzjax verbatim, not be replaced by placeholders.
+    text = text.split(/(```[\s\S]*?```)/g)
+      .map((seg, i) => (i % 2 === 0 ? extract(seg) : seg))
+      .join('');
     return { text, blocks };
   }
 
@@ -388,12 +396,18 @@
    * ═══════════════════════════════════════════════════════ */
 
   let tikzIndex = null;
+  let tikzIndexPromise = null;
 
-  async function loadTikzIndex() {
-    try {
-      const res = await fetch('tikz-cache/index.json');
-      if (res.ok) tikzIndex = await res.json();
-    } catch { /* no pre-render cache yet */ }
+  function loadTikzIndex() {
+    if (!tikzIndexPromise) {
+      tikzIndexPromise = (async () => {
+        try {
+          const res = await fetch('tikz-cache/index.json');
+          if (res.ok) tikzIndex = await res.json();
+        } catch { /* no pre-render cache yet */ }
+      })();
+    }
+    return tikzIndexPromise;
   }
 
   /** 16-char SHA-256 prefix — must match render_tikz.py block_hash() */
@@ -409,6 +423,7 @@
    *      picks it up and renders to SVG (cached in IndexedDB for next visits).
    */
   async function resolveTikzPlaceholders(placeholders) {
+    if (placeholders.length) await loadTikzIndex();
     for (const ph of placeholders) {
       const src = ph.dataset.tikzSrc;
 
