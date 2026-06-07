@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>EK Wiki – SZZ</title>
+  <title>EK Viki – SZZ</title>
 
   <!-- KaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -69,6 +69,7 @@
     .tag-note{background:#dbeafe;color:#1d4ed8}
     .tag-pdf {background:#fee2e2;color:#b91c1c}
     .tag-sum {background:#f1f5f9;color:#475569}
+    .tag-cards{background:#dcfce7;color:#15803d}
     .res-label{font-size:11px;color:#374151;line-height:1.4}
 
     /* ── Content pane ── */
@@ -86,6 +87,8 @@
                 transition:box-shadow .15s,transform .15s}
     .pdf-newtab:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,23,42,.10)}
     .pdf-frame{width:100%;flex:1;min-height:calc(100vh - 200px);border:none;border-radius:10px;
+               box-shadow:0 2px 12px rgba(15,23,42,.08)}
+    .cards-frame{width:100%;flex:1;min-height:calc(100vh - 200px);border:none;border-radius:10px;
                box-shadow:0 2px 12px rgba(15,23,42,.08)}
 
     /* ── Rendered markdown ── */
@@ -206,6 +209,7 @@
       .panel > .sub{display:none}
 
       .pdf-frame{min-height:70dvh}
+      .cards-frame{min-height:70dvh}
       #docBody{font-size:14px}
       #docTitle{font-size:18px}
       .mobile-back-btn{display:none!important}
@@ -216,7 +220,7 @@
   <!-- Mobile top bar (hidden on desktop) -->
   <nav class="mob-bar">
     <a href="index.html" class="mob-bar-back">← Rozcestník</a>
-    <span class="mob-bar-title">SZZ Wiki</span>
+    <span class="mob-bar-title">SZZ Viki</span>
     <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Otevřít menu">☰</button>
   </nav>
   <!-- Drawer backdrop -->
@@ -226,7 +230,7 @@
     <div class="layout" id="wikiLayout">
       <aside class="panel" id="wikiPanel">
         <a class="back" href="index.html">← Rozcestník</a>
-        <h1>SZZ Wiki</h1>
+        <h1>SZZ Viki</h1>
         <p class="sub">Poznámky, PDFka a shrnutí — staticky z GitHub Pages.</p>
         <input id="topicFilter" type="search" placeholder="Hledat…" autocomplete="off" />
         <div id="topicList" aria-label="Seznam témat"></div>

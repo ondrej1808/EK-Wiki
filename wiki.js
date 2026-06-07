@@ -290,6 +290,15 @@
     },
   ];
 
+  // Inject a CARDS subpage into every subject — links to the flashcard app
+  // pre-filtered to that subject's short code (e.g. B2B02FY1 → FY1), which
+  // matches subsetPath[0] in json/szz-open-micro.json one-to-one.
+  for (const sec of SECTIONS) {
+    for (const subj of sec.subjects) {
+      subj.resources.push({ type: 'cards', label: 'Kartičky (CARDS)', src: subj.code.slice(5) });
+    }
+  }
+
   /* ── Shared reference ── */
   const HEX_COMPOST = { type: 'pdf', label: 'hex_compost.pdf (hlavní reference)', src: SZZ + 'hex_compost.pdf' };
 
@@ -330,6 +339,7 @@
     note: { label: 'SZZ', cls: 'tag-note' },
     pdf:  { label: 'PDF', cls: 'tag-pdf'  },
     sum:  { label: 'HEX', cls: 'tag-sum'  },
+    cards:{ label: 'CARDS', cls: 'tag-cards' },
   };
 
   /* ═══════════════════════════════════════════════════════
@@ -511,6 +521,15 @@
       return;
     }
 
+    if (type === 'cards') {
+      /* CARDS: embed the flashcard app pre-filtered to this subject */
+      els.docBody.className = '';
+      els.docBody.innerHTML =
+        `<iframe src="cards.html?subject=${encodeURIComponent(src)}" class="cards-frame" title="${esc(label)}"></iframe>`;
+      updateHash(key);
+      return;
+    }
+
     /* Markdown */
     showStatus('Načítám…');
     try {
@@ -623,7 +642,7 @@
         hdr.type = 'button';
         hdr.className = 'subject-hdr' + (isOpen ? ' open' : '');
         hdr.innerHTML =
-          `<span class="subj-code">${esc(subj.code.replace('B0B01','').replace('B2B',''))}</span>` +
+          `<span class="subj-code">${esc(subj.code.slice(5))}</span>` +
           `<span class="subj-title">${esc(subj.title)}</span>` +
           `<span class="arr">▶</span>`;
         hdr.addEventListener('click', () => {

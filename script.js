@@ -1490,17 +1490,26 @@ function showMessage(text, type = 'info') {
 }
 
 // Startup Logic
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     const params = new URLSearchParams(window.location.search);
     const fromCreator = params.get('from') === 'creator';
+    const subjectParam = params.get('subject');
 
     if (fromCreator && loadCreatorHandoff()) {
         return;
     }
 
+    if (subjectParam) {
+        await changeSubject('json/szz-open-micro.json');
+        if (getAvailableSubjectPaths().includes(subjectParam)) {
+            changeSubjectFilter(subjectParam);
+        }
+        return;
+    }
+
     // Check if there was a last selected subject
     const lastSubject = localStorage.getItem('tsi_last_subject');
-    
+
     if (lastSubject) {
         changeSubject(lastSubject);
     } else {
