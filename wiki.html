@@ -18,20 +18,8 @@
   <!-- marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 
-  <!-- tikzjax — load ONLY when page is cross-origin isolated (COI).
-       Without COI, SharedArrayBuffer is undefined and tikzjax silently fails. -->
-  <script>
-    if (window.crossOriginIsolated) {
-      const s = document.createElement('script');
-      s.src = 'https://tikzjax.com/v1/tikzjax.js';
-      s.defer = true;
-      // After tikzjax finishes its initial scan, signal wiki.js
-      s.addEventListener('load', () => {
-        document.dispatchEvent(new CustomEvent('tikzjax-script-loaded'));
-      });
-      document.head.appendChild(s);
-    }
-  </script>
+  <!-- tikzjax is loaded by wiki.js only when crossOriginIsolated is true -->
+  <!-- (no inline script here to avoid CSP issues) -->
 
   <style>
     :root{--bg1:#0f172a;--bg2:#1e293b;--line:#dbe3ef;--accent:#2563eb;--text:#0f172a;--muted:#475569}

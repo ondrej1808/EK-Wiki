@@ -385,22 +385,26 @@
 
   function setupTikzjax() {
     if (!window.crossOriginIsolated) {
-      // COI not active — show warning banner
       const banner = document.getElementById('coiBanner');
       if (banner) banner.style.display = 'block';
       return;
     }
 
-    // tikzjax was conditionally loaded in wiki.html
-    // Listen for our custom event dispatched when its <script> fires 'load'
-    document.addEventListener('tikzjax-script-loaded', () => {
+    // Load tikzjax from wiki.js (NOT inline in HTML) to avoid CSP violations
+    const s = document.createElement('script');
+    s.src = 'https://tikzjax.com/v1/tikzjax.js';
+    s.addEventListener('load', () => {
       tikzjaxReady = true;
-      // Process any elements that were added before tikzjax was ready
-      tikzPendingEls.forEach(el => insertTikzScript(el));
+      tikzPendingEls.forEach(insertTikzScript);
       tikzPendingEls.length = 0;
-    }, { once: true });
+      document.dispatchEvent(new CustomEvent('tikzjax-script-loaded'));
+    });
+    s.addEventListener('error', () => {
+      console.warn('[wiki] tikzjax failed to load from CDN');
+    });
+    document.head.appendChild(s);
 
-    // Fallback: if tikzjax-load-finished fires (after initial render), mark ready
+    // Also handle tikzjax-load-finished (fires after initial render pass)
     document.addEventListener('tikzjax-load-finished', () => {
       tikzjaxReady = true;
     }, { once: true });
@@ -600,7 +604,7 @@
       els.topicList.appendChild(secHdr);
 
       for (const subj of sec.subjects) {
-        const visibleRes = subj.resources.filter(r =>
+        const visibleRes = visibleResources(subj.resources).filter(r =>
           matches(r.label) || matches(subj.title) || matches(subj.code)
         );
         if (visibleRes.length === 0) continue;
@@ -634,6 +638,11 @@
         els.topicList.appendChild(groupDiv);
       }
     }
+  }
+
+  /** Filter resources: skip all 'sum' type (assets/ markdown files) */
+  function visibleResources(resources) {
+    return resources.filter(r => r.type !== 'sum');
   }
 
   function makeResourceBtn(key, r, code) {
