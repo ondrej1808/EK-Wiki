@@ -13,7 +13,13 @@
   <!-- marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 
-  <!-- TikZ diagrams are pre-rendered to SVG by tools/render_tikz.py in CI -->
+  <!-- @drgrice1/tikzjax — fork compiled WITHOUT pthreads.
+       No SharedArrayBuffer, no Cross-Origin Isolation needed.
+       Finds script[type="text/tikz"] via MutationObserver (dynamic content ✓).
+       Results cached in browser IndexedDB (fast on repeat visits).
+       Fonts from same CDN so no CORS issues. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@drgrice1/tikzjax@1.0.0-beta24/dist/fonts.css">
+  <script src="https://cdn.jsdelivr.net/npm/@drgrice1/tikzjax@1.0.0-beta24/dist/tikzjax.js"></script>
 
   <style>
     :root{--bg1:#0f172a;--bg2:#1e293b;--line:#dbe3ef;--accent:#2563eb;--text:#0f172a;--muted:#475569}

@@ -376,35 +376,44 @@
   }
 
   /* ═══════════════════════════════════════════════════════
-   *  TikZ — pre-rendered SVG cache
-   *  SVGs are produced by tools/render_tikz.py in CI (GitHub Actions).
-   *  tikz-cache/index.json maps SHA256(source) → "tikz-cache/HASH.svg"
+   *  TikZ rendering
+   *
+   *  Primary:  @drgrice1/tikzjax (loaded in <head> of wiki.html)
+   *            — compiled WITHOUT pthreads → no SharedArrayBuffer / COI needed
+   *            — MutationObserver on document.body handles dynamic insertion
+   *            — results cached in browser IndexedDB (instant on repeat visits)
+   *
+   *  Fast fallback: tikz-cache/index.json pre-rendered SVGs from CI or
+   *                 render_tikz.ps1 / render_tikz.sh run locally
    * ═══════════════════════════════════════════════════════ */
 
-  let tikzIndex = null;  // loaded once from tikz-cache/index.json
+  let tikzIndex = null;
 
   async function loadTikzIndex() {
     try {
-      const res = await fetch('tikz-cache/index.json', { cache: 'no-cache' });
+      const res = await fetch('tikz-cache/index.json');
       if (res.ok) tikzIndex = await res.json();
-    } catch { /* no cache yet — show source fallback */ }
+    } catch { /* no pre-render cache yet */ }
   }
 
-  /** SHA-256 hash of a string, first 16 hex chars (matches render_tikz.py) */
+  /** 16-char SHA-256 prefix — must match render_tikz.py block_hash() */
   async function tikzHash(src) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(src.trim()));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
   }
 
   /**
-   * Replace tikz placeholder spans with pre-rendered SVG <img> tags.
-   * Falls back to a nicely formatted code block if SVG not in cache.
+   * For each tikz placeholder <span>:
+   *   1. If a pre-rendered SVG exists in tikz-cache/ → use it instantly.
+   *   2. Otherwise insert <script type="text/tikz"> — tikzjax's MutationObserver
+   *      picks it up and renders to SVG (cached in IndexedDB for next visits).
    */
   async function resolveTikzPlaceholders(placeholders) {
     for (const ph of placeholders) {
       const src = ph.dataset.tikzSrc;
+
       const h = await tikzHash(src);
-      const svgPath = tikzIndex && tikzIndex[h];
+      const svgPath = tikzIndex?.[h];
 
       if (svgPath) {
         const img = document.createElement('img');
@@ -414,21 +423,18 @@
         img.loading = 'lazy';
         ph.replaceWith(img);
       } else {
-        // Not in cache — show formatted source with copy button
-        const wrap = document.createElement('div');
-        wrap.className = 'tikz-fallback';
-        wrap.innerHTML =
-          '<div class="tikz-fallback-hdr">TikZ <span class="tikz-note">(diagram — not yet rendered)</span></div>' +
-          '<pre class="tikz-src"><code>' + esc(src) + '</code></pre>';
-        ph.replaceWith(wrap);
+        // tikzjax renders this via its MutationObserver — no timing coordination needed
+        const script = document.createElement('script');
+        script.type = 'text/tikz';
+        script.textContent = src;
+        ph.replaceWith(script);
       }
     }
   }
 
   function setupTikzjax() {
-    // No runtime TeX engine needed — SVGs come from pre-rendering in CI.
-    // Just kick off the index load.
-    loadTikzIndex();
+    loadTikzIndex();  // load pre-render cache async
+    // tikzjax is already initialised by its <script> tag in wiki.html
   }
 
   /* ═══════════════════════════════════════════════════════
