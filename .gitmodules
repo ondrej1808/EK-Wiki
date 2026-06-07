@@ -1,0 +1,3 @@
+[submodule "SZZ"]
+	path = SZZ
+	url = https://github.com/SirWalkerCZ/SZZ.git
