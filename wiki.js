@@ -423,10 +423,14 @@
         img.loading = 'lazy';
         ph.replaceWith(img);
       } else {
-        // tikzjax renders this via its MutationObserver — no timing coordination needed
+        // tikzjax expects tikzpicture content only — strip \begin{document} wrapper
+        // (Obsidian notes wrap tikzpictures in a full document, tikzjax adds its own)
+        let tikzSrc = src.trim();
+        tikzSrc = tikzSrc.replace(/\\begin\{document\}/g, '').replace(/\\end\{document\}/g, '').trim();
+
         const script = document.createElement('script');
         script.type = 'text/tikz';
-        script.textContent = src;
+        script.textContent = tikzSrc;
         ph.replaceWith(script);
       }
     }
@@ -678,42 +682,40 @@
     if (r) openResource(key, r.label, r.src, r.type);
   });
 
-  /* ── Mobile master-detail navigation ── */
-  const layout   = document.getElementById('wikiLayout');
-  const mobileBack = document.getElementById('mobileBack');
+  /* ── Mobile drawer ── */
+  const panel     = document.getElementById('wikiPanel');
+  const overlay   = document.getElementById('mobOverlay');
+  const menuBtn   = document.getElementById('mobMenuBtn');
+  const contentEl = document.querySelector('.content');
 
   function isMobile() { return window.innerWidth <= 900; }
 
-  function showContent() {
-    if (isMobile()) layout.classList.add('content-active');
+  function openDrawer() {
+    panel.classList.add('drawer-open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
-  function showSidebar() {
-    layout.classList.remove('content-active');
+  function closeDrawer() {
+    panel.classList.remove('drawer-open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
   }
 
-  mobileBack.addEventListener('click', showSidebar);
-  // Also scroll content pane to top when a new resource is opened
-  const contentEl = document.querySelector('.content');
-  const origOpen  = openResource;
-  // Wrap openResource to add mobile nav
-  const _openResource = openResource;
-  // Monkey-patch: after any openResource call, activate content view on mobile
-  // (We hook via the existing renderSidebar call inside openResource instead)
-  // Simpler: patch the topic buttons to also call showContent
-  const _renderSidebar = renderSidebar;
+  menuBtn.addEventListener('click', () =>
+    panel.classList.contains('drawer-open') ? closeDrawer() : openDrawer()
+  );
+  overlay.addEventListener('click', closeDrawer);
 
-  void init();
-
-  // After init, patch all topic buttons to trigger mobile nav
-  // (topic buttons are re-created on each renderSidebar, so we intercept at the layout level)
-  layout.addEventListener('click', e => {
-    const btn = e.target.closest('.topic-btn');
-    if (btn && isMobile()) {
-      // Small delay so the active state renders before the slide
+  // Close drawer and scroll to top of content when a topic is tapped on mobile
+  document.getElementById('wikiLayout').addEventListener('click', e => {
+    if (!isMobile()) return;
+    if (e.target.closest('.topic-btn')) {
       setTimeout(() => {
-        showContent();
+        closeDrawer();
         contentEl.scrollTop = 0;
-      }, 50);
+      }, 60);
     }
   });
+
+  void init();
 })();

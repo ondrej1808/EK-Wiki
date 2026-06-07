@@ -131,81 +131,100 @@
     #docBody strong{font-weight:700}
     #docBody em{font-style:italic;color:#374151}
 
-    /* ── Mobile back button (content → sidebar) ── */
-    .mobile-back-btn{display:none}
+    /* ── Mobile top bar ── */
+    .mob-bar{
+      display:none;
+      align-items:center;gap:8px;
+      background:var(--bg1);color:#fff;
+      padding:0 14px;height:52px;
+      position:sticky;top:0;z-index:200;
+      box-shadow:0 2px 8px rgba(0,0,0,.4);
+    }
+    .mob-bar-back{color:#93c5fd;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap}
+    .mob-bar-title{flex:1;font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mob-menu-btn{
+      background:none;border:none;color:#fff;
+      font-size:22px;line-height:1;padding:6px 4px;
+      cursor:pointer;flex-shrink:0;
+      -webkit-tap-highlight-color:transparent;
+    }
 
+    /* ── Drawer overlay backdrop ── */
+    .mob-overlay{
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.45);z-index:300;
+    }
+    .mob-overlay.open{display:block}
+
+    /* ── Desktop: unchanged ── */
+    @media(min-width:901px){
+      .mob-bar,.mob-overlay{display:none!important}
+      .mobile-back-btn{display:none!important}
+    }
+
+    /* ── Mobile layout ── */
     @media(max-width:900px){
-      /* Full-screen shell, no padding */
       body{background:#f1f5f9}
-      .shell{padding:0;min-height:100dvh}
+      .shell{padding:0;min-height:100dvh;display:flex;flex-direction:column}
+      .mob-bar{display:flex}
+
       .layout{
-        max-width:100%;
-        grid-template-columns:1fr;
-        gap:0;
-        /* Two virtual "pages" side by side, slide via transform */
+        flex:1;
         display:block;
-        position:relative;
-        overflow:hidden;
+        max-width:100%;
       }
 
-      /* Sidebar: full screen, scrollable */
-      .panel{
-        position:fixed;inset:0;
-        height:100dvh;
-        border-radius:0;
-        overflow-y:auto;
-        transform:translateX(0);
-        transition:transform .3s ease;
-        z-index:10;
-        box-shadow:none;
-        padding:16px 14px 24px;
-      }
-
-      /* Content: full screen, hidden to the right initially */
+      /* Content: full width, normal flow */
       .content{
-        position:fixed;inset:0;
+        display:block;
+        border-radius:0;
+        box-shadow:none;
+        min-height:calc(100dvh - 52px);
+        padding:16px 14px 48px;
+      }
+
+      /* Drawer: slides in from left as overlay */
+      .panel{
+        position:fixed;
+        left:0;top:0;bottom:0;
+        width:min(320px,90vw);
         height:100dvh;
         border-radius:0;
         overflow-y:auto;
-        transform:translateX(100%);
-        transition:transform .3s ease;
-        z-index:10;
-        box-shadow:none;
-        padding:16px 16px 32px;
-        min-height:unset;
-        -webkit-overflow-scrolling:touch;
+        transform:translateX(-100%);
+        transition:transform .28s cubic-bezier(.4,0,.2,1);
+        z-index:400;
+        box-shadow:4px 0 24px rgba(0,0,0,.25);
+        /* hide desktop-only decorations */
       }
+      .panel.drawer-open{transform:translateX(0)}
 
-      /* Active state: slide content in, slide sidebar out */
-      .layout.content-active .panel{transform:translateX(-100%)}
-      .layout.content-active .content{transform:translateX(0)}
+      /* Hide the desktop back link + subtitle inside panel on mobile
+         (replaced by mob-bar) */
+      .panel > .back{display:none}
+      .panel > h1{display:none}
+      .panel > .sub{display:none}
 
-      /* Back button — visible only on mobile when content is active */
-      .mobile-back-btn{
-        display:none; /* shown by JS when content-active */
-        align-items:center;gap:6px;
-        padding:8px 12px 8px 8px;
-        border:none;background:#f1f5f9;
-        color:#1d4ed8;font-size:13px;font-weight:600;
-        border-radius:10px;cursor:pointer;
-        margin-bottom:12px;
-        -webkit-tap-highlight-color:transparent;
-      }
-      .layout.content-active .mobile-back-btn{display:inline-flex}
-
-      /* PDF iframe height on mobile */
-      .pdf-frame{min-height:80dvh}
-
-      /* Slightly smaller text on mobile */
+      .pdf-frame{min-height:70dvh}
       #docBody{font-size:14px}
       #docTitle{font-size:18px}
+      .mobile-back-btn{display:none!important}
     }
   </style>
 </head>
 <body>
+  <!-- Mobile top bar (hidden on desktop) -->
+  <nav class="mob-bar">
+    <a href="index.html" class="mob-bar-back">← Rozcestník</a>
+    <span class="mob-bar-title">SZZ Wiki</span>
+    <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Otevřít menu">☰</button>
+  </nav>
+  <!-- Drawer backdrop -->
+  <div class="mob-overlay" id="mobOverlay"></div>
+
   <div class="shell">
     <div class="layout" id="wikiLayout">
-      <aside class="panel">
+      <aside class="panel" id="wikiPanel">
         <a class="back" href="index.html">← Rozcestník</a>
         <h1>SZZ Wiki</h1>
         <p class="sub">Poznámky, PDFka a shrnutí — staticky z GitHub Pages.</p>
@@ -220,7 +239,6 @@
           pokud se tak nestalo, zkuste <a href="javascript:location.reload()">obnovit (F5)</a>.
           Pokud problém přetrvává, zkontrolujte konzoli prohlížeče.
         </div>
-        <button class="mobile-back-btn" id="mobileBack">← Témata</button>
         <h2 id="docTitle">Načítání…</h2>
         <p id="docMeta"></p>
         <div id="docBody" class="status">Vyberte téma vlevo.</div>
