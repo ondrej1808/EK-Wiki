@@ -1,39 +1,32 @@
-/* coi-serviceworker — enable SharedArrayBuffer on GitHub Pages
- * Required by tikzjax (emscripten + pthreads WebAssembly).
- * Injects Cross-Origin-Opener-Policy + Cross-Origin-Embedder-Policy
- * headers so the page becomes cross-origin isolated.
+/* coi-serviceworker v0.1.7 (adapted from gzuidhof/coi-serviceworker, MIT)
+ * Enables SharedArrayBuffer on GitHub Pages for tikzjax WebAssembly.
+ * Dual-mode: acts as SW when loaded by the browser SW engine, acts as
+ * page-side registration script when loaded via <script src="...">.
  *
- * Based on https://github.com/gzuidhof/coi-serviceworker (MIT)
+ * On first visit: registers SW → triggers a single page reload.
+ * After reload: SW intercepts fetches and injects COOP+COEP headers →
+ *   window.crossOriginIsolated = true → SharedArrayBuffer available.
  */
 
+/* ── SW context ── */
 if (typeof window === 'undefined') {
-  /* ── Running as the actual Service Worker ── */
-
   self.addEventListener('install', () => self.skipWaiting());
+  self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
-  self.addEventListener('activate', event =>
-    event.waitUntil(self.clients.claim())
-  );
+  self.addEventListener('fetch', e => {
+    const { request } = e;
+    // Skip opaque cache-only requests
+    if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') return;
+    // Skip no-cors (e.g. CDN <script> tags) — don't mangle opaque responses
+    if (request.mode === 'no-cors') return;
 
-  self.addEventListener('fetch', event => {
-    const { request } = event;
-
-    // Skip opaque (only-if-cached + cross-origin) requests
-    if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') {
-      return;
-    }
-
-    event.respondWith(
-      fetch(request)
+    e.respondWith(
+      fetch(request, { credentials: 'omit' })
         .then(response => {
-          // Don't touch opaque / error responses
           if (response.status === 0) return response;
-
           const headers = new Headers(response.headers);
           headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-          // 'credentialless' allows cross-origin sub-resources (CDN fonts, WASM, etc.)
           headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
-
           return new Response(response.body, {
             status:     response.status,
             statusText: response.statusText,
@@ -43,32 +36,34 @@ if (typeof window === 'undefined') {
         .catch(() => fetch(request))
     );
   });
+}
 
-} else {
-  /* ── Running in the page — register ourselves as a SW ── */
-
+/* ── Page context: register the SW ── */
+else {
   (() => {
-    // Already isolated — nothing to do
-    if (window.crossOriginIsolated) return;
-
+    if (window.crossOriginIsolated) return; // already isolated — done
     if (!navigator.serviceWorker) {
-      console.warn('[coi-sw] Service workers not available.');
+      console.warn('[coi-sw] Service workers not supported in this browser.');
       return;
     }
 
-    // currentScript.src gives us the absolute URL even on sub-paths like /cards/
-    const swUrl = document.currentScript.src;
+    const swSrc = document.currentScript.src;
 
-    navigator.serviceWorker
-      .register(swUrl)
-      .then(() => {
-        // Once the SW is controlling the page, reload so it can inject headers
-        navigator.serviceWorker.ready.then(() => {
-          if (!window.crossOriginIsolated) {
-            console.log('[coi-sw] Reloading to activate cross-origin isolation…');
-            location.reload();
-          }
-        });
+    navigator.serviceWorker.register(swSrc)
+      .then(reg => {
+        // If a new SW was installed, reload when it activates
+        if (reg.installing) {
+          reg.installing.addEventListener('statechange', ({ target: sw }) => {
+            if (sw.state === 'activated') {
+              console.log('[coi-sw] SW activated → reloading for cross-origin isolation');
+              location.reload();
+            }
+          });
+        } else {
+          // SW already active from a previous registration — just reload
+          console.log('[coi-sw] SW already active → reloading for cross-origin isolation');
+          location.reload();
+        }
       })
       .catch(err => console.warn('[coi-sw] SW registration failed:', err));
   })();

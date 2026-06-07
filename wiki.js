@@ -375,6 +375,77 @@
   }
 
   /* ═══════════════════════════════════════════════════════
+   *  TikZ handling
+   * ═══════════════════════════════════════════════════════ */
+
+  // Whether tikzjax's CDN script has loaded and its MutationObserver is ready
+  let tikzjaxReady = false;
+  // Queue of elements waiting to be rendered once tikzjax loads
+  const tikzPendingEls = [];
+
+  function setupTikzjax() {
+    if (!window.crossOriginIsolated) {
+      // COI not active — show warning banner
+      const banner = document.getElementById('coiBanner');
+      if (banner) banner.style.display = 'block';
+      return;
+    }
+
+    // tikzjax was conditionally loaded in wiki.html
+    // Listen for our custom event dispatched when its <script> fires 'load'
+    document.addEventListener('tikzjax-script-loaded', () => {
+      tikzjaxReady = true;
+      // Process any elements that were added before tikzjax was ready
+      tikzPendingEls.forEach(el => insertTikzScript(el));
+      tikzPendingEls.length = 0;
+    }, { once: true });
+
+    // Fallback: if tikzjax-load-finished fires (after initial render), mark ready
+    document.addEventListener('tikzjax-load-finished', () => {
+      tikzjaxReady = true;
+    }, { once: true });
+  }
+
+  /**
+   * Insert a tikz script element into the document so tikzjax's MutationObserver
+   * processes it. Replaces the placeholder <span> that sits in its place.
+   */
+  function insertTikzScript(placeholder) {
+    const script = document.createElement('script');
+    script.type = 'text/tikz';
+    script.textContent = placeholder.dataset.tikzSrc;
+    placeholder.replaceWith(script);
+  }
+
+  /**
+   * Schedule TikZ elements for rendering. If tikzjax is ready, insert immediately;
+   * otherwise queue them (setupTikzjax will flush when ready).
+   */
+  function scheduleTikz(placeholders) {
+    if (placeholders.length === 0) return;
+
+    if (!window.crossOriginIsolated) {
+      // Replace placeholders with a friendly "no COI" message
+      placeholders.forEach(ph => {
+        const msg = document.createElement('div');
+        msg.className = 'tikz-nocoi';
+        msg.innerHTML =
+          '⚠️ TikZ diagram — rendering unavailable ' +
+          '(Cross-Origin Isolation not active). ' +
+          '<a href="javascript:location.reload()" style="color:inherit;font-weight:600">Obnovit stránku</a>.';
+        ph.replaceWith(msg);
+      });
+      return;
+    }
+
+    if (tikzjaxReady) {
+      placeholders.forEach(insertTikzScript);
+    } else {
+      tikzPendingEls.push(...placeholders);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════
    *  Full markdown render pipeline
    * ═══════════════════════════════════════════════════════ */
 
@@ -388,12 +459,14 @@
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
 
-    // Convert ```tikz code blocks → <script type="text/tikz"> for tikzjax
+    // Convert ```tikz blocks → placeholder <span>s (actual script elements
+    // are inserted by scheduleTikz() to control timing relative to tikzjax)
     wrapper.querySelectorAll('pre > code.language-tikz').forEach(code => {
-      const script = document.createElement('script');
-      script.type = 'text/tikz';
-      script.textContent = code.textContent;
-      code.closest('pre').replaceWith(script);
+      const ph = document.createElement('span');
+      ph.className = 'tikz-loading';
+      ph.textContent = '⏳ TikZ — renderuji diagram…';
+      ph.dataset.tikzSrc = code.textContent;
+      code.closest('pre').replaceWith(ph);
     });
 
     return wrapper;
@@ -438,10 +511,15 @@
       if (!window.katex) await waitFor(() => window.katex, 5000);
 
       const rendered = renderMarkdown(text);
+
+      // Grab tikz placeholders BEFORE appending (so we have refs to them)
+      const tikzPlaceholders = [...rendered.querySelectorAll('.tikz-loading')];
+
       els.docBody.className = '';
       els.docBody.innerHTML = '';
       els.docBody.appendChild(rendered);
 
+      // KaTeX fallback for any math that slipped through
       if (window.renderMathInElement) {
         renderMathInElement(els.docBody, {
           delimiters: [
@@ -453,6 +531,9 @@
           throwOnError: false,
         });
       }
+
+      // Schedule TikZ rendering (waits for tikzjax if not ready yet)
+      scheduleTikz(tikzPlaceholders);
 
       updateHash(key);
     } catch (err) {
@@ -572,6 +653,7 @@
    * ═══════════════════════════════════════════════════════ */
 
   async function init() {
+    setupTikzjax();
     renderSidebar();
 
     const fromHash = getKeyFromHash();

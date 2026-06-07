@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EK Wiki – SZZ</title>
 
-  <!-- Cross-Origin Isolation (required by tikzjax WebAssembly/pthreads).
-       Registers a service worker that injects COOP + COEP headers.
-       First visit causes a single transparent reload; subsequent visits are instant. -->
+  <!-- COI service worker: injects COOP+COEP headers so SharedArrayBuffer
+       (needed by tikzjax WebAssembly) works on GitHub Pages.
+       First visit → single silent reload. Subsequent visits instant. -->
   <script src="coi-serviceworker.js"></script>
 
   <!-- KaTeX -->
@@ -18,8 +18,20 @@
   <!-- marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 
-  <!-- tikzjax — processes <script type="text/tikz"> via MutationObserver (needs COI above) -->
-  <script defer src="https://tikzjax.com/v1/tikzjax.js"></script>
+  <!-- tikzjax — load ONLY when page is cross-origin isolated (COI).
+       Without COI, SharedArrayBuffer is undefined and tikzjax silently fails. -->
+  <script>
+    if (window.crossOriginIsolated) {
+      const s = document.createElement('script');
+      s.src = 'https://tikzjax.com/v1/tikzjax.js';
+      s.defer = true;
+      // After tikzjax finishes its initial scan, signal wiki.js
+      s.addEventListener('load', () => {
+        document.dispatchEvent(new CustomEvent('tikzjax-script-loaded'));
+      });
+      document.head.appendChild(s);
+    }
+  </script>
 
   <style>
     :root{--bg1:#0f172a;--bg2:#1e293b;--line:#dbe3ef;--accent:#2563eb;--text:#0f172a;--muted:#475569}
@@ -113,12 +125,20 @@
     #docBody th{background:#f8fafc;font-weight:600}
     #docBody .katex-display{margin:.8em 0;overflow-x:auto}
     #docBody svg[data-tikzjax]{display:block;max-width:100%;margin:1em auto}
-    /* TikZ pending placeholder */
-    #docBody script[type="text/tikz"]{display:block;background:#f8fafc;
-      border:1px dashed #e2e8f0;border-radius:8px;padding:12px;margin:1em 0;
-      color:#94a3b8;font-family:monospace;font-size:12px;white-space:pre;overflow-x:auto}
-    #docBody script[type="text/tikz"]::before{content:"⏳ TikZ — načítám…";
-      display:block;font-family:inherit;color:#64748b;margin-bottom:6px}
+    /* TikZ: while tikzjax is processing, script elements are briefly visible */
+    #docBody script[type="text/tikz"]{display:none} /* hide raw source — tikzjax replaces with SVG */
+
+    /* COI warning banner */
+    #coiBanner{display:none;background:#fff3cd;color:#856404;border:1px solid #ffc107;
+               border-radius:10px;padding:10px 16px;font-size:13px;margin-bottom:16px;line-height:1.5}
+    #coiBanner a{color:#856404;font-weight:600}
+
+    /* TikZ placeholder shown by wiki.js before tikzjax renders */
+    .tikz-loading{background:#f8fafc;border:1px dashed #e2e8f0;border-radius:8px;
+                  padding:12px 16px;margin:1em 0;color:#94a3b8;font-size:13px}
+    .tikz-nocoi{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;
+                padding:10px 14px;margin:1em 0;font-size:13px;color:#856404}
+    .tikz-nocoi code{background:rgba(0,0,0,.06);padding:1px 4px;border-radius:3px;font-size:.9em}
     #docBody hr{border:none;border-top:1px solid #e2e8f0;margin:1.5em 0}
     #docBody strong{font-weight:700}
     #docBody em{font-style:italic;color:#374151}
@@ -143,6 +163,12 @@
       </aside>
 
       <main class="content">
+        <div id="coiBanner">
+          ⚠️ <strong>TikZ diagramy</strong> vyžadují <em>Cross-Origin Isolation</em>.
+          Stránka se automaticky znovu načte přes servisního workera —
+          pokud se tak nestalo, zkuste <a href="javascript:location.reload()">obnovit (F5)</a>.
+          Pokud problém přetrvává, zkontrolujte konzoli prohlížeče.
+        </div>
         <h2 id="docTitle">Načítání…</h2>
         <p id="docMeta"></p>
         <div id="docBody" class="status">Vyberte téma vlevo.</div>
