@@ -1,0 +1,196 @@
+{
+  "main": {
+    "id": "0e4de749370fad0e",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b551bba082c5deb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "60528f00d8b92b87",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8643a5ce50588424",
+    "type": "split",
+    "children": [
+      {
+        "id": "e940408538e4f42b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1821770a12bd243a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "6989dd25f4bb6931",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "40af846f00ea1389",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "88a790a128cf0175",
+    "type": "split",
+    "children": [
+      {
+        "id": "ed47bed56dd949da",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "072239be8ab0f254",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy"
+            }
+          },
+          {
+            "id": "89ab8757ea67c4e9",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy"
+            }
+          },
+          {
+            "id": "b91e2d8f809b9cae",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "5a9ef2885162a790",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "10be6a903c1cc2e4",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "60528f00d8b92b87",
+  "lastOpenFiles": [
+    "wiki.js.tmp.19656.9b3bf63d9b49",
+    "wiki.js.tmp.19656.ea3dd5f4ff75",
+    "coi-serviceworker.js.tmp.19656.9b3787d09ccd",
+    "wiki.html.tmp.19656.a52a9f75f53e",
+    "coi-serviceworker.js",
+    "wiki.js.tmp.19656.942ae5b2305f",
+    "SZZ/SAS/19 Signaly casova spektralni reprezentace vzorkovani nahodne procesy.md"
+  ]
+}

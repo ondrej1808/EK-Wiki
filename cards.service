@@ -1,0 +1,13 @@
+[Unit]
+Description=Cards Study App
+After=network.target
+
+[Service]
+User=greg
+WorkingDirectory=/home/greg/WEB_CARDS
+ExecStart=/usr/bin/authbind --deep /home/greg/WEB_CARDS/.venv/bin/uvicorn server:app --host 0.0.0.0 --port 80
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
