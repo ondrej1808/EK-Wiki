@@ -4,45 +4,141 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EK Wiki – SZZ</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+          onload="window._katexReady=true"></script>
+
+  <!-- marked.js (markdown) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
+
+  <!-- tikzjax (TikZ → SVG via WebAssembly) — MutationObserver auto-processes script[type="text/tikz"] -->
+  <script defer src="https://tikzjax.com/v1/tikzjax.js"></script>
+
   <style>
-    :root{--bg:#0b1220;--panel:#111b2e;--card:#fff;--text:#0f172a;--muted:#475569;--line:#dbe3ef;--accent:#2563eb}
+    :root{--bg1:#0f172a;--bg2:#1e293b;--line:#dbe3ef;--accent:#2563eb;--text:#0f172a;--muted:#475569}
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+         background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
+
     .shell{min-height:100vh;padding:20px}
-    .layout{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:16px}
-    .panel,.content{background:rgba(255,255,255,.97);border-radius:16px;box-shadow:0 12px 40px rgba(2,6,23,.3)}
-    .panel{padding:14px;position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column}
-    h1{margin:0 0 6px;font-size:20px;color:var(--text)}
-    .sub{margin:0 0 12px;font-size:13px;color:var(--muted)}
-    .back{display:inline-block;margin-bottom:12px;color:#1d4ed8;text-decoration:none;font-weight:600}
-    #topicFilter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
-    #topicList{overflow:auto;padding-right:4px}
-    .topic-btn{width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#0f172a;cursor:pointer;margin-bottom:8px}
-    .topic-btn small{display:block;color:#64748b;margin-top:4px}
+    .layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:310px 1fr;gap:16px}
+
+    /* ── Sidebar ── */
+    .panel{background:rgba(255,255,255,.97);border-radius:16px;
+           box-shadow:0 12px 40px rgba(2,6,23,.3);padding:14px;
+           position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column}
+    .panel h1{margin:0 0 4px;font-size:19px;color:var(--text)}
+    .panel .sub{margin:0 0 10px;font-size:12px;color:var(--muted)}
+    .back{display:inline-block;margin-bottom:10px;color:#1d4ed8;text-decoration:none;font-weight:600;font-size:13px}
+    #topicFilter{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;font-size:13px}
+    #topicList{overflow:auto;padding-right:2px;flex:1}
+
+    /* Section headers */
+    .section-hdr{display:flex;align-items:center;justify-content:space-between;
+                 padding:6px 8px;margin:6px 0 4px;cursor:pointer;border-radius:8px;
+                 font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+                 color:#64748b;background:#f8fafc;user-select:none}
+    .section-hdr:hover{background:#f1f5f9}
+    .section-hdr .arrow{transition:transform .2s}
+    .section-hdr.collapsed .arrow{transform:rotate(-90deg)}
+
+    /* Subject groups */
+    .subject-group{margin-bottom:4px}
+    .subject-hdr{display:flex;align-items:center;gap:6px;width:100%;text-align:left;
+                 padding:7px 10px;border:none;background:none;cursor:pointer;
+                 font-size:12px;font-weight:600;color:#374151;border-radius:8px}
+    .subject-hdr:hover{background:#f1f5f9}
+    .subject-hdr .badge{font-size:10px;color:#94a3b8;margin-left:auto}
+    .subject-hdr .arr{font-size:10px;color:#94a3b8;transition:transform .15s}
+    .subject-hdr.open .arr{transform:rotate(90deg)}
+    .subject-notes{padding-left:10px;display:none}
+    .subject-notes.open{display:block}
+
+    /* Topic buttons */
+    .topic-btn{width:100%;text-align:left;padding:7px 10px;border:1px solid var(--line);
+               border-radius:8px;background:#fff;color:var(--text);cursor:pointer;margin-bottom:5px;
+               font-size:12px;line-height:1.3}
+    .topic-btn small{display:block;color:#64748b;margin-top:2px;font-size:11px}
     .topic-btn.active{border-color:#93c5fd;background:#eff6ff}
-    .content{padding:20px;min-height:calc(100vh - 40px)}
-    #docTitle{margin:0 0 8px;color:var(--text)}
-    #docMeta{margin:0 0 14px;color:#64748b;font-size:13px}
-    #docBody{margin:0;white-space:pre-wrap;line-height:1.5;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;background:#f8fafc;border:1px solid #e2e8f0;padding:14px;border-radius:12px;min-height:280px}
-    .status{color:#64748b;font-style:italic}
-    @media (max-width: 980px){.layout{grid-template-columns:1fr}.panel{position:static;height:auto}.content{min-height:unset}}
+    .topic-btn:hover:not(.active){background:#f8fafc}
+
+    /* ── Content pane ── */
+    .content{background:rgba(255,255,255,.97);border-radius:16px;
+             box-shadow:0 12px 40px rgba(2,6,23,.3);padding:28px 32px;
+             min-height:calc(100vh - 40px)}
+    #docTitle{margin:0 0 6px;color:var(--text);font-size:22px}
+    #docMeta{margin:0 0 20px;color:#64748b;font-size:12px}
+
+    /* ── Rendered markdown styles ── */
+    #docBody{color:var(--text);line-height:1.7;font-size:15px}
+    #docBody.status{color:#64748b;font-style:italic;padding:20px 0}
+
+    #docBody h1,#docBody h2,#docBody h3,#docBody h4{margin:1.4em 0 .5em;color:#0f172a;line-height:1.3}
+    #docBody h1{font-size:1.6em;border-bottom:2px solid #e2e8f0;padding-bottom:.3em}
+    #docBody h2{font-size:1.25em;border-bottom:1px solid #e2e8f0;padding-bottom:.2em}
+    #docBody h3{font-size:1.05em}
+    #docBody h4{font-size:.95em;color:#374151}
+    #docBody p{margin:.6em 0}
+    #docBody ul,#docBody ol{margin:.5em 0;padding-left:1.6em}
+    #docBody li{margin:.25em 0}
+    #docBody li>ul,#docBody li>ol{margin:.1em 0}
+
+    /* blockquote (Obsidian callouts map here) */
+    #docBody blockquote{margin:.8em 0;padding:.5em 1em;
+                        border-left:3px solid #93c5fd;background:#eff6ff;
+                        border-radius:0 8px 8px 0;color:#1e40af}
+    #docBody blockquote p{margin:0}
+
+    /* code */
+    #docBody code{background:#f1f5f9;padding:.1em .35em;border-radius:4px;
+                  font-size:.88em;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    #docBody pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;border-radius:10px;
+                 overflow-x:auto;margin:1em 0}
+    #docBody pre code{background:none;padding:0;color:inherit;font-size:.85em}
+
+    /* tables */
+    #docBody table{border-collapse:collapse;margin:1em 0;width:100%;font-size:.9em}
+    #docBody th,#docBody td{border:1px solid #e2e8f0;padding:6px 12px;text-align:left}
+    #docBody th{background:#f8fafc;font-weight:600}
+
+    /* KaTeX display math */
+    #docBody .katex-display{margin:.8em 0;overflow-x:auto}
+
+    /* TikZ SVG output */
+    #docBody svg[data-tikzjax]{display:block;max-width:100%;margin:1em auto}
+
+    /* hr */
+    #docBody hr{border:none;border-top:1px solid #e2e8f0;margin:1.5em 0}
+
+    /* strong/em */
+    #docBody strong{font-weight:700}
+    #docBody em{font-style:italic;color:#374151}
+
+    @media (max-width:980px){
+      .layout{grid-template-columns:1fr}
+      .panel{position:static;height:auto}
+      .content{min-height:unset;padding:18px}
+    }
   </style>
 </head>
 <body>
   <div class="shell">
     <div class="layout">
       <aside class="panel">
-        <a class="back" href="index.html">← Zpět na rozcestník</a>
+        <a class="back" href="index.html">← Rozcestník</a>
         <h1>SZZ Wiki</h1>
-        <p class="sub">Wiki běží čistě ve statickém JS (GitHub Pages friendly).</p>
-        <input id="topicFilter" type="search" placeholder="Filtrovat témata..." autocomplete="off" />
+        <p class="sub">Statická wiki — GitHub Pages friendly.</p>
+        <input id="topicFilter" type="search" placeholder="Hledat…" autocomplete="off" />
         <div id="topicList" aria-label="Seznam témat"></div>
       </aside>
 
       <main class="content">
-        <h2 id="docTitle">Načítání témat…</h2>
+        <h2 id="docTitle">Načítání…</h2>
         <p id="docMeta"></p>
-        <pre id="docBody" class="status">Načítám index témat…</pre>
+        <div id="docBody" class="status">Načítám index témat…</div>
       </main>
     </div>
   </div>
