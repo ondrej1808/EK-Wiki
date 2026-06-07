@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EK Wiki – SZZ</title>
+  <style>
+    :root{--bg:#0b1220;--panel:#111b2e;--card:#fff;--text:#0f172a;--muted:#475569;--line:#dbe3ef;--accent:#2563eb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
+    .shell{min-height:100vh;padding:20px}
+    .layout{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:16px}
+    .panel,.content{background:rgba(255,255,255,.97);border-radius:16px;box-shadow:0 12px 40px rgba(2,6,23,.3)}
+    .panel{padding:14px;position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column}
+    h1{margin:0 0 6px;font-size:20px;color:var(--text)}
+    .sub{margin:0 0 12px;font-size:13px;color:var(--muted)}
+    .back{display:inline-block;margin-bottom:12px;color:#1d4ed8;text-decoration:none;font-weight:600}
+    #topicFilter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+    #topicList{overflow:auto;padding-right:4px}
+    .topic-btn{width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#0f172a;cursor:pointer;margin-bottom:8px}
+    .topic-btn small{display:block;color:#64748b;margin-top:4px}
+    .topic-btn.active{border-color:#93c5fd;background:#eff6ff}
+    .content{padding:20px;min-height:calc(100vh - 40px)}
+    #docTitle{margin:0 0 8px;color:var(--text)}
+    #docMeta{margin:0 0 14px;color:#64748b;font-size:13px}
+    #docBody{margin:0;white-space:pre-wrap;line-height:1.5;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;background:#f8fafc;border:1px solid #e2e8f0;padding:14px;border-radius:12px;min-height:280px}
+    .status{color:#64748b;font-style:italic}
+    @media (max-width: 980px){.layout{grid-template-columns:1fr}.panel{position:static;height:auto}.content{min-height:unset}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="layout">
+      <aside class="panel">
+        <a class="back" href="index.html">← Zpět na rozcestník</a>
+        <h1>SZZ Wiki</h1>
+        <p class="sub">Wiki běží čistě ve statickém JS (GitHub Pages friendly).</p>
+        <input id="topicFilter" type="search" placeholder="Filtrovat témata..." autocomplete="off" />
+        <div id="topicList" aria-label="Seznam témat"></div>
+      </aside>
+
+      <main class="content">
+        <h2 id="docTitle">Načítání témat…</h2>
+        <p id="docMeta"></p>
+        <pre id="docBody" class="status">Načítám index témat…</pre>
+      </main>
+    </div>
+  </div>
+
+  <script src="wiki.js"></script>
+</body>
+</html>
