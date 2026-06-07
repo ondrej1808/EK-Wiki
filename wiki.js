@@ -678,5 +678,42 @@
     if (r) openResource(key, r.label, r.src, r.type);
   });
 
+  /* ── Mobile master-detail navigation ── */
+  const layout   = document.getElementById('wikiLayout');
+  const mobileBack = document.getElementById('mobileBack');
+
+  function isMobile() { return window.innerWidth <= 900; }
+
+  function showContent() {
+    if (isMobile()) layout.classList.add('content-active');
+  }
+  function showSidebar() {
+    layout.classList.remove('content-active');
+  }
+
+  mobileBack.addEventListener('click', showSidebar);
+  // Also scroll content pane to top when a new resource is opened
+  const contentEl = document.querySelector('.content');
+  const origOpen  = openResource;
+  // Wrap openResource to add mobile nav
+  const _openResource = openResource;
+  // Monkey-patch: after any openResource call, activate content view on mobile
+  // (We hook via the existing renderSidebar call inside openResource instead)
+  // Simpler: patch the topic buttons to also call showContent
+  const _renderSidebar = renderSidebar;
+
   void init();
+
+  // After init, patch all topic buttons to trigger mobile nav
+  // (topic buttons are re-created on each renderSidebar, so we intercept at the layout level)
+  layout.addEventListener('click', e => {
+    const btn = e.target.closest('.topic-btn');
+    if (btn && isMobile()) {
+      // Small delay so the active state renders before the slide
+      setTimeout(() => {
+        showContent();
+        contentEl.scrollTop = 0;
+      }, 50);
+    }
+  });
 })();

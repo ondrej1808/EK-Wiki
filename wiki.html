@@ -131,17 +131,80 @@
     #docBody strong{font-weight:700}
     #docBody em{font-style:italic;color:#374151}
 
-    @media(max-width:980px){
-      .layout{grid-template-columns:1fr}
-      .panel{position:static;height:auto}
-      .content{min-height:unset;padding:18px}
-      .pdf-frame{min-height:70vh}
+    /* ── Mobile back button (content → sidebar) ── */
+    .mobile-back-btn{display:none}
+
+    @media(max-width:900px){
+      /* Full-screen shell, no padding */
+      body{background:#f1f5f9}
+      .shell{padding:0;min-height:100dvh}
+      .layout{
+        max-width:100%;
+        grid-template-columns:1fr;
+        gap:0;
+        /* Two virtual "pages" side by side, slide via transform */
+        display:block;
+        position:relative;
+        overflow:hidden;
+      }
+
+      /* Sidebar: full screen, scrollable */
+      .panel{
+        position:fixed;inset:0;
+        height:100dvh;
+        border-radius:0;
+        overflow-y:auto;
+        transform:translateX(0);
+        transition:transform .3s ease;
+        z-index:10;
+        box-shadow:none;
+        padding:16px 14px 24px;
+      }
+
+      /* Content: full screen, hidden to the right initially */
+      .content{
+        position:fixed;inset:0;
+        height:100dvh;
+        border-radius:0;
+        overflow-y:auto;
+        transform:translateX(100%);
+        transition:transform .3s ease;
+        z-index:10;
+        box-shadow:none;
+        padding:16px 16px 32px;
+        min-height:unset;
+        -webkit-overflow-scrolling:touch;
+      }
+
+      /* Active state: slide content in, slide sidebar out */
+      .layout.content-active .panel{transform:translateX(-100%)}
+      .layout.content-active .content{transform:translateX(0)}
+
+      /* Back button — visible only on mobile when content is active */
+      .mobile-back-btn{
+        display:none; /* shown by JS when content-active */
+        align-items:center;gap:6px;
+        padding:8px 12px 8px 8px;
+        border:none;background:#f1f5f9;
+        color:#1d4ed8;font-size:13px;font-weight:600;
+        border-radius:10px;cursor:pointer;
+        margin-bottom:12px;
+        -webkit-tap-highlight-color:transparent;
+      }
+      .layout.content-active .mobile-back-btn{display:inline-flex}
+
+      /* PDF iframe height on mobile */
+      .pdf-frame{min-height:80dvh}
+
+      /* Slightly smaller text on mobile */
+      #docBody{font-size:14px}
+      #docTitle{font-size:18px}
     }
   </style>
 </head>
 <body>
   <div class="shell">
-    <div class="layout">
+    <div class="layout" id="wikiLayout">
       <aside class="panel">
         <a class="back" href="index.html">← Rozcestník</a>
         <h1>SZZ Wiki</h1>
@@ -157,6 +220,7 @@
           pokud se tak nestalo, zkuste <a href="javascript:location.reload()">obnovit (F5)</a>.
           Pokud problém přetrvává, zkontrolujte konzoli prohlížeče.
         </div>
+        <button class="mobile-back-btn" id="mobileBack">← Témata</button>
         <h2 id="docTitle">Načítání…</h2>
         <p id="docMeta"></p>
         <div id="docBody" class="status">Vyberte téma vlevo.</div>
