@@ -144,6 +144,8 @@
         {
           code: 'B2B31ZEOA', title: 'Základy elektrických obvodů',
           resources: [
+            { type: 'note', label: '01 – Kirchhoff, Thévenin/Norton, MUN, MSP + řešený příklad', src: SZZ + 'ZEOA/01 Zakladni zakony Kirchhoff Thevenin Norton metody analyzy.md' },
+            { type: 'note', label: '02 – HUS, kmitočtové char., rezonance, přechodné děje, dvojbrany', src: SZZ + 'ZEOA/02 HUS fazory kmitoctove charakteristiky rezonance prechodne deje.md' },
             { type: 'pdf', label: 'SZZ ZEOA (ek-drive)', src: EK  + 'ZEOA/SZZ___ZEOA.pdf' },
             { type: 'sum', label: 'HEX – shrnutí okruhů', src: AQ + 'B2B31ZEOA.md' },
             { type: 'sum', label: 'Otázka 1 (detail)',    src: AM + 'B2B31ZEOA-01.md' },
@@ -192,6 +194,7 @@
         {
           code: 'B2B34ELPA', title: 'Elektronické prvky',
           resources: [
+            { type: 'note', label: '12 – MOSFET, BJT zesilovač + pracovní bod, usměrňovač, optoelektronika', src: SZZ + 'ELPA/12 Aktivni prvky MOSFET BJT zesilovac usmernovac optoelektronika.md' },
             { type: 'pdf', label: 'elp1 (ek-drive)',       src: EK  + 'ELPA/elp1.pdf' },
             { type: 'pdf', label: 'elp2 (ek-drive)',       src: EK  + 'ELPA/elp2.pdf' },
             { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B34ELPA.md' },
