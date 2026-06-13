@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bayerova maska a demozaika — AVT</title>
+<link rel="stylesheet" href="sim-kit.css">
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Bayerova maska · snímání barev</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    document.getElementById('formula').textContent = 'RGGB · 50 % zelené (oko je nejcitlivější ~555 nm)';
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let N = 12;            // grid size (even)
+    let stage = 'all';     // 'scene' | 'mosaic' | 'demo' | 'all'
+
+    // procedural "scene": smooth colour field (so demosaic artefacts are visible)
+    function scene(i, j) {
+      const u = i / N, v = j / N;
+      const r = 0.5 + 0.5 * Math.sin(6 * u + 1);
+      const g = 0.5 + 0.5 * Math.sin(5 * v + 2);
+      const b = 0.5 + 0.5 * Math.cos(4 * (u + v));
+      return [r, g, b];
+    }
+    // Bayer pattern at (i row, j col): RGGB 2×2 → (0,0)=R (0,1)=G (1,0)=G (1,1)=B
+    function chan(i, j) { const e = (i % 2) * 2 + (j % 2); return e === 0 ? 0 : e === 3 ? 2 : 1; }
+
+    // raw mosaic: only the filtered channel is captured
+    function raw(i, j) { const c = chan(i, j); const px = scene(i, j); const o = [0, 0, 0]; o[c] = px[c]; return o; }
+
+    // bilinear demosaic: average available neighbours per channel
+    function demosaic(i, j) {
+      const out = [0, 0, 0];
+      for (let c = 0; c < 3; c++) {
+        let sum = 0, cnt = 0;
+        for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+          const ii = i + di, jj = j + dj;
+          if (ii < 0 || jj < 0 || ii >= N || jj >= N) continue;
+          if (chan(ii, jj) === c) { sum += scene(ii, jj)[c]; cnt++; }
+        }
+        out[c] = cnt ? sum / cnt : 0;
+      }
+      return out;
+    }
+
+    const rgb = (a) => `rgb(${a.map(x => Math.round(SK.clamp(x, 0, 1) * 255)).join(',')})`;
+    const view = SK.mount(canvas, draw);
+
+    function panel(ctx, ox, oy, side, fn, title, t, mosaicTint) {
+      const cell = side / N;
+      for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+        ctx.fillStyle = rgb(fn(i, j));
+        ctx.fillRect(ox + j * cell, oy + i * cell, Math.ceil(cell), Math.ceil(cell));
+      }
+      if (mosaicTint) { // overlay faint grid showing the CFA colour of each pixel
+        for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+          const c = chan(i, j); const col = c === 0 ? '#f00' : c === 2 ? '#00f' : '#0a0';
+          ctx.strokeStyle = col; ctx.globalAlpha = 0.5; ctx.lineWidth = 1;
+          ctx.strokeRect(ox + j * cell + 0.5, oy + i * cell + 0.5, cell - 1, cell - 1); ctx.globalAlpha = 1;
+        }
+      }
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.strokeRect(ox, oy, side, side);
+      SK.label(ctx, title, ox + side / 2, oy + side + 16, { color: t.fg, align: 'center', font: '12px system-ui' });
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const panels = stage === 'all'
+        ? [['scene', scene, 'Scéna (RGB)'], ['mosaic', raw, 'Bayer RAW (mozaika)'], ['demo', demosaic, 'Demozaika']]
+        : [[stage, stage === 'scene' ? scene : stage === 'mosaic' ? raw : demosaic,
+            stage === 'scene' ? 'Scéna (RGB)' : stage === 'mosaic' ? 'Bayer RAW (mozaika)' : 'Demozaika (rekonstrukce)']];
+      const m = panels.length;
+      const side = Math.min((w - 24 * (m + 1)) / m, h - 60);
+      const gap = (w - m * side) / (m + 1);
+      const oy = (h - side - 24) / 2;
+      panels.forEach((p, k) => panel(ctx, gap + k * (side + gap), oy, side, p[1], p[2], t, p[0] === 'mosaic'));
+
+      ro.innerHTML = `<b>Bayerova maska RGGB</b> · mřížka ${N}×${N}<br>` +
+        `Každý pixel snímá jen 1 barvu (filtr). Poměr R:G:B = 1:2:1 → <b>50 % zelené</b>.<br>` +
+        `Chybějící 2 složky dopočítá <b>demozaika</b> (interpolace ze sousedů). ` +
+        `Více zelené kopíruje citlivost oka (max ~555 nm) → ostrost a jas.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.tabs({ options: [{ label: 'Vše', value: 'all' }, { label: 'Scéna', value: 'scene' }, { label: 'RAW mozaika', value: 'mosaic' }, { label: 'Demozaika', value: 'demo' }],
+        value: 'all', onchange: (v) => { stage = v; view.redraw(); } }),
+      SK.slider({ label: 'Rozlišení', min: 6, max: 32, step: 2, value: 12, unit: 'px', fmt: (v) => (v | 0) + '×' + (v | 0), oninput: (v) => { N = (v | 0); view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Křemíkový snímač (CCD/CMOS) měří jen intenzitu fotonů, ne vlnovou délku. Proto se nad pixely klade ' +
+      'mozaika barevných filtrů — Bayerova maska RGGB s dvojnásobkem zelených (oko je na zelenou nejcitlivější). ' +
+      'RAW snímek má v každém pixelu jen jednu složku; plný barevný obraz se dopočítá demozaikou (de-bayering). ' +
+      'U hrubého rozlišení jsou na hranách vidět interpolační artefakty.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

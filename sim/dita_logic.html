@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logická hradla a multiplexor — DITA</title>
+<link rel="stylesheet" href="sim-kit.css">
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Logické funkce · hradla a multiplexor</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula');
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let mode = 'gate';     // 'gate' | 'mux'
+    let gate = 'AND';
+    let A = 0, B = 0;                 // gate inputs
+    let muxSel = 0, muxIn = [1, 0, 1, 0];   // 4:1 mux
+
+    const GATES = {
+      AND:  { f: (a, b) => a & b,        sym: 'Y = A·B',        tex: 'Y=A\\cdot B' },
+      OR:   { f: (a, b) => a | b,        sym: 'Y = A+B',        tex: 'Y=A+B' },
+      XOR:  { f: (a, b) => a ^ b,        sym: 'Y = A⊕B',        tex: 'Y=A\\oplus B' },
+      NAND: { f: (a, b) => 1 - (a & b),  sym: 'Y = (A·B)′',     tex: "Y=\\overline{A\\cdot B}" },
+      NOR:  { f: (a, b) => 1 - (a | b),  sym: 'Y = (A+B)′',     tex: "Y=\\overline{A+B}" },
+      XNOR: { f: (a, b) => 1 - (a ^ b),  sym: 'Y = (A⊕B)′',     tex: "Y=\\overline{A\\oplus B}" },
+    };
+
+    function setFormula() {
+      if (window.katex) { try { katex.render(mode === 'gate' ? GATES[gate].tex : 'Y = D_{(S_1 S_0)}', fEl, { throwOnError: false }); return; } catch (e) {} }
+      fEl.textContent = mode === 'gate' ? GATES[gate].sym : 'Y = D[S]';
+    }
+    setFormula();
+
+    const view = SK.mount(canvas, draw);
+
+    function pin(ctx, x, y, val, label, t, clickable) {
+      ctx.save();
+      ctx.fillStyle = val ? t.ok : t.muted;
+      ctx.beginPath(); ctx.arc(x, y, 13, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 13px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(val, x, y);
+      ctx.fillStyle = t.fg; ctx.font = '12px system-ui';
+      ctx.fillText(label, x, y - 22);
+      if (clickable) { ctx.strokeStyle = t.accent; ctx.lineWidth = 1; ctx.setLineDash([2, 2]); ctx.beginPath(); ctx.arc(x, y, 17, 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+      ctx.restore();
+    }
+
+    function wire(ctx, x0, y0, x1, y1, on, t) {
+      ctx.save(); ctx.strokeStyle = on ? t.ok : t.axis; ctx.lineWidth = on ? 3 : 2;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore();
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      if (mode === 'gate') drawGate(ctx, w, h, t); else drawMux(ctx, w, h, t);
+    }
+
+    function drawGate(ctx, w, h, t) {
+      const cx = w * 0.5, cy = h * 0.42, Y = GATES[gate].f(A, B);
+      const ax = w * 0.16, bx = w * 0.16;
+      pin(ctx, ax, cy - 34, A, 'A', t, true);
+      pin(ctx, bx, cy + 34, B, 'B', t, true);
+      wire(ctx, ax + 13, cy - 34, cx - 46, cy - 34, A, t);
+      wire(ctx, bx + 13, cy + 34, cx - 46, cy + 34, B, t);
+      // gate body (simple block with name)
+      ctx.save();
+      ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.15; ctx.strokeStyle = t.accent2; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx - 46, cy - 50); ctx.lineTo(cx + 20, cy - 50); ctx.lineTo(cx + 20, cy + 50); ctx.lineTo(cx - 46, cy + 50); ctx.closePath();
+      ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+      ctx.fillStyle = t.fg; ctx.font = 'bold 16px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(gate, cx - 13, cy);
+      ctx.restore();
+      const inv = (gate[0] === 'N' || gate === 'XNOR');
+      if (inv) { SK.dot(ctx, cx + 26, cy, 5, t.accent2); }
+      wire(ctx, cx + (inv ? 32 : 20), cy, w * 0.82 - 13, cy, Y, t);
+      pin(ctx, w * 0.82, cy, Y, 'Y', t, false);
+
+      // truth table
+      const tx = w * 0.30, ty = h * 0.72;
+      ctx.save(); ctx.font = '13px system-ui'; ctx.fillStyle = t.fg; ctx.textAlign = 'center';
+      ctx.fillText('A', tx, ty); ctx.fillText('B', tx + 40, ty); ctx.fillText('Y', tx + 90, ty);
+      const rows = [[0, 0], [0, 1], [1, 0], [1, 1]];
+      rows.forEach((r, i) => { const yy = ty + 22 + i * 20; const yv = GATES[gate].f(r[0], r[1]);
+        const cur = (r[0] === A && r[1] === B);
+        if (cur) { ctx.fillStyle = t.accent; ctx.globalAlpha = 0.15; ctx.fillRect(tx - 18, yy - 14, 126, 19); ctx.globalAlpha = 1; }
+        ctx.fillStyle = t.fg; ctx.fillText(r[0], tx, yy); ctx.fillText(r[1], tx + 40, yy);
+        ctx.fillStyle = yv ? t.ok : t.muted; ctx.fillText(yv, tx + 90, yy); });
+      ctx.restore();
+
+      ro.innerHTML = `<b>${gate}</b> · ${GATES[gate].sym}<br>A=${A}, B=${B} → <b>Y=${Y}</b><br>Klikni na vstupy A/B (kolečka) pro přepnutí. Zvýrazněný řádek = aktuální stav.`;
+    }
+
+    function drawMux(ctx, w, h, t) {
+      const s1 = (muxSel >> 1) & 1, s0 = muxSel & 1, Y = muxIn[muxSel];
+      const bx = w * 0.14, by0 = h * 0.18, dy = h * 0.18;
+      // data inputs D0..D3
+      for (let i = 0; i < 4; i++) pin(ctx, bx, by0 + i * dy, muxIn[i], 'D' + i, t, true);
+      // trapezoid mux body
+      const mx = w * 0.5, my = h * 0.45, mw = 60, mh = h * 0.62;
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.15; ctx.strokeStyle = t.accent2; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(mx - mw, my - mh / 2); ctx.lineTo(mx + mw, my - mh / 2 + 26);
+      ctx.lineTo(mx + mw, my + mh / 2 - 26); ctx.lineTo(mx - mw, my + mh / 2); ctx.closePath();
+      ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+      ctx.fillStyle = t.fg; ctx.font = 'bold 13px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('MUX 4:1', mx, my); ctx.restore();
+      // input wires (selected highlighted)
+      for (let i = 0; i < 4; i++) wire(ctx, bx + 13, by0 + i * dy, mx - mw, by0 + i * dy, i === muxSel && muxIn[i], t);
+      // output
+      wire(ctx, mx + mw, my, w * 0.84 - 13, my, Y, t);
+      pin(ctx, w * 0.84, my, Y, 'Y', t, false);
+      // select lines
+      SK.label(ctx, 'S₁S₀ = ' + s1 + s0 + ' (=' + muxSel + ')', mx, my + mh / 2 + 6, { color: t.accent, align: 'center', font: '12px system-ui' });
+
+      ro.innerHTML = `<b>Multiplexor 4:1</b> · adresa S₁S₀=${s1}${s0} (${muxSel})<br>` +
+        `vybírá vstup D${muxSel}=${muxIn[muxSel]} → <b>Y=${Y}</b><br>` +
+        `Klikni na D0–D3 pro změnu dat, adresu měň posuvníkem. Mux = n adresových bitů vybírá z 2ⁿ vstupů.`;
+    }
+
+    // clicks
+    canvas.addEventListener('pointerdown', (e) => {
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      if (mode === 'gate') {
+        const cy = h * 0.42, ax = w * 0.16;
+        if (Math.hypot(p.x - ax, p.y - (cy - 34)) < 18) { A ^= 1; view.redraw(); }
+        else if (Math.hypot(p.x - ax, p.y - (cy + 34)) < 18) { B ^= 1; view.redraw(); }
+      } else {
+        const bx = w * 0.14, by0 = h * 0.18, dy = h * 0.18;
+        for (let i = 0; i < 4; i++) if (Math.hypot(p.x - bx, p.y - (by0 + i * dy)) < 18) { muxIn[i] ^= 1; view.redraw(); }
+      }
+    });
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Hradlo', value: 'gate' }, { label: 'Multiplexor 4:1', value: 'mux' }],
+      value: 'gate', onchange: (v) => { mode = v; setFormula(); rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      if (mode === 'gate') {
+        holder.appendChild(SK.tabs({ options: Object.keys(GATES).map(g => ({ label: g, value: g })),
+          value: gate, onchange: (v) => { gate = v; setFormula(); view.redraw(); } }).el);
+      } else {
+        SK.controls(holder, [SK.slider({ label: 'Adresa S₁S₀', min: 0, max: 3, step: 1, value: muxSel, unit: '', fmt: (v) => { const x = v | 0; return ((x >> 1) & 1) + '' + (x & 1); }, oninput: (v) => { muxSel = v | 0; view.redraw(); } })]);
+      }
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Hradlo: klikni na vstupy A/B a sleduj výstup Y i zvýrazněný řádek pravdivostní tabulky. ' +
+      'NAND a NOR jsou úplné systémy — z každého lze sestavit libovolnou logickou funkci. ' +
+      'Multiplexor: n adresových (výběrových) bitů vybere jeden z 2ⁿ datových vstupů na výstup; je to základní ' +
+      'kombinační blok pro přepínání a realizaci logických funkcí.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

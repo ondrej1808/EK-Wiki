@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snellův zákon, totální odraz — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Snellův zákon · lom, odraz, totální odraz</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "n_1\\sin\\theta_1=n_2\\sin\\theta_2,\\quad \\theta_c=\\arcsin\\dfrac{n_2}{n_1},\\quad \\theta_B=\\arctan\\dfrac{n_2}{n_1}", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+    const DEG = Math.PI / 180;
+
+    let n1 = 1.50, n2 = 1.00, th1 = 30 * DEG;   // from upper (n1) into lower (n2)
+    let dragging = false;
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, Lr = Math.min(w, h) * 0.40;
+
+      // media tint
+      ctx.save();
+      ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.10; ctx.fillRect(0, 0, w, cy);
+      ctx.fillStyle = t.warn;    ctx.globalAlpha = 0.08; ctx.fillRect(0, cy, w, h - cy);
+      ctx.restore();
+      // interface + normal
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+      ctx.strokeStyle = t.muted; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.moveTo(cx, cy - Lr - 18); ctx.lineTo(cx, cy + Lr + 18); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'n₁ = ' + SK.fmt(n1, 2), 12, 18, { color: t.accent2, font: 'bold 13px system-ui' });
+      SK.label(ctx, 'n₂ = ' + SK.fmt(n2, 2), 12, h - 12, { color: t.warn, font: 'bold 13px system-ui' });
+      SK.label(ctx, 'kolmice', cx + 6, cy - Lr - 6, { color: t.muted, font: '11px system-ui' });
+
+      // incident ray (comes from upper-left to O)
+      const Pin = { x: cx - Lr * Math.sin(th1), y: cy - Lr * Math.cos(th1) };
+      SK.arrow(ctx, Pin.x, Pin.y, cx, cy, { color: t.accent, width: 2.6, head: 9 });
+      SK.label(ctx, 'dopadající', Pin.x, Pin.y - 6, { color: t.accent, font: '11px system-ui', align: 'center' });
+      // reflected ray (upper-right)
+      SK.arrow(ctx, cx, cy, cx + Lr * Math.sin(th1), cy - Lr * Math.cos(th1), { color: t.mag, width: 2, head: 8 });
+      SK.label(ctx, 'odražený', cx + Lr * Math.sin(th1), cy - Lr * Math.cos(th1) - 4, { color: t.mag, font: '11px system-ui', align: 'center' });
+
+      // refraction / TIR
+      const sinth2 = n1 / n2 * Math.sin(th1);
+      const tir = sinth2 > 1.0;
+      const thc = n1 > n2 ? Math.asin(n2 / n1) : null;
+      const thB = Math.atan(n2 / n1);
+      if (!tir) {
+        const th2 = Math.asin(SK.clamp(sinth2, -1, 1));
+        SK.arrow(ctx, cx, cy, cx + Lr * Math.sin(th2), cy + Lr * Math.cos(th2), { color: t.ok, width: 2.6, head: 9 });
+        SK.label(ctx, 'lomený', cx + Lr * Math.sin(th2), cy + Lr * Math.cos(th2) + 12, { color: t.ok, font: '11px system-ui', align: 'center' });
+        // angle arcs
+        drawAngle(ctx, cx, cy, -Math.PI / 2, -Math.PI / 2 + th1, 34, t.accent, 'θ₁');
+        drawAngle(ctx, cx, cy, Math.PI / 2, Math.PI / 2 - th2, 34, t.ok, 'θ₂');
+        ro.innerHTML = `<b>Lom</b> · θ₁=${SK.fmt(th1 / DEG, 1)}° → θ₂=<b>${SK.fmt(th2 / DEG, 1)}°</b><br>` +
+          `n₁sinθ₁ = ${SK.fmt(n1 * Math.sin(th1), 3)} = n₂sinθ₂<br>` +
+          (n1 > n2 ? `θ_c = ${SK.fmt(thc / DEG, 1)}° (kritický), ` : `(z řidšího do hustšího — bez totálního odrazu) `) +
+          `θ_B = ${SK.fmt(thB / DEG, 1)}° (Brewster)`;
+      } else {
+        drawAngle(ctx, cx, cy, -Math.PI / 2, -Math.PI / 2 + th1, 34, t.accent, 'θ₁');
+        SK.label(ctx, 'TOTÁLNÍ ODRAZ', cx, cy + Lr * 0.5, { color: t.pos, font: 'bold 14px system-ui', align: 'center' });
+        ro.innerHTML = `<b style="color:#dc2626">Totální odraz</b> · θ₁=${SK.fmt(th1 / DEG, 1)}° > θ_c=${SK.fmt(thc / DEG, 1)}°<br>` +
+          `n₁sinθ₁ = ${SK.fmt(n1 * Math.sin(th1), 3)} > n₂ → sinθ₂>1, vlna se 100 % odráží.<br>` +
+          `Využití: optická vlákna (vedení světla v jádře).`;
+      }
+      // Brewster marker on incidence scale (small note)
+      SK.label(ctx, 'táhni dopadající paprsek', cx, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawAngle(ctx, x, y, a0, a1, r, color, txt) {
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, r, a0, a1, a1 < a0); ctx.stroke();
+      const am = (a0 + a1) / 2; SK.label(ctx, txt, x + (r + 12) * Math.cos(am), y + (r + 12) * Math.sin(am), { color, font: '12px system-ui', align: 'center', baseline: 'middle' });
+      ctx.restore();
+    }
+
+    // drag incident ray in upper half
+    canvas.addEventListener('pointerdown', (e) => { dragging = true; canvas.setPointerCapture(e.pointerId); setTh(e); });
+    canvas.addEventListener('pointermove', (e) => { if (dragging) setTh(e); });
+    canvas.addEventListener('pointerup', () => dragging = false);
+    canvas.addEventListener('pointercancel', () => dragging = false);
+    function setTh(e) {
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      const vx = p.x - w / 2, vy = p.y - h / 2;
+      if (-vy <= 0) return;                       // only upper half
+      th1 = SK.clamp(Math.atan2(Math.abs(vx), -vy), 0, 89 * DEG);
+      sTh.set(th1 / DEG); view.redraw();
+    }
+
+    const sTh = SK.slider({ label: 'Úhel dopadu θ₁', min: 0, max: 89, step: 1, value: 30, unit: '°', fmt: (v) => v | 0, oninput: (v) => { th1 = v * DEG; view.redraw(); } });
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Index n₁ (horní)', min: 1, max: 2.5, step: 0.01, value: 1.50, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n1 = v; view.redraw(); } }),
+      SK.slider({ label: 'Index n₂ (dolní)', min: 1, max: 2.5, step: 0.01, value: 1.00, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n2 = v; view.redraw(); } }),
+      sTh,
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Úhly se měří od kolmice. Při přechodu z hustšího do řidšího (n₁>n₂) se paprsek láme od kolmice; ' +
+      'překročí-li úhel dopadu kritický úhel θc=arcsin(n₂/n₁), nastane totální odraz (sinθ₂>1) — princip optických vláken. ' +
+      'Při Brewsterově úhlu θB=arctg(n₂/n₁) je odražená vlna úplně lineárně polarizovaná. Táhni dopadající paprsek myší.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

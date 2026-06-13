@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RC přechod & RLC rezonance — ZEOA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>RC přechodný děj &amp; RLC kmitočtová charakteristika</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+    const fEl = document.getElementById('formula');
+
+    let mode = 'rc';        // 'rc' přechodný děj | 'rlc' kmitočtová char.
+    let R = 1000;           // Ω
+    let C = 1e-6;           // F
+    let L = 0.1;            // H
+    let U = 5;              // V
+
+    function setFormula() {
+      SK.katex(fEl, mode === 'rc'
+        ? "u_C(t)=U\\,(1-e^{-t/\\tau}),\\ \\tau=RC"
+        : "\\underline{K}(j\\omega)=\\dfrac{1}{1-\\omega^2 LC + j\\omega RC},\\ \\omega_0=\\dfrac{1}{\\sqrt{LC}}", false);
+    }
+    setFormula();
+
+    const view = SK.mount(canvas, draw);
+
+    function plotAxes(ctx, w, h, pad, xlab, ylab, t) {
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(pad.l, h - pad.b); ctx.lineTo(w - pad.r, h - pad.b);
+      ctx.moveTo(pad.l, h - pad.b); ctx.lineTo(pad.l, pad.t);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(xlab, w - pad.r, h - pad.b + 6);
+      ctx.textAlign = 'left'; ctx.fillText(ylab, pad.l + 6, pad.t - 2);
+      ctx.restore();
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const pad = { l: 56, r: 18, t: 20, b: 40 };
+      if (mode === 'rc') drawRC(ctx, w, h, pad, t);
+      else drawRLC(ctx, w, h, pad, t);
+    }
+
+    function drawRC(ctx, w, h, pad, t) {
+      const tau = R * C;
+      const T = 5 * tau;                              // window 0..5τ
+      const sx = (w - pad.l - pad.r) / T;
+      const sy = (h - pad.t - pad.b) / (U * 1.08);
+      const X = (tt) => pad.l + tt * sx;
+      const Y = (v) => h - pad.b - v * sy;
+      plotAxes(ctx, w, h, pad, 't [ms]', 'u [V]', t);
+
+      // ticks at multiples of τ
+      ctx.save(); ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let k = 1; k <= 5; k++) { const x = X(k * tau); ctx.fillText(k + 'τ', x, h - pad.b + 4);
+        ctx.strokeStyle = t.grid; ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, h - pad.b); ctx.stroke(); }
+      ctx.restore();
+
+      // u_C charging
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.6; ctx.beginPath();
+      for (let px = 0; px <= (w - pad.l - pad.r); px++) { const tt = px / sx; const v = U * (1 - Math.exp(-tt / tau));
+        const x = pad.l + px, y = Y(v); px ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.restore();
+      // i(t) = (U/R) e^{-t/τ}, scaled to same box (normalized)
+      ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.beginPath();
+      for (let px = 0; px <= (w - pad.l - pad.r); px++) { const tt = px / sx; const v = U * Math.exp(-tt / tau);
+        const x = pad.l + px, y = Y(v); px ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+
+      // τ marker: u=0.632U
+      const xT = X(tau), yT = Y(0.632 * U);
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.beginPath();
+      ctx.moveTo(xT, h - pad.b); ctx.lineTo(xT, yT); ctx.lineTo(pad.l, yT); ctx.stroke(); ctx.setLineDash([]);
+      SK.dot(ctx, xT, yT, 4, t.ok); ctx.restore();
+
+      SK.label(ctx, 'u_C(t)', w - pad.r - 4, pad.t + 12, { color: t.accent, align: 'right', font: '12px system-ui' });
+      SK.label(ctx, 'i(t) (∝ e^{-t/τ})', w - pad.r - 4, pad.t + 28, { color: t.mag, align: 'right', font: '12px system-ui' });
+
+      ro.innerHTML = `<b>RC nabíjení</b><br>τ = RC = <b>${SK.fmt(tau * 1000, 2)} ms</b><br>` +
+        `R=${(R | 0)} Ω · C=${SK.fmt(C * 1e6, 2)} µF · U=${SK.fmt(U, 1)} V<br>` +
+        `Za τ je u_C ≈ 63 % U, za 5τ ≈ 99 %. i(0⁺)=U/R=${SK.fmt(U / R * 1000, 2)} mA.`;
+    }
+
+    function drawRLC(ctx, w, h, pad, t) {
+      // output across C: K = 1/(1 - w²LC + jwRC); log-frequency Bode magnitude
+      const w0 = 1 / Math.sqrt(L * C);
+      const Q = (1 / R) * Math.sqrt(L / C);
+      const fLoDec = Math.log10(w0) - 2, fHiDec = Math.log10(w0) + 2;
+      const sx = (w - pad.l - pad.r) / (fHiDec - fLoDec);
+      const magAt = (wl) => { const ww = Math.pow(10, wl); const re = 1 - ww * ww * L * C, im = ww * R * C;
+        return 1 / Math.hypot(re, im); };
+      // dB range
+      const dbMax = 20 * Math.log10(Math.max(1, Q)) + 6, dbMin = -40;
+      const sy = (h - pad.t - pad.b) / (dbMax - dbMin);
+      const X = (wl) => pad.l + (wl - fLoDec) * sx;
+      const Y = (db) => h - pad.b - (db - dbMin) * sy;
+      plotAxes(ctx, w, h, pad, 'log ω', '|K| [dB]', t);
+
+      // 0 dB line + ω0 line
+      ctx.save(); ctx.strokeStyle = t.grid; ctx.beginPath();
+      ctx.moveTo(pad.l, Y(0)); ctx.lineTo(w - pad.r, Y(0)); ctx.stroke();
+      ctx.strokeStyle = t.warn; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(X(Math.log10(w0)), pad.t); ctx.lineTo(X(Math.log10(w0)), h - pad.b); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'ω₀', X(Math.log10(w0)) + 4, pad.t + 12, { color: t.warn, font: '12px system-ui' });
+      SK.label(ctx, '0 dB', pad.l + 4, Y(0) - 4, { color: t.muted, font: '10px system-ui' });
+
+      // magnitude curve
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.6; ctx.beginPath();
+      let started = false;
+      for (let px = 0; px <= (w - pad.l - pad.r); px++) { const wl = fLoDec + px / sx;
+        const db = 20 * Math.log10(magAt(wl)); const x = pad.l + px, y = Y(SK.clamp(db, dbMin, dbMax + 2));
+        started ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), started = true); }
+      ctx.stroke(); ctx.restore();
+
+      ro.innerHTML = `<b>RLC – přenos na C (dolní propust 2. řádu)</b><br>` +
+        `ω₀ = 1/√(LC) = <b>${SK.fmt(w0, 0)} rad/s</b> (f₀=${SK.fmt(w0 / (2 * Math.PI), 0)} Hz)<br>` +
+        `Q = (1/R)·√(L/C) = <b>${SK.fmt(Q, 2)}</b><br>` +
+        `R=${(R | 0)} Ω · L=${SK.fmt(L * 1000, 0)} mH · C=${SK.fmt(C * 1e6, 2)} µF. ` +
+        `Limity: ω→0 ⇒ |K|→1 (0 dB), ω→∞ ⇒ pokles −40 dB/dek.`;
+    }
+
+    // controls
+    const tabs = SK.tabs({ options: [{ label: 'RC přechodný děj', value: 'rc' }, { label: 'RLC kmitočtová char.', value: 'rlc' }],
+      value: 'rc', onchange: (v) => { mode = v; setFormula(); rebuild(); view.redraw(); } });
+    document.getElementById('ctrl').appendChild(tabs.el);
+    const holder = document.createElement('div'); document.getElementById('ctrl').appendChild(holder);
+
+    function rebuild() {
+      holder.innerHTML = '';
+      const items = [
+        SK.slider({ label: 'Odpor R', min: 100, max: 5000, step: 50, value: R, unit: 'Ω', fmt: (v) => v | 0, oninput: (v) => { R = v; view.redraw(); } }),
+        SK.slider({ label: 'Kapacita C', min: 0.1, max: 10, step: 0.1, value: C * 1e6, unit: 'µF', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { C = v * 1e-6; view.redraw(); } }),
+      ];
+      if (mode === 'rc') items.push(
+        SK.slider({ label: 'Napětí U', min: 1, max: 12, step: 0.5, value: U, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { U = v; view.redraw(); } }));
+      else items.push(
+        SK.slider({ label: 'Indukčnost L', min: 1, max: 500, step: 1, value: L * 1000, unit: 'mH', fmt: (v) => v | 0, oninput: (v) => { L = v / 1000; view.redraw(); } }));
+      SK.controls(holder, items);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'RC: napětí na kondenzátoru roste exponenciálně s časovou konstantou τ=RC (za τ ~63 %, za 5τ ~99 %); ' +
+      'proud klesá jako e^(−t/τ). RLC: přenos na kondenzátoru je dolní propust 2. řádu — na ω₀=1/√(LC) je rezonanční ' +
+      'převýšení dané činitelem jakosti Q, za ω₀ klesá −40 dB/dek. Kraje přenosu plynou z limit: kondenzátor je pro ' +
+      'ω→0 rozpojený a pro ω→∞ zkrat.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lineární transformace & vlastní vektory — LAGA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Lineární transformace v rovině</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "A=\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix},\\ \\det A=ad-bc,\\ A\\mathbf v=\\lambda\\mathbf v", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let a = 1, b = 0.6, c = 0.2, d = 1;
+    let vx = 1.5, vy = 1, dragging = false;
+    let sc = 40;
+
+    const Ax = (x, y) => a * x + b * y;
+    const Ay = (x, y) => c * x + d * y;
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const ox = w / 2, oy = h / 2;
+      sc = Math.min(w, h) / 12;
+      const S = (x, y) => [ox + x * sc, oy - y * sc];
+      const K = Math.ceil(Math.max(w, h) / sc) + 2;
+
+      // original light grid
+      ctx.save(); ctx.strokeStyle = t.grid; ctx.lineWidth = 1;
+      for (let i = -K; i <= K; i++) { let p, q;
+        p = S(i, -K); q = S(i, K); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+        p = S(-K, i); q = S(K, i); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke(); }
+      ctx.restore();
+
+      // transformed grid (image of integer lines)
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.globalAlpha = 0.55; ctx.lineWidth = 1;
+      for (let i = -K; i <= K; i++) {
+        let p = S(Ax(i, -K), Ay(i, -K)), q = S(Ax(i, K), Ay(i, K));
+        ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+        p = S(Ax(-K, i), Ay(-K, i)); q = S(Ax(K, i), Ay(K, i));
+        ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+      }
+      ctx.restore();
+
+      // transformed unit square (area = |det|)
+      const sq = [[0, 0], [1, 0], [1, 1], [0, 1]].map(([x, y]) => S(Ax(x, y), Ay(x, y)));
+      ctx.save(); ctx.fillStyle = t.accent; ctx.globalAlpha = 0.18; ctx.beginPath();
+      ctx.moveTo(sq[0][0], sq[0][1]); sq.slice(1).forEach(p => ctx.lineTo(p[0], p[1])); ctx.closePath(); ctx.fill(); ctx.restore();
+
+      // basis vectors î, ĵ after transform
+      const o = S(0, 0);
+      SK.arrow(ctx, o[0], o[1], ...S(a, c), { color: t.pos, width: 3, head: 9 });
+      SK.arrow(ctx, o[0], o[1], ...S(b, d), { color: t.ok, width: 3, head: 9 });
+      SK.label(ctx, 'Aî', ...S(a, c).map((v, k) => v + (k ? -8 : 8)), { color: t.pos, font: '12px system-ui' });
+      SK.label(ctx, 'Aĵ', ...S(b, d).map((v, k) => v + (k ? -8 : 8)), { color: t.ok, font: '12px system-ui' });
+
+      // eigenvectors (if real)
+      const tr = a + d, det = a * d - b * c, disc = tr * tr - 4 * det;
+      let eigTxt = '';
+      if (disc >= -1e-9) {
+        const sq2 = Math.sqrt(Math.max(0, disc)), l1 = (tr + sq2) / 2, l2 = (tr - sq2) / 2;
+        [l1, l2].forEach((l, i) => {
+          let ex, ey;
+          if (Math.abs(b) > 1e-6) { ex = b; ey = l - a; }
+          else if (Math.abs(c) > 1e-6) { ex = l - d; ey = c; }
+          else { ex = i === 0 ? 1 : 0; ey = i === 0 ? 0 : 1; }
+          const n = Math.hypot(ex, ey) || 1; ex /= n; ey /= n;
+          ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+          const p0 = S(-ex * K, -ey * K), p1 = S(ex * K, ey * K);
+          ctx.beginPath(); ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        });
+        eigTxt = `λ₁=${SK.fmt(l1, 2)}, λ₂=${SK.fmt(l2, 2)} (reálná) — vlastní směry žlutě`;
+      } else eigTxt = `vlastní čísla komplexní (rotace) — det=${SK.fmt(det, 2)}`;
+
+      // draggable test vector v and its image Av
+      SK.arrow(ctx, o[0], o[1], ...S(vx, vy), { color: t.muted, width: 2, head: 8, dash: [4, 3] });
+      SK.arrow(ctx, o[0], o[1], ...S(Ax(vx, vy), Ay(vx, vy)), { color: t.accent, width: 2.6, head: 9 });
+      SK.dot(ctx, ...S(vx, vy), 5, t.muted);
+      SK.label(ctx, 'v', ...S(vx, vy).map((p, k) => p + (k ? 14 : 6)), { color: t.muted, font: '12px system-ui' });
+      SK.label(ctx, 'Av', ...S(Ax(vx, vy), Ay(vx, vy)).map((p, k) => p + (k ? 14 : 6)), { color: t.accent, font: '12px system-ui' });
+
+      ro.innerHTML = `<b>A = [[${SK.fmt(a, 1)}, ${SK.fmt(b, 1)}], [${SK.fmt(c, 1)}, ${SK.fmt(d, 1)}]]</b><br>` +
+        `det A = <b>${SK.fmt(det, 2)}</b> (škáluje plochu, znaménko = orientace)<br>` +
+        `stopa = ${SK.fmt(tr, 2)} · ${eigTxt}<br>` +
+        `v=(${SK.fmt(vx, 1)}, ${SK.fmt(vy, 1)}) → Av=(${SK.fmt(Ax(vx, vy), 2)}, ${SK.fmt(Ay(vx, vy), 2)}). Táhni v.`;
+    }
+
+    canvas.addEventListener('pointerdown', (e) => { dragging = true; canvas.setPointerCapture(e.pointerId); setV(e); });
+    canvas.addEventListener('pointermove', (e) => { if (dragging) setV(e); });
+    canvas.addEventListener('pointerup', () => dragging = false);
+    canvas.addEventListener('pointercancel', () => dragging = false);
+    function setV(e) { const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      vx = SK.clamp((p.x - w / 2) / sc, -5, 5); vy = SK.clamp((h / 2 - p.y) / sc, -5, 5); view.redraw(); }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'a', min: -2, max: 2, step: 0.1, value: 1, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { a = v; view.redraw(); } }),
+      SK.slider({ label: 'b', min: -2, max: 2, step: 0.1, value: 0.6, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { b = v; view.redraw(); } }),
+      SK.slider({ label: 'c', min: -2, max: 2, step: 0.1, value: 0.2, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { c = v; view.redraw(); } }),
+      SK.slider({ label: 'd', min: -2, max: 2, step: 0.1, value: 1, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { d = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Matice A zobrazuje rovinu: modře je obraz mřížky, sloupce A jsou obrazy bázových vektorů î, ĵ ' +
+      '(červená/zelená), vybarvený rovnoběžník má plochu |det A|. Žluté přímky jsou vlastní směry — vektory, které A ' +
+      'jen natáhne (Av=λv). Záporný determinant překlápí orientaci, |det|<1 zmenšuje plochu. Táhni šedý vektor v a sleduj Av.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

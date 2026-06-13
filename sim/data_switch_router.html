@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Switch, router, podsítě — DATA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Switch vs. router · podsítě</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "\\text{síť} = \\text{IP}\\ \\&\\ \\text{maska}", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    // ── Network model ───────────────────────────────────────────
+    // Two segments of 192.168.1.0/24, split by the chosen prefix.
+    const HOST = {
+      A1: { ip: 10,  mac: '02:A1', sw: 'SWA', side: 'A' },
+      A2: { ip: 12,  mac: '02:A2', sw: 'SWA', side: 'A' },
+      B1: { ip: 130, mac: '02:B1', sw: 'SWB', side: 'B' },
+      B2: { ip: 140, mac: '02:B2', sw: 'SWB', side: 'B' },
+    };
+    const GW = { A: { ip: 1, mac: '02:R0' }, B: { ip: 129, mac: '02:R1' } };
+    const ipStr = (o) => '192.168.1.' + o;
+    const macOf = (id) => HOST[id].mac;
+
+    let src = 'A1', dst = 'B1', prefix = 25, speed = 1.1;
+    let playing = false, delivered = false, segIndex = 0, segT = 0;
+    let pathIds = [], segMeta = [];
+
+    // subnet math on the last octet
+    function netOctet(o) { const block = 256 >> (prefix - 24); return Math.floor(o / block) * block; }
+    function subnet(o) {
+      const block = 256 >> (prefix - 24), net = netOctet(o);
+      return { net, bcast: net + block - 1, first: net + 1, last: net + block - 2, hosts: block - 2 };
+    }
+    const sameSubnet = (a, b) => netOctet(HOST[a].ip) === netOctet(HOST[b].ip);
+
+    function buildPath() {
+      const sw = (id) => HOST[id].sw;
+      if (sw(src) === sw(dst)) pathIds = [src, sw(src), dst];
+      else pathIds = [src, sw(src), 'R', sw(dst), dst];
+
+      // per-segment frame header (MAC pair) + note; IP src/dst constant end-to-end
+      segMeta = [];
+      const cross = !sameSubnet(src, dst);
+      for (let i = 0; i < pathIds.length - 1; i++) {
+        let mS, mD, note;
+        if (!cross) { mS = macOf(src); mD = macOf(dst);
+          note = 'Stejná podsíť → switch ' + name(pathIds[1]) + ' přepíná rámec podle cílové MAC (L2).'; }
+        else {
+          const leg2 = i >= pathIds.indexOf('R');   // after the router
+          if (!leg2) { mS = macOf(src); mD = GW[HOST[src].side].mac;
+            note = 'Cíl je v jiné podsíti → host posílá rámec na bránu (router). Switch ' + name(pathIds[1]) + ' jej přepne podle MAC routeru.'; }
+          else { mS = GW[HOST[dst].side].mac; mD = macOf(dst);
+            note = 'Router směroval podle cílové IP (L3), přepsal MAC a TTL−1. Switch ' + name(pathIds[pathIds.length - 2]) + ' doručí rámec cíli.'; }
+        }
+        segMeta.push({ mS, mD, note });
+      }
+    }
+    function name(id) { return id === 'R' ? 'R' : id === 'SWA' ? 'SW-A' : id === 'SWB' ? 'SW-B' : id; }
+
+    function send() { buildPath(); segIndex = 0; segT = 0; delivered = false; playing = true; anim.start(); }
+
+    // ── Geometry ────────────────────────────────────────────────
+    function layout(w, h) {
+      return {
+        A1: { x: 0.08 * w, y: 0.30 * h, kind: 'host', id: 'A1' },
+        A2: { x: 0.08 * w, y: 0.72 * h, kind: 'host', id: 'A2' },
+        SWA:{ x: 0.30 * w, y: 0.51 * h, kind: 'sw',   id: 'SWA' },
+        R:  { x: 0.50 * w, y: 0.51 * h, kind: 'rt',   id: 'R' },
+        SWB:{ x: 0.70 * w, y: 0.51 * h, kind: 'sw',   id: 'SWB' },
+        B1: { x: 0.92 * w, y: 0.30 * h, kind: 'host', id: 'B1' },
+        B2: { x: 0.92 * w, y: 0.72 * h, kind: 'host', id: 'B2' },
+      };
+    }
+    const LINKS = [['A1','SWA'],['A2','SWA'],['SWA','R'],['R','SWB'],['SWB','B1'],['SWB','B2']];
+
+    const view = SK.mount(canvas, draw);
+    const anim = SK.loop((dt) => {
+      if (!playing) return;
+      segT += dt * speed;
+      while (segT >= 1 && segIndex < pathIds.length - 2) { segT -= 1; segIndex++; }
+      if (segIndex >= pathIds.length - 2 && segT >= 1) { segT = 1; playing = false; delivered = true; anim.stop(); }
+      view.redraw();
+    });
+
+    function rrect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const P = layout(w, h);
+
+      // subnet tint regions
+      ctx.save();
+      ctx.fillStyle = t.neg; ctx.globalAlpha = 0.06;
+      rrect(ctx, 0.02 * w, 0.12 * h, 0.42 * w, 0.78 * h, 14); ctx.fill();
+      ctx.fillStyle = t.pos; rrect(ctx, 0.56 * w, 0.12 * h, 0.42 * w, 0.78 * h, 14); ctx.fill();
+      ctx.restore();
+      const subA = subnet(HOST.A1.ip), subB = subnet(HOST.B1.ip);
+      SK.label(ctx, 'Podsíť A · ' + ipStr(subA.net) + '/' + prefix, 0.04 * w, 0.10 * h, { color: t.neg, font: 'bold 12px system-ui' });
+      SK.label(ctx, 'Podsíť B · ' + ipStr(subB.net) + '/' + prefix, 0.96 * w, 0.10 * h, { color: t.pos, font: 'bold 12px system-ui', align: 'right' });
+
+      // links
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 2;
+      LINKS.forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(P[a].x, P[a].y); ctx.lineTo(P[b].x, P[b].y); ctx.stroke(); });
+      ctx.restore();
+
+      // nodes
+      for (const id in P) drawNode(ctx, P[id], t);
+
+      // routing table at R
+      {
+        const rx = P.R.x, ry = P.R.y + 40;
+        SK.label(ctx, 'směr. tabulka R:', rx, ry + 2, { color: t.muted, align: 'center', font: '10px system-ui' });
+        SK.label(ctx, ipStr(subA.net) + '/' + prefix + ' → A', rx, ry + 16, { color: t.muted, align: 'center', font: '10px system-ui' });
+        SK.label(ctx, ipStr(subB.net) + '/' + prefix + ' → B', rx, ry + 29, { color: t.muted, align: 'center', font: '10px system-ui' });
+      }
+
+      // packet
+      if (pathIds.length) {
+        const from = P[pathIds[segIndex]], to = P[pathIds[segIndex + 1]];
+        const px = SK.lerp(from.x, to.x, segT), py = SK.lerp(from.y, to.y, segT);
+        ctx.save();
+        ctx.fillStyle = t.accent; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(px, py, 8, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.restore();
+        SK.label(ctx, sameSubnet(src, dst) ? 'rámec' : (segIndex < pathIds.indexOf('R') ? 'rámec→brána' : 'rámec'),
+          px, py - 13, { color: t.accent, align: 'center', font: 'bold 10px system-ui', stroke: t.bg, strokeW: 3 });
+      }
+
+      // readout
+      const cross = !sameSubnet(src, dst);
+      const dStep = delivered ? '✅ Doručeno na ' + dst + '.' : (segMeta[segIndex] ? segMeta[segIndex].note : 'Vyber odesílatele a příjemce a stiskni Odeslat.');
+      const meta = segMeta[segIndex] || { mS: '—', mD: '—' };
+      let html = `<b>Cesta:</b> ${pathIds.map(name).join(' → ') || '—'}<br>`;
+      html += `<b>Rámec (L2):</b> MAC ${meta.mS} → ${meta.mD}<br>`;
+      html += `<b>Paket (L3):</b> IP ${ipStr(HOST[src].ip)} → ${ipStr(HOST[dst].ip)} <span style="opacity:.7">(neměnná)</span><br>`;
+      html += `<b>Rozhodnutí:</b> ${ipStr(HOST[src].ip)} & /${prefix} = ${ipStr(netOctet(HOST[src].ip))}, ` +
+              `${ipStr(HOST[dst].ip)} & /${prefix} = ${ipStr(netOctet(HOST[dst].ip))} → ` +
+              `<b>${cross ? 'různé → přes router (L3)' : 'stejná → jen switch (L2)'}</b><br>`;
+      html += `<span style="opacity:.85">Podsíť A: ${subA.hosts} hostů (${ipStr(subA.first)}–${ipStr(subA.last)}, bcast ${ipStr(subA.bcast)})</span><br>`;
+      html += dStep;
+      ro.innerHTML = html;
+    }
+
+    function drawNode(ctx, p, t) {
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const isSel = (p.id === src || p.id === dst);
+      if (p.kind === 'host') {
+        const w = 58, h = 36;
+        ctx.fillStyle = HOST[p.id].side === 'A' ? t.neg : t.pos;
+        ctx.globalAlpha = isSel ? 1 : 0.85;
+        rrect(ctx, p.x - w / 2, p.y - h / 2, w, h, 7); ctx.fill();
+        if (isSel) { ctx.globalAlpha = 1; ctx.strokeStyle = t.accent; ctx.lineWidth = 3;
+          rrect(ctx, p.x - w / 2 - 2, p.y - h / 2 - 2, w + 4, h + 4, 8); ctx.stroke(); }
+        ctx.globalAlpha = 1; ctx.fillStyle = '#fff';
+        ctx.font = 'bold 13px system-ui'; ctx.fillText(p.id + (p.id === src ? ' ▶' : p.id === dst ? ' ◀' : ''), p.x, p.y - 6);
+        ctx.font = '10px system-ui'; ctx.fillText('.' + HOST[p.id].ip, p.x, p.y + 9);
+      } else if (p.kind === 'sw') {
+        const w = 66, h = 28;
+        ctx.fillStyle = t.fg; rrect(ctx, p.x - w / 2, p.y - h / 2, w, h, 5); ctx.fill();
+        ctx.fillStyle = t.bg; ctx.font = 'bold 12px system-ui';
+        ctx.fillText(name(p.id), p.x, p.y);
+        ctx.fillStyle = t.muted; ctx.font = '9px system-ui';
+        ctx.fillText('switch · L2', p.x, p.y + 22);
+      } else { // router
+        ctx.fillStyle = t.mag; ctx.beginPath(); ctx.arc(p.x, p.y, 24, 0, 7); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 16px system-ui'; ctx.fillText('R', p.x, p.y);
+        ctx.fillStyle = t.muted; ctx.font = '9px system-ui'; ctx.fillText('router · L3', p.x, p.y - 33);
+        ctx.font = '9px system-ui';
+        ctx.fillText('.' + GW.A.ip, p.x - 30, p.y); ctx.fillText('.' + GW.B.ip, p.x + 30, p.y);
+      }
+      ctx.restore();
+    }
+
+    // ── controls ────────────────────────────────────────────────
+    const tabSrc = SK.tabs({ options: ['A1','A2','B1','B2'].map(v => ({ label: v, value: v })),
+      value: 'A1', onchange: (v) => { src = v; buildPath(); playing = false; delivered = false; segIndex = 0; segT = 0; view.redraw(); } });
+    const tabDst = SK.tabs({ options: ['A1','A2','B1','B2'].map(v => ({ label: v, value: v })),
+      value: 'B1', onchange: (v) => { dst = v; buildPath(); playing = false; delivered = false; segIndex = 0; segT = 0; view.redraw(); } });
+
+    const ctrl = document.getElementById('ctrl');
+    const lblS = document.createElement('div'); lblS.className = 'sk-hint'; lblS.style.margin = '0'; lblS.textContent = 'Odesílatel:'; ctrl.appendChild(lblS); ctrl.appendChild(tabSrc.el);
+    const lblD = document.createElement('div'); lblD.className = 'sk-hint'; lblD.style.margin = '0'; lblD.textContent = 'Příjemce:'; ctrl.appendChild(lblD); ctrl.appendChild(tabDst.el);
+
+    SK.controls(ctrl, [
+      SK.slider({ label: 'Maska /prefix', min: 25, max: 28, step: 1, value: 25, unit: '',
+        fmt: (v) => '/' + (v | 0), oninput: (v) => { prefix = v | 0; buildPath(); view.redraw(); } }),
+      SK.slider({ label: 'Rychlost', min: 0.4, max: 3, step: 0.1, value: 1.1, unit: '×',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } }),
+      SK.button({ label: '▶ Odeslat paket', primary: true, onclick: send }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Host porovná cílovou IP se svou maskou (IP & maska). Je-li síť stejná, pošle rámec přímo a ' +
+      'switch jej přepne podle cílové MAC (L2). Je-li jiná, pošle rámec na výchozí bránu (router); ten směruje podle ' +
+      'cílové IP (L3, nejdelší shoda prefixu), přepíše zdrojovou/cílovou MAC a sníží TTL. IP adresy se cestou nemění, ' +
+      'MAC se mění na každém L2 úseku. Prefix /25 dělí 192.168.1.0/24 na dvě poloviny = podsítě A (.0) a B (.128).';
+    ctrl.appendChild(hint);
+
+    buildPath(); view.redraw();
+  })();</script>
+</body>
+</html>

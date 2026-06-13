@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Šikmý vrh — FY1</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Šikmý vrh</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "x=v_0\\cos\\alpha\\,t,\\ y=h_0+v_0\\sin\\alpha\\,t-\\tfrac12 g t^2", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+    const g = 9.81;
+
+    let v0 = 20, ang = 45, h0 = 0;
+    let tNow = 0, flying = false;
+
+    const vx = () => v0 * Math.cos(ang * Math.PI / 180);
+    const vy = () => v0 * Math.sin(ang * Math.PI / 180);
+    const tFlight = () => (vy() + Math.sqrt(vy() * vy() + 2 * g * h0)) / g;
+    const range = () => vx() * tFlight();
+    const hMax = () => h0 + vy() * vy() / (2 * g);
+    const px = (t) => vx() * t;
+    const py = (t) => h0 + vy() * t - 0.5 * g * t * t;
+
+    const view = SK.mount(canvas, draw);
+    const anim = SK.loop((dt) => {
+      if (!flying) return;
+      tNow += dt;
+      if (tNow >= tFlight()) { tNow = tFlight(); flying = false; anim.stop(); }
+      view.redraw();
+    });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const pad = { l: 46, r: 16, t: 18, b: 34 };
+      const R = Math.max(range(), 1), H = Math.max(hMax(), 1);
+      const sx = (w - pad.l - pad.r) / (R * 1.08);
+      const sy = (h - pad.t - pad.b) / (H * 1.15);
+      const sc = Math.min(sx, sy);
+      const X = (x) => pad.l + x * sc, Y = (y) => h - pad.b - y * sc;
+
+      // ground + axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(pad.l, Y(0)); ctx.lineTo(w - pad.r, Y(0)); ctx.moveTo(pad.l, Y(0)); ctx.lineTo(pad.l, pad.t); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'right'; ctx.fillText('x [m]', w - pad.r, Y(0) + 14); ctx.textAlign = 'left'; ctx.fillText('y [m]', pad.l + 4, pad.t); ctx.restore();
+
+      // full trajectory
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2.4; ctx.beginPath();
+      const tf = tFlight();
+      for (let i = 0; i <= 200; i++) { const tt = tf * i / 200; const x = X(px(tt)), y = Y(py(tt)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.restore();
+
+      // apex + range markers
+      const tApex = vy() / g;
+      SK.dot(ctx, X(px(tApex)), Y(hMax()), 4, t.warn);
+      SK.label(ctx, 'h_max=' + SK.fmt(hMax(), 1) + ' m', X(px(tApex)), Y(hMax()) - 8, { color: t.warn, align: 'center', font: '11px system-ui' });
+      SK.dot(ctx, X(range()), Y(0), 4, t.ok);
+      SK.label(ctx, 'dosah=' + SK.fmt(range(), 1) + ' m', X(range()), Y(0) + 14, { color: t.ok, align: 'center', font: '11px system-ui' });
+
+      // launch velocity arrow
+      const aL = ang * Math.PI / 180;
+      SK.arrow(ctx, X(0), Y(h0), X(0) + 34 * Math.cos(aL), Y(h0) - 34 * Math.sin(aL), { color: t.pos, width: 2.4, head: 8 });
+
+      // projectile
+      const tt = SK.clamp(tNow, 0, tf);
+      SK.dot(ctx, X(px(tt)), Y(py(tt)), 7, t.accent);
+
+      ro.innerHTML = `<b>v₀=${SK.fmt(v0, 1)} m/s · α=${ang | 0}° · h₀=${SK.fmt(h0, 1)} m</b><br>` +
+        `dosah = <b>${SK.fmt(range(), 2)} m</b> · h_max = <b>${SK.fmt(hMax(), 2)} m</b><br>` +
+        `doba letu = ${SK.fmt(tFlight(), 2)} s · t = ${SK.fmt(tt, 2)} s<br>` +
+        (h0 === 0 ? 'Při h₀=0 je dosah maximální pro α=45°.' : 'S nenulovou výškou je optimální úhel < 45°.');
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Rychlost v₀', min: 2, max: 40, step: 1, value: 20, unit: 'm/s', fmt: (v) => v | 0, oninput: (v) => { v0 = v; if (!flying) tNow = 0; view.redraw(); } }),
+      SK.slider({ label: 'Úhel α', min: 5, max: 85, step: 1, value: 45, unit: '°', fmt: (v) => v | 0, oninput: (v) => { ang = v; if (!flying) tNow = 0; view.redraw(); } }),
+      SK.slider({ label: 'Výška h₀', min: 0, max: 30, step: 1, value: 0, unit: 'm', fmt: (v) => v | 0, oninput: (v) => { h0 = v; if (!flying) tNow = 0; view.redraw(); } }),
+      SK.button({ label: '▶ Vystřelit', primary: true, onclick: () => { tNow = 0; flying = true; anim.start(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Pohyb je složený z rovnoměrného vodorovného (x=v₀cosα·t) a rovnoměrně zrychleného svislého ' +
+      '(y=h₀+v₀sinα·t−½gt²). Trajektorie je parabola. Dosah z h₀=0 je největší pro 45°; doba letu a max. výška ' +
+      'rostou se svislou složkou rychlosti v₀sinα. Stiskni „Vystřelit" pro animaci.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Výkonová bilance spoje (Friis) — TBK</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Výkonová bilance rádiového spoje</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "P_r = P_t + G_t + G_r - L_{FSL},\\quad L_{FSL}=92{,}44+20\\log R_{km}+20\\log f_{GHz}", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let Pt = 20, Gt = 12, Gr = 12, f = 2.4, R = 5, Pmin = -90;  // dBm, dBi, GHz, km, dBm
+
+    const FSL = () => 92.44 + 20 * Math.log10(R) + 20 * Math.log10(f);
+    const Pr  = () => Pt + Gt + Gr - FSL();
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+
+      // ── top: TX — distance — RX schematic ──
+      const yTop = h * 0.22;
+      const xT = w * 0.12, xR = w * 0.88;
+      drawAntenna(ctx, xT, yTop, t, 'TX');
+      drawAntenna(ctx, xR, yTop, t, 'RX');
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+      ctx.beginPath(); ctx.moveTo(xT + 14, yTop); ctx.lineTo(xR - 14, yTop); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'R = ' + SK.fmt(R, 2) + ' km · f = ' + SK.fmt(f, 2) + ' GHz', (xT + xR) / 2, yTop - 14, { color: t.muted, align: 'center', font: '12px system-ui' });
+
+      // ── waterfall budget bar ──
+      const fsl = FSL(), pr = Pr(), margin = pr - Pmin;
+      const stages = [
+        { label: 'Pt', val: Pt, abs: Pt, col: t.accent2 },
+        { label: '+Gt', val: Gt, abs: Pt + Gt, col: t.ok },
+        { label: '+Gr', val: Gr, abs: Pt + Gt + Gr, col: t.ok },
+        { label: '−FSL', val: -fsl, abs: pr, col: t.pos },
+      ];
+      const top = h * 0.42, bot = h * 0.90;
+      const all = [Pt, Pt + Gt, Pt + Gt + Gr, pr, Pmin];
+      const vmax = Math.max(...all) + 8, vmin = Math.min(...all, pr) - 8;
+      const Y = (v) => bot - (v - vmin) / (vmax - vmin) * (bot - top);
+      const n = stages.length, bw = (w - 80) / (n + 0.5), x0 = 50;
+
+      // Pmin (sensitivity) line
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(40, Y(Pmin)); ctx.lineTo(w - 16, Y(Pmin)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'citlivost Pmin = ' + (Pmin | 0) + ' dBm', w - 18, Y(Pmin) - 5, { color: t.warn, align: 'right', font: '11px system-ui' });
+
+      // waterfall columns
+      let prevAbs = 0;
+      stages.forEach((s, i) => {
+        const x = x0 + i * bw;
+        const yA = Y(prevAbs === 0 ? 0 : prevAbs), yB = Y(s.abs);
+        const top2 = Math.min(yA, yB), hgt = Math.abs(yA - yB) || 2;
+        const drawY = (i === 0) ? Y(0) : Y(prevAbs);
+        ctx.save(); ctx.fillStyle = s.col; ctx.globalAlpha = 0.85;
+        if (i === 0) { ctx.fillRect(x, Y(s.abs), bw * 0.7, Y(0) - Y(s.abs)); }
+        else { ctx.fillRect(x, Math.min(Y(prevAbs), Y(s.abs)), bw * 0.7, Math.abs(Y(prevAbs) - Y(s.abs)) || 2); }
+        ctx.restore();
+        SK.label(ctx, s.label, x + bw * 0.35, bot + 14, { color: t.fg, align: 'center', font: '11px system-ui' });
+        SK.label(ctx, (s.val > 0 ? '+' : '') + SK.fmt(s.val, 1), x + bw * 0.35, Math.min(Y(prevAbs === 0 ? 0 : prevAbs), Y(s.abs)) - 6, { color: t.muted, align: 'center', font: '10px system-ui' });
+        prevAbs = s.abs;
+      });
+      // Pr marker
+      const xPr = x0 + (n - 1) * bw + bw * 0.35;
+      SK.dot(ctx, xPr, Y(pr), 5, t.accent);
+      SK.label(ctx, 'Pr = ' + SK.fmt(pr, 1) + ' dBm', xPr + 10, Y(pr), { color: t.accent, font: 'bold 12px system-ui', baseline: 'middle' });
+
+      // margin bracket
+      ctx.save(); ctx.strokeStyle = margin >= 0 ? t.ok : t.pos; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(xPr, Y(pr)); ctx.lineTo(xPr, Y(Pmin)); ctx.stroke(); ctx.restore();
+
+      ro.innerHTML = `<b>FSL</b> = ${SK.fmt(fsl, 1)} dB<br>` +
+        `<b>Pr</b> = ${Pt}+${Gt}+${Gr}−${SK.fmt(fsl, 1)} = <b>${SK.fmt(pr, 1)} dBm</b><br>` +
+        `Rezerva na únik = Pr − Pmin = <b style="color:${margin >= 0 ? '#16a34a' : '#dc2626'}">${SK.fmt(margin, 1)} dB</b><br>` +
+        (margin >= 0 ? 'Spoj funguje (rezerva ≥ 0).' : 'Spoj NEFUNGUJE — pod prahem citlivosti!');
+    }
+
+    function drawAntenna(ctx, x, y, t, txt) {
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 34); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x - 12, y - 14); ctx.lineTo(x, y); ctx.lineTo(x + 12, y - 14); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui'; ctx.textAlign = 'center'; ctx.fillText(txt, x, y + 48);
+      ctx.restore();
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Výkon Pt', min: -10, max: 40, step: 1, value: 20, unit: 'dBm', fmt: (v) => v | 0, oninput: (v) => { Pt = v; view.redraw(); } }),
+      SK.slider({ label: 'Zisk Gt', min: 0, max: 30, step: 1, value: 12, unit: 'dBi', fmt: (v) => v | 0, oninput: (v) => { Gt = v; view.redraw(); } }),
+      SK.slider({ label: 'Zisk Gr', min: 0, max: 30, step: 1, value: 12, unit: 'dBi', fmt: (v) => v | 0, oninput: (v) => { Gr = v; view.redraw(); } }),
+      SK.slider({ label: 'Frekvence f', min: 0.1, max: 30, step: 0.1, value: 2.4, unit: 'GHz', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { f = v; view.redraw(); } }),
+      SK.slider({ label: 'Vzdálenost R', min: 0.1, max: 50, step: 0.1, value: 5, unit: 'km', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { R = v; view.redraw(); } }),
+      SK.slider({ label: 'Citlivost Pmin', min: -120, max: -60, step: 1, value: -90, unit: 'dBm', fmt: (v) => v | 0, oninput: (v) => { Pmin = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Friisova bilance v dB: přijatý výkon = vysílaný výkon + zisky antén − útlum volného prostoru (FSL). ' +
+      'FSL roste s druhou mocninou vzdálenosti i frekvence (geometrické ředění výkonu, ne disipace). Rozdíl Pr − Pmin ' +
+      'je rezerva na únik (fade margin) — typicky 20–30 dB na multipath a déšť. Klesne-li pod 0, spoj nefunguje.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

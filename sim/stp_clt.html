@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centrální limitní věta — STP</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Centrální limitní věta</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "\\bar X_n=\\tfrac1n\\sum X_i \\ \\xrightarrow{n\\to\\infty}\\ \\mathcal N\\!\\left(\\mu,\\tfrac{\\sigma^2}{n}\\right)", false);
+
+    const ro = document.getElementById('ro');
+    const c1 = document.getElementById('c1'), c2 = document.getElementById('c2');
+
+    // source distributions on [0,1]; return sample + theoretical mean/var
+    const DIST = {
+      unif:  { s: () => Math.random(),                              mu: 0.5,  v: 1 / 12,  name: 'rovnoměrné' },
+      exp:   { s: () => { let u = Math.random(); return Math.min(1, -Math.log(1 - u) / 3); }, mu: 0.283, v: 0.069, name: 'exponenciální (oříznuté)' },
+      bimod: { s: () => (Math.random() < 0.5 ? 0.15 : 0.85) + (Math.random() - 0.5) * 0.18, mu: 0.5, v: 0.131, name: 'bimodální' },
+    };
+    let dk = 'bimod', nSamp = 10, trials = 3000;
+    let means = [], single = [];
+
+    function resample() {
+      const D = DIST[dk]; means = []; single = [];
+      for (let i = 0; i < 4000; i++) single.push(SK.clamp(D.s(), 0, 1));
+      for (let k = 0; k < trials; k++) { let s = 0; for (let i = 0; i < nSamp; i++) s += SK.clamp(D.s(), 0, 1); means.push(s / nSamp); }
+    }
+    resample();
+
+    const v1 = SK.mount(c1, (ctx, w, h) => drawHist(ctx, w, h, single, 'Zdroj: ' + DIST[dk].name, SK.theme().accent2, false));
+    const v2 = SK.mount(c2, (ctx, w, h) => drawHist(ctx, w, h, means, 'Výběrové průměry (n=' + nSamp + ')', SK.theme().accent, true));
+
+    function drawHist(ctx, w, h, data, title, color, overlayNormal) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const pad = { l: 30, r: 12, t: 28, b: 26 }, bins = 30, lo = 0, hi = 1;
+      const cnt = new Array(bins).fill(0);
+      data.forEach(x => { let b = Math.floor((x - lo) / (hi - lo) * bins); b = SK.clamp(b, 0, bins - 1); cnt[b]++; });
+      const maxC = Math.max(...cnt, 1);
+      const X = (x) => pad.l + (x - lo) / (hi - lo) * (w - pad.l - pad.r);
+      const Y = (c) => h - pad.b - c / maxC * (h - pad.t - pad.b);
+      // bars
+      ctx.save(); ctx.fillStyle = color; ctx.globalAlpha = 0.8;
+      for (let i = 0; i < bins; i++) { const x0 = X(lo + i / bins), x1 = X(lo + (i + 1) / bins);
+        ctx.fillRect(x0, Y(cnt[i]), x1 - x0 - 1, Y(0) - Y(cnt[i])); }
+      ctx.restore();
+      // axis
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(pad.l, Y(0)); ctx.lineTo(w - pad.r, Y(0)); ctx.stroke(); ctx.restore();
+      SK.label(ctx, title, w / 2, 16, { color: t.fg, align: 'center', font: '12px system-ui' });
+
+      if (overlayNormal) {
+        // empirical mean/sd of the means
+        const m = data.reduce((a, b) => a + b, 0) / data.length;
+        const sd = Math.sqrt(data.reduce((a, b) => a + (b - m) * (b - m), 0) / data.length);
+        // normal pdf scaled to histogram (per-bin probability × N × binWidth-ish)
+        const binW = (hi - lo) / bins;
+        ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 2.4; ctx.beginPath();
+        let started = false;
+        for (let px = pad.l; px <= w - pad.r; px++) { const x = lo + (px - pad.l) / (w - pad.l - pad.r) * (hi - lo);
+          const pdf = Math.exp(-((x - m) ** 2) / (2 * sd * sd)) / (sd * Math.sqrt(2 * Math.PI));
+          const expected = pdf * binW * data.length; const y = Y(expected);
+          started ? ctx.lineTo(px, y) : (ctx.moveTo(px, y), started = true); }
+        ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'normální', w - pad.r - 2, pad.t + 2, { color: t.ok, align: 'right', font: '11px system-ui' });
+      }
+    }
+
+    function redraw() { v1.redraw(); v2.redraw();
+      const D = DIST[dk];
+      const m = means.reduce((a, b) => a + b, 0) / means.length;
+      const sd = Math.sqrt(means.reduce((a, b) => a + (b - m) * (b - m), 0) / means.length);
+      ro.innerHTML = `<b>Zdroj:</b> ${D.name} (μ=${SK.fmt(D.mu, 2)}, σ=${SK.fmt(Math.sqrt(D.v), 2)})<br>` +
+        `<b>Průměr z n=${nSamp}</b>, ${trials} pokusů<br>` +
+        `naměřeno: x̄≈${SK.fmt(m, 3)}, směrod. odch.≈<b>${SK.fmt(sd, 3)}</b><br>` +
+        `teorie σ/√n = ${SK.fmt(Math.sqrt(D.v / nSamp), 3)} → s rostoucím n se rozdělení průměrů blíží normálnímu a zužuje.`;
+    }
+    redraw();
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.tabs({ options: [{ label: 'rovnoměrné', value: 'unif' }, { label: 'exponenciální', value: 'exp' }, { label: 'bimodální', value: 'bimod' }],
+        value: 'bimod', onchange: (v) => { dk = v; resample(); redraw(); } }),
+      SK.slider({ label: 'Velikost výběru n', min: 1, max: 50, step: 1, value: 10, unit: '', fmt: (v) => v | 0, oninput: (v) => { nSamp = v | 0; resample(); redraw(); } }),
+      SK.button({ label: '🎲 Nová simulace', onclick: () => { resample(); redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Vlevo rozdělení zdroje (může být jakékoli — i bimodální), vpravo histogram výběrových průměrů. ' +
+      'Centrální limitní věta: průměr n nezávislých veličin má pro rostoucí n přibližně normální rozdělení se střední ' +
+      'hodnotou μ a rozptylem σ²/n — bez ohledu na tvar zdroje. Zvyš n a sleduj, jak se pravý histogram zužuje a ' +
+      'symetrizuje pod zelenou Gaussovu křivku (σ klesá jako 1/√n).';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

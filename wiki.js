@@ -335,9 +335,52 @@
     section: '3 – Simulace',
     subjects: [
       {
+        code: 'B0B01LAGA', title: 'Lineární algebra',
+        resources: [
+          { type: 'sim', label: 'Lineární transformace & vlastní vektory', src: SIM + 'laga_transform.html' },
+        ],
+      },
+      {
+        code: 'B0B01MA1A', title: 'Matematická analýza 1',
+        resources: [
+          { type: 'sim', label: 'Derivace (tečna) & Riemannův integrál', src: SIM + 'ma1a_calculus.html' },
+        ],
+      },
+      {
+        code: 'B0B01DRN', title: 'Diferenciální rovnice',
+        resources: [
+          { type: 'sim', label: 'Směrové pole & Eulerova metoda', src: SIM + 'drn_slopefield.html' },
+        ],
+      },
+      {
+        code: 'B0B01STP', title: 'Statistika a pravděpodobnost',
+        resources: [
+          { type: 'sim', label: 'Centrální limitní věta', src: SIM + 'stp_clt.html' },
+        ],
+      },
+      {
+        code: 'B2B02FY1', title: 'Fyzika 1',
+        resources: [
+          { type: 'sim', label: 'Šikmý vrh', src: SIM + 'fy1_projectile.html' },
+        ],
+      },
+      {
         code: 'B2B17ELD', title: 'EM vlny a vedení',
         resources: [
           { type: 'sim', label: 'Vlnovody – COAX / RECT (TE, TM, TEM)', src: 'waveguide_simulator.html' },
+          { type: 'sim', label: 'Snellův zákon · lom, totální odraz', src: SIM + 'eld_snell.html' },
+        ],
+      },
+      {
+        code: 'B2B31ZEOA', title: 'Základy elektrických obvodů',
+        resources: [
+          { type: 'sim', label: 'RC přechod & RLC kmitočtová char.', src: SIM + 'zeoa_rc_rlc.html' },
+        ],
+      },
+      {
+        code: 'B2B32DITA', title: 'Digitální technika',
+        resources: [
+          { type: 'sim', label: 'Logická hradla & multiplexor', src: SIM + 'dita_logic.html' },
         ],
       },
       {
@@ -359,6 +402,7 @@
           { type: 'sim', label: 'Coulombův zákon',  src: SIM + 'fy2_coulomb.html' },
           { type: 'sim', label: 'Carnotův cyklus',  src: SIM + 'fy2_carnot.html' },
           { type: 'sim', label: 'Tenká čočka – spojka / rozptylka', src: SIM + 'fy2_lens.html' },
+          { type: 'sim', label: 'Pohled pozorovatele skrz čočku', src: SIM + 'fy2_lens_view.html' },
         ],
       },
       {
@@ -383,6 +427,25 @@
         code: 'B2B32DATA', title: 'Datová komunikace',
         resources: [
           { type: 'sim', label: 'ISO/OSI – tok a zapouzdření', src: SIM + 'data_iso_osi.html' },
+          { type: 'sim', label: 'Switch vs. router · podsítě', src: SIM + 'data_switch_router.html' },
+        ],
+      },
+      {
+        code: 'B2B32TSI', title: 'Telekomunikační systémy',
+        resources: [
+          { type: 'sim', label: 'Digitalizace hlasu – PCM (64 kbps)', src: SIM + 'tsi_pcm.html' },
+        ],
+      },
+      {
+        code: 'B2B17TBK', title: 'Bezdrátová komunikace',
+        resources: [
+          { type: 'sim', label: 'Výkonová bilance spoje (Friis)', src: SIM + 'tbk_friis.html' },
+        ],
+      },
+      {
+        code: 'B2B37AVT', title: 'Audiovizuální technika',
+        resources: [
+          { type: 'sim', label: 'Bayerova maska & demozaika', src: SIM + 'avt_bayer.html' },
         ],
       },
     ],

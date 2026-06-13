@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Derivace a Riemannův integrál — MA1A</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Derivace (tečna) &amp; Riemannův integrál</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula');
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    const FUN = {
+      sin:   { f: (x) => Math.sin(x),            tex: "f(x)=\\sin x" },
+      parab: { f: (x) => 0.4 * x * x - 1,        tex: "f(x)=0{,}4x^2-1" },
+      cubic: { f: (x) => 0.15 * x * x * x - 0.5 * x, tex: "f(x)=0{,}15x^3-0{,}5x" },
+    };
+    let mode = 'deriv';    // 'deriv' | 'integ'
+    let fk = 'sin';
+    let x0 = 1.0;          // tangent point
+    let n = 8;             // Riemann rectangles
+    let method = 'mid';    // left | right | mid
+    let dragging = false;
+    const XMIN = -3.2, XMAX = 3.2, A = -2, B = 2;   // domain; integration interval [A,B]
+    const f = (x) => FUN[fk].f(x);
+    const df = (x) => (f(x + 1e-4) - f(x - 1e-4)) / 2e-4;
+
+    function setFormula() {
+      SK.katex(fEl, mode === 'deriv'
+        ? FUN[fk].tex + ",\\quad f'(x_0)=\\lim_{h\\to0}\\tfrac{f(x_0+h)-f(x_0)}{h}"
+        : FUN[fk].tex + ",\\quad \\int_A^B f\\,dx\\approx\\sum f(x_i)\\,\\Delta x", false);
+    }
+    setFormula();
+
+    const view = SK.mount(canvas, draw);
+
+    function bounds(w, h) {
+      const pad = { l: 44, r: 16, t: 16, b: 30 };
+      let lo = Infinity, hi = -Infinity;
+      for (let x = XMIN; x <= XMAX; x += 0.05) { const y = f(x); if (y < lo) lo = y; if (y > hi) hi = y; }
+      lo = Math.min(lo, 0) - 0.4; hi = Math.max(hi, 0) + 0.4;
+      const sx = (w - pad.l - pad.r) / (XMAX - XMIN), sy = (h - pad.t - pad.b) / (hi - lo);
+      const X = (x) => pad.l + (x - XMIN) * sx, Y = (y) => h - pad.b - (y - lo) * sy;
+      return { pad, X, Y, lo, hi };
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const { X, Y } = bounds(w, h);
+
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(X(XMIN), Y(0)); ctx.lineTo(X(XMAX), Y(0)); ctx.moveTo(X(0), Y(f(0) > 0 ? f(0) + 1 : 0)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), h); ctx.stroke(); ctx.restore();
+
+      if (mode === 'integ') drawRects(ctx, X, Y, t);
+
+      // function curve
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2.6; ctx.beginPath();
+      let started = false;
+      for (let x = XMIN; x <= XMAX; x += 0.02) { const px = X(x), py = Y(f(x)); started ? ctx.lineTo(px, py) : (ctx.moveTo(px, py), started = true); }
+      ctx.stroke(); ctx.restore();
+
+      if (mode === 'deriv') drawTangent(ctx, X, Y, t);
+    }
+
+    function drawTangent(ctx, X, Y, t) {
+      const m = df(x0), y0 = f(x0);
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2;
+      const x1 = XMIN, x2 = XMAX;
+      ctx.beginPath(); ctx.moveTo(X(x1), Y(y0 + m * (x1 - x0))); ctx.lineTo(X(x2), Y(y0 + m * (x2 - x0))); ctx.stroke();
+      SK.dot(ctx, X(x0), Y(y0), 6, t.pos); ctx.restore();
+      SK.label(ctx, 'x₀', X(x0), Y(0) + 14, { color: t.pos, align: 'center', font: '11px system-ui' });
+      ro.innerHTML = `<b>Derivace</b> · x₀ = ${SK.fmt(x0, 2)}<br>f(x₀)=${SK.fmt(y0, 3)}, ` +
+        `<b>f′(x₀)=${SK.fmt(m, 3)}</b> = směrnice tečny<br>Táhni bod x₀ po křivce; tečna mění sklon podle derivace.`;
+    }
+
+    function drawRects(ctx, X, Y, t) {
+      const dx = (B - A) / n; let sum = 0;
+      ctx.save();
+      for (let i = 0; i < n; i++) {
+        const xl = A + i * dx, xr = xl + dx;
+        const xs = method === 'left' ? xl : method === 'right' ? xr : (xl + xr) / 2;
+        const yv = f(xs); sum += yv * dx;
+        ctx.fillStyle = yv >= 0 ? t.accent : t.pos; ctx.globalAlpha = 0.30;
+        ctx.fillRect(X(xl), Y(Math.max(0, yv)), X(xr) - X(xl), Math.abs(Y(yv) - Y(0)));
+        ctx.globalAlpha = 1; ctx.strokeStyle = t.accent; ctx.lineWidth = 1;
+        ctx.strokeRect(X(xl), Y(Math.max(0, yv)), X(xr) - X(xl), Math.abs(Y(yv) - Y(0)));
+      }
+      ctx.restore();
+      // exact integral (fine)
+      let exact = 0; const N = 4000, hx = (B - A) / N;
+      for (let i = 0; i < N; i++) exact += f(A + (i + 0.5) * hx) * hx;
+      ro.innerHTML = `<b>Riemannův integrál</b> na [${A}, ${B}] · ${method === 'left' ? 'levé' : method === 'right' ? 'pravé' : 'střední'} body<br>` +
+        `n=${n} obdélníků, Δx=${SK.fmt((B - A) / n, 3)}<br>` +
+        `součet ≈ <b>${SK.fmt(sum, 4)}</b> · přesně = ${SK.fmt(exact, 4)} · chyba ${SK.fmt(Math.abs(sum - exact), 4)}<br>` +
+        `Zvyš n → součet konverguje k určitému integrálu (ploše pod křivkou).`;
+    }
+
+    canvas.addEventListener('pointerdown', (e) => { if (mode !== 'deriv') return; dragging = true; canvas.setPointerCapture(e.pointerId); setX(e); });
+    canvas.addEventListener('pointermove', (e) => { if (dragging) setX(e); });
+    canvas.addEventListener('pointerup', () => dragging = false);
+    canvas.addEventListener('pointercancel', () => dragging = false);
+    function setX(e) { const { w, h } = view.dims(); const { X } = bounds(w, h); const p = SK.pointer(canvas, e);
+      x0 = SK.clamp(XMIN + (p.x - X(XMIN)) / ((X(XMAX) - X(XMIN)) / (XMAX - XMIN)), XMIN + 0.1, XMAX - 0.1); view.redraw(); }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Derivace (tečna)', value: 'deriv' }, { label: 'Riemannův integrál', value: 'integ' }],
+      value: 'deriv', onchange: (v) => { mode = v; setFormula(); rebuild(); view.redraw(); } }).el);
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'sin x', value: 'sin' }, { label: 'parabola', value: 'parab' }, { label: 'kubická', value: 'cubic' }],
+      value: 'sin', onchange: (v) => { fk = v; setFormula(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      if (mode === 'integ') {
+        holder.appendChild(SK.tabs({ options: [{ label: 'levé', value: 'left' }, { label: 'střední', value: 'mid' }, { label: 'pravé', value: 'right' }],
+          value: method, onchange: (v) => { method = v; view.redraw(); } }).el);
+        SK.controls(holder, [SK.slider({ label: 'Počet obdélníků n', min: 1, max: 60, step: 1, value: n, unit: '', fmt: (v) => v | 0, oninput: (v) => { n = v | 0; view.redraw(); } })]);
+      }
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Derivace = směrnice tečny: táhni bod x₀ a sleduj, jak se mění sklon f′(x₀). Riemannův integrál = ' +
+      'limita součtu ploch obdélníků; zvyšováním n se aproximace blíží přesné ploše pod křivkou (určitému integrálu). ' +
+      'Střední body konvergují rychleji než levé/pravé.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

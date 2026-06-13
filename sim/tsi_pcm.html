@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digitalizace hlasu (PCM) — TSI</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Digitalizace hlasu — PCM</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "f_s\\ge 2f_{max},\\quad \\text{tok}=f_s\\cdot b,\\quad SNR\\approx 6{,}02\\,b+1{,}76\\ \\text{dB}", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let bits = 3;          // quantization bits (shown coarse for clarity)
+    let nSamp = 16;        // samples across the window (∝ fs)
+    let fsig = 1;          // signal periods in window
+
+    const sig = (u) => 0.5 + 0.42 * Math.sin(2 * Math.PI * fsig * u);   // 0..1 analog
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const pad = { l: 40, r: 16, t: 18, b: 34 };
+      const X = (u) => pad.l + u * (w - pad.l - pad.r);
+      const Y = (v) => h - pad.b - v * (h - pad.t - pad.b);
+      const levels = (1 << bits);
+
+      // quantization grid
+      ctx.save(); ctx.strokeStyle = t.grid; ctx.lineWidth = 1;
+      for (let i = 0; i < levels; i++) { const y = Y(i / (levels - 1)); ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke(); }
+      ctx.restore();
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(pad.l, h - pad.b); ctx.lineTo(w - pad.r, h - pad.b); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, h - pad.b); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'right';
+      ctx.fillText('t', w - pad.r, h - pad.b + 14); ctx.fillText(levels + ' úrovní', pad.l - 4, pad.t + 4); ctx.restore();
+
+      // analog signal
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2; ctx.beginPath();
+      for (let px = 0; px <= (w - pad.l - pad.r); px++) { const u = px / (w - pad.l - pad.r); const x = pad.l + px, y = Y(sig(u)); px ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.restore();
+
+      // sample + quantize → staircase (sample & hold of quantized value)
+      const q = (v) => Math.round(v * (levels - 1)) / (levels - 1);
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2; ctx.beginPath();
+      let mse = 0;
+      for (let i = 0; i < nSamp; i++) {
+        const u0 = i / nSamp, u1 = (i + 1) / nSamp, uc = (u0 + u1) / 2;
+        const qv = q(sig(uc)); const y = Y(qv);
+        ctx.moveTo(X(u0), y); ctx.lineTo(X(u1), y);
+        // error sampling
+        for (let s = 0; s < 4; s++) { const uu = u0 + (s + 0.5) / 4 * (u1 - u0); const e = sig(uu) - qv; mse += e * e; }
+      }
+      ctx.stroke(); ctx.restore();
+      // sample dots
+      ctx.save();
+      for (let i = 0; i < nSamp; i++) { const uc = (i + 0.5) / nSamp; SK.dot(ctx, X(uc), Y(q(sig(uc))), 3, t.pos); }
+      ctx.restore();
+
+      SK.label(ctx, 'analog', w - pad.r - 4, pad.t + 12, { color: t.accent2, align: 'right', font: '12px system-ui' });
+      SK.label(ctx, 'kvantováno (sample&hold)', w - pad.r - 4, pad.t + 28, { color: t.accent, align: 'right', font: '12px system-ui' });
+
+      const fs = 8, b = 8;                              // G.711 voice reference
+      const snr = 6.02 * bits + 1.76;
+      ro.innerHTML = `<b>Kvantování:</b> b = ${bits} bit → ${levels} úrovní · SNR ≈ <b>${SK.fmt(snr, 1)} dB</b><br>` +
+        `Vzorků v okně: ${nSamp} (∝ fs) · perioda signálu: ${fsig}<br>` +
+        `<b>Telefon G.711:</b> pásmo 300–3400 Hz → fs=8 kHz, b=8 bit → tok = ${fs}·${b} = <b>64 kbps</b> (DS0).<br>` +
+        `Nelineární kompanze A-law dává jemnější kroky pro slabé signály.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Bity kvantování b', min: 1, max: 6, step: 1, value: 3, unit: 'bit', fmt: (v) => v | 0, oninput: (v) => { bits = v | 0; view.redraw(); } }),
+      SK.slider({ label: 'Vzorkování (vzorků)', min: 4, max: 64, step: 1, value: 16, unit: '', fmt: (v) => v | 0, oninput: (v) => { nSamp = v | 0; view.redraw(); } }),
+      SK.slider({ label: 'Frekvence signálu', min: 1, max: 6, step: 1, value: 1, unit: '×', fmt: (v) => v | 0, oninput: (v) => { fsig = v | 0; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Tři kroky PCM: 1) vzorkování (fs ≥ 2·fmax, jinak aliasing), 2) kvantování do 2^b úrovní — vzniká ' +
+      'kvantizační šum, každý bit přidá ~6 dB SNR, 3) kódování do bitů. Telefonní hovor: pásmo 0,3–3,4 kHz, fs=8 kHz, ' +
+      '8 bitů s A-law kompanzí → 64 kbps. Zvyš bity → jemnější schodiště a vyšší SNR; sniž vzorkování → hrubší aproximace.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
