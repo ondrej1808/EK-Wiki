@@ -60,9 +60,13 @@
       ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
       ctx.textAlign = 'right'; ctx.textBaseline = 'top';
       ctx.fillText('r [mm]', w - padR - 2, oy + 6);
-      ctx.textAlign = 'left'; ctx.fillText('B [µT]', ox + 4, padT);
       ctx.textAlign = 'center';
-      for (let r = 5; r <= rMax; r += 5) ctx.fillText(r, X(r), oy + 5);
+      for (let r = 5; r <= rMax - 5; r += 5) ctx.fillText(r, X(r), oy + 5);
+      // y-axis label drawn vertically, centred on the left margin so the
+      // readout overlay (top-left) can't hide it
+      ctx.translate(ox - 34, (padT + oy) / 2); ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('B [µT]', 0, 0);
       ctx.restore();
 
       // curve
@@ -85,7 +89,7 @@
       const lx = X(rMM), ly = Y(Bof(rMM));
       SK.dot(ctx, lx, ly, 5, t.ok);
       SK.label(ctx, 'r', lx + 6, ly - 6, { color: t.ok, font: 'bold 12px system-ui' });
-      SK.label(ctx, 'lineární uvnitř · 1/r vně', w - padR - 2, padT + 2,
+      SK.label(ctx, 'lineární uvnitř · 1/r vně', w - padR - 2, oy - 8,
                { color: t.muted, font: '11px system-ui', align: 'right' });
     }
 

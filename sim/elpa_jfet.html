@@ -24,6 +24,8 @@
     let Idss = 10;      // mA
     let Up = -4;        // pinch-off voltage (V), negative for N-JFET
     let Ugs = -1.5;     // selected U_GS for readout / output family marker
+    let Udd = 12;       // drain supply (V) — for load line in output mode
+    let Rd = 1.2;       // drain resistor (kΩ) → I[mA]=(Udd−Uds)/Rd
 
     // square-law saturation drain current (mA) for given Ugs
     function idSat(ugs) {
@@ -147,8 +149,26 @@
       ctx.stroke(); ctx.setLineDash([]);
       SK.label(ctx, 'mez zaškrcení', f.X(Xmax) - 4, f.Y(Ymax) + 12, { color: t.warn, align: 'right', font: '10px system-ui' });
       ctx.restore();
+
+      // Load line I_D = (U_DD − U_DS)/R_D and operating point Q on the selected U_GS curve
+      const ll0 = Udd / Rd;
+      let uA = 0, iA = ll0, uB = Math.min(Xmax, Udd), iB = (Udd - Math.min(Xmax, Udd)) / Rd;
+      if (iA > Ymax) { iA = Ymax; uA = Udd - Ymax * Rd; }      // clip high-current end to box
+      ctx.save();
+      ctx.strokeStyle = t.pos; ctx.lineWidth = 1.8; ctx.setLineDash([7, 4]);
+      ctx.beginPath(); ctx.moveTo(f.X(uA), f.Y(iA)); ctx.lineTo(f.X(uB), f.Y(iB)); ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'zatěžovací přímka', f.X(uA) + 8, f.Y(iA) - 6, { color: t.pos, font: '11px system-ui' });
+      ctx.restore();
+      let lo = 0, hi = Math.min(Udd, Xmax);
+      const fn = (u) => idOut(u, Ugs) - (Udd - u) / Rd;
+      for (let i = 0; i < 50; i++) { const m = (lo + hi) / 2; if (fn(lo) * fn(m) <= 0) hi = m; else lo = m; }
+      const qU = (lo + hi) / 2, qI = idOut(qU, Ugs);
+      SK.dot(ctx, f.X(qU), f.Y(SK.clamp(qI, 0, Ymax)), 5, t.ok);
+      SK.label(ctx, 'Q', f.X(qU) + 6, f.Y(SK.clamp(qI, 0, Ymax)) - 6, { color: t.ok, font: 'bold 13px system-ui' });
+
       ro.innerHTML = `<b>Výstupní</b> I_D(U_DS)<br>I_DSS=<b>${SK.fmt(Idss, 1)} mA</b>, U_P=<b>${SK.fmt(Up, 1)} V</b><br>` +
-        `Při U_GS=${SK.fmt(Ugs, 1)} V → I_D,sat=<b>${SK.fmt(idSat(Ugs), 2)} mA</b>`;
+        `U_DD=${SK.fmt(Udd, 1)} V, R_D=${SK.fmt(Rd, 1)} kΩ<br>` +
+        `Prac. bod Q: U_DS=<b>${SK.fmt(qU, 2)} V</b>, I_D=<b>${SK.fmt(qI, 2)} mA</b> (U_GS=${SK.fmt(Ugs, 1)} V)`;
     }
 
     SK.controls(document.getElementById('ctrl'), [
@@ -160,11 +180,16 @@
         fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Up = v; if (Ugs < Up) Ugs = Up; view.redraw(); } }),
       SK.slider({ label: 'Volené U_GS', min: -8, max: 0, step: 0.1, value: -1.5, unit: 'V',
         fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Ugs = SK.clamp(v, Up, 0); view.redraw(); } }),
+      SK.slider({ label: 'Napájení U_DD', min: 2, max: 20, step: 0.5, value: 12, unit: 'V',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Udd = v; view.redraw(); } }),
+      SK.slider({ label: 'Zátěž R_D', min: 0.2, max: 5, step: 0.1, value: 1.2, unit: 'kΩ',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Rd = v; view.redraw(); } }),
     ]);
     const hint = document.createElement('div');
     hint.className = 'sk-hint';
     hint.textContent = 'N-JFET: U_P je záporné. Převodní charakteristika je kvadratická od 0 (při U_GS=U_P) do I_DSS (při U_GS=0). ' +
-      'Výstupní rodina: nejprve ohmická (lineární) oblast, pak nasycení za mezí zaškrcení U_DS=U_GS−U_P.';
+      'Výstupní rodina: nejprve ohmická (lineární) oblast, pak nasycení za mezí zaškrcení U_DS=U_GS−U_P. ' +
+      'Zatěžovací přímka I_D=(U_DD−U_DS)/R_D protíná zvolenou křivku v pracovním bodě Q.';
     document.getElementById('ctrl').appendChild(hint);
   })();</script>
 </body>

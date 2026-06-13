@@ -10,7 +10,7 @@
 </head>
 <body class="sk">
   <div class="sk-head"><h1>Carnotův cyklus</h1><div class="sk-formula" id="formula"></div></div>
-  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c3" style="flex:0 0 188px"></canvas><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
   <div class="sk-controls" id="ctrl"></div>
   <script src="sim-kit.js"></script>
   <script>(function () {
@@ -20,11 +20,14 @@
     const ro = document.getElementById('ro');
     const c1 = document.getElementById('c1');
     const c2 = document.getElementById('c2');
+    const c3 = document.getElementById('c3');
 
     let Th = 700;   // K (hot reservoir)
     let Tc = 300;   // K (cold reservoir)
     let cr = 2.5;   // isothermal expansion volume ratio V2/V1
     let gam = 1.4;  // adiabatic index
+    let phase = 0;       // 0..4 position around the cycle (1→2→3→4→1)
+    let animSpeed = 0.5; // segments per second
 
     // Carnot cycle states. Start: state 1 (V1, Th). Use R=1, n=1 for shape.
     // 1->2 isothermal expansion at Th (V1->V2=cr*V1)
@@ -47,8 +50,27 @@
       ];
     }
 
+    // State along the cycle at fractional position ph∈[0,4): volume, pressure,
+    // temperature, entropy, which process, and heat direction (+1 in, −1 out, 0 adiabat).
+    function cycleState(ph) {
+      const st = states();
+      const seg = ((Math.floor(ph) % 4) + 4) % 4, u = ph - Math.floor(ph);
+      const dS = Math.log(cr), SA = 0.12 * dS, SB = SA + dS;
+      const L = (a, b) => a + (b - a) * u;
+      if (seg === 0) return { seg, V: L(st[0].V, st[1].V), p: Th / L(st[0].V, st[1].V), T: Th, S: L(SA, SB), heat: 1,
+        proc: 'Izotermická expanze při T_h: plyn přijímá teplo Q_h a koná práci (píst jde ven).' };
+      if (seg === 1) { const C = st[1].p * Math.pow(st[1].V, gam), V = L(st[1].V, st[2].V); const p = C / Math.pow(V, gam);
+        return { seg, V, p, T: p * V, S: SB, heat: 0, proc: 'Adiabatická expanze (tepelně izolováno): plyn se ochlazuje T_h→T_c.' }; }
+      if (seg === 2) return { seg, V: L(st[2].V, st[3].V), p: Tc / L(st[2].V, st[3].V), T: Tc, S: L(SB, SA), heat: -1,
+        proc: 'Izotermická komprese při T_c: plyn odvádí teplo Q_c (práce se koná na plynu).' };
+      const C = st[3].p * Math.pow(st[3].V, gam), V = L(st[3].V, st[0].V), p = C / Math.pow(V, gam);
+      return { seg, V, p, T: p * V, S: SA, heat: 0, proc: 'Adiabatická komprese (tepelně izolováno): plyn se ohřívá T_c→T_h.' };
+    }
+
     const v1 = SK.mount(c1, drawPV);
     const v2 = SK.mount(c2, drawTS);
+    const v3 = SK.mount(c3, drawPiston);
+    const anim = SK.loop((dt) => { phase = (phase + dt * animSpeed) % 4; v1.redraw(); v2.redraw(); v3.redraw(); });
 
     function bounds(st) {
       let Vmin = Infinity, Vmax = -Infinity, pmin = Infinity, pmax = -Infinity;
@@ -125,6 +147,10 @@
         SK.dot(ctx, X(s.V), Y(s.p), 4, t.fg);
         SK.label(ctx, labs[i], X(s.V) + 6, Y(s.p) - 6, { color: t.fg, font: 'bold 12px system-ui' });
       });
+      // animated cycle marker
+      const cs = cycleState(phase);
+      SK.dot(ctx, X(cs.V), Y(cs.p), 6, t.warn);
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(X(cs.V), Y(cs.p), 9, 0, 7); ctx.stroke(); ctx.restore();
       SK.label(ctx, 'p–V diagram (plocha = práce W)', w / 2, h - 6, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
     }
 
@@ -180,20 +206,69 @@
         SK.dot(ctx, X(p[0]), Y(p[1]), 4, t.fg);
         SK.label(ctx, labs[i], X(p[0]) + 6, Y(p[1]) - 6, { color: t.fg, font: 'bold 12px system-ui' });
       });
+      // animated cycle marker
+      const cs = cycleState(phase);
+      SK.dot(ctx, X(cs.S), Y(cs.T), 6, t.warn);
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(X(cs.S), Y(cs.T), 9, 0, 7); ctx.stroke(); ctx.restore();
       SK.label(ctx, 'T–S diagram (obdélník)', w / 2, h - 6, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
 
       const eta = 1 - Tc / Th;
-      ro.innerHTML = `Účinnost <b>η = ${(eta * 100).toFixed(1)} %</b><br>` +
-        `T_h=<b>${Th | 0} K</b>, T_c=<b>${Tc | 0} K</b><br>` +
-        `Práce W &gt; 0 (plocha smyčky) · γ=${SK.fmt(gam, 2)}`;
+      ro.innerHTML = `Účinnost <b>η = ${(eta * 100).toFixed(1)} %</b> = 1 − T_c/T_h<br>` +
+        `T_h=<b>${Th | 0} K</b>, T_c=<b>${Tc | 0} K</b> · γ=${SK.fmt(gam, 2)}<br>` +
+        `<b>Fáze ${cs.seg + 1}/4:</b> ${cs.proc}`;
     }
 
-    function redraw() { v1.redraw(); v2.redraw(); }
+    function drawPiston(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const st = states(), cs = cycleState(phase);
+      const Vmin = st[0].V, Vmax = st[2].V;
+      const frac = (cs.V - Vmin) / (Vmax - Vmin);            // 0..1 gas volume
+      const cx = w / 2, cw = Math.min(w * 0.6, 80);
+      const top = 30, base = h - 66;
+      const gasTop = base - (0.16 + 0.76 * frac) * (base - top);
+      // gas colour by temperature (cold blue → hot red)
+      const Tn = SK.clamp((cs.T - Tc) / Math.max(1, Th - Tc), 0, 1);
+      const hot = [239, 68, 68], cold = [59, 130, 246];
+      const col = `rgb(${hot.map((c, i) => Math.round(cold[i] + (c - cold[i]) * Tn)).join(',')})`;
+      // gas fill + particles
+      ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = 0.30; ctx.fillRect(cx - cw / 2 + 2, gasTop, cw - 4, base - gasTop); ctx.globalAlpha = 1;
+      ctx.fillStyle = col;
+      for (let i = 0; i < 22; i++) { const gx = cx - cw / 2 + 5 + Math.random() * (cw - 10), gy = gasTop + 5 + Math.random() * (base - gasTop - 10);
+        ctx.beginPath(); ctx.arc(gx, gy, 1.6, 0, 7); ctx.fill(); }
+      ctx.restore();
+      // cylinder walls (open top) + piston
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx - cw / 2, top); ctx.lineTo(cx - cw / 2, base); ctx.lineTo(cx + cw / 2, base); ctx.lineTo(cx + cw / 2, top); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.fillRect(cx - cw / 2 - 3, gasTop - 9, cw + 6, 9);
+      ctx.fillStyle = t.fg; ctx.fillRect(cx - 5, gasTop - 32, 10, 24); ctx.restore();
+      SK.label(ctx, 'píst', cx + cw / 2 + 6, gasTop - 14, { color: t.muted, font: '10px system-ui' });
+      // reservoir / insulation under the cylinder + heat arrow
+      let rlbl, rcol;
+      if (cs.heat === 1) { rcol = '#ef4444'; rlbl = 'ohřívač T_h  (Q_h →)'; }
+      else if (cs.heat === -1) { rcol = '#3b82f6'; rlbl = 'chladič T_c  (Q_c ←)'; }
+      else { rcol = t.muted; rlbl = 'tepelná izolace (Q=0)'; }
+      ctx.save(); ctx.fillStyle = rcol; ctx.globalAlpha = cs.heat === 0 ? 0.4 : 0.85;
+      ctx.fillRect(cx - cw / 2 - 6, base, cw + 12, 12); ctx.restore();
+      if (cs.heat === 1) SK.arrow(ctx, cx, base + 11, cx, base - 3, { color: '#ef4444', width: 2.4, head: 7 });
+      else if (cs.heat === -1) SK.arrow(ctx, cx, base - 3, cx, base + 11, { color: '#3b82f6', width: 2.4, head: 7 });
+      SK.label(ctx, rlbl, cx, base + 28, { color: t.muted, align: 'center', font: '10px system-ui' });
+      SK.label(ctx, 'V=' + SK.fmt(cs.V, 2) + ' · T=' + (cs.T | 0) + ' K', cx, 16, { color: t.muted, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'mechanický cyklus', cx, h - 6, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function redraw() { v1.redraw(); v2.redraw(); v3.redraw(); }
+
+    const playBtn = SK.button({ label: '▶ Spustit cyklus', primary: true, onclick: (b) => {
+      anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit cyklus'; } });
 
     const sTc = SK.slider({ label: 'Studená lázeň T_c', min: 250, max: 400, step: 5, value: 300, unit: 'K',
       fmt: (v) => v | 0, oninput: (v) => { Tc = Math.min(v, Th - 5); sTc.set(Tc); redraw(); } });
 
     SK.controls(document.getElementById('ctrl'), [
+      playBtn,
+      SK.slider({ label: 'Rychlost animace', min: 0.2, max: 2, step: 0.1, value: 0.5, unit: '×',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { animSpeed = v; } }),
       SK.slider({ label: 'Teplá lázeň T_h', min: 400, max: 900, step: 5, value: 700, unit: 'K',
         fmt: (v) => v | 0, oninput: (v) => { Th = v; if (Tc > Th - 5) { Tc = Th - 5; sTc.set(Tc); } redraw(); } }),
       sTc,
@@ -204,8 +279,11 @@
     ]);
     const hint = document.createElement('div');
     hint.className = 'sk-hint';
-    hint.textContent = 'Carnotův cyklus: dvě izotermy (pV=konst, T_h a T_c) a dvě adiabaty (pV^γ=konst). ' +
-      'V p–V diagramu je smyčka zaoblená, v T–S diagramu je to obdélník. Účinnost závisí jen na teplotách: η=1−T_c/T_h.';
+    hint.innerHTML = '<b>Spusť cyklus</b> a sleduj píst vlevo i pohyb bodu po obou diagramech. Čtyři vratné děje: ' +
+      '<b>1→2</b> izotermická expanze při T_h (přijímá Q_h), <b>2→3</b> adiabatická expanze (chladne na T_c), ' +
+      '<b>3→4</b> izotermická komprese při T_c (odvádí Q_c), <b>4→1</b> adiabatická komprese (ohřeje se na T_h). ' +
+      'Izotermy: pV=konst, adiabaty: pV^γ=konst. V p–V je smyčka (její plocha = vykonaná práce), v T–S obdélník. ' +
+      'Účinnost závisí jen na teplotách lázní: η = 1 − T_c/T_h.';
     document.getElementById('ctrl').appendChild(hint);
   })();</script>
 </body>

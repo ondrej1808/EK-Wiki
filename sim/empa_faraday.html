@@ -149,9 +149,15 @@
       SK.grid(ctx, w, h, 28);
       const padL = 40, padR = 12, padT = 14, padB = 12;
       const midY = h / 2;
-      // two stacked plots: Φ (top half), u (bottom half)
+      // two stacked plots: Φ (top half), u (bottom half).
+      // Auto-scale the u axis to the data so the derivative peaks aren't clipped
+      // (its amplitude grows with speed); otherwise the curve flattens into plateaus.
+      const uvals = hist.map(d => d.u);
+      let umax = 0.15;
+      uvals.forEach(v => { if (Math.abs(v) > umax) umax = Math.abs(v); });
+      umax *= 1.15;
       drawTrace(ctx, padL, padT, w - padL - padR, h / 2 - padT - 6, hist.map(d => d.phi), th.accent, 'Φ(t)', th, 0, 1.05);
-      drawTrace(ctx, padL, h / 2 + 6, w - padL - padR, h / 2 - padB - 6, hist.map(d => d.u), th.warn, 'u(t) = −dΦ/dt', th, -1, 1);
+      drawTrace(ctx, padL, h / 2 + 6, w - padL - padR, h / 2 - padB - 6, uvals, th.warn, 'u(t) = −dΦ/dt', th, -umax, umax);
 
       // current readout
       const phi = flux(s), u = -dflux(s, curVel());

@@ -13,8 +13,9 @@
     <h1>VA charakteristika diody + pracovní bod</h1>
     <div class="sk-formula" id="formula"></div>
   </div>
-  <div class="sk-stage">
+  <div class="sk-stage sk-split">
     <canvas id="c"></canvas>
+    <canvas id="cb"></canvas>
     <div class="sk-readout" id="ro"></div>
   </div>
   <div class="sk-controls" id="ctrl"></div>
@@ -80,6 +81,72 @@
     }
 
     const view = SK.mount(canvas, draw);
+    const viewB = SK.mount(document.getElementById('cb'), drawBands);
+    function redraw() { view.redraw(); viewB.redraw(); }
+
+    // Energy-band diagram that bends with the operating-point voltage U.
+    // Forward bias lowers the junction barrier q(V_bi−U) and narrows the depletion.
+    function drawBands(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const U = workingPoint().U;                 // forward diode voltage
+      const padT = 28, padB = 38, x0 = 30, x1 = w - 14;
+      const Emax = 0.45, Emin = -2.25, Eg = 1.1;
+      const Y = (E) => padT + (Emax - E) / (Emax - Emin) * (h - padT - padB);
+      SK.label(ctx, 'Pásový diagram (mění se s napětím)', (x0 + x1) / 2, 15, { color: t.fg, align: 'center', font: '12px system-ui' });
+
+      function plot(fn, xa, xb, color, width, dash) {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width || 2.2; if (dash) ctx.setLineDash(dash);
+        ctx.beginPath(); let started = false;
+        for (let px = xa; px <= xb; px += 2) { const E = fn(px); if (E == null) { started = false; continue; }
+          const y = Y(E); started ? ctx.lineTo(px, y) : (ctx.moveTo(px, y), started = true); }
+        ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      }
+      let note;
+
+      if (type === 'Schottky') {
+        const phiB = 0.6, Vbi0 = 0.5, phin = phiB - Vbi0, bend = Math.max(Vbi0 - U, 0);
+        const xm = x0 + (x1 - x0) * 0.30, xdep = xm + (x1 - xm) * 0.55;
+        ctx.save(); ctx.fillStyle = t.muted; ctx.globalAlpha = 0.30; ctx.fillRect(x0, padT, xm - x0, h - padT - padB); ctx.restore();
+        SK.label(ctx, 'kov', (x0 + xm) / 2, padT + 14, { color: t.fg, align: 'center', font: '11px system-ui' });
+        SK.label(ctx, 'polovodič N', (xm + x1) / 2, padT + 14, { color: t.fg, align: 'center', font: '11px system-ui' });
+        const Ec = (x) => { if (x < xm) return null; const fr = SK.clamp((x - xm) / (xdep - xm), 0, 1); return phiB - bend * (0.5 - 0.5 * Math.cos(Math.PI * fr)); };
+        plot(() => 0, x0, xm, t.ok, 1.6, [5, 4]);
+        plot(Ec, xm, x1, t.accent2, 2.4);
+        plot((x) => { const e = Ec(x); return e == null ? null : e - Eg; }, xm, x1, t.accent2, 2.4);
+        plot((x) => (x < xm ? null : (phiB - bend) - phin), xm, x1, t.ok, 1.6, [5, 4]);
+        SK.arrow(ctx, xm + 5, Y(0), xm + 5, Y(phiB), { color: t.warn, width: 1.4, head: 5 });
+        SK.arrow(ctx, xm + 5, Y(phiB), xm + 5, Y(0), { color: t.warn, width: 1.4, head: 5 });
+        SK.label(ctx, 'φ_B', xm + 9, Y(phiB / 2), { color: t.warn, font: '10px system-ui', baseline: 'middle' });
+        SK.label(ctx, 'E_C', x1 - 2, Y(phiB - bend) - 3, { color: t.accent2, align: 'right', font: '10px system-ui' });
+        SK.label(ctx, 'E_F', x0 + 2, Y(0) - 3, { color: t.ok, font: '10px system-ui' });
+        note = 'Schottkyho bariéra φ_B (od kovu) je pevná; bariéra z polovodiče = V_bi−U klesá propustným napětím.';
+      } else {
+        const Vbi = 0.7, isPIN = (type === 'PIN'), barrier = Math.max(Vbi - U, 0), xj = (x0 + x1) / 2;
+        const Whalf = isPIN ? (x1 - x0) * 0.32 : (x1 - x0) * 0.13 * Math.sqrt(Math.max(Vbi - U, 0.05) / Vbi);
+        const xa = xj - Whalf, xb = xj + Whalf;
+        const Ec = (x) => { if (x <= xa) return 0; if (x >= xb) return -barrier; const fr = (x - xa) / (2 * Whalf); return -barrier * (0.5 - 0.5 * Math.cos(Math.PI * fr)); };
+        ctx.save(); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.12; ctx.fillRect(xa, padT, xb - xa, h - padT - padB); ctx.restore();
+        SK.label(ctx, 'P', (x0 + xa) / 2, padT + 14, { color: t.pos, align: 'center', font: 'bold 12px system-ui' });
+        SK.label(ctx, 'N', (xb + x1) / 2, padT + 14, { color: t.neg, align: 'center', font: 'bold 12px system-ui' });
+        if (isPIN) SK.label(ctx, 'i', xj, padT + 14, { color: t.muted, align: 'center', font: 'bold 12px system-ui' });
+        plot(Ec, x0, x1, t.accent2, 2.4);
+        plot((x) => Ec(x) - Eg, x0, x1, t.accent2, 2.4);
+        const EFp = -Eg + 0.2, EFn = -barrier - 0.2;
+        plot(() => EFp, x0, xj, t.ok, 1.6, [5, 4]);
+        plot(() => EFn, xj, x1, t.ok, 1.6, [5, 4]);
+        SK.arrow(ctx, xa - 5, Y(-barrier), xa - 5, Y(0), { color: t.warn, width: 1.4, head: 5 });
+        SK.arrow(ctx, xa - 5, Y(0), xa - 5, Y(-barrier), { color: t.warn, width: 1.4, head: 5 });
+        SK.label(ctx, 'q(V_bi−U)', xa - 9, Y(-barrier / 2), { color: t.warn, align: 'right', font: '10px system-ui', baseline: 'middle' });
+        SK.label(ctx, 'E_C', x0 + 2, Y(0) - 3, { color: t.accent2, font: '10px system-ui' });
+        SK.label(ctx, 'E_V', x0 + 2, Y(-Eg) - 3, { color: t.accent2, font: '10px system-ui' });
+        SK.label(ctx, 'E_F', x1 - 2, Y(EFn) - 3, { color: t.ok, align: 'right', font: '10px system-ui' });
+        note = isPIN ? 'PIN: široká vlastní (i) vrstva → pozvolný spád pásů, malá kapacita.'
+                     : 'Propustné U snižuje bariéru q(V_bi−U) a zužuje ochuzenou vrstvu.';
+      }
+      SK.label(ctx, `U = ${U.toFixed(2)} V (propustně) · ΔE_F = qU`, (x0 + x1) / 2, h - 22, { color: t.muted, align: 'center', font: '10px system-ui' });
+      SK.label(ctx, note, (x0 + x1) / 2, h - 7, { color: t.muted, align: 'center', font: '10px system-ui' });
+    }
 
     function draw(ctx, w, h) {
       const t = SK.theme();
@@ -182,13 +249,13 @@
         { label: 'PN', value: 'PN' },
         { label: 'PIN', value: 'PIN' },
         { label: 'Schottky', value: 'Schottky' },
-      ], value: 'PN', onchange: (v) => { type = v; view.redraw(); } }),
+      ], value: 'PN', onchange: (v) => { type = v; redraw(); } }),
       SK.slider({ label: 'Teplota T', min: 250, max: 400, step: 1, value: 300, unit: 'K',
-                  fmt: (v) => v | 0, oninput: (v) => { T = v; view.redraw(); } }),
+                  fmt: (v) => v | 0, oninput: (v) => { T = v; redraw(); } }),
       SK.slider({ label: 'Napájení Uᵤ', min: 0.2, max: 5, step: 0.1, value: 2, unit: 'V',
-                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Us = v; view.redraw(); } }),
+                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Us = v; redraw(); } }),
       SK.slider({ label: 'Odpor R', min: 20, max: 2000, step: 10, value: 200, unit: 'Ω',
-                  fmt: (v) => v | 0, oninput: (v) => { R = v; view.redraw(); } }),
+                  fmt: (v) => v | 0, oninput: (v) => { R = v; redraw(); } }),
     ]);
     const hint = document.createElement('div');
     hint.className = 'sk-hint';

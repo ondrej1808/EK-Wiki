@@ -33,7 +33,7 @@
       ctx.clearRect(0, 0, w, h);
       SK.grid(ctx, w, h, 30);
       const cy = h * 0.5;
-      const dpx = SK.clamp(dMM / 1000 * PX_PER_M, 40, w * 0.6);
+      const dpx = SK.clamp(dMM / 80 * w * 0.5, 60, w * 0.62);
       const x1 = w / 2 - dpx / 2, x2 = w / 2 + dpx / 2;
       // wire 1 always ⊙ (out). wire 2 ⊙ if same else ⊗
       const w1Out = true, w2Out = same;
@@ -85,9 +85,10 @@
     function drawBcircles(ctx, cx, cy, out, w, h, t, alpha) {
       ctx.save();
       const dir = out ? -1 : 1; // out of page → B counterclockwise as seen
-      for (let k = 1; k <= 5; k++) {
-        const r = 22 * k;
-        ctx.strokeStyle = t.mag; ctx.globalAlpha = alpha * (1 - k * 0.12); ctx.lineWidth = 1;
+      const maxR = Math.min(w, h) * 0.46, N = 6;
+      for (let k = 1; k <= N; k++) {
+        const r = maxR * k / N;
+        ctx.strokeStyle = t.mag; ctx.globalAlpha = alpha * (1 - k * 0.1); ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke();
         // a couple of direction arrows
         const ang = 0.6 + k * 0.3;
