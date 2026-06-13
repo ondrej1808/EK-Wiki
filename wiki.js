@@ -358,6 +358,7 @@
         resources: [
           { type: 'sim', label: 'Coulombův zákon',  src: SIM + 'fy2_coulomb.html' },
           { type: 'sim', label: 'Carnotův cyklus',  src: SIM + 'fy2_carnot.html' },
+          { type: 'sim', label: 'Tenká čočka – spojka / rozptylka', src: SIM + 'fy2_lens.html' },
         ],
       },
       {

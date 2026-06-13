@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenká čočka — spojka / rozptylka — FY2</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Zobrazení tenkou čočkou</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "\\dfrac{1}{a}+\\dfrac{1}{a'}=\\dfrac{1}{f},\\quad Z=-\\dfrac{a'}{a}", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let kind = 'spojka';   // 'spojka' (f>0) | 'rozptylka' (f<0)
+    let fAbs = 8;          // |ohnisková vzdálenost| (cm)
+    let a    = 20;         // vzdálenost předmětu (cm, >0 vlevo)
+    let yObj = 4;          // výška předmětu (cm, nad osou)
+    let dragging = false;
+
+    const A_MIN = 1, A_MAX = 44, Y_MIN = 1, Y_MAX = 8;
+
+    function fSigned() { return kind === 'spojka' ? +fAbs : -fAbs; }
+
+    // Scale (px/cm), equal in x and y so ray angles are honest.
+    function scaleFor(w, h) {
+      return Math.min((w / 2 - 36) / (A_MAX + 4), (h / 2 - 22) / (Y_MAX + 1.5));
+    }
+
+    // Thin-lens imaging. Returns image distance a' (cm, +right/real, −left/virtual),
+    // magnification Z and a flag for the image-at-infinity degenerate case.
+    function image() {
+      const f = fSigned();
+      const inv = 1 / f - 1 / a;          // = 1/a'
+      if (Math.abs(inv) < 1e-4) return { inf: true };
+      const aP = 1 / inv;
+      const Z = -aP / a;
+      return { inf: false, aP, Z };
+    }
+
+    const view = SK.mount(canvas, draw);
+
+    function seg(ctx, x0, y0, x1, y1, color, width, dash) {
+      ctx.save();
+      ctx.strokeStyle = color; ctx.lineWidth = width || 1.6; ctx.lineCap = 'round';
+      if (dash) ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawLens(ctx, xL, yA, half, t) {
+      // vertical line + schematic arrowheads (outward = spojka, inward = rozptylka)
+      ctx.save();
+      ctx.strokeStyle = t.accent2; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(xL, yA - half); ctx.lineTo(xL, yA + half); ctx.stroke();
+      const hd = 9;
+      if (kind === 'spojka') {
+        SK.arrow(ctx, xL, yA - half + hd + 2, xL, yA - half, { color: t.accent2, width: 2.2, head: hd });
+        SK.arrow(ctx, xL, yA + half - hd - 2, xL, yA + half, { color: t.accent2, width: 2.2, head: hd });
+      } else {
+        SK.arrow(ctx, xL, yA - half, xL, yA - half + hd + 2, { color: t.accent2, width: 2.2, head: hd });
+        SK.arrow(ctx, xL, yA + half, xL, yA + half - hd - 2, { color: t.accent2, width: 2.2, head: hd });
+      }
+      ctx.restore();
+    }
+
+    function focusMark(ctx, x, yA, txt, t) {
+      SK.dot(ctx, x, yA, 3.5, t.muted);
+      SK.label(ctx, txt, x, yA + 15, { color: t.muted, align: 'center', font: '11px system-ui' });
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+
+      const xL = w / 2, yA = h / 2, sc = scaleFor(w, h);
+      const f = fSigned();
+      const half = Math.min(yA - 8, (Y_MAX + 1) * sc);
+
+      // optical axis
+      seg(ctx, 0, yA, w, yA, t.axis, 1.5);
+      SK.arrow(ctx, w - 12, yA, w - 2, yA, { color: t.axis, width: 1.5, head: 6 });
+
+      // focal points F (object side) and F' (image side), plus 2F ticks
+      const Fobj = xL - f * sc, Fimg = xL + f * sc;
+      focusMark(ctx, Fobj, yA, kind === 'spojka' ? 'F' : "F'", t);
+      focusMark(ctx, Fimg, yA, kind === 'spojka' ? "F'" : 'F', t);
+      SK.dot(ctx, xL - 2 * f * sc, yA, 2.2, t.grid);
+      SK.dot(ctx, xL + 2 * f * sc, yA, 2.2, t.grid);
+
+      drawLens(ctx, xL, yA, half, t);
+
+      // object (red arrow, base on axis, tip above)
+      const objX = xL - a * sc, objTipY = yA - yObj * sc;
+      SK.arrow(ctx, objX, yA, objX, objTipY, { color: t.pos, width: 3, head: 9 });
+      SK.dot(ctx, objX, objTipY, 5, t.pos);
+      SK.label(ctx, 'předmět', objX, yA + 16, { color: t.pos, align: 'center', font: '11px system-ui' });
+
+      const im = image();
+
+      // Lens-crossing points of the three principal rays
+      const P1 = { x: xL, y: objTipY };                 // parallel-to-axis ray
+      const P2 = { x: xL, y: yA };                       // central ray
+      // ray through object-side focus Fobj
+      let P3 = null;
+      if (Math.abs(objX - Fobj) > 0.5) {
+        const tt = (xL - objX) / (Fobj - objX);
+        P3 = { x: xL, y: objTipY + tt * (yA - objTipY) };
+      }
+      const Ps = [P1, P2]; if (P3) Ps.push(P3);
+      const cols = [t.accent, t.mag, t.warn];
+
+      // incoming segments O → P
+      Ps.forEach((P, i) => seg(ctx, objX, objTipY, P.x, P.y, cols[i], 1.7));
+
+      const BIG = w + h;
+      if (im.inf) {
+        // image at infinity: refracted rays parallel to the central ray
+        const dx = xL - objX, dy = yA - objTipY, L = Math.hypot(dx, dy) || 1;
+        Ps.forEach((P, i) => seg(ctx, P.x, P.y, P.x + dx / L * BIG, P.y + dy / L * BIG, cols[i], 1.7));
+        SK.label(ctx, 'obraz v nekonečnu', xL + 20, 22, { color: t.warn, font: '12px system-ui' });
+      } else {
+        const imgX = xL + im.aP * sc, imgTipY = yA - im.Z * yObj * sc;
+        const I = { x: imgX, y: imgTipY };
+        const real = im.aP > 0;
+        Ps.forEach((P, i) => {
+          if (real) {
+            seg(ctx, P.x, P.y, I.x, I.y, cols[i], 1.7);            // converge to I
+            // extend a touch past I
+            const dx = I.x - P.x, dy = I.y - P.y, L = Math.hypot(dx, dy) || 1;
+            seg(ctx, I.x, I.y, I.x + dx / L * 40, I.y + dy / L * 40, cols[i], 1.2);
+          } else {
+            // virtual: real ray goes right (away from I), extension dashed back to I
+            const dx = P.x - I.x, dy = P.y - I.y, L = Math.hypot(dx, dy) || 1;
+            seg(ctx, P.x, P.y, P.x + dx / L * BIG, P.y + dy / L * BIG, cols[i], 1.7);
+            seg(ctx, P.x, P.y, I.x, I.y, cols[i], 1.2, [5, 4]);
+          }
+        });
+        // image arrow (solid = real, dashed = virtual)
+        SK.arrow(ctx, imgX, yA, imgX, imgTipY,
+          { color: t.accent2, width: 3, head: 9, dash: real ? null : [6, 4] });
+        SK.dot(ctx, imgX, imgTipY, 4.5, t.accent2);
+        SK.label(ctx, real ? 'obraz' : 'zdánlivý obraz', imgX, imgTipY + (im.Z * yObj < 0 ? 16 : -10),
+          { color: t.accent2, align: 'center', font: '11px system-ui' });
+      }
+
+      // readout
+      let html = `<b>${kind === 'spojka' ? 'Spojka' : 'Rozptylka'}</b> · f = ${SK.fmt(f, 1)} cm<br>` +
+                 `a = ${SK.fmt(a, 1)} cm`;
+      if (im.inf) {
+        html += `<br>a′ → ∞ — <b>obraz v nekonečnu</b>`;
+      } else {
+        const real = im.aP > 0, upright = im.Z > 0, mag = Math.abs(im.Z);
+        const sizeTxt = Math.abs(mag - 1) < 0.02 ? 'stejně velký' : (mag > 1 ? 'zvětšený' : 'zmenšený');
+        html += ` · a′ = ${SK.fmt(im.aP, 1)} cm<br>` +
+                `Z = ${SK.fmt(im.Z, 2)} · ` +
+                `<b>${real ? 'skutečný' : 'zdánlivý'}, ${upright ? 'přímý' : 'převrácený'}, ${sizeTxt}</b>`;
+      }
+      ro.innerHTML = html;
+    }
+
+    // ── drag the object anywhere on the left half-plane ──
+    canvas.addEventListener('pointerdown', (e) => {
+      const { w } = view.dims();
+      const p = SK.pointer(canvas, e);
+      if (p.x < w / 2 - 6) { dragging = true; canvas.setPointerCapture(e.pointerId); moveObj(p); }
+    });
+    canvas.addEventListener('pointermove', (e) => { if (dragging) moveObj(SK.pointer(canvas, e)); });
+    canvas.addEventListener('pointerup',   () => { dragging = false; });
+    canvas.addEventListener('pointercancel', () => { dragging = false; });
+
+    function moveObj(p) {
+      const { w, h } = view.dims();
+      const xL = w / 2, yA = h / 2, sc = scaleFor(w, h);
+      a    = SK.clamp((xL - p.x) / sc, A_MIN, A_MAX);
+      yObj = SK.clamp((yA - p.y) / sc, Y_MIN, Y_MAX);
+      sliderA.set(a); sliderY.set(yObj);
+      view.redraw();
+    }
+
+    // ── controls ──
+    const tabs = SK.tabs({
+      options: [{ label: 'Spojka (f > 0)', value: 'spojka' }, { label: 'Rozptylka (f < 0)', value: 'rozptylka' }],
+      value: 'spojka', onchange: (v) => { kind = v; view.redraw(); },
+    });
+    const sliderF = SK.slider({ label: 'Ohnisko |f|', min: 2, max: 20, step: 0.5, value: 8, unit: 'cm',
+      fmt: (v) => SK.fmt(v, 1), oninput: (v) => { fAbs = v; view.redraw(); } });
+    const sliderA = SK.slider({ label: 'Vzdálenost a', min: A_MIN, max: A_MAX, step: 0.5, value: 20, unit: 'cm',
+      fmt: (v) => SK.fmt(v, 1), oninput: (v) => { a = v; view.redraw(); } });
+    const sliderY = SK.slider({ label: 'Výška předmětu', min: Y_MIN, max: Y_MAX, step: 0.5, value: 4, unit: 'cm',
+      fmt: (v) => SK.fmt(v, 1), oninput: (v) => { yObj = v; view.redraw(); } });
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(tabs.el);
+    SK.controls(ctrl, [sliderF, sliderA, sliderY]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Táhni myší předmět (červená šipka) — měníš vzdálenost i výšku. Tři význačné paprsky: ' +
+      'rovnoběžný s osou → po lomu jde ohniskem F′; středem čočky → neláme se; ohniskem F → po lomu rovnoběžně s osou. ' +
+      'Spojka: předmět za 2F dává zmenšený převrácený skutečný obraz, mezi F a 2F zvětšený převrácený skutečný, ' +
+      'uvnitř ohniska zvětšený přímý zdánlivý (lupa). Rozptylka dává vždy zmenšený přímý zdánlivý obraz.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
