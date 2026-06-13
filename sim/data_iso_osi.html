@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/OSI — tok a zapouzdření</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>ISO/OSI — tok a zapouzdření dat</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    document.getElementById('formula').textContent = 'Zapouzdření dat průchodem vrstvami (enkapsulace ↓, dekapsulace ↑)';
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    // 7 layers, top (7) to bottom (1)
+    const LAYERS = [
+      { n: 7, name: 'Aplikační' },
+      { n: 6, name: 'Prezentační' },
+      { n: 5, name: 'Relační' },
+      { n: 4, name: 'Transportní' },
+      { n: 3, name: 'Síťová' },
+      { n: 2, name: 'Linková' },
+      { n: 1, name: 'Fyzická' },
+    ];
+
+    // Headers added per layer going DOWN, and the PDU name at that layer.
+    // index aligns with LAYERS (top->bottom)
+    const STEPS = [
+      { hdr: null,            pdu: 'data',    note: 'data od aplikace' },
+      { hdr: null,            pdu: 'data',    note: 'formát, kódování' },
+      { hdr: null,            pdu: 'data',    note: 'relace' },
+      { hdr: 'TCP/UDP',       pdu: 'segment', note: '+ TCP/UDP hlavička' },
+      { hdr: 'IP',            pdu: 'paket',   note: '+ IP hlavička' },
+      { hdr: 'MAC',           pdu: 'rámec',   note: '+ MAC hlavička + CRC', trailer: 'CRC' },
+      { hdr: null,            pdu: 'bity',    note: 'sériové bity na médiu' },
+    ];
+
+    // Phases:
+    //  down: idx 0..6 on sender
+    //  wire: crossing physical medium
+    //  up:   idx 6..0 on receiver (strip headers)
+    let phase = 'down';
+    let idx = 0;          // current layer index
+    let prog = 0;         // 0..1 progress within current step
+    let speed = 1.0;      // steps per second-ish
+    const STEP_TIME = 0.9; // seconds per layer at speed 1
+
+    const view = SK.mount(canvas, draw);
+
+    const anim = SK.loop((dt) => {
+      prog += dt * speed / STEP_TIME;
+      if (prog >= 1) { prog = 0; advance(); }
+      view.redraw();
+    });
+
+    function advance() {
+      if (phase === 'down') {
+        if (idx < LAYERS.length - 1) idx++;
+        else { phase = 'wire'; }
+      } else if (phase === 'wire') {
+        phase = 'up'; idx = LAYERS.length - 1;
+      } else if (phase === 'up') {
+        if (idx > 0) idx--;
+        else { // restart
+          phase = 'down'; idx = 0;
+        }
+      }
+    }
+
+    // headers currently present (going down they accumulate up to idx;
+    // going up they are stripped). Returns array of header labels innermost-first.
+    function currentHeaders() {
+      const hs = [];
+      // Going down: headers of layers 0..idx are present.
+      // On the wire: all headers present.
+      // Going up: header added at layer i is stripped when we reach layer i,
+      //           so only headers of layers strictly above current remain (0..idx-1).
+      let upto;
+      if (phase === 'down') upto = idx;
+      else if (phase === 'wire') upto = LAYERS.length - 1;
+      else upto = idx - 1;
+      for (let i = 0; i <= upto; i++) if (STEPS[i].hdr) hs.push(STEPS[i].hdr);
+      return hs;
+    }
+
+    function curPDU() {
+      if (phase === 'wire') return 'bity';
+      return STEPS[idx].pdu;
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+
+      const padT = 14, padB = 14;
+      const stackW = Math.min(150, w * 0.26);
+      const lh = (h - padT - padB) / LAYERS.length;
+      const leftX = 12;
+      const rightX = w - 12 - stackW;
+      const colors = [t.accent, t.accent2, t.mag, t.ok, t.warn, t.pos, t.neg];
+
+      // draw a stack (side: 'L' or 'R'), highlight active layer index hi (or -1)
+      function drawStack(x, hi) {
+        for (let i = 0; i < LAYERS.length; i++) {
+          const y = padT + i * lh;
+          const active = i === hi;
+          ctx.save();
+          ctx.fillStyle = active
+            ? colors[i]
+            : `color-mix(in srgb, ${colors[i]} 22%, ${t.bg})`;
+          ctx.strokeStyle = t.border || t.axis;
+          ctx.lineWidth = 1;
+          roundRect(ctx, x, y + 2, stackW, lh - 4, 7);
+          ctx.fill();
+          ctx.strokeStyle = t.axis; ctx.stroke();
+          ctx.fillStyle = active ? '#fff' : t.fg;
+          ctx.font = (active ? 'bold ' : '') + '12px system-ui';
+          ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.fillText('L' + LAYERS[i].n + ' ' + LAYERS[i].name, x + 8, y + lh / 2);
+          ctx.restore();
+        }
+      }
+
+      const senderHi = (phase === 'down') ? idx : -1;
+      const recvHi = (phase === 'up') ? idx : -1;
+      drawStack(leftX, senderHi);
+      drawStack(rightX, recvHi);
+
+      // labels above stacks
+      ctx.save();
+      ctx.fillStyle = t.muted; ctx.font = 'bold 12px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText('Odesílatel', leftX + stackW / 2, padT);
+      ctx.fillText('Příjemce', rightX + stackW / 2, padT);
+      ctx.restore();
+
+      // physical medium line at bottom between stacks
+      const wireY = padT + (LAYERS.length - 1) * lh + lh / 2;
+      ctx.save();
+      ctx.strokeStyle = t.muted; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.moveTo(leftX + stackW, wireY); ctx.lineTo(rightX, wireY);
+      ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'fyzické médium', (leftX + stackW + rightX) / 2, wireY - 8,
+        { color: t.muted, align: 'center', font: '11px system-ui' });
+      ctx.restore();
+
+      // PDU packet position
+      const headers = currentHeaders();
+      let px, py;
+      if (phase === 'down') {
+        const y0 = padT + idx * lh + lh / 2;
+        py = y0;
+        px = leftX + stackW + 26;
+      } else if (phase === 'up') {
+        py = padT + idx * lh + lh / 2;
+        px = rightX - 26;
+      } else { // wire: move across the medium
+        py = wireY;
+        px = SK.lerp(leftX + stackW + 26, rightX - 26, prog);
+      }
+
+      drawPacket(ctx, px, py, headers, curPDU(), t, colors, phase);
+
+      // readout
+      const phName = phase === 'down' ? 'sestup (enkapsulace)'
+                   : phase === 'wire' ? 'přenos médiem'
+                   : 'výstup (dekapsulace)';
+      const layerName = phase === 'wire' ? 'Fyzické médium'
+                      : 'L' + LAYERS[idx].n + ' ' + LAYERS[idx].name;
+      ro.innerHTML =
+        `<b>${phName}</b><br>` +
+        `vrstva: <b>${layerName}</b><br>` +
+        `PDU: <b>${curPDU()}</b><br>` +
+        `hlavičky: ${headers.length ? headers.join(' · ') : '—'}`;
+    }
+
+    function drawPacket(ctx, cx, cy, headers, pdu, t, colors, phase) {
+      // nested boxes: outermost = last added header. innermost = payload "data"
+      const payW = 46, payH = 22, step = 11;
+      const totalW = payW + headers.length * step * 2;
+      const totalH = payH + headers.length * step * 2;
+      ctx.save();
+      // outer-to-inner
+      for (let i = headers.length - 1; i >= 0; i--) {
+        const ww = payW + (i + 1) * step * 2;
+        const hh = payH + (i + 1) * step * 2;
+        ctx.fillStyle = `color-mix(in srgb, ${colors[(headers.length - 1 - i) % colors.length]} 55%, ${t.bg})`;
+        ctx.strokeStyle = t.fg;
+        roundRect(ctx, cx - ww / 2, cy - hh / 2, ww, hh, 5);
+        ctx.fill(); ctx.lineWidth = 1; ctx.stroke();
+        // header label on the left edge of this box
+        ctx.fillStyle = t.fg; ctx.font = 'bold 9px system-ui';
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText(headers[i], cx - ww / 2 + 3, cy - hh / 2 + step / 2 + 2);
+      }
+      // payload core
+      ctx.fillStyle = pdu === 'bity' ? t.muted : t.accent;
+      roundRect(ctx, cx - payW / 2, cy - payH / 2, payW, payH, 4);
+      ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(pdu === 'bity' ? '0101' : 'data', cx, cy);
+      ctx.restore();
+
+      // PDU name caption under packet
+      SK.label(ctx, pdu, cx, cy + totalH / 2 + 12,
+        { color: t.fg, align: 'center', font: 'bold 12px system-ui' });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      r = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => {
+      anim.toggle();
+      b.textContent = anim.running ? '⏸ Pauza' : '▶ Přehrát';
+    } });
+    const stepBtn = SK.button({ label: '⏭ Krok', onclick: () => {
+      if (anim.running) { anim.stop(); playBtn.set('▶ Přehrát'); }
+      prog = 0; advance(); view.redraw();
+    } });
+    const resetBtn = SK.button({ label: '⟲ Reset', onclick: () => {
+      if (anim.running) { anim.stop(); playBtn.set('▶ Přehrát'); }
+      phase = 'down'; idx = 0; prog = 0; view.redraw();
+    } });
+    SK.controls(ctrl, [
+      playBtn, stepBtn, resetBtn,
+      SK.slider({ label: 'Rychlost', min: 0.25, max: 3, step: 0.25, value: 1, unit: '×',
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { speed = v; } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Datová jednotka klesá zásobníkem odesílatele a v každé vrstvě dostává hlavičku ' +
+      '(data → segment → paket → rámec → bity), projde médiem a u příjemce stoupá s odebíráním hlaviček.';
+    ctrl.appendChild(hint);
+
+    view.redraw();
+  })();</script>
+</body>
+</html>

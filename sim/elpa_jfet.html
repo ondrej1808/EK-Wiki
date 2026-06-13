@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charakteristiky JFET — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Charakteristiky JFET (kanál N)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'I_D=I_{DSS}\\left(1-\\dfrac{U_{GS}}{U_P}\\right)^2', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let mode = 'prevodni';
+    let Idss = 10;      // mA
+    let Up = -4;        // pinch-off voltage (V), negative for N-JFET
+    let Ugs = -1.5;     // selected U_GS for readout / output family marker
+
+    // square-law saturation drain current (mA) for given Ugs
+    function idSat(ugs) {
+      if (ugs <= Up) return 0;
+      if (ugs >= 0) return Idss; // simple model: clamp at I_DSS for Ugs>=0
+      const r = 1 - ugs / Up;
+      return Idss * r * r;
+    }
+    // output curve: I_D(U_DS) for a given U_GS (ohmic then saturation at U_DS = Ugs - Up)
+    function idOut(uds, ugs) {
+      const Isat = idSat(ugs);
+      const Vp = ugs - Up; // saturation voltage (>0 for conducting channel)
+      if (Vp <= 0) return 0;
+      if (uds < Vp) {
+        // ohmic region: smooth rise to Isat (quadratic blend)
+        const x = uds / Vp;
+        return Isat * (2 * x - x * x);
+      }
+      return Isat;
+    }
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 32);
+      if (mode === 'prevodni') drawTransfer(ctx, w, h, t);
+      else drawOutput(ctx, w, h, t);
+    }
+
+    function frame(ctx, w, h, t, xlab, ylab, Xmin, Xmax, Ymax, xstep, ystep) {
+      const padL = 56, padB = 40, padT = 16, padR = 16;
+      const ox = padL + (Xmin < 0 ? (-Xmin) / (Xmax - Xmin) * (w - padL - padR) : 0);
+      const oy = h - padB;
+      const sx = (w - padL - padR) / (Xmax - Xmin);
+      const sy = (h - padT - padB) / Ymax;
+      const X = (u) => padL + (u - Xmin) * sx;
+      const Y = (i) => oy - i * sy;
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(Xmin), Y(0)); ctx.lineTo(X(Xmax), Y(0));
+      ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(0), Y(Ymax));
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText(xlab, X(Xmax) - 2, Y(0) + 6);
+      ctx.textAlign = 'left';
+      ctx.fillText(ylab, X(0) + 6, Y(Ymax) + 2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let u = Math.ceil(Xmin / xstep) * xstep; u <= Xmax + 1e-9; u += xstep) {
+        if (Math.abs(u) < 1e-9) continue;
+        ctx.fillText(SK.fmt(u, Math.abs(u) < 1 ? 1 : 0), X(u), Y(0) + 4);
+      }
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let i = ystep; i <= Ymax; i += ystep) ctx.fillText(i | 0, X(0) - 5, Y(i));
+      ctx.restore();
+      return { X, Y, ox, sx, Xmin, Xmax, Ymax };
+    }
+
+    function drawTransfer(ctx, w, h, t) {
+      const Xmin = Up - 0.5, Xmax = 0.5, Ymax = Idss * 1.15;
+      const f = frame(ctx, w, h, t, 'U_GS [V]', 'I_D [mA]', Xmin, Xmax, Ymax, 1, Math.max(2, Math.round(Idss / 5)));
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      let started = false;
+      for (let px = f.X(Up); px <= f.X(0); px++) {
+        const u = Xmin + (px - 56) / f.sx;
+        const yy = f.Y(SK.clamp(idSat(u), 0, Ymax));
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+      // mark I_DSS at Ugs=0 and U_P
+      SK.dot(ctx, f.X(0), f.Y(Idss), 4, t.accent2);
+      SK.label(ctx, 'I_DSS', f.X(0) + 6, f.Y(Idss) + 2, { color: t.accent2, font: '11px system-ui' });
+      SK.dot(ctx, f.X(Up), f.Y(0), 4, t.warn);
+      SK.label(ctx, 'U_P', f.X(Up) - 2, f.Y(0) - 6, { color: t.warn, align: 'right', font: '11px system-ui' });
+      // working point at selected Ugs
+      const id = idSat(Ugs);
+      const qx = f.X(Ugs), qy = f.Y(SK.clamp(id, 0, Ymax));
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(qx, f.Y(0));
+      ctx.moveTo(qx, qy); ctx.lineTo(f.X(0), qy); ctx.stroke(); ctx.setLineDash([]);
+      SK.dot(ctx, qx, qy, 5, t.ok); ctx.restore();
+      ro.innerHTML = `<b>Převodní</b> I_D(U_GS)<br>I_DSS=<b>${SK.fmt(Idss, 1)} mA</b>, U_P=<b>${SK.fmt(Up, 1)} V</b><br>` +
+        `Při U_GS=${SK.fmt(Ugs, 1)} V → I_D=<b>${SK.fmt(id, 2)} mA</b>`;
+    }
+
+    function drawOutput(ctx, w, h, t) {
+      const Xmax = Math.max(8, (0 - Up) + 4), Ymax = Idss * 1.15;
+      const f = frame(ctx, w, h, t, 'U_DS [V]', 'I_D [mA]', 0, Xmax, Ymax, 2, Math.max(2, Math.round(Idss / 5)));
+      // family of U_GS from 0 down to near U_P
+      const gss = [0, Up * 0.25, Up * 0.5, Up * 0.75];
+      for (let n = 0; n < gss.length; n++) {
+        const ugs = gss[n];
+        const sel = Math.abs(ugs - Ugs) < Math.abs(Up) * 0.13;
+        ctx.save();
+        ctx.strokeStyle = sel ? t.accent2 : t.accent;
+        ctx.lineWidth = sel ? 2.6 : 1.8; ctx.globalAlpha = sel ? 1 : 0.7;
+        ctx.beginPath(); let started = false;
+        for (let px = f.X(0); px <= f.X(Xmax); px++) {
+          const u = (px - 56) / f.sx;
+          const yy = f.Y(SK.clamp(idOut(u, ugs), 0, Ymax));
+          if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+        }
+        ctx.stroke();
+        SK.label(ctx, 'U_GS=' + SK.fmt(ugs, 1) + ' V', f.X(Xmax) - 4, f.Y(SK.clamp(idSat(ugs), 0, Ymax)) - 4,
+          { color: sel ? t.accent2 : t.muted, align: 'right', font: '10px system-ui' });
+        ctx.restore();
+      }
+      // pinch-off boundary locus U_DS = U_GS - U_P
+      ctx.save();
+      ctx.strokeStyle = t.warn; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]); ctx.beginPath();
+      let started = false;
+      for (let ug = Up; ug <= 0; ug += 0.05) {
+        const vds = ug - Up; const yy = f.Y(SK.clamp(idSat(ug), 0, Ymax));
+        const px = f.X(SK.clamp(vds, 0, Xmax));
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'mez zaškrcení', f.X(Xmax) - 4, f.Y(Ymax) + 12, { color: t.warn, align: 'right', font: '10px system-ui' });
+      ctx.restore();
+      ro.innerHTML = `<b>Výstupní</b> I_D(U_DS)<br>I_DSS=<b>${SK.fmt(Idss, 1)} mA</b>, U_P=<b>${SK.fmt(Up, 1)} V</b><br>` +
+        `Při U_GS=${SK.fmt(Ugs, 1)} V → I_D,sat=<b>${SK.fmt(idSat(Ugs), 2)} mA</b>`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.tabs({ options: [{ label: 'Převodní', value: 'prevodni' }, { label: 'Výstupní', value: 'vystupni' }],
+        value: 'prevodni', onchange: (v) => { mode = v; view.redraw(); } }),
+      SK.slider({ label: 'I_DSS', min: 2, max: 25, step: 0.5, value: 10, unit: 'mA',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Idss = v; view.redraw(); } }),
+      SK.slider({ label: 'Zaškrcovací napětí U_P', min: -8, max: -1, step: 0.1, value: -4, unit: 'V',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Up = v; if (Ugs < Up) Ugs = Up; view.redraw(); } }),
+      SK.slider({ label: 'Volené U_GS', min: -8, max: 0, step: 0.1, value: -1.5, unit: 'V',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Ugs = SK.clamp(v, Up, 0); view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'N-JFET: U_P je záporné. Převodní charakteristika je kvadratická od 0 (při U_GS=U_P) do I_DSS (při U_GS=0). ' +
+      'Výstupní rodina: nejprve ohmická (lineární) oblast, pak nasycení za mezí zaškrcení U_DS=U_GS−U_P.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

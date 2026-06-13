@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOSFET (N, P) — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Charakteristiky MOSFET (N / P)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'I_D=\\tfrac12\\,k\\,(U_{GS}-U_{th})^2\\quad(\\text{nasycení})', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let chan = 'N';        // N-MOS or P-MOS
+    let mode = 'prevodni';
+    let Uth = 2;           // threshold magnitude carried as N convention (>0)
+    let kp = 1;            // transconductance param k (mA/V^2)
+    let Ugs = 4;           // chosen U_GS magnitude (in N-convention, >0)
+    let UdsMax = 10;
+
+    // All math done in N-convention with positive overdrive; P-MOS mirrors signs in display.
+    function idSat(ugs) {
+      const ov = ugs - Uth;
+      if (ov <= 0) return 0;
+      return 0.5 * kp * ov * ov; // mA
+    }
+    function idOut(uds, ugs) {
+      const ov = ugs - Uth;
+      if (ov <= 0) return 0;
+      if (uds < ov) {
+        // ohmic (triode): k(ov*uds - uds^2/2)
+        return kp * (ov * uds - 0.5 * uds * uds);
+      }
+      return 0.5 * kp * ov * ov; // saturation plateau
+    }
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 32);
+      if (mode === 'prevodni') drawTransfer(ctx, w, h, t);
+      else drawOutput(ctx, w, h, t);
+    }
+
+    function frame(ctx, w, h, t, xlab, ylab, Xmax, Ymax, xstep, ystep) {
+      const padL = 56, padB = 40, padT = 16, padR = 16;
+      const oy = h - padB;
+      const sx = (w - padL - padR) / Xmax;
+      const sy = (h - padT - padB) / Ymax;
+      const X = (u) => padL + u * sx;
+      const Y = (i) => oy - i * sy;
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(Xmax), Y(0));
+      ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(0), Y(Ymax));
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText(xlab, X(Xmax) - 2, Y(0) + 6);
+      ctx.textAlign = 'left';
+      ctx.fillText(ylab, X(0) + 6, Y(Ymax) + 2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let u = xstep; u <= Xmax + 1e-9; u += xstep) ctx.fillText(u | 0, X(u), Y(0) + 4);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let i = ystep; i <= Ymax; i += ystep) ctx.fillText(i | 0, X(0) - 5, Y(i));
+      ctx.restore();
+      return { X, Y, sx, Xmax, Ymax };
+    }
+
+    function sgn() { return chan === 'P' ? '−' : ''; }
+
+    function drawTransfer(ctx, w, h, t) {
+      const Xmax = Math.max(8, Uth + 6), Ymax = Math.max(4, idSat(Xmax) * 1.05);
+      const f = frame(ctx, w, h, t, (chan === 'P' ? '|U_GS| [V]' : 'U_GS [V]'), 'I_D [mA]',
+        Xmax, Ymax, 2, Math.max(1, Math.round(Ymax / 5)));
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      let started = false;
+      for (let px = f.X(0); px <= f.X(Xmax); px++) {
+        const u = (px - 56) / f.sx;
+        const yy = f.Y(SK.clamp(idSat(u), 0, Ymax));
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+      // threshold marker
+      SK.dot(ctx, f.X(Uth), f.Y(0), 4, t.warn);
+      SK.label(ctx, 'U_th', f.X(Uth), f.Y(0) - 6, { color: t.warn, align: 'center', font: '11px system-ui' });
+      // working point
+      const id = idSat(Ugs);
+      const qx = f.X(Ugs), qy = f.Y(SK.clamp(id, 0, Ymax));
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(qx, f.Y(0));
+      ctx.moveTo(qx, qy); ctx.lineTo(f.X(0), qy); ctx.stroke(); ctx.setLineDash([]);
+      SK.dot(ctx, qx, qy, 5, t.ok); ctx.restore();
+      const region = Ugs <= Uth ? 'zavřený (cut-off)' : 'vodivý (nasycení)';
+      ro.innerHTML = `<b>${chan}-MOS</b> · Převodní<br>U_th=<b>${sgn()}${SK.fmt(Uth, 1)} V</b>, k=<b>${SK.fmt(kp, 2)} mA/V²</b><br>` +
+        `U_GS=${sgn()}${SK.fmt(Ugs, 1)} V → I_D=<b>${sgn()}${SK.fmt(id, 2)} mA</b> · ${region}`;
+    }
+
+    function drawOutput(ctx, w, h, t) {
+      const Xmax = UdsMax, ov0 = Math.max(0, Ugs - Uth);
+      const Ymax = Math.max(4, idSat(Math.max(Ugs, Uth + 5)) * 1.05);
+      const f = frame(ctx, w, h, t, (chan === 'P' ? '|U_DS| [V]' : 'U_DS [V]'), 'I_D [mA]',
+        Xmax, Ymax, 2, Math.max(1, Math.round(Ymax / 5)));
+      // family of U_GS values (N-convention magnitudes)
+      const gss = [Uth + 1, Uth + 2, Uth + 3, Uth + 4];
+      for (let n = 0; n < gss.length; n++) {
+        const ugs = gss[n];
+        const sel = Math.abs(ugs - Ugs) < 0.6;
+        ctx.save();
+        ctx.strokeStyle = sel ? t.accent2 : t.accent;
+        ctx.lineWidth = sel ? 2.6 : 1.8; ctx.globalAlpha = sel ? 1 : 0.7;
+        ctx.beginPath(); let started = false;
+        for (let px = f.X(0); px <= f.X(Xmax); px++) {
+          const u = (px - 56) / f.sx;
+          const yy = f.Y(SK.clamp(idOut(u, ugs), 0, Ymax));
+          if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+        }
+        ctx.stroke();
+        SK.label(ctx, 'U_GS=' + sgn() + SK.fmt(ugs, 1), f.X(Xmax) - 4, f.Y(SK.clamp(idSat(ugs), 0, Ymax)) - 4,
+          { color: sel ? t.accent2 : t.muted, align: 'right', font: '10px system-ui' });
+        ctx.restore();
+      }
+      // saturation boundary locus U_DS = U_GS - U_th (parabola)
+      ctx.save();
+      ctx.strokeStyle = t.warn; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]); ctx.beginPath();
+      let started = false;
+      for (let ov = 0; ov <= Math.max.apply(null, gss) - Uth; ov += 0.05) {
+        const vds = ov; const id = 0.5 * kp * ov * ov;
+        if (vds > Xmax) break;
+        const px = f.X(vds), yy = f.Y(SK.clamp(id, 0, Ymax));
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'U_DS=U_GS−U_th', f.X(Xmax) - 4, f.Y(Ymax) + 12, { color: t.warn, align: 'right', font: '10px system-ui' });
+      ctx.restore();
+      ro.innerHTML = `<b>${chan}-MOS</b> · Výstupní<br>U_th=<b>${sgn()}${SK.fmt(Uth, 1)} V</b>, k=<b>${SK.fmt(kp, 2)} mA/V²</b><br>` +
+        `Vybrané U_GS=${sgn()}${SK.fmt(Ugs, 1)} V · mez nasycení U_DS=${sgn()}${SK.fmt(ov0, 1)} V`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.tabs({ options: [{ label: 'N-MOS', value: 'N' }, { label: 'P-MOS', value: 'P' }],
+        value: 'N', onchange: (v) => { chan = v; view.redraw(); } }),
+      SK.tabs({ options: [{ label: 'Převodní', value: 'prevodni' }, { label: 'Výstupní', value: 'vystupni' }],
+        value: 'prevodni', onchange: (v) => { mode = v; view.redraw(); } }),
+      SK.slider({ label: 'Prahové napětí |U_th|', min: 0.5, max: 5, step: 0.1, value: 2, unit: 'V',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Uth = v; view.redraw(); } }),
+      SK.slider({ label: 'Strmost k', min: 0.2, max: 4, step: 0.1, value: 1, unit: 'mA/V²',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { kp = v; view.redraw(); } }),
+      SK.slider({ label: 'Volené |U_GS|', min: 0, max: 10, step: 0.1, value: 4, unit: 'V',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Ugs = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Indukovaný MOSFET: vede až nad prahovým napětím U_th, pak kvadratický zákon v nasycení. ' +
+      'Výstupní rodina: ohmická (lineární) oblast → plató nasycení za mezí U_DS=U_GS−U_th. ' +
+      'P-MOS má všechna napětí i proudy záporná (zde zobrazena se znaménkem −); ovládají se velikosti.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

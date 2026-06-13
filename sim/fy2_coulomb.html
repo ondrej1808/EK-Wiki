@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coulombův zákon — FY2</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Coulombův zákon</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'F=\\dfrac{1}{4\\pi\\varepsilon_0}\\dfrac{|q_1 q_2|}{r^2}', false);
+
+    const ro = document.getElementById('ro');
+    const c1 = document.getElementById('c1');
+    const c2 = document.getElementById('c2');
+    const k = 8.9875517873681764e9; // 1/(4πε0)
+
+    let q1 = 3;   // μC
+    let q2 = -2;  // μC
+    let r = 0.5;  // m
+    let dragging = false;
+
+    function force(rr) { // newtons, magnitude
+      return k * Math.abs(q1 * q2) * 1e-12 / (rr * rr);
+    }
+
+    const v1 = SK.mount(c1, drawDiagram);
+    const v2 = SK.mount(c2, drawGraph);
+
+    function drawDiagram(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const cy = h / 2;
+      // map distance r (0.1..2 m) to pixel separation
+      const margin = 70;
+      const maxSep = w - 2 * margin;
+      const rNorm = SK.clamp((r - 0.1) / (2 - 0.1), 0, 1);
+      const sep = 40 + rNorm * (maxSep - 40);
+      const x1 = w / 2 - sep / 2, x2 = w / 2 + sep / 2;
+
+      // line between charges
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x1, cy); ctx.lineTo(x2, cy); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+      // distance label
+      SK.label(ctx, 'r = ' + SK.fmt(r, 2) + ' m', w / 2, cy - 12,
+        { color: t.muted, align: 'center', font: '12px system-ui' });
+
+      const F = force(r);
+      const attractive = (q1 * q2) < 0;
+      // arrow length scaled by log of force (clamped)
+      const aLen = SK.clamp(18 + 22 * Math.log10(1 + F * 1e3), 16, 90);
+      // on charge 1 (left): attractive → toward q2 (right, +x); repulsive → away (left, −x)
+      const dir1 = attractive ? +1 : -1;
+      // on charge 2 (right): opposite
+      const dir2 = -dir1;
+      ctx.save();
+      SK.arrow(ctx, x1, cy, x1 + dir1 * aLen, cy, { color: t.mag, width: 3, head: 8 });
+      SK.arrow(ctx, x2, cy, x2 + dir2 * aLen, cy, { color: t.mag, width: 3, head: 8 });
+      ctx.restore();
+
+      // charges sized by |q|
+      const r1 = 10 + 3 * Math.abs(q1), r2 = 10 + 3 * Math.abs(q2);
+      const col1 = q1 >= 0 ? t.pos : t.neg, col2 = q2 >= 0 ? t.pos : t.neg;
+      SK.dot(ctx, x1, cy, r1, col1);
+      SK.dot(ctx, x2, cy, r2, col2);
+      SK.label(ctx, q1 >= 0 ? '+' : '−', x1, cy + 0.5, { color: '#fff', font: 'bold 18px system-ui', align: 'center', baseline: 'middle' });
+      SK.label(ctx, q2 >= 0 ? '+' : '−', x2, cy + 0.5, { color: '#fff', font: 'bold 18px system-ui', align: 'center', baseline: 'middle' });
+      SK.label(ctx, 'q₁=' + SK.fmt(q1, 1) + ' µC', x1, cy + r1 + 14, { color: col1, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'q₂=' + SK.fmt(q2, 1) + ' µC', x2, cy + r2 + 14, { color: col2, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'silový diagram (táhni pro změnu r)', w / 2, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawGraph(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const padL = 52, padB = 38, padT = 16, padR = 16;
+      const oy = h - padB;
+      const Rmin = 0.1, Rmax = 2;
+      const Fmax = force(Rmin) * 1.05;
+      const sx = (w - padL - padR) / (Rmax - Rmin);
+      const sy = (h - padT - padB) / Fmax;
+      const X = (rr) => padL + (rr - Rmin) * sx;
+      const Y = (FF) => oy - FF * sy;
+
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(Rmin), Y(0)); ctx.lineTo(X(Rmax), Y(0));
+      ctx.moveTo(X(Rmin), Y(0)); ctx.lineTo(X(Rmin), Y(Fmax));
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('r [m]', X(Rmax) - 2, Y(0) + 6);
+      ctx.textAlign = 'left';
+      ctx.fillText('F [N]', X(Rmin) + 6, Y(Fmax) + 2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let rr = 0.5; rr <= Rmax + 1e-9; rr += 0.5) ctx.fillText(SK.fmt(rr, 1), X(rr), Y(0) + 4);
+      ctx.restore();
+
+      // F(r) inverse-square curve
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      let started = false;
+      for (let px = X(Rmin); px <= X(Rmax); px++) {
+        const rr = Rmin + (px - padL) / sx;
+        const yy = Y(SK.clamp(force(rr), 0, Fmax));
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+
+      // current point
+      const F = force(r);
+      const qx = X(SK.clamp(r, Rmin, Rmax)), qy = Y(SK.clamp(F, 0, Fmax));
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(qx, Y(0));
+      ctx.moveTo(qx, qy); ctx.lineTo(X(Rmin), qy); ctx.stroke(); ctx.setLineDash([]);
+      SK.dot(ctx, qx, qy, 5, t.ok); ctx.restore();
+      SK.label(ctx, 'F ∝ 1/r²', w - 20, padT + 14, { color: t.accent, align: 'right', font: '12px system-ui' });
+
+      const attractive = (q1 * q2) < 0;
+      ro.innerHTML = `<b>F = ${F < 0.01 ? F.toExponential(2) : SK.fmt(F, 3)} N</b><br>` +
+        `r = ${SK.fmt(r, 2)} m · q₁q₂ = ${SK.fmt(q1 * q2, 1)} µC²<br>` +
+        `Síla je <b>${attractive ? 'přitažlivá' : 'odpudivá'}</b>`;
+    }
+
+    // drag on diagram to change r
+    c1.addEventListener('pointerdown', (e) => { dragging = true; c1.setPointerCapture(e.pointerId); setR(e); });
+    c1.addEventListener('pointermove', (e) => { if (dragging) setR(e); });
+    c1.addEventListener('pointerup', () => dragging = false);
+    function setR(e) {
+      const { w } = v1.dims();
+      const p = SK.pointer(c1, e);
+      const dx = Math.abs(p.x - w / 2);
+      const margin = 70, maxSep = w - 2 * margin;
+      const sep = SK.clamp(2 * dx, 40, maxSep);
+      const rNorm = (sep - 40) / (maxSep - 40);
+      r = SK.clamp(0.1 + rNorm * (2 - 0.1), 0.1, 2);
+      sliderR.set(r);
+      redraw();
+    }
+
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    const sliderR = SK.slider({ label: 'Vzdálenost r', min: 0.1, max: 2, step: 0.01, value: 0.5, unit: 'm',
+      fmt: (v) => SK.fmt(v, 2), oninput: (v) => { r = v; redraw(); } });
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Náboj q₁', min: -5, max: 5, step: 0.1, value: 3, unit: 'µC',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { q1 = v; redraw(); } }),
+      SK.slider({ label: 'Náboj q₂', min: -5, max: 5, step: 0.1, value: -2, unit: 'µC',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { q2 = v; redraw(); } }),
+      sliderR,
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Síly na oba náboje jsou stejně velké a opačně orientované (3. Newtonův zákon). ' +
+      'Souhlasné znaménko → odpudivá, opačné → přitažlivá. Pravý graf ukazuje pokles F ∝ 1/r².';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

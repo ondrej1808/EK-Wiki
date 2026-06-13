@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dioda PN / PIN / Schottky — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head">
+    <h1>VA charakteristika diody + pracovní bod</h1>
+    <div class="sk-formula" id="formula"></div>
+  </div>
+  <div class="sk-stage">
+    <canvas id="c"></canvas>
+    <div class="sk-readout" id="ro"></div>
+  </div>
+  <div class="sk-controls" id="ctrl"></div>
+
+  <script src="sim-kit.js"></script>
+  <script>
+  (function () {
+    SK.katex(document.getElementById('formula'),
+      'I = I_0\\left(e^{\\,U/(nU_T)}-1\\right),\\quad U_T=\\dfrac{kT}{q}', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+    const q = 1.602176634e-19, k = 1.380649e-23;
+
+    // Diode type presets. I0 = saturation current at Tref (300 K); n = ideality.
+    // Vg = activation voltage for the I0(T) ∝ T³·exp(−Vg/U_T) model — Si bandgap
+    // extrapolated to 0 K ≈ 1.21 V; Schottky has a lower effective barrier.
+    // This is what produces the real negative tempco dU_f/dT ≈ −2 mV/K.
+    const TYPES = {
+      PN:       { I0: 1e-12, n: 1.0,  Vg: 1.21, name: 'PN (Si, ~0,7 V)' },
+      PIN:      { I0: 5e-12, n: 1.6,  Vg: 1.21, name: 'PIN (širší i-vrstva)' },
+      Schottky: { I0: 2e-7,  n: 1.05, Vg: 0.69, name: 'Schottky (~0,3 V)' },
+    };
+
+    let type = 'PN';
+    let T = 300;        // K
+    let Us = 2.0;       // supply voltage (V)
+    let R = 200;        // series resistance (Ω)
+
+    const Tref = 300;        // reference temperature (K)
+    const kq = k / q;        // ≈ 8.617e-5 V/K
+
+    function UT() { return k * T / q; }
+    // Saturation current vs. temperature. Its strong growth with T dominates over
+    // the U_T term and pulls the curve LEFT as T rises → Si dU_f/dT ≈ −2 mV/K.
+    function I0at(Tk) {
+      const p = TYPES[type];
+      return p.I0 * Math.pow(Tk / Tref, 3) * Math.exp(-(p.Vg / kq) * (1 / Tk - 1 / Tref));
+    }
+    function diodeI(U) {
+      const p = TYPES[type];
+      return I0at(T) * (Math.exp(U / (p.n * UT())) - 1);
+    }
+    // Forward voltage at a fixed current (closed form) → measured tempco in mV/K.
+    function vfAt(Tk, Iref) {
+      const p = TYPES[type];
+      return p.n * (k * Tk / q) * Math.log(Iref / I0at(Tk) + 1);
+    }
+    function tempcoMVK(Iref) {
+      return (vfAt(T + 0.5, Iref) - vfAt(T - 0.5, Iref)) * 1000;
+    }
+    // Working point: solve diodeI(U) == (Us - U)/R  by bisection on [0, Us]
+    function workingPoint() {
+      let lo = 0, hi = Math.max(0.01, Us);
+      const f = (U) => diodeI(U) - (Us - U) / R;
+      if (f(lo) === 0) return { U: lo, I: diodeI(lo) };
+      for (let i = 0; i < 60; i++) {
+        const mid = (lo + hi) / 2;
+        if (f(lo) * f(mid) <= 0) hi = mid; else lo = mid;
+      }
+      const U = (lo + hi) / 2;
+      return { U, I: diodeI(U) };
+    }
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+
+      const padL = 56, padB = 40, padT = 16, padR = 16;
+      const ox = padL, oy = h - padB;          // origin (U=0, I=0)
+      const Umin = -0.6, Umax = 1.0;           // volts
+      const Imax = 30;                          // mA (forward)
+      const Imin = -2;                          // mA (reverse, exaggerated)
+      const sx = (w - padL - padR) / (Umax - Umin);
+      const sy = (h - padT - padB) / (Imax - Imin);
+      const X = (U) => ox + (U - Umin) * sx;
+      const Y = (ImA) => oy - (ImA - Imin) * sy;   // note origin offset by Imin
+
+      // grid + axes
+      SK.grid(ctx, w, h, 32);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(Umin), Y(0)); ctx.lineTo(X(Umax), Y(0));   // U axis
+      ctx.moveTo(X(0), Y(Imin)); ctx.lineTo(X(0), Y(Imax));   // I axis
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('U [V]', X(Umax) - 2, Y(0) + 6);
+      ctx.textAlign = 'left';
+      ctx.fillText('I [mA]', X(0) + 6, Y(Imax) + 2);
+      // ticks
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let u = -0.5; u <= Umax + 1e-9; u += 0.5) {
+        if (Math.abs(u) < 1e-9) continue;
+        ctx.fillText(u.toFixed(1), X(u), Y(0) + 4);
+      }
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let i = 10; i <= Imax; i += 10) ctx.fillText(i, X(0) - 5, Y(i));
+      ctx.restore();
+
+      // Diode I-V curve
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      let started = false;
+      for (let px = X(Umin); px <= X(Umax); px++) {
+        const U = Umin + (px - ox) / sx;
+        let ImA = diodeI(U) * 1000;
+        ImA = SK.clamp(ImA, Imin - 5, Imax + 5);
+        const yy = Y(ImA);
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+
+      // Load line: I = (Us - U)/R  → two endpoints
+      const llI0 = (Us - Umin) / R * 1000;       // at U=Umin
+      const llI1 = 0;                            // at U=Us (I=0)
+      ctx.save();
+      ctx.strokeStyle = t.warn; ctx.lineWidth = 1.8; ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(X(Umin), Y(SK.clamp(llI0, Imin, Imax)));
+      ctx.lineTo(X(Math.min(Us, Umax)), Y(0));
+      ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'zatěžovací přímka', X(Math.min(Us, Umax)) - 4, Y(0) - 8,
+               { color: t.warn, align: 'right', font: '11px system-ui' });
+      ctx.restore();
+
+      // Working point K
+      const wp = workingPoint();
+      const kx = X(wp.U), ky = Y(SK.clamp(wp.I * 1000, Imin, Imax));
+      ctx.save();
+      ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx, Y(0));
+      ctx.moveTo(kx, ky); ctx.lineTo(X(0), ky); ctx.stroke(); ctx.setLineDash([]);
+      SK.dot(ctx, kx, ky, 5, t.ok);
+      SK.label(ctx, 'K', kx + 8, ky - 8, { color: t.ok, font: 'bold 13px system-ui' });
+      ctx.restore();
+
+      // Mini PN junction schematic (top-right)
+      drawJunction(ctx, w - 96, padT + 6, 80, 26, t);
+
+      ro.innerHTML =
+        `<b>${TYPES[type].name}</b><br>` +
+        `U_T = ${(UT() * 1000).toFixed(2)} mV (T=${T|0} K)<br>` +
+        `dU_f/dT ≈ <b>${tempcoMVK(1e-3).toFixed(2)} mV/K</b> @ 1 mA<br>` +
+        `Pracovní bod K: U=<b>${SK.fmt(wp.U, 3)} V</b>, I=<b>${SK.fmt(wp.I * 1000, 2)} mA</b>`;
+    }
+
+    function drawJunction(ctx, x, y, w, h, t) {
+      ctx.save();
+      ctx.fillStyle = t.pos; ctx.fillRect(x, y, w / 2, h);
+      ctx.fillStyle = t.neg; ctx.fillRect(x + w / 2, y, w / 2, h);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 13px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('P', x + w / 4, y + h / 2);
+      ctx.fillText('N', x + 3 * w / 4, y + h / 2);
+      ctx.strokeStyle = t.fg; ctx.lineWidth = 1; ctx.strokeRect(x, y, w, h);
+      ctx.restore();
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.tabs({ options: [
+        { label: 'PN', value: 'PN' },
+        { label: 'PIN', value: 'PIN' },
+        { label: 'Schottky', value: 'Schottky' },
+      ], value: 'PN', onchange: (v) => { type = v; view.redraw(); } }),
+      SK.slider({ label: 'Teplota T', min: 250, max: 400, step: 1, value: 300, unit: 'K',
+                  fmt: (v) => v | 0, oninput: (v) => { T = v; view.redraw(); } }),
+      SK.slider({ label: 'Napájení Uᵤ', min: 0.2, max: 5, step: 0.1, value: 2, unit: 'V',
+                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Us = v; view.redraw(); } }),
+      SK.slider({ label: 'Odpor R', min: 20, max: 2000, step: 10, value: 200, unit: 'Ω',
+                  fmt: (v) => v | 0, oninput: (v) => { R = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Pracovní bod K = průsečík VA charakteristiky a zatěžovací přímky I=(Uᵤ−U)/R. ' +
+      'Schottky má vyšší I₀ → menší prahové napětí. S rostoucí teplotou roste saturační proud ' +
+      'I₀∝T³·e^(−Eg/kT) silněji než přibývá U_T, takže se křivka posouvá doleva — křemík má ' +
+      'záporný teplotní koeficient dU_f/dT ≈ −2 mV/K.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skládání signálu — SaS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Skládání signálu z harmonických složek</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'x(t)=A_0+\\sum_{k=1}^{3} A_k\\sin(2\\pi f_k t+\\varphi_k)', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let dc = 0;
+    // three harmonics: amplitude, frequency (Hz)
+    const H = [
+      { A: 1.0, f: 1 },
+      { A: 0.0, f: 2 },
+      { A: 0.0, f: 3 },
+    ];
+    let showComp = false;
+    const T = 1.0; // window length in seconds
+
+    function comp(k, t) { return H[k].A * Math.sin(2 * Math.PI * H[k].f * t); }
+    function signal(t) { return dc + comp(0, t) + comp(1, t) + comp(2, t); }
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+
+      const padL = 48, padR = 16, padT = 16, padB = 36;
+      const ox = padL, midY = (padT + (h - padB)) / 2;
+      const plotW = w - padL - padR;
+      // vertical scale: max possible amplitude
+      const amax = Math.abs(dc) + H[0].A + H[1].A + H[2].A + 0.2;
+      const sy = (h - padT - padB) / 2 / amax;
+      const X = (tt) => ox + (tt / T) * plotW;
+      const Y = (v) => midY - v * sy;
+
+      SK.grid(ctx, w, h, 32);
+
+      // axes
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(ox, midY); ctx.lineTo(w - padR, midY);          // t axis
+      ctx.moveTo(ox, padT); ctx.lineTo(ox, h - padB);            // amplitude axis
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('t [s]', w - padR - 2, midY + 6);
+      ctx.textAlign = 'left';
+      ctx.fillText('x(t)', ox + 6, padT + 2);
+      // time ticks
+      ctx.textAlign = 'center';
+      for (let tt = 0.25; tt <= T + 1e-9; tt += 0.25) {
+        ctx.fillText(tt.toFixed(2), X(tt), midY + 6);
+      }
+      ctx.restore();
+
+      const N = 600;
+      // faint individual components
+      if (showComp) {
+        const cols = [t.muted, t.muted, t.muted];
+        for (let k = 0; k < 3; k++) {
+          if (H[k].A === 0) continue;
+          ctx.save();
+          ctx.globalAlpha = 0.45; ctx.strokeStyle = cols[k];
+          ctx.lineWidth = 1.2; ctx.setLineDash([4, 3]); ctx.beginPath();
+          for (let i = 0; i <= N; i++) {
+            const tt = (i / N) * T, yy = Y(comp(k, tt));
+            i ? ctx.lineTo(X(tt), yy) : ctx.moveTo(X(tt), yy);
+          }
+          ctx.stroke(); ctx.restore();
+        }
+        // DC line
+        if (dc !== 0) {
+          ctx.save(); ctx.globalAlpha = 0.45; ctx.strokeStyle = t.warn;
+          ctx.lineWidth = 1.2; ctx.setLineDash([2, 3]); ctx.beginPath();
+          ctx.moveTo(ox, Y(dc)); ctx.lineTo(w - padR, Y(dc)); ctx.stroke(); ctx.restore();
+        }
+      }
+
+      // resulting sum
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      for (let i = 0; i <= N; i++) {
+        const tt = (i / N) * T, yy = Y(signal(tt));
+        i ? ctx.lineTo(X(tt), yy) : ctx.moveTo(X(tt), yy);
+      }
+      ctx.stroke(); ctx.restore();
+
+      const active = [];
+      if (dc !== 0) active.push(`DC=${SK.fmt(dc, 2)}`);
+      for (let k = 0; k < 3; k++) if (H[k].A > 0)
+        active.push(`A${k + 1}=${SK.fmt(H[k].A, 2)}@${H[k].f} Hz`);
+      ro.innerHTML = `<b>Aktivní složky:</b><br>` +
+        (active.length ? active.join('<br>') : 'žádná') +
+        `<br>rozsah |x|≤<b>${SK.fmt(amax - 0.2, 2)}</b>`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    SK.controls(ctrl, [
+      SK.slider({ label: 'DC offset A₀', min: -2, max: 2, step: 0.1, value: 0,
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { dc = v; view.redraw(); } }),
+      SK.slider({ label: 'Amplituda A₁', min: 0, max: 2, step: 0.05, value: 1,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { H[0].A = v; view.redraw(); } }),
+      SK.slider({ label: 'Frekvence f₁', min: 1, max: 10, step: 1, value: 1, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { H[0].f = v; view.redraw(); } }),
+      SK.slider({ label: 'Amplituda A₂', min: 0, max: 2, step: 0.05, value: 0,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { H[1].A = v; view.redraw(); } }),
+      SK.slider({ label: 'Frekvence f₂', min: 1, max: 10, step: 1, value: 2, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { H[1].f = v; view.redraw(); } }),
+      SK.slider({ label: 'Amplituda A₃', min: 0, max: 2, step: 0.05, value: 0,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { H[2].A = v; view.redraw(); } }),
+      SK.slider({ label: 'Frekvence f₃', min: 1, max: 10, step: 1, value: 3, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { H[2].f = v; view.redraw(); } }),
+      SK.toggle({ label: 'Zobrazit složky', value: false,
+        onchange: (v) => { showComp = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Výsledný signál (fialově) je součtem stejnosměrné složky a jednotlivých harmonických. ' +
+      'Zapni „Zobrazit složky“ a uvidíš dílčí sinusovky, jejichž součet dává výsledek.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

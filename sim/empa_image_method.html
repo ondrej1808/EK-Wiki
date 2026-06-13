@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zrcadlení podle vodivé plochy — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Metoda zrcadlení — náboj nad vodivou plochou</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "Q' = -Q,\\quad F=\\dfrac{1}{4\\pi\\varepsilon_0}\\dfrac{Q^2}{(2h)^2}", false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let h = 0.30;      // charge height as fraction of plane-to-top distance
+    let Q = 1.5;       // relative magnitude (always +)
+    let showSigma = true, showImage = true;
+    const eps0 = 8.854e-12;
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, hh) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, hh);
+      const planeY = hh * 0.66;
+      SK.grid(ctx, w, hh, 30);
+
+      const cx = w * 0.5;
+      const cyReal = planeY - h * hh;          // real charge above plane
+      const cyImg = planeY + h * hh;           // image charge below
+      const hpx = planeY - cyReal;             // height in px
+
+      // Conducting plane: thick line + hatching below
+      ctx.save();
+      ctx.strokeStyle = t.fg; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(0, planeY); ctx.lineTo(w, planeY); ctx.stroke();
+      ctx.strokeStyle = t.muted; ctx.lineWidth = 1; ctx.globalAlpha = 0.7;
+      for (let x = 0; x < w + 18; x += 14) {
+        ctx.beginPath(); ctx.moveTo(x, planeY); ctx.lineTo(x - 12, planeY + 12); ctx.stroke();
+      }
+      ctx.restore();
+      SK.label(ctx, 'uzemněná vodivá plocha (V=0)', 8, planeY + 26, { color: t.muted, font: '12px system-ui' });
+
+      // Real E field above plane (sum of real +Q at cyReal and image −Q at cyImg)
+      drawFieldArrows(ctx, w, planeY, cx, cyReal, cyImg, t);
+
+      // Induced surface charge density curve σ(x)
+      if (showSigma) drawSigma(ctx, w, planeY, cx, hpx, t);
+
+      // Image charge (ghosted, below plane)
+      if (showImage) {
+        ctx.save(); ctx.globalAlpha = 0.4;
+        ctx.setLineDash([5, 4]); ctx.strokeStyle = t.neg; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(cx, planeY); ctx.lineTo(cx, cyImg); ctx.stroke(); ctx.setLineDash([]);
+        SK.dot(ctx, cx, cyImg, 12, t.neg);
+        SK.label(ctx, '−', cx, cyImg + 0.5, { color: '#fff', font: 'bold 16px system-ui', align: 'center', baseline: 'middle' });
+        SK.label(ctx, "Q' = −Q (zrcadlový)", cx + 18, cyImg, { color: t.neg, font: '12px system-ui', baseline: 'middle' });
+        ctx.restore();
+      }
+
+      // Real charge +Q
+      SK.dot(ctx, cx, cyReal, 12, t.pos);
+      SK.label(ctx, '+', cx, cyReal + 0.5, { color: '#fff', font: 'bold 16px system-ui', align: 'center', baseline: 'middle' });
+      SK.label(ctx, '+Q', cx + 18, cyReal, { color: t.pos, font: '12px system-ui', baseline: 'middle' });
+
+      // height marker
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx - 40, cyReal); ctx.lineTo(cx - 40, planeY); ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'h', cx - 50, (cyReal + planeY) / 2, { color: t.muted, baseline: 'middle' });
+      ctx.restore();
+
+      // Force toward plane (attraction)
+      SK.arrow(ctx, cx, cyReal + 14, cx, cyReal + 40, { color: t.ok, width: 2.4, head: 7 });
+      SK.label(ctx, 'F', cx + 8, cyReal + 30, { color: t.ok, font: 'bold 13px system-ui' });
+
+      // Physical force: F = Q^2 /(4πε0 (2h)^2). Use SI-ish with relative scaling.
+      const hMeters = h * 0.1; // map fraction to meters (0..~0.1 m)
+      const Qc = Q * 1e-9;     // nC
+      const F = (Qc * Qc) / (4 * Math.PI * eps0 * (2 * hMeters) * (2 * hMeters));
+      ro.innerHTML = `<b>Q = ${SK.fmt(Q, 1)} nC</b>, h = <b>${SK.fmt(hMeters * 100, 1)} cm</b><br>` +
+                     `Zrcadlový náboj <b>Q' = −Q</b> v hloubce h<br>` +
+                     `Síla (přitažlivá k ploše): F ≈ <b>${(F * 1e6).toExponential(2)} µN</b><br>` +
+                     `Ve vakuu P=0 (D=ε₀E); E je kolmé na vodič`;
+    }
+
+    function fieldAbove(x, y, cx, cyReal, cyImg) {
+      let ex = 0, ey = 0;
+      // real +Q
+      let dx = x - cx, dy = y - cyReal, r2 = dx * dx + dy * dy, r = Math.sqrt(r2);
+      if (r > 1) { const k = 3500 * Q / (r2 * r); ex += k * dx; ey += k * dy; }
+      // image −Q
+      dx = x - cx; dy = y - cyImg; r2 = dx * dx + dy * dy; r = Math.sqrt(r2);
+      if (r > 1) { const k = -3500 * Q / (r2 * r); ex += k * dx; ey += k * dy; }
+      return { ex, ey };
+    }
+
+    function drawFieldArrows(ctx, w, planeY, cx, cyReal, cyImg, t) {
+      const step = 34;
+      for (let x = step / 2; x < w; x += step) for (let y = step / 2; y < planeY - 6; y += step) {
+        if (Math.hypot(x - cx, y - cyReal) < 18) continue;
+        const f = fieldAbove(x, y, cx, cyReal, cyImg);
+        const mag = Math.hypot(f.ex, f.ey);
+        if (mag < 1e-6) continue;
+        const len = SK.clamp(mag, 4, 22);
+        const ux = f.ex / mag, uy = f.ey / mag;
+        ctx.globalAlpha = 0.25 + 0.6 * SK.clamp(mag / 22, 0, 1);
+        SK.arrow(ctx, x, y, x + ux * len, y + uy * len, { color: t.pos, width: 1.5, head: 5 });
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function drawSigma(ctx, w, planeY, cx, hpx, t) {
+      // σ(x) = -Q h / (2π (x^2+h^2)^{3/2}) ; plot negative curve below plane line
+      ctx.save();
+      ctx.strokeStyle = t.neg; ctx.lineWidth = 2; ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      const sigma0 = -Q / (2 * Math.PI * hpx * hpx); // value at x=0
+      const scale = 60 / Math.abs(sigma0);
+      let started = false;
+      for (let px = 0; px <= w; px += 3) {
+        const xrel = px - cx;
+        const sig = -Q * hpx / (2 * Math.PI * Math.pow(xrel * xrel + hpx * hpx, 1.5));
+        const yy = planeY - sig * scale; // σ negative → curve goes below plane (downward), times negative pushes up
+        if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'σ(x) < 0  (indukovaný náboj)', w - 8, planeY + 50, { color: t.neg, font: '12px system-ui', align: 'right' });
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Výška h', min: 0.1, max: 0.5, step: 0.01, value: 0.30,
+                  fmt: (v) => SK.fmt(v * 10, 1), unit: 'cm', oninput: (v) => { h = v; view.redraw(); } }),
+      SK.slider({ label: 'Náboj Q', min: 0.3, max: 3, step: 0.1, value: 1.5, unit: 'nC',
+                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Q = v; view.redraw(); } }),
+      SK.toggle({ label: 'Zrcadlový náboj', value: true, onchange: (v) => { showImage = v; view.redraw(); } }),
+      SK.toggle({ label: 'Plošná hustota σ(x)', value: true, onchange: (v) => { showSigma = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Vodivá rovina (V=0) se nahradí zrcadlovým nábojem −Q v hloubce h pod plochou. Výsledné pole nad rovinou je totožné a je všude kolmé na vodič; náboj je k ploše přitahován silou F = Q²/(4πε₀(2h)²).';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

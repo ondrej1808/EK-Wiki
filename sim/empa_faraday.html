@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faradayův zákon (indukce) — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Faradayův zákon elektromagnetické indukce</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'), 'u = -\\dfrac{d\\Phi}{dt}', false);
+
+    const ro = document.getElementById('ro');
+
+    // Magnet position s in [-1,1]; flux peaks when magnet is over the loop (s=0).
+    // Φ(s) modeled as Gaussian-like bell of magnet field through loop.
+    let s = -1;          // magnet position
+    let speed = 0.6;     // units per second
+    let manual = false;
+    let phaseDir = 1;    // sweep direction for auto mode
+    let t = 0;
+
+    const Bstrength = () => 1.0;
+    function flux(pos) {
+      // bell: magnet over loop → max flux. width 0.5
+      return Bstrength() * Math.exp(-(pos * pos) / (2 * 0.25 * 0.25));
+    }
+    function dflux(pos, v) {
+      // dΦ/dt = dΦ/ds * ds/dt ; dΦ/ds = -s/σ² * Φ
+      const sig2 = 0.25 * 0.25;
+      return (-pos / sig2) * flux(pos) * v;
+    }
+
+    // history for time graphs
+    const hist = [];
+    const HMAX = 240;
+
+    const view1 = SK.mount(document.getElementById('c1'), drawScene);
+    const view2 = SK.mount(document.getElementById('c2'), drawGraphs);
+
+    const anim = SK.loop((dt) => {
+      if (!manual) {
+        t += dt;
+        s += phaseDir * speed * dt;
+        if (s > 1.05) { s = 1.05; phaseDir = -1; }
+        if (s < -1.05) { s = -1.05; phaseDir = 1; }
+      }
+      record();
+      view1.redraw(); view2.redraw();
+    });
+
+    function record() {
+      const v = manual ? 0 : phaseDir * speed;
+      const phi = flux(s);
+      const u = -dflux(s, v);
+      hist.push({ phi, u });
+      if (hist.length > HMAX) hist.shift();
+    }
+
+    function curVel() { return manual ? 0 : phaseDir * speed; }
+
+    function drawScene(ctx, w, h) {
+      const th = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const cy = h * 0.5;
+      const loopX = w * 0.5, loopW = w * 0.26, loopH = h * 0.42;
+
+      // field region indicator (B through loop ⊙ density ∝ flux)
+      const phi = flux(s);
+      ctx.save(); ctx.fillStyle = th.mag;
+      const dots = Math.round(SK.clamp(phi * 30, 0, 30));
+      ctx.globalAlpha = 0.5;
+      for (let i = 0; i < dots; i++) {
+        const gx = loopX - loopW / 2 + Math.random() * loopW;
+        const gy = cy - loopH / 2 + Math.random() * loopH;
+        ctx.beginPath(); ctx.arc(gx, gy, 1.6, 0, 7); ctx.fill();
+      }
+      ctx.restore();
+
+      // conducting loop rectangle
+      ctx.save(); ctx.strokeStyle = th.fg; ctx.lineWidth = 3;
+      ctx.strokeRect(loopX - loopW / 2, cy - loopH / 2, loopW, loopH);
+      ctx.restore();
+      SK.label(ctx, 'vodivá smyčka', loopX, cy - loopH / 2 - 10, { color: th.muted, align: 'center' });
+
+      // bar magnet at position s (moves horizontally toward/over loop)
+      const mx = loopX + s * (w * 0.32);
+      const my = cy;
+      drawMagnet(ctx, mx, my, th);
+
+      // induced current direction (Lenz): u = -dΦ/dt. Sign sets circulation.
+      const u = -dflux(s, curVel());
+      if (Math.abs(u) > 0.01) {
+        const cw = u > 0 ? 1 : -1; // arbitrary but consistent convention
+        drawLoopCurrent(ctx, loopX, cy, loopW, loopH, cw, th);
+        SK.label(ctx, 'indukovaný proud', loopX, cy + loopH / 2 + 16,
+                 { color: th.ok, align: 'center', font: '12px system-ui' });
+      } else {
+        SK.label(ctx, 'Φ konstantní → bez proudu', loopX, cy + loopH / 2 + 16,
+                 { color: th.muted, align: 'center', font: '12px system-ui' });
+      }
+    }
+
+    function drawMagnet(ctx, x, y, th) {
+      const mw = 64, mh = 20;
+      ctx.save();
+      ctx.fillStyle = th.pos; ctx.fillRect(x - mw / 2, y - mh / 2, mw / 2, mh);
+      ctx.fillStyle = th.neg; ctx.fillRect(x, y - mh / 2, mw / 2, mh);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 12px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('N', x - mw / 4, y); ctx.fillText('S', x + mw / 4, y);
+      ctx.strokeStyle = th.fg; ctx.lineWidth = 1; ctx.strokeRect(x - mw / 2, y - mh / 2, mw, mh);
+      ctx.restore();
+      SK.label(ctx, 'magnet', x, y - mh / 2 - 8, { color: th.muted, align: 'center', font: '11px system-ui' });
+    }
+
+    function drawLoopCurrent(ctx, cx, cy, lw, lh, cw, th) {
+      const x0 = cx - lw / 2, y0 = cy - lh / 2;
+      // arrowheads on each side following circulation
+      const seg = [
+        [x0, y0, x0 + lw, y0],          // top → right
+        [x0 + lw, y0, x0 + lw, y0 + lh],// right → down
+        [x0 + lw, y0 + lh, x0, y0 + lh],// bottom → left
+        [x0, y0 + lh, x0, y0],          // left → up
+      ];
+      ctx.save();
+      seg.forEach((s2) => {
+        let [ax, ay, bx, by] = s2;
+        if (cw < 0) { [ax, ay, bx, by] = [bx, by, ax, ay]; }
+        const mx = (ax + bx) / 2, my = (ay + by) / 2;
+        const dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy);
+        const ux = dx / L, uy = dy / L;
+        SK.arrow(ctx, mx - ux * 10, my - uy * 10, mx + ux * 10, my + uy * 10,
+                 { color: th.ok, width: 2.4, head: 7 });
+      });
+      ctx.restore();
+    }
+
+    function drawGraphs(ctx, w, h) {
+      const th = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const padL = 40, padR = 12, padT = 14, padB = 12;
+      const midY = h / 2;
+      // two stacked plots: Φ (top half), u (bottom half)
+      drawTrace(ctx, padL, padT, w - padL - padR, h / 2 - padT - 6, hist.map(d => d.phi), th.accent, 'Φ(t)', th, 0, 1.05);
+      drawTrace(ctx, padL, h / 2 + 6, w - padL - padR, h / 2 - padB - 6, hist.map(d => d.u), th.warn, 'u(t) = −dΦ/dt', th, -1, 1);
+
+      // current readout
+      const phi = flux(s), u = -dflux(s, curVel());
+      const dir = Math.abs(u) < 0.01 ? '—' : (u > 0 ? 'po směru hod. ručiček' : 'proti směru hod. ručiček');
+      ro.innerHTML = `Poloha magnetu s = <b>${SK.fmt(s, 2)}</b><br>` +
+                     `Φ = <b>${SK.fmt(phi, 3)}</b> (rel.)<br>` +
+                     `dΦ/dt = <b>${SK.fmt(dflux(s, curVel()), 3)}</b><br>` +
+                     `u = −dΦ/dt = <b>${SK.fmt(u, 3)}</b> V (rel.)<br>` +
+                     `Proud: <b>${dir}</b> (Lenz)`;
+    }
+
+    function drawTrace(ctx, x, y, w, h, data, color, lbl, th, vmin, vmax) {
+      ctx.save();
+      // zero line
+      const Y = (v) => y + h - (v - vmin) / (vmax - vmin) * h;
+      ctx.strokeStyle = th.axis; ctx.lineWidth = 1; ctx.globalAlpha = 0.6;
+      ctx.beginPath(); ctx.moveTo(x, Y(0)); ctx.lineTo(x + w, Y(0)); ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+      const n = data.length;
+      for (let i = 0; i < n; i++) {
+        const px = x + (i / (HMAX - 1)) * w;
+        const py = Y(SK.clamp(data[i], vmin, vmax));
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.restore();
+      SK.label(ctx, lbl, x + 4, y + 12, { color: color, font: '12px system-ui' });
+    }
+
+    // controls
+    let playBtn;
+    const ctrl = document.getElementById('ctrl');
+    const builders = [];
+    playBtn = SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => {
+      anim.toggle();
+      b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit';
+    } });
+    builders.push(playBtn);
+    const posSlider = SK.slider({ label: 'Poloha magnetu', min: -1.05, max: 1.05, step: 0.01, value: -1,
+      fmt: (v) => SK.fmt(v, 2), oninput: (v) => { s = v; if (manual) { record(); view1.redraw(); view2.redraw(); } } });
+    builders.push(SK.slider({ label: 'Rychlost', min: 0.1, max: 2, step: 0.05, value: 0.6,
+      fmt: (v) => SK.fmt(v, 2), oninput: (v) => { speed = v; } }));
+    builders.push(SK.toggle({ label: 'Ruční ovládání', value: false, onchange: (v) => {
+      manual = v; if (manual) anim.stop(); playBtn.set('▶ Spustit'); record(); view1.redraw(); view2.redraw(); } }));
+    builders.push(posSlider);
+    SK.controls(ctrl, builders);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Mění-li se magnetický tok Φ smyčkou, indukuje se napětí u = −dΦ/dt. Indukovaný proud má dle Lenzova zákona takový směr, aby bránil změně toku. Největší u je při nejrychlejší změně Φ (magnet vjíždí/vyjíždí), nulové u je v maximu Φ.';
+    ctrl.appendChild(hint);
+
+    record();
+    view1.redraw(); view2.redraw();
+  })();</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Závit a solenoid — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Magnetické pole závitu a solenoidu</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const ro = document.getElementById('ro');
+    const mu0 = 4 * Math.PI * 1e-7;
+
+    let mode = 'loop';
+    let I = 5;          // A
+    let Rmm = 20;       // loop / solenoid radius mm
+    let N = 20;         // turns (solenoid)
+    let Lmm = 80;       // solenoid length mm
+
+    function setFormula() {
+      SK.katex(document.getElementById('formula'),
+        mode === 'loop'
+          ? 'B(z)=\\dfrac{\\mu_0 I R^2}{2\\,(R^2+z^2)^{3/2}}'
+          : 'B=\\mu_0 n I,\\quad n=\\dfrac{N}{L}', false);
+    }
+    setFormula();
+
+    function Bloop(zmm) {
+      const R = Rmm / 1000, z = zmm / 1000;
+      return mu0 * I * R * R / (2 * Math.pow(R * R + z * z, 1.5));
+    }
+    // Solenoid on-axis field (finite): B = µ0 n I /2 (cosθ1 - cosθ2)
+    function Bsol(zmm) {
+      const n = N / (Lmm / 1000);     // turns per meter
+      const z = zmm / 1000, L = Lmm / 1000, R = Rmm / 1000;
+      const z1 = z + L / 2, z2 = z - L / 2;
+      const c1 = z1 / Math.sqrt(z1 * z1 + R * R);
+      const c2 = z2 / Math.sqrt(z2 * z2 + R * R);
+      return mu0 * n * I / 2 * (c1 - c2);
+    }
+    const Bcenter = () => mode === 'loop' ? Bloop(0) : Bsol(0);
+
+    const view1 = SK.mount(document.getElementById('c1'), drawScene);
+    const view2 = SK.mount(document.getElementById('c2'), drawGraph);
+
+    function drawScene(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const cx = w * 0.5, cy = h * 0.5;
+      const pxPerMM = w * 0.42 / Math.max(Rmm, 30);
+      const Rpx = Rmm * pxPerMM;
+
+      // axis line (z)
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(8, cy); ctx.lineTo(w - 8, cy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.restore();
+      SK.label(ctx, 'osa z', w - 10, cy - 8, { color: t.muted, align: 'right' });
+
+      if (mode === 'loop') {
+        // single loop side view: two cross-sections (top ⊙ wire near, bottom ⊗ far) — draw ellipse
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.ellipse(cx, cy, 10, Rpx, 0, 0, 7); ctx.stroke(); ctx.restore();
+        // current symbols top/bottom
+        drawSym(ctx, cx, cy - Rpx, true, t);  // ⊙
+        drawSym(ctx, cx, cy + Rpx, false, t); // ⊗
+        // axial B arrows
+        for (let zmm = -40; zmm <= 40; zmm += 10) {
+          const x = cx + zmm * pxPerMM;
+          const B = Bloop(zmm);
+          const len = SK.clamp(B / Bloop(0) * 26, 4, 28);
+          SK.arrow(ctx, x, cy, x + len, cy, { color: t.mag, width: 1.8, head: 5 });
+        }
+        SK.label(ctx, 'závit (poloměr R)', cx, cy - Rpx - 14, { color: t.muted, align: 'center' });
+      } else {
+        // solenoid: draw N coil ellipses along axis
+        const Lpx = Math.min(Lmm * pxPerMM, w * 0.8);
+        const x0 = cx - Lpx / 2, x1 = cx + Lpx / 2;
+        const rpx = Math.min(Rpx, h * 0.32);
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 1.6;
+        const turns = Math.min(N, 40);
+        for (let i = 0; i < turns; i++) {
+          const x = x0 + (i + 0.5) / turns * Lpx;
+          ctx.beginPath(); ctx.ellipse(x, cy, 5, rpx, 0, 0, 7); ctx.stroke();
+        }
+        ctx.restore();
+        // near-uniform internal field arrows + fringing
+        for (let zmm = -Lmm * 0.7; zmm <= Lmm * 0.7; zmm += Lmm / 7) {
+          const x = cx + zmm * pxPerMM;
+          if (x < 12 || x > w - 12) continue;
+          const B = Bsol(zmm);
+          const len = SK.clamp(B / Math.max(Bsol(0), 1e-12) * 24, 3, 26);
+          ctx.globalAlpha = 0.4 + 0.6 * SK.clamp(B / Math.max(Bsol(0), 1e-12), 0, 1);
+          SK.arrow(ctx, x - len / 2, cy, x + len / 2, cy, { color: t.mag, width: 1.8, head: 5 });
+          ctx.globalAlpha = 1;
+        }
+        SK.label(ctx, 'solenoid: N závitů, uvnitř ~ homogenní', cx, cy - rpx - 14,
+                 { color: t.muted, align: 'center' });
+      }
+    }
+
+    function drawSym(ctx, x, y, out, t) {
+      SK.dot(ctx, x, y, 8, t.fg);
+      ctx.save(); ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; ctx.lineWidth = 1.6;
+      if (out) { ctx.beginPath(); ctx.arc(x, y, 2, 0, 7); ctx.fill(); }
+      else { ctx.beginPath(); ctx.moveTo(x - 4, y - 4); ctx.lineTo(x + 4, y + 4);
+             ctx.moveTo(x + 4, y - 4); ctx.lineTo(x - 4, y + 4); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    function drawGraph(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 46, padB = 32, padT = 14, padR = 14;
+      const ox = padL, oy = h - padB;
+      const zMax = mode === 'loop' ? 60 : Math.max(Lmm, 60); // mm each side
+      const sx = (w - padL - padR) / (2 * zMax);
+      const Bf = mode === 'loop' ? Bloop : Bsol;
+      let Bmax = 1e-12;
+      for (let zmm = -zMax; zmm <= zMax; zmm += 1) Bmax = Math.max(Bmax, Bf(zmm));
+      Bmax *= 1.15;
+      const sy = (h - padT - padB) / Bmax;
+      const X = (zmm) => ox + (zmm + zMax) * sx;
+      const Y = (B) => oy - B * sy;
+
+      SK.grid(ctx, w, h, 28);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(X(0), padT); ctx.lineTo(X(0), oy);
+      ctx.moveTo(ox, oy); ctx.lineTo(w - padR, oy); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('z [mm]', w - padR - 2, oy + 6);
+      ctx.textAlign = 'left'; ctx.fillText('B [µT]', ox + 4, padT);
+      ctx.restore();
+
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      let started = false;
+      for (let px = 0; px <= (w - padL - padR); px++) {
+        const zmm = px / sx - zMax;
+        const yy = Y(Bf(zmm));
+        if (!started) { ctx.moveTo(ox + px, yy); started = true; } else ctx.lineTo(ox + px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'B na ose', X(0) + 6, padT + 2, { color: t.accent, font: '11px system-ui' });
+
+      ro.innerHTML = mode === 'loop'
+        ? `<b>Závit:</b> I = <b>${SK.fmt(I, 1)} A</b>, R = <b>${Rmm} mm</b><br>` +
+          `B ve středu = <b>${(Bloop(0) * 1e6).toFixed(1)} µT</b><br>` +
+          `B = µ₀IR²/(2(R²+z²)^{3/2})`
+        : `<b>Solenoid:</b> I = <b>${SK.fmt(I, 1)} A</b>, N = <b>${N}</b>, L = <b>${Lmm} mm</b><br>` +
+          `n = N/L = <b>${SK.fmt(N / (Lmm / 1000), 0)} /m</b><br>` +
+          `B uvnitř ≈ µ₀nI = <b>${(mu0 * (N / (Lmm / 1000)) * I * 1e6).toFixed(1)} µT</b>`;
+    }
+
+    function rebuildControls() {
+      const ctrl = document.getElementById('ctrl');
+      ctrl.innerHTML = '';
+      const items = [
+        SK.tabs({ options: [{ label: 'Závit', value: 'loop' }, { label: 'Solenoid', value: 'solenoid' }],
+                  value: mode, onchange: (v) => { mode = v; setFormula(); rebuildControls(); view1.redraw(); view2.redraw(); } }),
+        SK.slider({ label: 'Proud I', min: 1, max: 20, step: 0.5, value: I, unit: 'A',
+                    fmt: (v) => SK.fmt(v, 1), oninput: (v) => { I = v; view1.redraw(); view2.redraw(); } }),
+        SK.slider({ label: 'Poloměr R', min: 5, max: 40, step: 1, value: Rmm, unit: 'mm',
+                    fmt: (v) => v | 0, oninput: (v) => { Rmm = v; view1.redraw(); view2.redraw(); } }),
+      ];
+      if (mode === 'solenoid') {
+        items.push(SK.slider({ label: 'Počet závitů N', min: 5, max: 60, step: 1, value: N,
+                    fmt: (v) => v | 0, oninput: (v) => { N = v | 0; view1.redraw(); view2.redraw(); } }));
+        items.push(SK.slider({ label: 'Délka L', min: 30, max: 150, step: 1, value: Lmm, unit: 'mm',
+                    fmt: (v) => v | 0, oninput: (v) => { Lmm = v; view1.redraw(); view2.redraw(); } }));
+      }
+      SK.controls(ctrl, items);
+      const hint = document.createElement('div');
+      hint.className = 'sk-hint';
+      hint.textContent = mode === 'loop'
+        ? 'Pole na ose závitu je největší ve středu a klesá s 1/(R²+z²)^{3/2}. Vně se chová jako magnetický dipól.'
+        : 'Uvnitř dlouhého solenoidu je pole téměř homogenní (B ≈ µ₀nI), na koncích slábne a „vystřikuje" ven (rozptylové pole).';
+      ctrl.appendChild(hint);
+    }
+    rebuildControls();
+  })();</script>
+</body>
+</html>

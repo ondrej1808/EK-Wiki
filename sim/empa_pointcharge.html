@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pole bodového náboje — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head">
+    <h1>Elektrické pole bodového náboje</h1>
+    <div class="sk-formula" id="formula"></div>
+  </div>
+  <div class="sk-stage">
+    <canvas id="c"></canvas>
+    <div class="sk-readout" id="ro"></div>
+  </div>
+  <div class="sk-controls" id="ctrl"></div>
+
+  <script src="sim-kit.js"></script>
+  <script>
+  (function () {
+    SK.katex(document.getElementById('formula'),
+      'E(r)=\\dfrac{1}{4\\pi\\varepsilon_0}\\dfrac{Q}{r^2}\\,,\\quad \\vec E \\parallel \\vec r_0', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let Q = 1;                 // relative charge (sign + magnitude)
+    let density = 16;          // arrows per side
+    let showPotential = false; // equipotential rings
+    let pos = { x: 0.5, y: 0.5 }; // charge position in normalized coords
+    let dragging = false;
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+
+      const cx = pos.x * w, cy = pos.y * h;
+      const col = Q >= 0 ? t.pos : t.neg;
+
+      // Equipotential rings (|V| ∝ 1/r → evenly spaced potential = rings at r ∝ 1/k)
+      if (showPotential) {
+        ctx.save();
+        ctx.strokeStyle = t.axis; ctx.globalAlpha = 0.5; ctx.setLineDash([4, 4]);
+        for (let k = 1; k <= 6; k++) {
+          const r = 26 * k;
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Field arrows on a grid; length ∝ E ∝ 1/r^2 (clamped)
+      const n = density, mx = w / n, my = h / n;
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          const px = (i + 0.5) * mx, py = (j + 0.5) * my;
+          const dx = px - cx, dy = py - cy;
+          const r = Math.hypot(dx, dy);
+          if (r < 14) continue;
+          const E = SK.clamp(2200 * Math.abs(Q) / (r * r), 3, 22);
+          const ux = dx / r, uy = dy / r;
+          // E points away from + charge, toward − charge
+          const s = Q >= 0 ? 1 : -1;
+          const len = E;
+          const a = 0.25 + 0.6 * SK.clamp(E / 22, 0, 1);
+          ctx.globalAlpha = a;
+          SK.arrow(ctx, px, py, px + s * ux * len, py + s * uy * len,
+                   { color: col, width: 1.6, head: 5 });
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      // The charge itself
+      SK.dot(ctx, cx, cy, 12, col);
+      SK.label(ctx, Q >= 0 ? '+' : '−', cx, cy + 0.5, {
+        color: '#fff', font: 'bold 16px system-ui', align: 'center', baseline: 'middle'
+      });
+
+      ro.innerHTML = `Náboj <b>Q = ${SK.fmt(Q, 2)}</b> (rel.)<br>` +
+                     `Siločáry směřují ${Q >= 0 ? 'od' : 'k'} náboji<br>` +
+                     `Táhni náboj myší · E ∝ 1/r²`;
+    }
+
+    // Drag the charge
+    function hit(p, w, h) {
+      return Math.hypot(p.x - pos.x * w, p.y - pos.y * h) < 22;
+    }
+    canvas.addEventListener('pointerdown', (e) => {
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      if (hit(p, w, h)) { dragging = true; canvas.setPointerCapture(e.pointerId); }
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      pos.x = SK.clamp(p.x / w, 0.05, 0.95);
+      pos.y = SK.clamp(p.y / h, 0.05, 0.95);
+      view.redraw();
+    });
+    canvas.addEventListener('pointerup', () => dragging = false);
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Náboj Q', min: -2, max: 2, step: 0.1, value: 1,
+                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Q = v; view.redraw(); } }),
+      SK.slider({ label: 'Hustota šipek', min: 8, max: 26, step: 1, value: 16,
+                  fmt: (v) => v | 0, oninput: (v) => { density = v | 0; view.redraw(); } }),
+      SK.toggle({ label: 'Ekvipotenciály', value: false,
+                  onchange: (v) => { showPotential = v; view.redraw(); } }),
+    ]);
+  })();
+  </script>
+</body>
+</html>

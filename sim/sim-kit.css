@@ -1,0 +1,175 @@
+/* ═══════════════════════════════════════════════════════════════
+ *  sim-kit.css — shared styling for all wiki simulations
+ *  Self-contained, no build step, dark/light aware. GitHub-Pages safe.
+ * ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --sk-bg:        #f1f5f9;
+  --sk-panel:     #ffffff;
+  --sk-stage:     #fbfdff;
+  --sk-fg:        #0f172a;
+  --sk-muted:     #64748b;
+  --sk-border:    #e2e8f0;
+  --sk-grid:      #e7edf5;
+  --sk-axis:      #94a3b8;
+  --sk-accent:    #6d28d9;
+  --sk-accent-2:  #2563eb;
+  --sk-pos:       #dc2626;   /* + charge / E field */
+  --sk-neg:       #2563eb;   /* − charge */
+  --sk-mag:       #0d9488;   /* magnetic */
+  --sk-ok:        #16a34a;
+  --sk-warn:      #d97706;
+  --sk-shadow:    0 2px 14px rgba(15,23,42,.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sk-bg:      #0b1120;
+    --sk-panel:   #131c2e;
+    --sk-stage:   #0e1626;
+    --sk-fg:      #e8eefb;
+    --sk-muted:   #93a4c0;
+    --sk-border:  #243049;
+    --sk-grid:    #1b2740;
+    --sk-axis:    #46587c;
+    --sk-accent:  #a78bfa;
+    --sk-accent-2:#60a5fa;
+    --sk-pos:     #f87171;
+    --sk-neg:     #60a5fa;
+    --sk-mag:     #2dd4bf;
+    --sk-ok:      #4ade80;
+    --sk-warn:    #fbbf24;
+    --sk-shadow:  0 2px 16px rgba(0,0,0,.45);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body.sk {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--sk-bg);
+  color: var(--sk-fg);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 14px;
+  gap: 12px;
+}
+
+.sk-head { flex: 0 0 auto; }
+.sk-head h1 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.sk-formula {
+  color: var(--sk-muted);
+  font-size: 14px;
+  min-height: 1.2em;
+}
+.sk-formula .katex { font-size: 1.02em; }
+
+/* Stage = canvas wrapper */
+.sk-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 240px;
+  background: var(--sk-stage);
+  border: 1px solid var(--sk-border);
+  border-radius: 12px;
+  box-shadow: var(--sk-shadow);
+  overflow: hidden;
+}
+.sk-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+/* Multi-canvas stages stack vertically */
+.sk-stage.sk-split { display: flex; gap: 1px; background: var(--sk-border); }
+.sk-stage.sk-split > canvas { flex: 1 1 0; }
+@media (max-width: 640px) {
+  .sk-stage.sk-split { flex-direction: column; }
+}
+
+/* Floating readout on the stage */
+.sk-readout {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: color-mix(in srgb, var(--sk-panel) 88%, transparent);
+  border: 1px solid var(--sk-border);
+  border-radius: 9px;
+  padding: 7px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  max-width: 70%;
+  box-shadow: var(--sk-shadow);
+}
+.sk-readout b { color: var(--sk-accent); font-weight: 700; }
+
+/* Control panel */
+.sk-controls {
+  flex: 0 0 auto;
+  background: var(--sk-panel);
+  border: 1px solid var(--sk-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  align-items: flex-end;
+  box-shadow: var(--sk-shadow);
+}
+.sk-ctrl { display: flex; flex-direction: column; gap: 4px; min-width: 150px; }
+.sk-ctrl > label {
+  font-size: 11px; font-weight: 600; color: var(--sk-muted);
+  display: flex; justify-content: space-between; gap: 10px;
+}
+.sk-ctrl > label .sk-val { color: var(--sk-fg); font-variant-numeric: tabular-nums; }
+
+.sk-controls input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 5px; border-radius: 4px;
+  background: var(--sk-border); outline: none; cursor: pointer;
+}
+.sk-controls input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--sk-accent); border: 2px solid var(--sk-panel);
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.sk-controls input[type=range]::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--sk-panel);
+  background: var(--sk-accent);
+}
+
+/* Buttons + toggles + segmented tabs */
+.sk-btn {
+  font: inherit; font-size: 13px; font-weight: 600;
+  padding: 7px 14px; border-radius: 9px; cursor: pointer;
+  border: 1px solid var(--sk-border); background: var(--sk-bg); color: var(--sk-fg);
+  transition: transform .12s, box-shadow .12s, background .12s;
+}
+.sk-btn:hover { transform: translateY(-1px); box-shadow: var(--sk-shadow); }
+.sk-btn.sk-primary { background: var(--sk-accent); color: #fff; border-color: transparent; }
+.sk-btn.sk-on { background: var(--sk-accent-2); color: #fff; border-color: transparent; }
+
+.sk-tabs { display: inline-flex; border: 1px solid var(--sk-border); border-radius: 9px; overflow: hidden; }
+.sk-tabs button {
+  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  padding: 7px 12px; border: none; background: var(--sk-panel); color: var(--sk-muted);
+  border-right: 1px solid var(--sk-border);
+}
+.sk-tabs button:last-child { border-right: none; }
+.sk-tabs button.sk-active { background: var(--sk-accent); color: #fff; }
+
+.sk-hint { width: 100%; font-size: 11px; color: var(--sk-muted); margin-top: -2px; }

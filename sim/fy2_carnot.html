@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carnotův cyklus — FY2</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Carnotův cyklus</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      '\\eta=1-\\dfrac{T_c}{T_h}', false);
+
+    const ro = document.getElementById('ro');
+    const c1 = document.getElementById('c1');
+    const c2 = document.getElementById('c2');
+
+    let Th = 700;   // K (hot reservoir)
+    let Tc = 300;   // K (cold reservoir)
+    let cr = 2.5;   // isothermal expansion volume ratio V2/V1
+    let gam = 1.4;  // adiabatic index
+
+    // Carnot cycle states. Start: state 1 (V1, Th). Use R=1, n=1 for shape.
+    // 1->2 isothermal expansion at Th (V1->V2=cr*V1)
+    // 2->3 adiabatic expansion (Th->Tc)
+    // 3->4 isothermal compression at Tc
+    // 4->1 adiabatic compression (Tc->Th)
+    function states() {
+      const V1 = 1;
+      const V2 = cr * V1;
+      // adiabatic 2->3: Th*V2^(g-1) = Tc*V3^(g-1)
+      const V3 = V2 * Math.pow(Th / Tc, 1 / (gam - 1));
+      // adiabatic 4->1: Tc*V4^(g-1) = Th*V1^(g-1) → V4 = V1*(Th/Tc)^(1/(g-1))
+      const V4 = V1 * Math.pow(Th / Tc, 1 / (gam - 1));
+      const p = (V, T) => T / V; // p = nRT/V with nR=1
+      return [
+        { V: V1, T: Th, p: p(V1, Th) },
+        { V: V2, T: Th, p: p(V2, Th) },
+        { V: V3, T: Tc, p: p(V3, Tc) },
+        { V: V4, T: Tc, p: p(V4, Tc) },
+      ];
+    }
+
+    const v1 = SK.mount(c1, drawPV);
+    const v2 = SK.mount(c2, drawTS);
+
+    function bounds(st) {
+      let Vmin = Infinity, Vmax = -Infinity, pmin = Infinity, pmax = -Infinity;
+      st.forEach(s => { Vmin = Math.min(Vmin, s.V); Vmax = Math.max(Vmax, s.V); pmin = Math.min(pmin, s.p); pmax = Math.max(pmax, s.p); });
+      return { Vmin, Vmax, pmin, pmax };
+    }
+
+    function drawPV(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const padL = 50, padB = 38, padT = 18, padR = 18;
+      const st = states();
+      const b = bounds(st);
+      const Vlo = b.Vmin * 0.9, Vhi = b.Vmax * 1.05;
+      const plo = 0, phi = b.pmax * 1.08;
+      const X = (V) => padL + (V - Vlo) / (Vhi - Vlo) * (w - padL - padR);
+      const Y = (p) => (h - padB) - (p - plo) / (phi - plo) * (h - padT - padB);
+
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(padL, Y(plo)); ctx.lineTo(w - padR, Y(plo));
+      ctx.moveTo(padL, Y(plo)); ctx.lineTo(padL, padT);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('V', w - padR - 2, Y(plo) + 6);
+      ctx.textAlign = 'left'; ctx.fillText('p', padL + 6, padT + 2);
+      ctx.restore();
+
+      // path helpers
+      const iso = (sa, sb, T, dir) => { // sample p=T/V along V
+        const pts = []; const steps = 40;
+        for (let i = 0; i <= steps; i++) {
+          const V = sa.V + (sb.V - sa.V) * i / steps;
+          pts.push([V, T / V]);
+        }
+        return pts;
+      };
+      const adia = (sa, sb) => { // pV^g = const
+        const C = sa.p * Math.pow(sa.V, gam);
+        const pts = []; const steps = 40;
+        for (let i = 0; i <= steps; i++) {
+          const V = sa.V + (sb.V - sa.V) * i / steps;
+          pts.push([V, C / Math.pow(V, gam)]);
+        }
+        return pts;
+      };
+
+      const loop = [].concat(iso(st[0], st[1], Th), adia(st[1], st[2]), iso(st[2], st[3], Tc), adia(st[3], st[0]));
+
+      // shade enclosed area = work
+      ctx.save();
+      ctx.beginPath();
+      loop.forEach((p, i) => { const x = X(p[0]), y = Y(p[1]); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+      ctx.closePath();
+      ctx.fillStyle = t.ok; ctx.globalAlpha = 0.16; ctx.fill();
+      ctx.restore();
+
+      // draw the four processes with colors
+      function seg(pts, color, lw) {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = lw || 2.2; ctx.beginPath();
+        pts.forEach((p, i) => { const x = X(p[0]), y = Y(p[1]); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+        ctx.stroke(); ctx.restore();
+      }
+      seg(iso(st[0], st[1], Th), t.pos);   // hot isotherm (expansion)
+      seg(adia(st[1], st[2]), t.accent2);
+      seg(iso(st[2], st[3], Tc), t.neg);   // cold isotherm (compression)
+      seg(adia(st[3], st[0]), t.accent2);
+
+      // state points
+      const labs = ['1', '2', '3', '4'];
+      st.forEach((s, i) => {
+        SK.dot(ctx, X(s.V), Y(s.p), 4, t.fg);
+        SK.label(ctx, labs[i], X(s.V) + 6, Y(s.p) - 6, { color: t.fg, font: 'bold 12px system-ui' });
+      });
+      SK.label(ctx, 'p–V diagram (plocha = práce W)', w / 2, h - 6, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawTS(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const padL = 50, padB = 38, padT = 18, padR = 18;
+      // entropy change on hot isotherm ΔS = nR ln(V2/V1) = ln(cr) (nR=1); cold isotherm same magnitude
+      const dS = Math.log(cr);
+      const Smin = 0, Smax = dS * 1.25;
+      const Tlo = Math.max(0, Tc - (Th - Tc) * 0.3), Thi = Th + (Th - Tc) * 0.25;
+      const X = (S) => padL + (S - Smin) / (Smax - Smin) * (w - padL - padR);
+      const Y = (T) => (h - padB) - (T - Tlo) / (Thi - Tlo) * (h - padT - padB);
+
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(padL, h - padB); ctx.lineTo(w - padR, h - padB);
+      ctx.moveTo(padL, h - padB); ctx.lineTo(padL, padT);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('S', w - padR - 2, h - padB + 6);
+      ctx.textAlign = 'left'; ctx.fillText('T [K]', padL + 6, padT + 2);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(Th | 0, padL - 5, Y(Th));
+      ctx.fillText(Tc | 0, padL - 5, Y(Tc));
+      ctx.restore();
+
+      // rectangle: S1=Smin at Th, S2=dS at Th, then down to Tc at dS, back to Smin at Tc
+      const SA = 0.12 * dS, SB = SA + dS; // offset so rectangle is centered-ish
+      const corners = [
+        [SA, Th], [SB, Th], [SB, Tc], [SA, Tc],
+      ];
+      // shade = heat? area under hot isotherm = Qh; enclosed rectangle = net work
+      ctx.save();
+      ctx.beginPath();
+      corners.forEach((p, i) => { const x = X(p[0]), y = Y(p[1]); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+      ctx.closePath();
+      ctx.fillStyle = t.ok; ctx.globalAlpha = 0.16; ctx.fill();
+      ctx.restore();
+
+      function line(a, bb, color) {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(X(a[0]), Y(a[1])); ctx.lineTo(X(bb[0]), Y(bb[1])); ctx.stroke(); ctx.restore();
+      }
+      line(corners[0], corners[1], t.pos);  // hot isotherm (top)
+      line(corners[1], corners[2], t.accent2); // adiabat (vertical)
+      line(corners[2], corners[3], t.neg);  // cold isotherm (bottom)
+      line(corners[3], corners[0], t.accent2); // adiabat (vertical)
+
+      const labs = ['1', '2', '3', '4'];
+      corners.forEach((p, i) => {
+        SK.dot(ctx, X(p[0]), Y(p[1]), 4, t.fg);
+        SK.label(ctx, labs[i], X(p[0]) + 6, Y(p[1]) - 6, { color: t.fg, font: 'bold 12px system-ui' });
+      });
+      SK.label(ctx, 'T–S diagram (obdélník)', w / 2, h - 6, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+
+      const eta = 1 - Tc / Th;
+      ro.innerHTML = `Účinnost <b>η = ${(eta * 100).toFixed(1)} %</b><br>` +
+        `T_h=<b>${Th | 0} K</b>, T_c=<b>${Tc | 0} K</b><br>` +
+        `Práce W &gt; 0 (plocha smyčky) · γ=${SK.fmt(gam, 2)}`;
+    }
+
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    const sTc = SK.slider({ label: 'Studená lázeň T_c', min: 250, max: 400, step: 5, value: 300, unit: 'K',
+      fmt: (v) => v | 0, oninput: (v) => { Tc = Math.min(v, Th - 5); sTc.set(Tc); redraw(); } });
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Teplá lázeň T_h', min: 400, max: 900, step: 5, value: 700, unit: 'K',
+        fmt: (v) => v | 0, oninput: (v) => { Th = v; if (Tc > Th - 5) { Tc = Th - 5; sTc.set(Tc); } redraw(); } }),
+      sTc,
+      SK.slider({ label: 'Kompresní poměr V₂/V₁', min: 1.5, max: 6, step: 0.1, value: 2.5,
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { cr = v; redraw(); } }),
+      SK.slider({ label: 'Poissonova konstanta γ', min: 1.1, max: 1.67, step: 0.01, value: 1.4,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { gam = v; redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Carnotův cyklus: dvě izotermy (pV=konst, T_h a T_c) a dvě adiabaty (pV^γ=konst). ' +
+      'V p–V diagramu je smyčka zaoblená, v T–S diagramu je to obdélník. Účinnost závisí jen na teplotách: η=1−T_c/T_h.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

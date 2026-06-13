@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pole dvou nábojů — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Elektrické pole dvou bodových nábojů</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      '\\vec E=\\sum_i \\dfrac{1}{4\\pi\\varepsilon_0}\\dfrac{Q_i}{r_i^2}\\hat r_i', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let Q1 = 1.5, Q2 = -1.5;
+    let showField = true, showLines = false, showEqui = false;
+    // positions in normalized coords
+    let p1 = { x: 0.35, y: 0.5 }, p2 = { x: 0.65, y: 0.5 };
+    let dragging = null;
+
+    const view = SK.mount(canvas, draw);
+
+    // E field (arbitrary units) at pixel (x,y) given pixel charge positions
+    function field(x, y, c1, c2) {
+      let ex = 0, ey = 0;
+      const charges = [{ q: Q1, p: c1 }, { q: Q2, p: c2 }];
+      for (const ch of charges) {
+        const dx = x - ch.p.x, dy = y - ch.p.y;
+        const r2 = dx * dx + dy * dy;
+        const r = Math.sqrt(r2);
+        if (r < 1e-3) continue;
+        const k = 4000 * ch.q / (r2 * r); // includes 1/r for unit vector
+        ex += k * dx; ey += k * dy;
+      }
+      return { ex, ey };
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const c1 = { x: p1.x * w, y: p1.y * h };
+      const c2 = { x: p2.x * w, y: p2.y * h };
+
+      if (showEqui) drawEqui(ctx, w, h, c1, c2, t);
+      if (showField) drawFieldArrows(ctx, w, h, c1, c2, t);
+      if (showLines) drawFieldLines(ctx, w, h, c1, c2, t);
+
+      drawCharge(ctx, c1, Q1, t);
+      drawCharge(ctx, c2, Q2, t);
+
+      const distPx = Math.hypot(c1.x - c2.x, c1.y - c2.y);
+      const kind = (Q1 * Q2 < 0) ? 'dipól (opačné náboje)'
+                 : (Q1 * Q2 > 0) ? 'souhlasné náboje (odpuzování)'
+                 : 'jeden náboj nulový';
+      ro.innerHTML = `<b>Q₁ = ${SK.fmt(Q1, 1)}</b> · <b>Q₂ = ${SK.fmt(Q2, 1)}</b> (rel.)<br>` +
+                     `Vzdálenost d ≈ <b>${SK.fmt(distPx / w, 2)}</b> (rel. šířky)<br>` +
+                     `Konfigurace: ${kind}<br>Táhni náboje myší`;
+    }
+
+    function drawCharge(ctx, c, Q, t) {
+      const col = Q >= 0 ? t.pos : t.neg;
+      SK.dot(ctx, c.x, c.y, 13, col);
+      SK.label(ctx, Q >= 0 ? '+' : '−', c.x, c.y + 0.5, {
+        color: '#fff', font: 'bold 17px system-ui', align: 'center', baseline: 'middle' });
+    }
+
+    function drawFieldArrows(ctx, w, h, c1, c2, t) {
+      const n = 18, mx = w / n, my = h / n;
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+        const px = (i + 0.5) * mx, py = (j + 0.5) * my;
+        if (Math.hypot(px - c1.x, py - c1.y) < 16) continue;
+        if (Math.hypot(px - c2.x, py - c2.y) < 16) continue;
+        const f = field(px, py, c1, c2);
+        const mag = Math.hypot(f.ex, f.ey);
+        if (mag < 1e-6) continue;
+        const len = SK.clamp(mag, 3, 20);
+        const ux = f.ex / mag, uy = f.ey / mag;
+        // color by horizontal direction; alpha by magnitude
+        const col = ux >= 0 ? t.pos : t.neg;
+        ctx.globalAlpha = 0.2 + 0.6 * SK.clamp(mag / 20, 0, 1);
+        SK.arrow(ctx, px, py, px + ux * len, py + uy * len, { color: col, width: 1.5, head: 5 });
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function drawFieldLines(ctx, w, h, c1, c2, t) {
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 1.6; ctx.globalAlpha = 0.85;
+      const charges = [{ q: Q1, p: c1 }, { q: Q2, p: c2 }];
+      for (const ch of charges) {
+        if (ch.q === 0) continue;
+        const nSeed = 12;
+        for (let s = 0; s < nSeed; s++) {
+          const ang = (s / nSeed) * Math.PI * 2;
+          let x = ch.p.x + 15 * Math.cos(ang);
+          let y = ch.p.y + 15 * Math.sin(ang);
+          // integrate along field; direction depends on charge sign so line starts at + ends at −
+          const dir = ch.q > 0 ? 1 : -1;
+          ctx.beginPath(); ctx.moveTo(x, y);
+          for (let step = 0; step < 600; step++) {
+            const f = field(x, y, c1, c2);
+            const mag = Math.hypot(f.ex, f.ey);
+            if (mag < 1e-7) break;
+            x += dir * (f.ex / mag) * 3;
+            y += dir * (f.ey / mag) * 3;
+            ctx.lineTo(x, y);
+            if (x < -20 || x > w + 20 || y < -20 || y > h + 20) break;
+            // stop near a charge
+            if (Math.hypot(x - c1.x, y - c1.y) < 13) break;
+            if (Math.hypot(x - c2.x, y - c2.y) < 13) break;
+          }
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawEqui(ctx, w, h, c1, c2, t) {
+      // potential field; draw contour via marching on a coarse grid (sign-change cells)
+      const step = 6;
+      const cols = Math.ceil(w / step) + 1, rows = Math.ceil(h / step) + 1;
+      const V = new Float32Array(cols * rows);
+      function pot(x, y) {
+        let v = 0;
+        const r1 = Math.hypot(x - c1.x, y - c1.y);
+        const r2 = Math.hypot(x - c2.x, y - c2.y);
+        v += Q1 / Math.max(r1, 6);
+        v += Q2 / Math.max(r2, 6);
+        return v * 100;
+      }
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++)
+        V[j * cols + i] = pot(i * step, j * step);
+      const levels = [-30, -15, -8, -4, 4, 8, 15, 30];
+      ctx.save();
+      ctx.strokeStyle = t.muted; ctx.globalAlpha = 0.55; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+      // Marching squares: for each cell connect crossing points on its edges.
+      for (const L of levels) {
+        ctx.beginPath();
+        for (let j = 0; j < rows - 1; j++) for (let i = 0; i < cols - 1; i++) {
+          const x0 = i * step, y0 = j * step;
+          const v0 = V[j * cols + i];         // top-left
+          const v1 = V[j * cols + i + 1];     // top-right
+          const v2 = V[(j + 1) * cols + i + 1]; // bottom-right
+          const v3 = V[(j + 1) * cols + i];   // bottom-left
+          const pts = [];
+          // top edge (v0-v1)
+          if ((v0 - L) * (v1 - L) < 0) pts.push([x0 + (L - v0) / (v1 - v0) * step, y0]);
+          // right edge (v1-v2)
+          if ((v1 - L) * (v2 - L) < 0) pts.push([x0 + step, y0 + (L - v1) / (v2 - v1) * step]);
+          // bottom edge (v3-v2)
+          if ((v3 - L) * (v2 - L) < 0) pts.push([x0 + (L - v3) / (v2 - v3) * step, y0 + step]);
+          // left edge (v0-v3)
+          if ((v0 - L) * (v3 - L) < 0) pts.push([x0, y0 + (L - v0) / (v3 - v0) * step]);
+          if (pts.length >= 2) { ctx.moveTo(pts[0][0], pts[0][1]); ctx.lineTo(pts[1][0], pts[1][1]); }
+        }
+        ctx.stroke();
+      }
+      ctx.setLineDash([]); ctx.restore();
+    }
+
+    function hit(p, cn, w, h) { return Math.hypot(p.x - cn.x * w, p.y - cn.y * h) < 22; }
+    canvas.addEventListener('pointerdown', (e) => {
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      if (hit(p, p1, w, h)) dragging = p1;
+      else if (hit(p, p2, w, h)) dragging = p2;
+      if (dragging) canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      dragging.x = SK.clamp(p.x / w, 0.05, 0.95);
+      dragging.y = SK.clamp(p.y / h, 0.05, 0.95);
+      view.redraw();
+    });
+    canvas.addEventListener('pointerup', () => dragging = null);
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Náboj Q₁', min: -2, max: 2, step: 0.1, value: 1.5,
+                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Q1 = v; view.redraw(); } }),
+      SK.slider({ label: 'Náboj Q₂', min: -2, max: 2, step: 0.1, value: -1.5,
+                  fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Q2 = v; view.redraw(); } }),
+      SK.toggle({ label: 'Vektorové pole', value: true, onchange: (v) => { showField = v; view.redraw(); } }),
+      SK.toggle({ label: 'Siločáry', value: false, onchange: (v) => { showLines = v; view.redraw(); } }),
+      SK.toggle({ label: 'Ekvipotenciály', value: false, onchange: (v) => { showEqui = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Výsledné pole je superpozicí polí obou nábojů. Opačné náboje tvoří dipól (siločáry jdou od + k −), souhlasné se odpuzují (mezi nimi vzniká nulový bod).';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

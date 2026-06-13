@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fourierova transformace — SaS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Fourierova transformace (čas ↔ spektrum)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'X(f)=\\int x(t)\\,e^{-j2\\pi f t}\\,dt\\;\\;\\Rightarrow\\;\\;X[k]=\\sum_{n=0}^{N-1} x[n]\\,e^{-j2\\pi kn/N}', false);
+
+    const ro = document.getElementById('ro');
+    const ro2 = document.createElement('div'); ro2.className = 'sk-readout';
+    document.getElementById('c2').parentNode.appendChild(ro2);
+    // move main readout onto top canvas
+    const ro1 = document.createElement('div'); ro1.className = 'sk-readout';
+    document.getElementById('c1').parentNode.insertBefore(ro1, document.getElementById('c2'));
+
+    // sampling parameters
+    const N = 256;        // samples
+    const fs = 64;        // sampling rate (Hz)
+    const dur = N / fs;   // signal duration (s)
+
+    // two settable sinusoids
+    const S = [ { A: 1.0, f: 4 }, { A: 0.0, f: 12 } ];
+
+    function sampleAt(n) {
+      const t = n / fs;
+      return S[0].A * Math.sin(2 * Math.PI * S[0].f * t)
+           + S[1].A * Math.sin(2 * Math.PI * S[1].f * t);
+    }
+
+    // direct DFT magnitude over the N samples; returns array len N/2 of |X[k]|
+    function dftMag() {
+      const x = new Array(N);
+      for (let n = 0; n < N; n++) x[n] = sampleAt(n);
+      const half = N / 2;
+      const mag = new Array(half);
+      for (let k = 0; k < half; k++) {
+        let re = 0, im = 0;
+        for (let n = 0; n < N; n++) {
+          const ang = -2 * Math.PI * k * n / N;
+          re += x[n] * Math.cos(ang);
+          im += x[n] * Math.sin(ang);
+        }
+        // normalise: single-sided amplitude ≈ 2|X[k]|/N
+        mag[k] = 2 * Math.hypot(re, im) / N;
+      }
+      return mag;
+    }
+
+    const v1 = SK.mount(document.getElementById('c1'), drawTime);
+    const v2 = SK.mount(document.getElementById('c2'), drawSpec);
+
+    function drawTime(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 44, padR = 14, padT = 14, padB = 30;
+      const midY = (padT + (h - padB)) / 2;
+      const plotW = w - padL - padR;
+      const amax = S[0].A + S[1].A + 0.2;
+      const sy = (h - padT - padB) / 2 / amax;
+      const X = (tt) => padL + (tt / dur) * plotW;
+      const Y = (v) => midY - v * sy;
+
+      SK.grid(ctx, w, h, 30);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(padL, midY); ctx.lineTo(w - padR, midY);
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, h - padB);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('t [s]', w - padR - 2, midY + 6);
+      ctx.textAlign = 'left'; ctx.fillText('x(t)', padL + 6, padT);
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2; ctx.beginPath();
+      const M = 800;
+      for (let i = 0; i <= M; i++) {
+        const tt = (i / M) * dur;
+        const v = S[0].A * Math.sin(2 * Math.PI * S[0].f * tt)
+                + S[1].A * Math.sin(2 * Math.PI * S[1].f * tt);
+        i ? ctx.lineTo(X(tt), Y(v)) : ctx.moveTo(X(tt), Y(v));
+      }
+      ctx.stroke(); ctx.restore();
+
+      ro1.innerHTML = `<b>Časová oblast</b><br>` +
+        `f₁=${S[0].f} Hz (A=${SK.fmt(S[0].A, 2)})` +
+        (S[1].A > 0 ? `<br>f₂=${S[1].f} Hz (A=${SK.fmt(S[1].A, 2)})` : '');
+    }
+
+    function drawSpec(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 44, padR = 14, padT = 14, padB = 32;
+      const oy = h - padB;
+      const plotW = w - padL - padR;
+      const half = N / 2;
+      const fmaxAxis = fs / 2;                 // Nyquist
+      const mag = dftMag();
+      let peak = 0; for (let i = 0; i < half; i++) peak = Math.max(peak, mag[i]);
+      const ymax = Math.max(peak, 0.2) * 1.15;
+      const X = (f) => padL + (f / fmaxAxis) * plotW;
+      const Y = (m) => oy - (m / ymax) * (h - padT - padB);
+
+      SK.grid(ctx, w, h, 30);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(padL, oy); ctx.lineTo(w - padR, oy);
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, oy);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('f [Hz]', w - padR - 2, oy + 6);
+      ctx.textAlign = 'left'; ctx.fillText('|X(f)|', padL + 6, padT);
+      ctx.textAlign = 'center';
+      for (let f = 8; f <= fmaxAxis + 1e-9; f += 8) ctx.fillText(f, X(f), oy + 6);
+      ctx.restore();
+
+      // stem/bar plot
+      ctx.save();
+      ctx.strokeStyle = t.accent2; ctx.fillStyle = t.accent2; ctx.lineWidth = 2;
+      for (let k = 0; k < half; k++) {
+        const f = k * fs / N;
+        if (mag[k] < 0.01) continue;
+        const xx = X(f), yy = Y(mag[k]);
+        ctx.beginPath(); ctx.moveTo(xx, oy); ctx.lineTo(xx, yy); ctx.stroke();
+        SK.dot(ctx, xx, yy, 3, t.accent2);
+      }
+      ctx.restore();
+
+      // dominant peaks (local maxima above threshold)
+      const peaks = [];
+      for (let k = 1; k < half - 1; k++) {
+        if (mag[k] > 0.15 && mag[k] >= mag[k - 1] && mag[k] >= mag[k + 1])
+          peaks.push({ f: k * fs / N, m: mag[k] });
+      }
+      peaks.sort((a, b) => b.m - a.m);
+      ro2.innerHTML = `<b>Spektrum |X(f)|</b><br>` +
+        (peaks.length
+          ? 'dominantní: ' + peaks.slice(0, 3).map(p => `<b>${SK.fmt(p.f, 1)} Hz</b>`).join(', ')
+          : 'bez výrazné složky') +
+        `<br>DFT N=${N}, fₛ=${fs} Hz`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    SK.controls(ctrl, [
+      SK.slider({ label: 'Amplituda A₁', min: 0, max: 1.5, step: 0.05, value: 1,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { S[0].A = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Frekvence f₁', min: 1, max: 31, step: 1, value: 4, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { S[0].f = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Amplituda A₂', min: 0, max: 1.5, step: 0.05, value: 0,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { S[1].A = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Frekvence f₂', min: 1, max: 31, step: 1, value: 12, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { S[1].f = v; v1.redraw(); v2.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Každá sinusová složka v čase (horní panel) se ve spektru (dolní panel, přímý DFT) ' +
+      'projeví jednou spektrální čarou na své frekvenci. Přidáním druhé složky přibude druhá čára.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

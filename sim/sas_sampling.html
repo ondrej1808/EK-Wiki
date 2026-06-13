@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vzorkování a aliasing — SaS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Vzorkování a aliasing</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'f_s > 2\\,f_{max}\\quad(\\text{Nyquist–Shannon})', false);
+
+    const ro1 = document.createElement('div'); ro1.className = 'sk-readout';
+    document.getElementById('c1').parentNode.insertBefore(ro1, document.getElementById('c2'));
+    const ro2 = document.createElement('div'); ro2.className = 'sk-readout';
+    document.getElementById('c2').parentNode.appendChild(ro2);
+
+    let f0 = 5;    // signal frequency Hz
+    let fs = 20;   // sampling frequency Hz
+    const dur = 1.0; // window seconds
+
+    // alias frequency: fold f0 about multiples of fs into [0, fs/2]
+    function aliasFreq() {
+      const nyq = fs / 2;
+      let fa = f0 % fs;
+      if (fa > nyq) fa = fs - fa;
+      return Math.abs(fa);
+    }
+
+    const v1 = SK.mount(document.getElementById('c1'), drawTime);
+    const v2 = SK.mount(document.getElementById('c2'), drawSpec);
+
+    function drawTime(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 40, padR = 14, padT = 14, padB = 30;
+      const midY = (padT + (h - padB)) / 2;
+      const plotW = w - padL - padR;
+      const sy = (h - padT - padB) / 2 / 1.2;
+      const X = (tt) => padL + (tt / dur) * plotW;
+      const Y = (v) => midY - v * sy;
+      const aliasing = f0 > fs / 2;
+
+      SK.grid(ctx, w, h, 30);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(padL, midY); ctx.lineTo(w - padR, midY);
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, h - padB);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('t [s]', w - padR - 2, midY + 6);
+      ctx.textAlign = 'left'; ctx.fillText('x(t)', padL + 6, padT);
+      ctx.textAlign = 'center';
+      for (let s = 0.25; s <= dur + 1e-9; s += 0.25) ctx.fillText(s.toFixed(2), X(s), midY + 6);
+      ctx.restore();
+
+      // original continuous sine (smooth)
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2; ctx.beginPath();
+      const M = 1000;
+      for (let i = 0; i <= M; i++) {
+        const tt = (i / M) * dur, v = Math.sin(2 * Math.PI * f0 * tt);
+        i ? ctx.lineTo(X(tt), Y(v)) : ctx.moveTo(X(tt), Y(v));
+      }
+      ctx.stroke(); ctx.restore();
+
+      // aliased reconstructed sine (dashed) when aliasing
+      const fa = aliasFreq();
+      if (aliasing && fa > 0.01) {
+        ctx.save();
+        ctx.strokeStyle = t.warn; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.beginPath();
+        for (let i = 0; i <= M; i++) {
+          const tt = (i / M) * dur;
+          // the reconstructed low-frequency alias that fits the sample points
+          const vv = Math.sin(2 * Math.PI * fa * tt);
+          i ? ctx.lineTo(X(tt), Y(vv)) : ctx.moveTo(X(tt), Y(vv));
+        }
+        ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      }
+
+      // sample points (stems + dots)
+      const Ns = Math.floor(fs * dur);
+      ctx.save();
+      const col = aliasing ? t.warn : t.ok;
+      ctx.strokeStyle = col; ctx.lineWidth = 1;
+      for (let k = 0; k <= Ns; k++) {
+        const tt = k / fs;
+        if (tt > dur + 1e-9) break;
+        const v = Math.sin(2 * Math.PI * f0 * tt);
+        ctx.globalAlpha = 0.5; ctx.beginPath();
+        ctx.moveTo(X(tt), midY); ctx.lineTo(X(tt), Y(v)); ctx.stroke();
+        ctx.globalAlpha = 1; SK.dot(ctx, X(tt), Y(v), 3.5, col);
+      }
+      ctx.restore();
+
+      ro1.innerHTML = `<b>Čas</b> — f₀=${SK.fmt(f0, 1)} Hz, fₛ=${SK.fmt(fs, 1)} Hz<br>` +
+        `vzorků: ${Ns}` +
+        (aliasing ? `<br><b style="color:${t.warn}">ALIASING</b> → zdánlivá f=${SK.fmt(fa, 2)} Hz` : '');
+    }
+
+    function drawSpec(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 40, padR = 14, padT = 14, padB = 32;
+      const oy = h - padB;
+      const plotW = w - padL - padR;
+      const fAxisMax = Math.max(2.2 * fs, 2 * f0 + fs);  // show a couple replicas
+      const X = (f) => padL + (f / fAxisMax) * plotW;
+      const Y = (m) => oy - m * (h - padT - padB);
+      const nyq = fs / 2;
+      const aliasing = f0 > nyq;
+
+      SK.grid(ctx, w, h, 30);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(padL, oy); ctx.lineTo(w - padR, oy);
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, oy);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('f [Hz]', w - padR - 2, oy + 6);
+      ctx.textAlign = 'left'; ctx.fillText('|X(f)|', padL + 6, padT);
+      ctx.restore();
+
+      // Nyquist line fs/2
+      ctx.save();
+      ctx.strokeStyle = t.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X(nyq), padT); ctx.lineTo(X(nyq), oy); ctx.stroke();
+      ctx.setLineDash([]);
+      SK.label(ctx, 'fₛ/2', X(nyq) + 4, padT + 10, { color: t.muted, font: '11px system-ui' });
+      ctx.restore();
+
+      // helper to draw a stem
+      function stem(f, color, h01, lbl) {
+        if (f < 0 || f > fAxisMax) return;
+        ctx.save();
+        ctx.strokeStyle = color; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(X(f), oy); ctx.lineTo(X(f), Y(h01)); ctx.stroke();
+        SK.dot(ctx, X(f), Y(h01), 3.5, color);
+        if (lbl) SK.label(ctx, lbl, X(f), Y(h01) - 8, { color, align: 'center', font: '10px system-ui' });
+        ctx.restore();
+      }
+
+      // original line at f0 (red if above Nyquist)
+      stem(f0, f0 > nyq ? t.warn : t.accent2, 0.9, 'f₀');
+      // spectral replicas at k*fs ± f0
+      for (let kk = 1; kk <= 2; kk++) {
+        stem(kk * fs - f0, t.accent, 0.6, null);
+        stem(kk * fs + f0, t.accent, 0.6, null);
+      }
+      // alias line inside baseband
+      if (aliasing) {
+        const fa = (function () { let a = f0 % fs; if (a > nyq) a = fs - a; return Math.abs(a); })();
+        stem(fa, t.warn, 0.9, 'alias');
+      }
+
+      ro2.innerHTML = `<b>Spektrum</b><br>` +
+        `Nyquist fₛ/2 = <b>${SK.fmt(nyq, 1)} Hz</b><br>` +
+        `repliky v k·fₛ ± f₀` +
+        (aliasing ? `<br><b style="color:${t.warn}">f₀ > fₛ/2 → alias</b>` : `<br>f₀ &lt; fₛ/2 ✓`);
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    function refresh() { v1.redraw(); v2.redraw(); }
+    SK.controls(ctrl, [
+      SK.slider({ label: 'Frekvence signálu f₀', min: 1, max: 40, step: 0.5, value: 5, unit: 'Hz',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { f0 = v; refresh(); } }),
+      SK.slider({ label: 'Vzorkovací frekvence fₛ', min: 4, max: 60, step: 1, value: 20, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { fs = v; refresh(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Pokud f₀ > fₛ/2 (Nyquist), vzorky nelze odlišit od nižší „aliasové“ frekvence (oranžová čárkovaná). ' +
+      'Ve spektru se replika k·fₛ−f₀ promítne do základního pásma.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

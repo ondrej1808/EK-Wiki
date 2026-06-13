@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ampérův zákon — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Ampérův zákon — válcový vodič</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      '\\oint_C \\vec H\\cdot d\\vec l = I_{encl},\\quad B_{in}=\\dfrac{\\mu_0 I r}{2\\pi a^2},\\; B_{out}=\\dfrac{\\mu_0 I}{2\\pi r}', false);
+
+    const ro = document.getElementById('ro');
+    const mu0 = 4 * Math.PI * 1e-7;
+
+    let I = 10;     // A
+    let aMM = 8;    // conductor radius in mm
+    let rMM = 12;   // loop radius in mm
+
+    function Bof(rmm) {
+      const r = rmm / 1000, a = aMM / 1000;
+      if (r <= a) return mu0 * I * r / (2 * Math.PI * a * a);
+      return mu0 * I / (2 * Math.PI * r);
+    }
+    function Iencl(rmm) {
+      const r = rmm / 1000, a = aMM / 1000;
+      if (r >= a) return I;
+      return I * (r * r) / (a * a);
+    }
+
+    // Graph B(r)
+    const view1 = SK.mount(document.getElementById('c1'), drawGraph);
+    // Cross-section
+    const view2 = SK.mount(document.getElementById('c2'), drawCross);
+
+    function drawGraph(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 48, padB = 34, padT = 14, padR = 14;
+      const ox = padL, oy = h - padB;
+      const rMax = 30; // mm
+      const sx = (w - padL - padR) / rMax;
+      // find Bmax (at r=a)
+      const Bmax = Bof(aMM) * 1.15;
+      const sy = (h - padT - padB) / Bmax;
+      const X = (rmm) => ox + rmm * sx;
+      const Y = (B) => oy - B * sy;
+
+      SK.grid(ctx, w, h, 28);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(ox, padT); ctx.lineTo(ox, oy); ctx.lineTo(w - padR, oy); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('r [mm]', w - padR - 2, oy + 6);
+      ctx.textAlign = 'left'; ctx.fillText('B [µT]', ox + 4, padT);
+      ctx.textAlign = 'center';
+      for (let r = 5; r <= rMax; r += 5) ctx.fillText(r, X(r), oy + 5);
+      ctx.restore();
+
+      // curve
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      for (let px = 0; px <= (w - padL - padR); px++) {
+        const rmm = px / sx;
+        const yy = Y(Bof(rmm));
+        if (px === 0) ctx.moveTo(ox + px, yy); else ctx.lineTo(ox + px, yy);
+      }
+      ctx.stroke(); ctx.restore();
+
+      // mark r = a (peak)
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.setLineDash([4, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X(aMM), padT); ctx.lineTo(X(aMM), oy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.restore();
+      SK.label(ctx, 'r = a', X(aMM) + 4, padT + 4, { color: t.warn, font: '11px system-ui' });
+
+      // current loop radius marker on curve
+      const lx = X(rMM), ly = Y(Bof(rMM));
+      SK.dot(ctx, lx, ly, 5, t.ok);
+      SK.label(ctx, 'r', lx + 6, ly - 6, { color: t.ok, font: 'bold 12px system-ui' });
+      SK.label(ctx, 'lineární uvnitř · 1/r vně', w - padR - 2, padT + 2,
+               { color: t.muted, font: '11px system-ui', align: 'right' });
+    }
+
+    function drawCross(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const cx = w * 0.5, cy = h * 0.5;
+      const pxPerMM = Math.min(w, h) * 0.45 / 30; // 30 mm fills ~45%
+
+      // conductor disk (radius a)
+      ctx.save();
+      ctx.fillStyle = t.mag; ctx.globalAlpha = 0.18;
+      ctx.beginPath(); ctx.arc(cx, cy, aMM * pxPerMM, 0, 7); ctx.fill();
+      ctx.globalAlpha = 1; ctx.strokeStyle = t.mag; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(cx, cy, aMM * pxPerMM, 0, 7); ctx.stroke();
+      ctx.restore();
+      // current dots ⊙ (out of page) filling conductor
+      ctx.save(); ctx.fillStyle = t.fg;
+      const ar = aMM * pxPerMM;
+      for (let gx = -ar; gx <= ar; gx += 14) for (let gy = -ar; gy <= ar; gy += 14) {
+        if (gx * gx + gy * gy < (ar - 4) * (ar - 4)) {
+          ctx.beginPath(); ctx.arc(cx + gx, cy + gy, 1.5, 0, 7); ctx.fill();
+        }
+      }
+      ctx.restore();
+      SK.label(ctx, 'vodič (poloměr a), j rovnoměrné ⊙', cx, cy - ar - 10,
+               { color: t.muted, font: '12px system-ui', align: 'center' });
+
+      // Amperian loop (dashed circle) radius r
+      ctx.save();
+      ctx.strokeStyle = t.warn; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.arc(cx, cy, rMM * pxPerMM, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+      // dl arrows around loop
+      const lr = rMM * pxPerMM;
+      for (let a = 0; a < 4; a++) {
+        const ang = a / 4 * Math.PI * 2 + 0.3;
+        const px = cx + lr * Math.cos(ang), py = cy + lr * Math.sin(ang);
+        const tx = -Math.sin(ang), ty = Math.cos(ang);
+        SK.arrow(ctx, px - tx * 7, py - ty * 7, px + tx * 7, py + ty * 7,
+                 { color: t.warn, width: 1.6, head: 5 });
+      }
+      ctx.restore();
+      SK.label(ctx, 'Ampérova smyčka (r)', cx, cy + lr + 18,
+               { color: t.warn, font: '12px system-ui', align: 'center' });
+
+      // enclosed-current highlight (shaded disk min(r,a))
+      const encR = Math.min(rMM, aMM) * pxPerMM;
+      ctx.save(); ctx.fillStyle = t.ok; ctx.globalAlpha = 0.22;
+      ctx.beginPath(); ctx.arc(cx, cy, encR, 0, 7); ctx.fill(); ctx.restore();
+
+      ro.innerHTML = `<b>I = ${SK.fmt(I, 1)} A</b>, poloměr vodiče a = <b>${aMM} mm</b>, smyčka r = <b>${rMM} mm</b><br>` +
+                     `Uzavřený proud I_encl = <b>${SK.fmt(Iencl(rMM), 2)} A</b> ` +
+                     `(${rMM < aMM ? 'r<a → I·r²/a²' : 'r≥a → celý I'})<br>` +
+                     `∮H·dl = I_encl → B(r) = <b>${(Bof(rMM) * 1e6).toFixed(1)} µT</b>`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Proud I', min: 1, max: 50, step: 1, value: 10, unit: 'A',
+                  fmt: (v) => v | 0, oninput: (v) => { I = v; view1.redraw(); view2.redraw(); } }),
+      SK.slider({ label: 'Poloměr vodiče a', min: 3, max: 18, step: 1, value: 8, unit: 'mm',
+                  fmt: (v) => v | 0, oninput: (v) => { aMM = v; view1.redraw(); view2.redraw(); } }),
+      SK.slider({ label: 'Poloměr smyčky r', min: 1, max: 30, step: 1, value: 12, unit: 'mm',
+                  fmt: (v) => v | 0, oninput: (v) => { rMM = v; view1.redraw(); view2.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Uvnitř vodiče roste B lineárně (uzavřený proud roste s plochou ~r²), vně klesá jako 1/r. Maximum je na povrchu r=a. Ampérova smyčka „obejme" jen proud uvnitř ní.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

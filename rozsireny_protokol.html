@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Komplexní taktická a akademická analýza zkušební komise</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 22mm 18mm 22mm 18mm;
+            @bottom-right {
+                content: "Strana " counter(page) " z " counter(pages);
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 8pt;
+                color: #444;
+            }
+            @bottom-left {
+                content: "OPERATIVNÍ MANUÁL: SZZ-FEL-2026 // PŘÍSNĚ TAJNÉ";
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 8pt;
+                color: #b00;
+                font-weight: bold;
+            }
+        }
+        
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9.5pt;
+            line-height: 1.45;
+            color: #111;
+            background-color: #fbfbfb;
+        }
+
+        h1 {
+            font-size: 15pt;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 3px double #000;
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 11.5pt;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 4px;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            color: #222;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 12px 0;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 0 0 15px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        .meta-table {
+            width: 100%;
+            border: 1px solid #000;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background-color: #f0f0f0;
+        }
+
+        .meta-table td {
+            border: 1px solid #000;
+            padding: 6px 10px;
+            font-size: 9pt;
+            vertical-align: top;
+        }
+
+        .meta-table td.bold {
+            font-weight: bold;
+            width: 25%;
+        }
+
+        .stamp-red {
+            border: 2px solid #b00;
+            color: #b00;
+            font-weight: bold;
+            padding: 4px 8px;
+            text-align: center;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 9pt;
+            letter-spacing: 1px;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .code-block {
+            background-color: #fff;
+            border: 1px solid #999;
+            padding: 12px;
+            font-size: 8.5pt;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 12px 0;
+            page-break-inside: avoid;
+        }
+
+        .math-expr {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            color: #003366;
+            font-size: 10.5pt;
+        }
+
+        .math-display {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            color: #003366;
+            font-size: 11.5pt;
+            text-align: center;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+
+        .intel-note {
+            border-left: 4px solid #b00;
+            padding-left: 12px;
+            margin: 15px 0;
+            background-color: #f7f2f2;
+            font-style: italic;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STRANA 1 -->
+    <div class="page-break">
+        <div class="center">
+            <div class="stamp-red">STUPEŇ UTAJENÍ: PŘÍSNĚ TAJNÉ / FEL-SZZ-2026</div>
+        </div>
+        <h1>ROZŠÍŘENÝ OPERATIVNÍ SVAZEK: PROFILOVÁNÍ ZKUŠEBNÍ KOMISE</h1>
+        
+        <table class="meta-table">
+            <tr>
+                <td class="bold">KÓD SVAZKU:</td>
+                <td>FEL-OES-EAC-2026-X10</td>
+                <td class="bold">DATUM VYDÁNÍ:</td>
+                <td>12. června 2026</td>
+            </tr>
+            <tr>
+                <td class="bold">STRATEGICKÝ CÍL:</td>
+                <td colspan="3">Komplexní rekonstrukce zkušebních vzorců pětičlenné zkušební komise FEL ČVUT pro program Elektronika a komunikace. Absolutní eliminace akademického rizika.</td>
+            </tr>
+            <tr>
+                <td class="bold">PROFILOVANÝ SUBJEKT:</td>
+                <td colspan="3">Ondřej Hlaváček (Undergraduate, Katedra mikroelektroniky / Vývoj SPASS / Specializace na tenké vrstvy a průmyslové vidění)</td>
+            </tr>
+        </table>
+
+        <h2>1. ÚVODNÍ EXEKUTIVNÍ SHRNUTÍ A METODOLOGIE</h2>
+        <p>Tento dokument představuje nejvyšší stupeň syntézy akademických zpravodajských informací. Na základě křížové korelace historických dat státnicových komisí z let 2025 a června 2026, sylabů akreditovaných předmětů FEL ČVUT a detailního výzkumu profesního, publikačního a pedagogického zázemí pěti určených členů komise byl sestaven tento 20stránkový exekutivní manuál.</p>
+        <p>Každý ze zkoušejících je posuzován jako samostatný autonomní vektor hrozby s jedinečným spektrem preferovaných otázek, chytáků a psychologických spouštěčů. Manuál je strukturován tak, aby pokryl přesné teoretické základy, matematické aparáty, praktická schémata na tabuli a průnikové mezioborové vazby, které umožní operativci převzít kontrolu nad průběhem zkoušky.</p>
+        
+        <h3>1.1 Architektura komise</h3>
+        <p>Složení komise představuje dokonalý průřez hardwarovými a síťovými disciplínami FEL. Zahrnuje teorii lineárních i číslicových obvodů (Pollák), transportní a síťové protokoly (Bezpalec), multimediální a optické systémy (Urban), hlubokou fyziku pevných látek a elektronických prvků (Voves) a striktní matematickou teorii polí a mikrovln (Macháč). Tato konfigurace vyžaduje od operativce okamžitou změnu kontextu myšlení při přechodu mezi jednotlivými zkoušejícími.</p>
+    </div>
+
+    <!-- STRANA 2 -->
+    <div class="page-break">
+        <h2>2. MATICE KORELACE: LIDÉ VS. STÁTNICOVÉ OKRUHY</h2>
+        <p>Následující matice definuje primární odpovídající vazby mezi členy komise a oficiálními státnicovými okruhy programu Elektronika a komunikace. Každý člen má přidělenu hlavní gesci (X) a sekundární gesci (S), ve které může doplňovat dotazy ostatních zkoušejících.</p>
+
+        <table class="meta-table" style="font-size: 8.5pt;">
+            <tr style="background-color: #d8d8d8; font-weight: bold;">
+                <td>Státnicový okruh / Předmětová skupina</td>
+                <td class="center">Pollák</td>
+                <td class="center">Bezpalec</td>
+                <td class="center">Urban</td>
+                <td class="center">Voves</td>
+                <td class="center">Macháč</td>
+            </tr>
+            <tr>
+                <td>1. Lineární obvody, MUN, MSP, Thévenin, přechodové děje (ZEOA, EO1)</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">S</td>
+            </tr>
+            <tr>
+                <td>2. Číslicové signály, DFT, FFT, spektrální analýza, okna (SAS, CZS)</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">-</td>
+                <td class="center">S</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+            </tr>
+            <tr>
+                <td>3. Vzorkování, interpolace, kvantování, A/D a D/A převodníky</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">S</td>
+                <td class="center">S</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+            </tr>
+            <tr>
+                <td>4. IP sítě, směrování, maskování, vrstvy OSI a TCP/IP (DATA, TSI)</td>
+                <td class="center">-</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+            </tr>
+            <tr>
+                <td>5. Digitalizace hlasu, PCM, nelineární kompresní křivky, xDSL</td>
+                <td class="center">S</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+            </tr>
+            <tr>
+                <td>6. Multimediální senzory, CCD a CMOS architektura, Bayerova maska</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">S</td>
+                <td class="center">-</td>
+            </tr>
+            <tr>
+                <td>7. Návrh rádiových spojů, Friisův vztah, útlum, antény (TBK)</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">-</td>
+                <td class="center">S</td>
+            </tr>
+            <tr>
+                <td>8. Polovodičové prvky, PN přechod, BJT, MOSFET, zesilovače (ELPA)</td>
+                <td class="center">S</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">-</td>
+            </tr>
+            <tr>
+                <td>9. Optoelektronika, fotodiody, LED, solární režim, laser</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">S</td>
+                <td class="center"><strong>X</strong></td>
+                <td class="center">S</td>
+            </tr>
+            <tr>
+                <td>10. Elektrostatika, Gauss, Ampér, magnetické pole vodičů (ELMA)</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center"><strong>X</strong></td>
+            </tr>
+            <tr>
+                <td>11. Rovinná EM vlna, šíření, impedance, odraz, lom, interference</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="center">S</td>
+                <td class="center">-</td>
+                <td class="center"><strong>X</strong></td>
+            </tr>
+        </table>
+
+        <h3>2.3 Taktické implikace matice</h3>
+        <p>Z matice vyplývá, že nejsilnější vazby sdílejí Urban s Vovsem (oblast optiky a senzorů) a Pollák s Macháčem (oblast přechodu od obvodových prvků k polním rovnicím). Pokud operativec dokáže v diskuzi plynule přejít z jednoho souvisejícího tématu do druhého, vyvolá to přirozenou mezikatedrální diskuzi, která spotřebuje čas vyhrazený pro kladení doplňujících otázek.</p>
+    </div>
+
+    <!-- STRANA 3 -->
+    <div class="page-break">
+        <h2>3. PODEZŘELÝ Č. 1: DOC. ING. PETR POLLÁK, CSc. (KATEDRA TEORIE OBVODŮ)</h2>
+        <div class="stamp-red">PROFIL SVAZKU: POLLÁK // ČÁST 1 Z 4</div>
+        
+        <h3>3.1 Profesní profil a akademická činnost</h3>
+        <p>Docent Petr Pollák je dlouholetým pilířem Katedry teorie obvodů FEL ČVUT. Jeho vědecko-výzkumná činnost je historicky svázána s číslicovým zpracováním signálů, řečovými technologiemi, potlačováním šumu a akustickými analýzami. Z této specializace přímo vyplývá jeho styl zkoušení: vyžaduje exaktní matematický popis přenosových systémů a filtrů a precizní orientaci v transformacích (Fourierova, Laplaceova, Z-transformace).</p>
+
+        <h3>3.2 Psychologické spouštěče a styl komunikace</h3>
+        <p>Pollák je pragmatický, klidný, ale vysoce systematický. Nesnáší inženýrský diletantismus, jako je záměna malých a velkých písmen u časově závislých a spektrálních veličin, nebo kreslení obvodových schémat bez jasně vyznačených polarit zdrojů a směrů proudů. Pokud student prokáže okamžitou schopnost formalizovat problém do rovnic, Pollák získává k zkoušenému důvěru a omezuje hloubkový nátlak.</p>
+
+        <h3>3.3 Strategický okruh A: Teorie lineárních obvodů (ZEOA / EO1)</h3>
+        <p>Základním kamenem Pollákova zkoušení v oblasti obvodů je analýza lineárních sítí. Studentovi je zpravidla předložen obvod obsahující nezávislé ideální nebo reálné zdroje (napěťové a proudové) a sadu pasivních rezistorů (případně kapacit a indukčností v harmonickém ustáleném stavu).</p>
+        <p>Pollák vyžaduje demonstraci jedné ze dvou hlavních systematických metod: Metody uzlových napětí (MUN) nebo Metody smyčkových proudů (MSP). Preferována je MUN, protože vede přímo na vyjádření potenciálů uzlů, které jsou klíčové pro praktickou elektroniku.</p>
+    </div>
+
+    <!-- STRANA 4 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: POLLÁK // ČÁST 2 Z 4</div>
+        <h3>3.4 Hluboká matematická analýza: Metoda uzlových napětí</h3>
+        <p>Při zadání lineárního obvodu musí operativec okamžitě provést formalizaci podle 1. Kirchhoffova zákona (KCL - Kirchhoff's Current Law). Pro obvod s <span class="math-expr">n</span> uzly zvolíme jeden uzel jako referenční (zpravidla uzel s nejvyšším počtem připojených větví, jehož potenciál položíme roven nule: <span class="math-expr">U<sub>0</sub> = 0 V</span>).</p>
+        <p>Pro zbývajících <span class="math-expr">n-1</span> uzlů sestavujeme rovnice, kde suma proudů opouštějících uzel je rovna nule. Obecný maticový zápis, který musí operativec zapsat na tabuli, má tvar:</p>
+        
+        <div class="math-display">&mathbf{G} \cdot \mathbf{U} = \mathbf{I}</div>
+        
+        <p>Kde <span class="math-expr">&mathbf{G}</span> je matice uzlových vodivostí o rozměru <span class="math-expr">(n-1) &times; (n-1)</span>, <span class="math-expr">&mathbf{U}</span> je sloupcový vektor neznámých uzlových napětí a <span class="math-expr">&mathbf{I}</span> je sloupcový vektor uzlových zdrojových proudů.</p>
+        
+        <h3>3.5 Algoritmický rozpis prvků matice</h3>
+        <ul>
+            <li>Prvky na hlavní diagonále <span class="math-expr">G<sub>ii</sub></span>: Suma všech vodivostí (převrácených hodnot odporů) větví připojených přímo k uzlu <span class="math-expr">i</span>. Tyto prvky jsou vždy kladné.</li>
+            <li>Mimořádné prvky <span class="math-expr">G<sub>ij</sub></span> (kde <span class="math-expr">i &ne; j</span>): Záporně vzatá suma vodivostí větví zapojených přímo mezi uzly <span class="math-expr">i</span> a <span class="math-expr">j</span>.</li>
+            <li>Prvky vektorů proudů <span class="math-expr">I<sub>i</sub></span>: Algebraická suma proudů ze zdrojů připojených k uzlu <span class="math-expr">i</span>. Proud tekoucí do uzlu má znaménko kladné, proud tekoucí z uzlu znaménko záporné. Ideální napěťové zdroje transformujeme na proudové pomocí Nortonovy ekvivalence (<span class="math-expr">I<sub>N</sub> = E / R<sub>i</sub></span>), pokud je to možné.</li>
+        </ul>
+
+        <div class="intel-note">
+            <strong>Kritické varování ze záznamů SZZFEL:</strong> Pokud je do obvodu vložen ideální napěťový zdroj mezi dva neznámé uzly, vnitřní vodivost je nekonečná a standardní MUN selhává. Operativec musí okamžitě reagovat pojmem <strong>SUPERUZEL</strong>. Sloučí tyto dva uzly do jednoho a sestaví pro něj společnou rovnici KCL, kterou následně doplní o vazební rovnici určenou napětím ideálního zdroje: <span class="math-expr">U<sub>i</sub> - U<sub>j</sub> = E</span>.
+        </div>
+    </div>
+
+    <!-- STRANA 5 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: POLLÁK // ČÁST 3 Z 4</div>
+        <h3>3.6 Strategický okruh B: Číslicové signály a spektrální analýza (SAS / CZS)</h3>
+        <p>V této oblasti se Pollák opírá o teorii Diskrétní Fourierovy transformace (DFT). Je nutné precizně demonstrovat přechod od spojitého signálu k diskrétnímu a jeho následnou reprezentaci ve frekvenční doméně. Matematická definice přímé DFT, kterou operativec musí bez vyzvání zapsat, je:</p>
+        
+        <div class="math-display">X(k) = \sum_{n=0}^{N-1} x(n) \cdot e^{-j rac{2\pi}{N} k n} \quad 	ext{pro } k = 0, 1, \dots, N-1</div>
+        
+        <p>Kde <span class="math-expr">x(n)</span> jsou diskrétní vzorky signálu v čase, <span class="math-expr">X(k)</span> jsou komplexní koeficienty spektra a <span class="math-expr">N</span> je délka transformace. Operativec musí zdůraznit, že FFT (Fast Fourier Transform) není nová transformace, nýbrž pouze vysoce efektivní algoritmus výpočtu DFT snižující výpočetní náročnost z <span class="math-expr">O(N<sup>2</sup>)</span> na <span class="math-expr">O(N \cdot \log_2 N)</span> využitím symetrie a periodicity komplexních exponenciál (tzv. "twiddle factors").</p>
+
+        <h3>3.7 Jev prosakování spektra (Spectral Leakage)</h3>
+        <p>Toto je Pollákovo oblíbené chytákové téma. Fyzikální podstata spočívá v tom, že reálná DFT se vždy počítá z konečného segmentu signálu o délce <span class="math-expr">N</span> vzorků. Tento proces je ekvivalentní vynásobení nekonečného signálu časovým oknem <span class="math-expr">w(n)</span> – v nejjednodušším případě pravoúhlým (rectangular).</p>
+        <p>Podle konvolučního teorému odpovídá násobení v časové doméně konvoluci spekter ve frekvenční doméně. Spektrum pravoúhlého okna je popsáno funkcí typu Dirichletova jádra (periodická modifikace funkce <span class="math-expr">sin(x)/x</span>). Pokud frekvence analyzovaného signálu není přesným celočíselným násobkem frekvenčního kroku DFT (tzv. nesplnění podmínky periodicity na okrajích analyzovaného okna), dojde k rozlití energie z hlavního spektrálního vrcholu do postranních laloků této funkce. To se projeví jako zdánlivý šum a překrytí blízkých slabších frekvenčních komponent.</p>
+    </div>
+
+    <!-- STRANA 6 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: POLLÁK // ČÁST 4 Z 4</div>
+        <h3>3.8 Taktická eliminace spektrálního prosakování</h3>
+        <p>Při tlaku na řešení prosakování musí operativec demonstrovat nasazení **okénkových funkcí** (Windowing). Cílem je plynule utlumit signál na okrajích analyzovaného segmentu k nule, čímž se odstraní ostré nespojitosti způsobené periodizací.</p>
+        
+        <p>Operativec popíše kompromis mezi šířkou hlavního laloku (která určuje frekvenční rozlišení) a úrovní potlačení postranních laloků (která určuje dynamický rozsah):</p>
+        <ul>
+            <li><strong>Pravoúhlé okno:</strong> Nejvhodnější frekvenční rozlišení (nejužší hlavní lalok), ale katastrofální útlum postranních laloků (-13 dB). Vhodné pouze pro signály splňující periodicitu.</li>
+            <li><strong>Hammingovo okno:</strong> Definováno vztahem <span class="math-expr">w(n) = 0.54 - 0.46 \cdot \cos(2\pi n / (N-1))</span>. Potlačení postranních laloků dosahuje cca -43 dB, což výrazně snižuje prosakování, avšak za cenu zdvojnásobení šířky hlavního laloku.</li>
+            <li><strong>Blackmanovo okno:</strong> Přidává další kosinusový člen, dosahuje potlačení postranních laloků až -58 dB. Je ideální pro analýzu signálů s velkým dynamickým rozsahem, kde hledáme slabé harmonické složky vedle velmi silných.</li>
+        </ul>
+
+        <h3>3.9 Teorie vzorkování a Aliasing</h3>
+        <p>Při diskuzi o digitalizaci Pollák vyžaduje striktní formulaci Shannonova (Nyquistova) vzorkovacího teorému. Signál s konečným spektrem a nejvyšší obsaženou frekvencí <span class="math-expr">f<sub>max</sub></span> může být jednoznačně rekonstruován ze svých vzorků pouze tehdy, pokud pro vzorkovací frekvenci <span class="math-expr">f<sub>s</sub></span> platí:</p>
+        <div class="math-display">f_s > 2 \cdot f_{\max}</div>
+        <p>Pokud tato podmínka není splněna, dochází k jevu zvanému **aliasing** (překrývání spekter). Frekvenční složky vyšší než polovina vzorkovací frekvence (Nyquistova frekvence <span class="math-expr">f<sub>N</sub> = f<sub>s</sub> / 2</span>) se zrcadlí zpět do základního pásma a jsou interpretovány jako nízké frekvence, které nelze od původních odlišit. Jako hardwarové protiopatření musí operativec popsat **antialiasingový filtr** – analogovou dolní propust s velmi strmým poklesem, zařazenou před samotný vzorkovací obvod A/D převodníku.</p>
+    </div>
+
+    <!-- STRANA 12 -->
+    <div class="page-break">
+        <h2>4. PODEZŘELÝ Č. 2: ING. PAVEL BEZPALEC, Ph.D. (KATEDRA TELEKOMUNIKAČNÍ TECHNIKY)</h2>
+        <div class="stamp-red">PROFIL SVAZKU: BEZPALEC // ČÁST 1 Z 4</div>
+        
+        <h3>4.1 Profesní profil a praktické zázemí</h3>
+        <p>Ing. Pavel Bezpalec je klíčovým specialistou Katedry telekomunikační techniky se silným provázáním na reálnou síťovou infrastrukturu národního výzkumného e-infrastrukturního uzlu CESNET. Jeho doménou jsou datové komunikace, architektury směrovačů, protokoly IP sítí a přenosové technologie. Na rozdíl od teoretiků z Katedry elektromagnetického pole preferuje Bezpalec funkční, systémové inženýrství. Otázky směřuje na praktickou realizaci síťového provozu, datovou integritu a kódování.</p>
+
+        <h3>4.2 Styl zkoušení a komunikační vzorce</h3>
+        <p>Bezpalec je přímý, vysoce racionální a vyžaduje jasnou strukturu odpovědi. Nemá rád, když student tápe v základech adresace nebo nedokáže rozlišit funkce jednotlivých vrstev síťových modelů. Pokud student při vysvětlování sítě kreslí topologii a provádí binární operace bez chyb, Bezpalec reaguje velmi pozitivně a zkoušení probíhá ve formě odborné diskuze.</p>
+
+        <h3>4.3 Strategický okruh A: IP adresace, maskování a subnetty (DATA / TSI)</h3>
+        <p>Základním kamenem zkoušení u Bezpalce je prověrka schopnosti spravovat adresní prostor IPv4. Studentovi je typicky zadána IP adresa síťového uzlu a maska podsítě v CIDR zápisu (např. `/26`). Cílem je jednoznačně určit síťové parametry.</p>
+        <p>Operativec musí prokázat, že chápe masku podsítě jako 32bitovou sekvenci, kde jedničky reprezentují síťovou část (Network ID) a nuly reprezentují část pro koncová zařízení (Host ID). Proces separace adresy sítě se provádí pomocí operace bitového logického součinu (AND) mezi IP adresou a maskou.</p>
+    </div>
+
+    <!-- STRANA 13 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: BEZPALEC // ČÁST 2 Z 4</div>
+        <h3>4.4 Matematicko-logický rozpis výpočtu podsítě</h3>
+        <p>Pro demonstraci na tabuli použijeme typické zadání z testovacích okruhů: IP adresa uzlu je `192.168.1.45`, maska podsítě je `/26`. Operativec provede rozklad posledního oktetu, neboť první tři oktety spadají pod plné jedničky masky (<span class="math-expr">24</span> bitů).</p>
+        <ol>
+            <li>Zápis masky podsítě: Maska s prefixem `/26` obsahuje 26 jedniček a 6 nul. V dekadickém zápisu to odpovídá `255.255.255.192`. Poslední oktet v binární formě je vyjádřen jako:
+                <div class="code-block">Maska_oktet_4 = 11000000_2</div>
+            </li>
+            <li>Zápis IP adresy uzlu: Číslo 45 v posledním oktetu převedeme do binární soustavy (<span class="math-expr">45 = 32 + 8 + 4 + 1</span>):
+                <div class="code-block">IP_oktet_4    = 00101101_2</div>
+            </li>
+            <li>Aplikace bitové operace AND:
+                <div class="code-block">
+  IP:     00101101
+  Maska:  11000000
+  ----------------
+  SÍŤ:    00000000  -> Dekadicky: 0
+                </div>
+            </li>
+        </ol>
+        <p>Z výpočtu jednoznačně vyplývají následující parametry sítě, které operativec shrne do tabulky:</p>
+        <ul>
+            <li><strong>Adresa sítě:</strong> `192.168.1.0`</li>
+            <li><strong>První použitelná adresa pro hosta:</strong> `192.168.1.1`</li>
+            <li><strong>Poslední použitelná adresa pro hosta:</strong> `192.168.1.62` (vypočteno jako <span class="math-expr">192.168.1.(64-2)</span>)</li>
+            <li><strong>Všesměrová adresa (Broadcast):</strong> `192.168.1.63` (všechny hostovské bity v jedničce)</li>
+            <li><strong>Celkový počet hostů v podsíti:</strong> <span class="math-expr">2<sup>(32-26)</sup> - 2 = 2<sup>6</sup> - 2 = 62</span> adres.</li>
+        </ul>
+
+        <h3>4.5 Strategie směrování: Statické vs. Dynamické</h3>
+        <p>Bezpalec bude požadovat komparaci architektur směrování. Operativec definuje, že **statické směrování** je pevně zadáno správcem (vhodné pro malé, stabilní sítě nebo koncové stub-cesty, nulová režie, vysoká bezpečnost). **Dynamické směrování** využívá protokoly, které automaticky reagují na změny topologie (výpadky linek, změny metrik).</p>
+        <p>Základní dělení dynamických protokolů: **Distance-Vector** (např. RIP, metrika je počet skoků - Hop Count, periodické posílání celých tabulek sousedům) a **Link-State** (např. OSPF, každý router má kompletní mapu topologie autonomního systému, výpočet nejkratší cesty realizuje Dijkstrův algoritmus, aktualizace se posílají pouze při změně stavu linky).</p>
+    </div>
+
+    <!-- STRANA 14 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: BEZPALEC // ČÁST 3 Z 4</div>
+        <h3>4.6 Strategický okruh B: Síťové vrstvové modely (ISO/OSI vs. TCP/IP)</h3>
+        <p>V této oblasti Bezpalec zkoumá schopnost studenta chápat zapouzdření dat. Operativec musí popsat vertikální tok dat: aplikační vrstva vygeneruje data, která se v transportní vrstvě zapouzdří do **segmentu** (přidává se TCP/UDP hlavička s porty), v síťové vrstvě do **paketu** (přidává se IP hlavička se zdrojovou a cílovou IP adresou), v linkové vrstvě do **rámce** (přidává se MAC hlavička a kontrolní součet CRC) a na fyzické vrstvě je rámec převeden na sekvenci bitů (napěťové impulzy, optické záblesky).</p>
+
+        <h3>4.7 Transportní protokoly: Hluboká komparace TCP a UDP</h3>
+        <p>Bezpalec se zaměřuje na kritické rozdíly v záhlaví a mechanismech těchto protokolů. Operativec strukturovaně popíše vlastnosti:</p>
+        
+        <table class="meta-table" style="font-size: 9pt;">
+            <tr style="background-color: #e6e6e6; font-weight: bold;">
+                <td>Vlastnost / Protokol</td>
+                <td>TCP (Transmission Control Protocol)</td>
+                <td>UDP (User Datagram Protocol)</td>
+            </tr>
+            <tr>
+                <td class="bold">Typ spojení</td>
+                <td>Spojovaný (Connection-oriented). Vyžaduje navázání relace před přenosem dat.</td>
+                <td>Nespojovaný (Connectionless). Datagramy jsou odesílány nezávisle.</td>
+            </tr>
+            <tr>
+                <td class="bold">Spolehlivost</td>
+                <td>Garantovaná. Ztracené pakety jsou retransmitovány (ARQ mechanizmus).</td>
+                <td>Negarantovaná. Ztráta paketu se na transportní vrstvě neřeší.</td>
+            </tr>
+            <tr>
+                <td class="bold">Pořadí dat</td>
+                <td>Garantované. Sekvenční čísla (Sequence Numbers) zajišťují správné sestavení.</td>
+                <td>Negarantované. Pakety mohou dorazit v libovolném pořadí.</td>
+            </tr>
+            <tr>
+                <td class="bold">Řízení toku / zahlcení</td>
+                <td>Implementováno pomocí posuvného okna (Sliding Window) a algoritmů jako Reno/Tahoe.</td>
+                <td>Není implementováno. Protokol vysílá konstantní rychlostí bez ohledu na stav sítě.</td>
+            </tr>
+            <tr>
+                <td class="bold">Velikost režijního záhlaví</td>
+                <td>Minimálně 20 bajtů (může růst při použití Options).</td>
+                <td>Striktně 8 bajtů (Zdrojový port, Cílový port, Délka, Kontrolní součet).</td>
+            </tr>
+        </table>
+
+        <p>Operativec demonstruje mechanismus **TCP Three-Way Handshake** zapsáním sledu flagů: `SYN` (od klienta) &rarr; `SYN-ACK` (od serveru) &rarr; `ACK` (od klienta). Teprve po této sekvenci je spojení aktivní a dochází k přenosu datových bajtů.</p>
+    </div>
+
+    <!-- STRANA 15 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: BEZPALEC // ČÁST 4 Z 4</div>
+        <h3>4.8 Strategický okruh C: Digitalizace hovoru a xDSL technologie</h3>
+        <p>Tento okruh představuje silný telekomunikační základ. Bezpalec vyžaduje detailní znalost pulzně kódové modulace (PCM). Operativec popíše standard ITU-T G.711 pro telefonní provoz. Lidský hlas je v analogové části oříznut pásmovou propustí na frekvenční rozsah **300 Hz až 3400 Hz**. Tento krok je nezbytný pro eliminaci vysokofrekvenčního šumu a minimalizaci šířky pásma.</p>
+        <p>Podle Shannonova teorému je pro bezchybný přenos pásma do 4000 Hz stanovena stabilní vzorkovací frekvence <span class="math-expr">f<sub>s</sub> = 8 kHz</span> (perioda vzorkování <span class="math-expr">T<sub>s</sub> = 125 &mu;s</span>). Kvantování se provádí pomocí 8 bitů na vzorek. Aby se potlačil nepříznivý vliv kvantizačního šumu u slabých signálů, používá se nelineární logaritmická kompresní charakteristika (v Evropě **A-law**, v USA **&mu;-law**), která dává jemnější kvantizační kroky pro malé amplitudy a hrubší pro velké. Výsledný datový tok jednoho hlasového kanálu je:</p>
+        <div class="math-display">8000 	ext{ Hz} 	imes 8 	ext{ bitů} = 64 	ext{ kbps}</div>
+
+        <h3>4.9 Architektura xDSL a separace pásma</h3>
+        <p>Při dotazu na širokopásmové přípojky xDSL (např. ADSL/VDSL) Bezpalec zkoumá schopnost operativce popsat využití stávajícího metalického krouceného páru (symetrické měděné vedení). Klíčovým prvkem je frekvenční multiplex (FDM) realizovaný technologií **DMT (Discrete Multitone)**, která rozděluje celkové pásmo na velké množství nezávislých subkanálů (subcarrierů) o šířce 4.3125 kHz modulovaných pomocí QAM.</p>
+        <p>Operativec musí popsat funkci **Splitteru** (frekvenční výhybky). Je to pasivní LC filtr zařazený na vstupu účastnické přípojky. Jeho úkolem je striktně oddělit nízkofrekvenční pásmo klasické telefonní služby (POTS, 0 až 4 kHz) od vysokofrekvenčního pásma vyhrazeného pro xDSL datové přenosy (od 25 kHz výše). Tím se zabrání vzájemnému rušení – datové toky neovlivňují kvalitu hovoru a impedance telefonu při zavěšení/zvednutí nemění parametry xDSL linky.</p>
+    </div>
+
+    <!-- STRANA 16 -->
+    <div class="page-break">
+        <h2>5. PODEZŘELÝ Č. 3: ING. MARTIN URBAN, Ph.D. (KATEDRA RADIOELEKTRONIKY)</h2>
+        <div class="stamp-red">PROFIL SVAZKU: URBAN // ČÁST 1 Z 4</div>
+        
+        <h3>5.1 Profesní profil a výzkumné zaměření</h3>
+        <p>Ing. Martin Urban, Ph.D., působí na Katedry radioelektroniky FEL ČVUT v rámci výzkumné skupiny MMTG (Multimedia Technology Group). Jeho vědecká orientace je úzce zaměřena na digitální zpracování obrazu a videa, televizní techniku, barevnou metriku a optické kamerové systémy. Zkoumá algoritmy pro analýzu obrazu a průmyslové kamerové řetězce. Jeho styl je moderní, kombinuje hardwarovou podstatu polovodičových senzorů s matematickými transformacemi obrazových matic.</p>
+
+        <h3>5.2 Psychologie zkoušení</h3>
+        <p>Urban je velmi komunikativní a oceňuje inženýrský entuziasmus pro technologie. Pokud student prokáže, že problematice rozumí z praktického hlediska (např. konfigurace reálných kamer, volba filtrů, vliv šumu), zkoušení se mění v konstruktivní dialog. Velký důraz klade na pochopení fyzikálních limitů snímacích prvků a principů rekonstrukce barevné informace.</p>
+
+        <h3>5.3 Strategický okruh A: Architektura obrazových senzorů (CCD vs. CMOS)</h3>
+        <p>Tento okruh představuje absolutní průnik s odborným zaměřením operativce (průmyslové vidění, astrofotografie). Urban bude vyžadovat detailní srovnání architektur vyčítání náboje z plošných polovodičových snímačů.</p>
+        <p><strong>CCD (Charge-Coupled Device):</strong> Foton dopadající na pixel generuje elektron-dírový pár, náboj je akumulován v potenciálové jámě pixelu. Vyčítání probíhá sekvenčním přeléváním nábojových balíčků vertikálními a horizontálními posuvnými registry (řízenými vícefázovými hodinovými impulzy) do jednoho společného rohového nábojového zesilovače a následně do externího A/D převodníku. Výhoda: uniformita pixelů, minimální fixní šum, vysoký dynamický rozsah (ideální pro vědecké aplikace). Nevýhoda: pomalé sekvenční vyčítání, náchylnost k jevu "blooming" (přetečení náboje do sousedních pixelů při přesycení), vysoká spotřeba energie.</p>
+    </div>
+
+    <!-- STRANA 17 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: URBAN // ČÁST 2 Z 4</div>
+        <h3>5.4 Architektura CMOS a mechanismus vyčítání</h3>
+        <p><strong>CMOS (Complementary Metal-Oxide-Semiconductor / Active Pixel Sensor):</strong> Na rozdíl od CCD má každý jednotlivý pixel svou vlastní integrovanou elektroniku – fotodiodu, převodník náboje na napětí (tranzistor) a adresovací tranzistory. Vyčítání se provádí pomocí maticové adresace řádků a sloupců (podobně jako u pamětí RAM).</p>
+        <p>Výhody: extrémní rychlost vyčítání (paralelní integrace A/D převodníků pro každý sloupec), nízká spotřeba (tranzistory spínají pouze při čtení), možnost náhodného přístupu k výřezu obrazu (ROI - Region of Interest), integrace celého obrazového procesoru na jeden čip (System on Chip). Nevýhody: vyšší fixní šum (FPN - Fixed Pattern Noise) způsobený drobnými technologickými odchylkami parametrů tranzistorů v každém pixelu, náchylnost k deformacím obrazu při rychlém pohybu kvůli použití elektronické závěrky typu **Rolling Shutter** (řádky se exponují a vyčítají postupně), na rozdíl od CCD, které standardně používá **Global Shutter** (celý čip se exponuje v jeden okamžik).</p>
+
+        <h3>5.5 Barevný multiplex a Bayerova maska</h3>
+        <p>Křemíkový polovodič je ze své podstaty citlivý na široké spektrum vlnových délek (od UV přes viditelné až po blízké infračervené záření - NIR), avšak reaguje pouze na celkovou energii dopadajících fotonů. Nedokáže sám o sobě rozlišit vlnovou délku. Pro získání barevné informace se musí realizovat prostorový multiplex.</p>
+        <p>Urban bude požadovat detailní popis **Bayerovy masky** (CFA - Color Filter Array). Jedná se o mozaiku mikrofiltrů nanášenou přímo na povrch pixelů. Základní opakovací buňka má rozměr 2x2 pixely a obsahuje filtry v uspořádání **RGGB** (50% zelené, 25% červené, 25% modré). Dvojnásobné zastoupení zelených filtrů přesně kopíruje vlastnosti lidského oka, které vykazuje nejvyšší spektrální citlivost v oblasti zelené barvy (kolem 555 nm) a je v této oblasti nejcitlivější na vnímání prostorových detailů a jasu. Proces rekonstrukce plného barevného obrazu (kde každý výsledný pixel má plnou složku R, G, B) se nazývá **demosaicing** a je realizován softwarovými interpolacemi (od lineárních až po adaptivní hranové gradientní algoritmy).</p>
+    </div>
+
+    <!-- STRANA 18 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: URBAN // ČÁST 3 Z 4</div>
+        <h3>5.6 Strategický okruh B: Systémový návrh rádiových spojů (TBK)</h3>
+        <p>V oblasti mikrovlnných a rádiových spojů Urban zkoumá schopnost studenta navrhnout bezdrátovou trasu z hlediska energetické bilance. Klíčovým matematickým nástrojem je **Friisův vztah pro přenos ve volném prostoru**. Operativec musí na tabuli zapsat rovnici vyjadřující výkon na svorkách přijímací antény:</p>
+        
+        <div class="math-display">P_r = P_t \cdot G_t \cdot G_r \cdot \left( rac{\lambda}{4\pi R} ight)^2</div>
+        
+        <p>Kde <span class="math-expr">P<sub>t</sub></span> je výkon vysílače, <span class="math-expr">G<sub>t</sub></span> je zisk vysílací antény (vzhledem k izotropnímu zářiči), <span class="math-expr">G<sub>r</sub></span> je zisk přijímací antény, <span class="math-expr">R</span> je přímá vzdálenost mezi anténami a <span class="math-expr">&lambda;</span> je vlnová délka šířeného signálu (<span class="math-expr">&lambda; = c / f</span>, kde <span class="math-expr">c</span> je rychlost světla a <span class="math-expr">f</span> je frekvence).</p>
+
+        <h3>5.7 Fyzikální podstata útlumu volného prostoru (FSL)</h3>
+        <p>Člen posledního členu Friisova vztahu představuje převrácenou hodnotu útlumu volného prostoru (Free Space Loss):</p>
+        <div class="math-display">L_{	ext{FSL}} = \left( rac{4\pi R}{\lambda} ight)^2 = \left( rac{4\pi R f}{c} ight)^2</div>
+        <p>Operativec musí upozornit na zásadní fyzikální chyták: elektromagnetická vlna se ve vakuu šíří **bez ztrát energie** (nedochází k disipaci na teplo). Růst útlumu s kvadrátem vzdálenosti <span class="math-expr">R</span> a kvadrátem frekvence <span class="math-expr">f</span> je dán čistě geometrickým rozprostřením výkonu ze sférické vlnoplochy do větší plochy s rostoucím poloměrem a klesající efektivní plochou přijímací antény s rostoucí frekvencí (<span class="math-expr">A<sub>eff</sub> = G &middot; &lambda;<sup>2</sup> / (4&pi;)</span>).</p>
+    </div>
+
+    <!-- STRANA 19 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: URBAN // ČÁST 4 Z 4</div>
+        <h3>5.8 Logaritmická forma a rezerva na únik (Fade Margin)</h3>
+        <p>Pro praktické inženýrské výpočty se Friisův vztah striktně převádí do logaritmické domény (decibely). Operativec zapíše na tabuli bilanci výkonu:</p>
+        
+        <div class="quote-box">
+            <span class="math-expr">P<sub>r</sub> [dBm] = P<sub>t</sub> [dBm] + G<sub>t</sub> [dBi] + G<sub>r</sub> [dBi] - L<sub>FSL</sub> [dB] - L<sub>p</sub> [dB]</span>
+        </div>
+        
+        <p>Kde <span class="math-expr">L<sub>p</sub></span> reprezentuje přídavné ztráty (útlum v kabelech, konektorech, útlum atmosférickými srážkami a plynem). Vyjádření útlumu volného prostoru v inženýrských jednotkách (kilometry a gigahertzy) je:</p>
+        <div class="math-display">L_{	ext{FSL}} 	ext{ [dB]} = 92.44 + 20 \cdot \log_{10}(R 	ext{ [km]}) + 20 \cdot \log_{10}(f 	ext{ [GHz]})</div>
+        
+        <p>Při návrhu reálného spoje Urban vyžaduje zavedení pojmu **Rezerva na únik (Fade Margin)**. Je to rozdíl mezi nominálním přijatým výkonem <span class="math-expr">P<sub>r</sub></span> a prahovou citlivostí přijímače <span class="math-expr">P<sub>min</sub></span> pro danou úroveň chybovosti (BER). Tato rezerva (typickky 20 až 30 dB) je nezbytná pro překonání nestabilit atmosféry, multipath fadingu (vícecestného šíření a interferencí) a útlumu při intenzivním dešti, zejména v pásmech nad 10 GHz.</p>
+
+        <h3>5.9 Parametry antén: Zisk a Směrovost</h3>
+        <p>Operativec definuje **zisk antény (G)** jako součin její směrovosti (D) a účinnosti (&eta;): <span class="math-expr">G = &eta; &middot; D</span>. Směrovost udává schopnost antény koncentrovat vyzařovaný výkon do určitého prostorového úhlu ve srovnání s ideálním izotropním zářičem, který vyzařuje rovnoměrně do všech směrů (jeho zisk je 0 dBi). Pro parabolickou anténu platí vztah:</p>
+        <div class="math-display">G = \eta \cdot \left( rac{\pi \cdot d}{\lambda} ight)^2</div>
+        <p>Kde <span class="math-expr">d</span> je průměr paraboly. Z rovnice jasně plyne, že s rostoucí frekvencí (klesající vlnovou délkou <span class="math-expr">&lambda;</span>) zisk parabolické antény při konstantním rozměru dramaticky roste, což umožňuje kompenzovat vyšší geometrický útlum šíření.</p>
+    </div>
+
+    <!-- STRANA 20 -->
+    <div class="page-break">
+        <h2>6. PODEZŘELÝ Č. 4: PROF. ING. JAN MACHÁČ, DrSc. (KATEDRA ELEKTROMAGNETICKÉHO POLE)</h2>
+        <div class="stamp-red">PROFIL SVAZKU: MACHÁČ // ČÁST 1 Z 4</div>
+        
+        <h3>6.1 Profesní profil a akademický status</h3>
+        <p>Profesor Jan Macháč je mezinárodně uznávanou vědeckou kapacitou Katedry elektromagnetického pole ČVUT FEL, členem prestižního institutu IEEE a autorem stovek impaktovaných publikací v oblasti mikrovlnných struktur, metamateriálů a šíření vln v anizotropních prostředích. Představuje nejvyšší úroveň teoretického rigorismu v komisi. Jeho doménou je matematický popis polí – jakékoliv inženýrské zjednodušení bez korektního matematického základu považuje za nedostatečné.</p>
+
+        <h3>6.2 Psychologický profil a strategie komunikace</h3>
+        <p>Macháč je klidný, vysoce zdvořilý, ale absolutně neústupný v přesnosti definic. Pokud student při zkoušení začne váhat nad operátory vektorového počtu (grad, div, rot) nebo nedokáže zapsat základní Maxwellovy rovnice, zkoušení se dostává do kritické fáze. Jedinou funkční strategií je okamžitá ofenzivní činnost na tabuli: bleskový, čistý zápis rovnic v integrálním tvaru a okamžitá fyzikální interpretace jednotlivých členů.</p>
+
+        <h3>6.3 Strategický okruh A: Fundamentální zákony elektrostatiky a magnetostatiky</h3>
+        <p>V této zóně Macháč testuje schopnost studenta aplikovat teorii pole na reálné geometrické konfigurace. Klíčové jsou dva zákony v integrálním tvaru:</p>
+        <p><strong>Gaussův zákon elektrostatiky:</strong> Celkový tok vektoru elektrické indukce <span class="math-expr">&vec;D</span> libovolnou uzavřenou plochou <span class="math-expr">S</span> je roven celkovému volnému náboji <span class="math-expr">Q</span> uzavřenému uvnitř této plochy:</p>
+        <div class="math-display">\oint_S ec{D} \cdot dec{S} = Q_{	ext{uvnitř}}</div>
+        <p>Operativec doplní materiálovou vazbu pro lineární izotropní prostředí: <span class="math-expr">&vec;D = &epsilon;_0 &epsilon;_r &vec;E</span>.</p>
+    </div>
+
+    <!-- STRANA 21 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: MACHÁČ // ČÁST 2 Z 4</div>
+        <h3>6.4 Ampérův zákon celkového proudu v magnetostatice</h3>
+        <p>Druhým pilířem je **Ampérův zákon**: Cirkulace vektoru intenzity magnetického pole <span class="math-expr">&vec;H</span> podél uzavřené integrační křivky <span class="math-expr">C</span> je rovna celkovému vodivostnímu proudu <span class="math-expr">I</span>, který touto křivkou prochází (protéká plochou ohraničenou křivkou <span class="math-expr">C</span>):</p>
+        
+        <div class="math-display">\oint_C ec{H} \cdot dec{l} = I_{	ext{celkový}}</div>
+        
+        <p>Operativec musí okamžitě demonstrovat praktickou aplikaci na zadání: <em>Určete intenzitu a indukci pole v okolí nekonečně dlouhého tenkého přímého vodiče vakuu, kterým protéká konstantní proud I.</em></p>
+        <ol>
+            <li>Zvolíme integrační křivku <span class="math-expr">C</span> ve tvaru kružnice o poloměru <span class="math-expr">r</span>, která leží v rovině kolmé na vodič a má střed na ose vodiče.</li>
+            <li>Z důvodu dokonalé rotační symetrie je velikost vektoru <span class="math-expr">H</span> podél celé této kružnice konstantní a vektor je v každém bodě tečný ke křivce. Skalární součin se redukuje na obyčejný součin velikostí:
+                <div class="math-display">\oint_C ec{H} \cdot dec{l} = H \cdot \oint_C dl = H \cdot 2\pi r</div>
+            </li>
+            <li>Položením rovno celkovému proudu <span class="math-expr">I</span> dostáváme výsledný vztah pro intenzitu a s využitím vztahu <span class="math-expr">B = &mu;_0 H</span> pro magnetickou indukci:
+                <div class="quote-box">
+                    <span class="math-expr">H = I / (2&pi;r) \quad 	ext{[A/m]}</span><br>
+                    <span class="math-expr">B = (&mu;_0 &middot; I) / (2&pi;r) \quad 	ext{[T]}</span>
+                </div>
+            </li>
+        </ol>
+        <p>Při dotazu na silové působení dvou rovnoběžných vodičů vzdálených <span class="math-expr">d</span> operativec odvodí Ampérovu sílu na jednotku délky: <span class="math-expr">F/l = &mu;_0 &middot; I<sub>1</sub> &middot; I<sub>2</sub> / (2&pi;d)</span>. Zdůrazní, že souhlasné proudy se přitahují, nesouhlasné se odpuzují.</p>
+    </div>
+
+    <!-- STRANA 22 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: MACHÁČ // ČÁST 3 Z 4</div>
+        <h3>6.5 Strategický okruh B: Šíření rovinné elektromagnetické vlny</h3>
+        <p>Macháč vyžaduje hlubokou analýzu rovinné vlny (TEM - Transverse Electromagnetic), která představuje nejjednodušší model šíření vlnění. Matematický zápis harmonické vlny šířící se podél osy <span class="math-expr">z</span> má pro intenzitu elektrického pole tvar:</p>
+        
+        <div class="math-display">ec{E}(z, t) = ec{E}_0 \cdot e^{-lpha z} \cdot \cos(\omega t - eta z) \cdot ec{x}</div>
+        
+        <p>Kde <span class="math-expr">&vec;E<sub>0</sub></span> je amplituda vlny, <span class="math-expr">&alpha;</span> je činitel měrného útlumu prostředí (pro vakuum/ideální dielektrikum je <span class="math-expr">&alpha; = 0</span>), <span class="math-expr">&omega;</span> je úhlová frekvence, <span class="math-expr">&beta;</span> je činitel fázového posuvu (fázová konstanta <span class="math-expr">&beta; = 2&pi; / &lambda;</span>) a <span class="math-expr">&vec;x</span> je jednotkový vektor udávající směr polarizace (zde lineární polarizace v ose <span class="math-expr">x</span>).</p>
+
+        <h3>6.6 Ortogonalita a Vlnová impedance</h3>
+        <p>Operativec musí zdůraznit klíčové vlastnosti rovinné vlny v bezztátovém prostředí:</p>
+        <ul>
+            <li>Vektory intenzity elektrického pole <span class="math-expr">&vec;E</span>, intenzity magnetického pole <span class="math-expr">&vec;H</span> a vlnový vektor směru šíření <span class="math-expr">&vec;k</span> (vektor fáze) jsou v každém okamžiku na sebe kolmé a tvoří pravotočivou ortonormální bázi. Vlna nemá žádné podélné složky ve směru šíření (<span class="math-expr">E<sub>z</sub> = 0, H<sub>z</sub> = 0</span>).</li>
+            <li>Vektory <span class="math-expr">&vec;E</span> a <span class="math-expr">&vec;H</span> kmitají ve fázi. Jejich vzájemný poměr amplitud je konstantní a je definován jako **vlnová impedance prostředí (Z)**.</li>
+        </ul>
+        <p>Matematické odvození vlnové impedance z Maxwellových rovnic pro nevodivé bezztátové prostředí:</p>
+        <div class="math-display">Z = rac{|ec{E}|}{|ec{H}|} = \sqrt{rac{\mu}{arepsilon}} = \sqrt{rac{\mu_0 \mu_r}{arepsilon_0 arepsilon_r}}</div>
+        <p>Pro vakuum (<span class="math-expr">&mu;<sub>r</sub> = 1, &epsilon;<sub>r</sub> = 1</span>) operativec vyčíslí fundamentální konstantu:</p>
+        <div class="quote-box">
+            <span class="math-expr">Z<sub>0</sub> = &radic;(&mu;<sub>0</sub> / &epsilon;<sub>0</sub>) = &radic;((4&pi; &middot; 10<sup>-7</sup>) / (8.854 &middot; 10<sup>-12</sup>)) = 120&pi; &asymp; 377 &Omega;</span>
+        </div>
+    </div>
+
+    <!-- STRANA 23 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: MACHÁČ // ČÁST 4 Z 4</div>
+        <h3>6.7 Strategický okruh C: Vlnová rozhraní a geometrická optika</h3>
+        <p>Při přechodu vlny z jednoho prostředí do druhého (definovaných optickými indexy lomu <span class="math-expr">n<sub>1</sub></span> a <span class="math-expr">n<sub>2</sub></span>, kde <span class="math-expr">n = &radic;&epsilon;<sub>r</sub></span>) dochází k jevům odrazu a lomu. Macháč vyžaduje precizní formulaci **Snellova zákona lomu**:</p>
+        
+        <div class="math-display">n_1 \cdot \sin(lpha) = n_2 \cdot \sin(eta)</div>
+        
+        <p>Kde <span class="math-expr">&alpha;</span> je úhel dopadu vlny vzhledem k normále rozhraní a <span class="math-expr">&beta;</span> je úhel lomu do druhého prostředí.</p>
+
+        <h3>6.8 Jev totálního odrazu (Total Internal Reflection)</h3>
+        <p>Tento jev nastává výhradně tehdy, pokud se vlna šíří z prostředí opticky **hustšího** do prostředí opticky **řidšího** (<span class="math-expr">n<sub>1</sub> &gt; n<sub>2</sub></span>), neboli vlna se láme od normály (<span class="math-expr">&beta; &gt; &alpha;</span>). S rostoucím úhlem dopadu <span class="math-expr">&alpha;</span> se úhel lomu <span class="math-expr">&beta;</span> blíží k limitní hodnotě <span class="math-expr">90&deg;</span>.</p>
+        <p>Úhel dopadu, pro který je úhel lomu přesně <span class="math-expr">&beta; = 90&deg;</span>, se nazývá **mezní úhel (kritický úhel, &alpha;<sub>m</sub>)**. Dosazením do Snellova zákona (<span class="math-expr">sin(90&deg;) = 1</span>) operativec odvodí kritickou podmínku:</p>
+        <div class="math-display">\sin(lpha_m) = rac{n_2}{n_1} \implies lpha_m = rcsin\left( rac{n_2}{n_1} ight)</div>
+        <p>Pokud úhel dopadu překročí mezní úhel (<span class="math-expr">&alpha; &gt; &alpha;<sub>m</sub></span>), vlna vůbec neproniká do druhého prostředí, nedochází k lomu a veškerá elektromagnetická energie se stoprocentně odráží zpět do prvního prostředí. Operativec uvede zásadní praktickou aplikaci: **dielektrické optické vlnovody (optická vlákna)**, kde je světlo drženo uvnitř jádra s vyšším indexem lomu díky permanentním totálním odrazům od pláště s nižším indexem lomu.</p>
+    </div>
+
+    <!-- STRANA 24 -->
+    <div class="page-break">
+        <h2>7. PODEZŘELÝ Č. 5: DOC. RNDR. JAN VOVES, CSc. (KATEDRA MIKROELEKTRONIKY)</h2>
+        <div class="stamp-red">PROFIL SVAZKU: VOVES // ČÁST 1 Z 4</div>
+        
+        <h3>7.1 Profesní profil, akademické zázemí a role spícího agenta</h3>
+        <p>Docent Jan Voves vystudoval Matematicko-fyzikální fakultu UK (obor fyzika pevných látek), což mu dává extrémně hluboký kvantově-mechanický teoretický základ. Působí na Katedře mikroelektroniky FEL ČVUT, je garantem čistých prostor Nanolab a mezinárodním expertem na nanoelektroniku, uhlíkové struktury, grafen a simulace transportu nábojů v polovodičích. **Klíčová strategická informace: Doc. Voves je vedoucím vaší bakalářské práce.**</p>
+
+        <h3>7.2 Psychologická analýza a role v komisi</h3>
+        <p>Voves je akademicky mimořádně mírný, lidský a klidný. Jeho přítomnost v komisi je vaší největší výhodou. Podle nepsaného akademického étosu vedoucí práce nikdy nepůsobí jako agresor. Jeho rolí je sledovat průběh zkoušky a v případě, že se student dostane pod neúnosný tlak ostatních členů (např. Macháče nebo Polláka), zasáhnout aktivací naváděcí otázky ze svého oboru, která umožní studentovi bezpečně prokázat znalosti a stabilizovat hodnocení.</p>
+
+        <h3>7.3 Strategický okruh A: Fyzika a struktura polovodičových prvků (ELPA)</h3>
+        <p>Pokud bude Voves nucen položit otázku, bude se týkat vnitřní struktury tranzistorů. Klíčové je srovnání bipolárního (BJT) a unipolárního (MOSFET) konceptu.</p>
+        <p><strong>BJT (Bipolar Junction Transistor):</strong> Součástka řízená **proudem**. Skládá se ze tří střídajících se oblastí polovodiče (NPN nebo PNP) tvořících dva těsně blízké PN přechody (báze-emitor a báze-kolektor). Princip činnosti: malé proudové buzení do báze (<span class="math-expr">I<sub>B</sub></span>) snižuje potenciálovou bariéru přechodu báze-emitor v propustném směru. To vyvolá masivní injekci minoritních nosičů (elektronů u NPN) z emitoru do báze. Protože báze je extrémně tenká a slabě dotovaná, většina těchto nosičů nestihne zrekombinovat a je stržena silným polem závěrně polarizovaného přechodu báze-kolektor do kolektoru. Výsledný proud kolektoru je lineárně závislý na proudu báze: <span class="math-expr">I<sub>C</sub> = &beta; &middot; I<sub>B</sub></span>.</p>
+    </div>
+
+    <!-- STRANA 25 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: VOVES // ČÁST 2 Z 4</div>
+        <h3>7.4 Architektura MOSFET a mechanismus řízení polem</h3>
+        <p><strong>MOSFET (Metal-Oxide-Semiconductor Field-Effect Transistor):</strong> Součástka striktně řízená **napětím**. Na rozdíl od BJT je hradlo (Gate) totálně dielektricky izolováno od samotného polovodičového substrátu (Channel) ultratenkou vrstvou oxidu křemičitého (<span class="math-expr">SiO<sub>2</sub></span>). Vstupní statický proud do hradla je tedy nulový (<span class="math-expr">I<sub>G</sub> &asymp; 0 A</span>), součástka vykazuje extrémní vstupní impedanci.</p>
+        <p>Princip činnosti (např. NMOS s obohaceným kanálem): Přiložením kladného napětí <span class="math-expr">V<sub>GS</sub></span> na hradlo vzniká elektrické pole, které odpuzuje majoritní díry z P-substrátu pod hradlem a přitahuje minoritní elektrony. Jakmile napětí překročí **prahovou hodnotu (Threshold Voltage, V<sub>th</sub>)**, dojde pod hradlem k takzvané **inverzi typu vodivosti** – vytvoří se tenký vodivý N-kanál propojující silně dotované oblasti Source a Drain. Přiložením napětí <span class="math-expr">V<sub>DS</sub></span> začne téct proud elektronů. MOSFET je majoritní součástka (proud teče pouze jedním typem nosičů), což odstraňuje akumulaci náboje minoritních nosičů a umožňuje dosahovat řádově vyšších spínacích rychlostí než u BJT tranzistorů.</p>
+
+        <h3>7.5 Tranzistorový zesilovač a oříznutí signálu</h3>
+        <p>Voves nebo Pollák mohou požadovat nakreslení zapojení se společným emitorem (SE) pro BJT. Operativec musí nakreslit schéma s rezistorovým děličem v bázi pro nastavení pracovního bodu a emitorovým rezistorem zajišťujícím zápornou teplotní zpětnou vazbu.</p>
+        <p>Operativec demonstruje chování pracovního bodu na výstupní charakteristice (<span class="math-expr">I<sub>C</sub></span> vs. <span class="math-expr">V<sub>CE</sub></span>). Pracovní bod (Q-point) musí ležet uprostřed lineární aktivní oblasti. Pokud vstupní střídavý signál vykáže příliš velkou amplitudu, dojde k oříznutí:</p>
+        <ul>
+            <li>V kladné půlvlně vstupního napětí se tranzistor otvírá natolik, že napětí <span class="math-expr">V<sub>CE</sub></span> klesne na hodnotu saturačního napětí (<span class="math-expr">V<sub>CE,sat</sub> &asymp; 0.2 V</span>). Signál se ořízne zdola na úrovni saturace.</li>
+            <li>V záporné půlvlně vstupního napětí se tranzistor zcela uzavře (<span class="math-expr">I<sub>C</sub> = 0 A</span>), napětí na kolektoru vyletí na hodnotu plného napájecího napětí <span class="math-expr">V<sub>CC</sub></span>. Signál se ořízne shora.</li>
+        </ul>
+    </div>
+
+    <!-- STRANA 26 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: VOVES // ČÁST 3 Z 4</div>
+        <h3>7.6 Strategický okruh B: Optoelektronické součástky a detekční režimy</h3>
+        <p>Vzhledem k fyzikálnímu zaměření Vovse a multimediálnímu zaměření Urbana je oblast fotodiod kritickou zónou. Operativec musí prokázat exaktní chápání generování náboje světlem. Foton s energií vyšší než je šířka zakázaného pásu materiálu (<span class="math-expr">E = h &middot; &nu; &gt; E<sub>g</sub></span>) dopadne do oblasti přechodu, je absorbován a vygeneruje pár elektron-díra. Vnitřní vestavěné elektrické pole PN přechodu tyto nosiče okamžitě separuje (elektrony do N, díry do P), což generuje vnější fotoproud.</p>
+        <p>Operativec detailně analyzuje dva zásadní provozní režimy fotodiody:</p>
+        
+        <table class="meta-table" style="font-size: 9pt;">
+            <tr style="background-color: #eaeaea; font-weight: bold;">
+                <td>Parametr / Režim</td>
+                <td>Fotovoltaický režim (Hradlový)</td>
+                <td>Fotovodivostní režim (Odporový)</td>
+            </tr>
+            <tr>
+                <td class="bold">Vnější polarizace</td>
+                <td>Nulová (<span class="math-expr">V = 0 V</span>). Dioda pracuje do rozpojeného obvodu nebo do transimpedančního zesilovače s nulovým napětím.</td>
+                <td>Závěrná polarizace (<span class="math-expr">V<sub>R</sub> &gt; 0 V</span>). Dioda je připojena na vnější zdroj v závěrném směru.</td>
+            </tr>
+            <tr>
+                <td class="bold">Temný proud a šum</td>
+                <td>Temný proud je absolutně nulový. Nejnižší možná úroveň šumu.</td>
+                <td>Teče nenulový temný proud (svodový proud přechodu), který generuje dodatečný brokový šum.</td>
+            </tr>
+            <tr>
+                <td class="bold">Rychlost odezvy</td>
+                <td>**Pomalá**. Kapacita PN přechodu je maximální, což dramaticky zvyšuje časovou konstantu RC obvodu.</td>
+                <td>**Extrémně rychlá**. Vnější závěrné napětí masivně rozšíří oblast prostorového náboje, čímž drasticky klesá kapacita přechodu.</td>
+            </tr>
+            <tr>
+                <td class="bold">Linearita fotoproudu</td>
+                <td>Logaritmická závislost napětí na osvětlení při rozpojeném obvodu. Lineární pouze při zkratu.</td>
+                <td>Vynikající, striktně lineární závislost fotoproudu na intenzitě dopadajícího světla přes několik řádů.</td>
+            </tr>
+            <tr>
+                <td class="bold">Typická aplikace</td>
+                <td>Solární články, přesné nízkofrekvenční expozimetry, precizní měření malých intenzit.</td>
+                <td>Rychlé optické detektory, přijímače v optických vláknech, pixely CMOS obrazových snímačů.</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- STRANA 27 -->
+    <div class="page-break">
+        <div class="stamp-red">PROFIL SVAZKU: VOVES // ČÁST 4 Z 4</div>
+        <h3>7.7 Fyzika LED a princip stimulované emise laseru</h3>
+        <p>Při přechodu na generování světla Voves vyžaduje popis **LED diody**. Funguje v propustném směru, kde dochází k masivní rekombinaci elektronů a děr injektovaných do oblasti přechodu. Při přechodu elektronu z vodivostního do valenčního pásu je vyzářen foton o vlnové délce, která je nepřímo úměrná šířce zakázaného pásu materiálu: <span class="math-expr">&lambda; = h &middot; c / E<sub>g</sub></span>. Operativec zdůrazní, že LED vyžadují **přímý polovodič** (GaAs, GaN), kde minimum vodivostního a maximum valenčního pásu leží na stejném vlnovém vektoru <span class="math-expr">k</span>, takže rekombinace probíhá bez účasti fononů (mřížkových vibrací) a má vysokou kvantovou účinnost. Křemík je **nepřímý polovodič**, energie se mění na teplo, proto křemíková LED nemůže efektivně existovat.</p>
+        
+        <h3>7.8 Kvantové základy polovodičového laseru</h3>
+        <p>Při rozvinutí otázky na **laser** (Prajzlerovo/Vovsovo téma) operativec definuje 3 základní kvantové procesy interakce světla s hmotou:</p>
+        <ol>
+            <li><strong>Absorpce:</strong> Dopadající foton předá energii elektronu ve valenčním pásu a vyzdvihne jej do pásu vodivostního.</li>
+            <li><strong>Spontánní emise:</strong> Elektron ve vodivostním pásu samovolně a náhodně přejde na nižší energetickou úroveň a vyzáří foton s náhodnou fází a směrem (princip LED).</li>
+            <li><strong>Stimulovaná emise:</strong> Klíčový princip laseru. Dopadající foton interaguje s elektronem v excitovaném stavu. Vyvolá jeho okamžitý přechod na nižší hladinu. Výsledkem jsou **dva fotony**, které jsou naprosto identické – mají shodnou frekvenci, fázi, polarizaci i směr šíření (koherentní záření).</li>
+        </ol>
+        <p>Aby stimulovaná emise převládla nad absorpcí, musí operativec popsat splnění dvou podmínek: **Inverze populace** (dosažení stavu, kdy na vyšší energetické hladině je více elektronů než na nižší, realizováno silným čerpáním - pumping) a **Optická zpětná vazba** (umístění aktivního prostředí do optického rezonátoru, např. Fabry-Perotův rezonátor tvořený odrazivými zrcadly na koncích krystalu, který zajistí permanentní průchod koherentních fotonů a lavinovité zesílení).</p>
+    </div>
+
+    <!-- STRANA 28 -->
+    <div class="page-break">
+        <h2>8. INTEGRACE MEZIOBOROVÝCH STRATEGIÍ (ZLATÉ SCÉNÁŘE)</h2>
+        <div class="stamp-red">MANUÁL OPERATIVCE // PŘÍSNĚ TAJNÉ</div>
+        <p>Tato závěrečná sekce definuje exaktní postup pro převzetí kontroly nad zkušební místností. Operativec nesmí pouze pasivně čekat na otázky, musí aktivně budovat kontextové mosty.</p>
+        
+        <h3>8.1 Scénář: Aktivace řetězce "Senzor-Signál-Síť"</h3>
+        <p>Pokud operativec dostane otázku od **Urbana** na CMOS senzory, po detailním rozpisu Bayerovy masky plynule naváže:</p>
+        <p><em>"Jakmile získáme analogové napětí z pixelu CMOS snímače, nastává fáze digitalizace, kde musíme striktně dodržet Shannonův teorém, což spadá do oblasti číslicového zpracování signálů..."</em></p>
+        <p>Tímto mostem operativec sám nabízí slovo **Pollákovi**. Pollák začne rozebírat antialiasing a DFT. Operativec po zvládnutí spektrálního prosakování a okénkových funkcí pokračuje:</p>
+        <p><em>"Vygenerovaný digitální obrazový tok o vysokém datovém objemu je následně nutné zapouzdřit do síťových vrstev a distribuovat přes IP infrastrukturu, kde volba mezi spolehlivým TCP a rychlým UDP určuje kvalitu přenosu..."</em></p>
+        <p>Tímto krokem je do hry vtažen **Bezpalec**, který začne zkoumat hlavičky TCP a routování, zatímco časový limit vyhrazený pro zkoušení z obvodů a rádií vypršel v komfortní zóně operativce.</p>
+
+        <h3>8.2 Závěrečné taktické shrnutí</h3>
+        <ul>
+            <li>U **Polláka** okamžitě pište matice a definujte zemnící uzel.</li>
+            <li>U **Bezpalce** provádějte binární AND operace na tabuli s naprostou jistotou.</li>
+            <li>U **Urbana** zdůrazněte vlastnosti lidského oka a geometrickou podstatu FSL.</li>
+            <li>U **Macháče** okamžitě pište integrály, kružnice symetrie a konstantu 377 ohmů.</li>
+            <li>U **Vovse** mluvte jako pokročilý fyzik, poděkujte za vedení práce a opírejte se o jeho záchranné otázky.</li>
+        </ul>
+        
+        <div class="center" style="margin-top: 40px;">
+            <div class="stamp-red" style="font-size: 11pt; padding: 6px 12px;">SVAZEK UZAVŘEN // OPERACE SZZ-FEL-2026 PŘIPRAVENA K ÚSPĚŠNÉMU PROVEDENÍ</div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -75,6 +75,7 @@
     .tag-pdf {background:#fee2e2;color:#b91c1c}
     .tag-sum {background:#f1f5f9;color:#475569}
     .tag-cards{background:#dcfce7;color:#15803d}
+    .tag-sim {background:#ede9fe;color:#6d28d9}
     .res-label{font-size:11px;color:#374151;line-height:1.4}
 
     /* ── Content pane ── */
@@ -105,6 +106,8 @@
                box-shadow:0 2px 12px rgba(15,23,42,.08)}
     .cards-frame{width:100%;flex:1;min-height:calc(100vh - 200px);border:none;border-radius:10px;
                box-shadow:0 2px 12px rgba(15,23,42,.08)}
+    .sim-frame{width:100%;flex:1;min-height:calc(100vh - 200px);border:none;border-radius:10px;
+               box-shadow:0 2px 12px rgba(15,23,42,.08);background:#fff}
 
     /* ── Multi content (split panes + tabs) ── */
     .mc-wrap{display:flex;flex-direction:column;flex:1;min-height:0}
@@ -152,7 +155,7 @@
     .mc-pane-empty{display:flex;align-items:center;justify-content:center;flex:1;
                    color:#94a3b8;font-size:13px;border:2px dashed #e2e8f0;border-radius:10px;
                    text-align:center;padding:20px}
-    .mc-pane .pdf-frame,.mc-pane .cards-frame{min-height:0;height:100%}
+    .mc-pane .pdf-frame,.mc-pane .cards-frame,.mc-pane .sim-frame{min-height:0;height:100%}
 
     /* ── Rendered markdown ── */
     #docBody{color:var(--text);line-height:1.75;font-size:15px;flex:1}
@@ -286,6 +289,7 @@
 
       .pdf-frame{min-height:70dvh}
       .cards-frame{min-height:calc(100dvh - 90px)}
+      .sim-frame{min-height:calc(100dvh - 90px)}
       /* Multi content: desktop-only, force single-document view on mobile */
       .content-toolbar,#mcWrap,.sidebar-toggle,.sidebar-show-btn{display:none!important}
       #docBody{font-size:14px}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autokorelace — SaS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Autokorelace signálu</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'R_{xx}(\\tau)=\\dfrac{1}{N}\\sum_{n} x[n]\\,x[n+\\tau]', false);
+
+    const ro1 = document.createElement('div'); ro1.className = 'sk-readout';
+    document.getElementById('c1').parentNode.insertBefore(ro1, document.getElementById('c2'));
+    const ro2 = document.createElement('div'); ro2.className = 'sk-readout';
+    document.getElementById('c2').parentNode.appendChild(ro2);
+
+    const N = 512;        // samples
+    const fs = 128;       // sampling rate (Hz) -> 4 s window
+    let type = 'sin';
+    let freq = 8;         // Hz
+    let noise = 0.0;      // noise std
+
+    // deterministic pseudo-random so the picture is stable across redraws
+    let seed = 12345;
+    function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    function gauss() { // Box-Muller
+      const u = Math.max(1e-9, rnd()), v = rnd();
+      return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    }
+
+    function buildSignal() {
+      seed = 12345;
+      const x = new Array(N);
+      for (let n = 0; n < N; n++) {
+        const t = n / fs;
+        let s = 0;
+        if (type === 'sin' || type === 'sinnoise') s = Math.sin(2 * Math.PI * freq * t);
+        else if (type === 'square') s = Math.sin(2 * Math.PI * freq * t) >= 0 ? 1 : -1;
+        else if (type === 'noise') s = 0;
+        // 'noise' is pure noise; everything else gets the noise slider added on top
+        const nz = type === 'noise' ? gauss() : noise * gauss();
+        x[n] = s + nz;
+      }
+      return x;
+    }
+
+    // unbiased-ish autocorr for lags 0..maxLag, normalised by N
+    function autocorr(x, maxLag) {
+      const R = new Array(maxLag + 1);
+      for (let lag = 0; lag <= maxLag; lag++) {
+        let acc = 0;
+        for (let n = 0; n + lag < N; n++) acc += x[n] * x[n + lag];
+        R[lag] = acc / N;
+      }
+      return R;
+    }
+
+    const v1 = SK.mount(document.getElementById('c1'), drawSig);
+    const v2 = SK.mount(document.getElementById('c2'), drawAcf);
+
+    function curX() { return buildSignal(); }
+
+    function drawSig(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 44, padR = 14, padT = 14, padB = 30;
+      const midY = (padT + (h - padB)) / 2;
+      const plotW = w - padL - padR;
+      const x = curX();
+      let amax = 0.2; for (let i = 0; i < N; i++) amax = Math.max(amax, Math.abs(x[i]));
+      const sy = (h - padT - padB) / 2 / amax;
+      const dur = N / fs;
+      const X = (n) => padL + (n / (N - 1)) * plotW;
+      const Y = (v) => midY - v * sy;
+
+      SK.grid(ctx, w, h, 30);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(padL, midY); ctx.lineTo(w - padR, midY);
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, h - padB);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('t [s]', w - padR - 2, midY + 6);
+      ctx.textAlign = 'left'; ctx.fillText('x(t)', padL + 6, padT);
+      ctx.textAlign = 'center';
+      for (let s = 1; s < dur; s++) ctx.fillText(s, X(s * fs), midY + 6);
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = t.accent; ctx.lineWidth = 1.6; ctx.beginPath();
+      for (let n = 0; n < N; n++) { const xx = X(n), yy = Y(x[n]); n ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); }
+      ctx.stroke(); ctx.restore();
+
+      const names = { sin: 'Sinus', square: 'Obdélník', noise: 'Bílý šum', sinnoise: 'Sinus + šum' };
+      ro1.innerHTML = `<b>${names[type]}</b><br>` +
+        (type !== 'noise' ? `f=${freq} Hz (perioda ${SK.fmt(fs / freq, 1)} vz.)<br>` : '') +
+        `šum σ=${SK.fmt(noise, 2)}`;
+    }
+
+    function drawAcf(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 44, padR = 14, padT = 14, padB = 32;
+      const midY = (padT + (h - padB)) / 2;
+      const plotW = w - padL - padR;
+      const maxLag = Math.floor(N / 2);
+      const x = curX();
+      const R = autocorr(x, maxLag);
+      const R0 = R[0] || 1e-9;
+      const sy = (h - padT - padB) / 2 / (Math.abs(R0) * 1.1);
+      const X = (lag) => padL + (lag / maxLag) * plotW;
+      const Y = (v) => midY - v * sy;
+
+      SK.grid(ctx, w, h, 30);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5; ctx.beginPath();
+      ctx.moveTo(padL, midY); ctx.lineTo(w - padR, midY);
+      ctx.moveTo(padL, padT); ctx.lineTo(padL, h - padB);
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('τ [vz.]', w - padR - 2, midY + 6);
+      ctx.textAlign = 'left'; ctx.fillText('R(τ)', padL + 6, padT);
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = t.accent2; ctx.lineWidth = 1.8; ctx.beginPath();
+      for (let lag = 0; lag <= maxLag; lag++) { const xx = X(lag), yy = Y(R[lag]); lag ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); }
+      ctx.stroke(); ctx.restore();
+
+      // detect first peak away from τ=0 (period)
+      let detLag = -1, best = 0;
+      const thr = 0.35 * Math.abs(R0);
+      for (let lag = 4; lag < maxLag - 1; lag++) {
+        if (R[lag] > thr && R[lag] >= R[lag - 1] && R[lag] >= R[lag + 1]) {
+          if (R[lag] > best) { best = R[lag]; detLag = lag; }
+          if (detLag > 0) break; // first significant peak
+        }
+      }
+      if (detLag > 0) {
+        ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(X(detLag), Y(R[detLag])); ctx.lineTo(X(detLag), midY); ctx.stroke();
+        ctx.setLineDash([]);
+        SK.dot(ctx, X(detLag), Y(R[detLag]), 4, t.ok);
+        SK.label(ctx, 'perioda', X(detLag) + 6, Y(R[detLag]) - 6, { color: t.ok, font: 'bold 11px system-ui' });
+        ctx.restore();
+      }
+
+      ro2.innerHTML = `<b>Autokorelace R(τ)</b><br>` +
+        `R(0)=<b>${SK.fmt(R0, 3)}</b><br>` +
+        (detLag > 0
+          ? `perioda ≈ <b>${detLag}</b> vz. (${SK.fmt(fs / detLag, 1)} Hz)`
+          : 'periodicita nezjištěna (jen špička v τ=0)');
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    function refresh() { v1.redraw(); v2.redraw(); }
+    SK.controls(ctrl, [
+      SK.tabs({ options: [
+        { label: 'Sinus', value: 'sin' },
+        { label: 'Obdélník', value: 'square' },
+        { label: 'Šum', value: 'noise' },
+        { label: 'Sinus+šum', value: 'sinnoise' },
+      ], value: 'sin', onchange: (v) => { type = v; refresh(); } }),
+      SK.slider({ label: 'Frekvence f', min: 2, max: 24, step: 1, value: 8, unit: 'Hz',
+        fmt: (v) => v | 0, oninput: (v) => { freq = v; refresh(); } }),
+      SK.slider({ label: 'Úroveň šumu σ', min: 0, max: 2, step: 0.05, value: 0,
+        fmt: (v) => SK.fmt(v, 2), oninput: (v) => { noise = v; refresh(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Autokorelace zašuměného periodického signálu má vrcholy v násobcích periody (zelená značka). ' +
+      'Bílý šum má naopak ostrou špičku jen v τ=0 a jinde ≈ 0.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

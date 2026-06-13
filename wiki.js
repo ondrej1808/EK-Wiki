@@ -135,6 +135,18 @@
             { type: 'sum',  label: 'Otázka 3 (detail)',                 src: AM  + 'B2B02FY2-03.md' },
           ],
         },
+        {
+          code: 'GLOBALMETA', title: 'Přehledy / Meta',
+          resources: [
+            { type: 'note', label: 'SZZ – Teoretické okruhy', src: SZZ + 'SZZ - Teoretické okruhy.md' },
+            { type: 'note', label: 'SZZ – Odborné okruhy',     src: SZZ + 'SZZ - Odborné okruhy.md' },
+            { type: 'note', label: 'README (SZZ)',             src: SZZ + 'README.md' },
+            { type: 'note', label: 'MA1A – kdecoje',           src: SZZ + 'MA1A/kdecoje.md' },
+            { type: 'note', label: 'AI – agent pravidla',      src: SZZ + 'ai/agent-pravidla.md' },
+            { type: 'note', label: 'AI – pracovní log',        src: SZZ + 'ai/pracovni-log.md' },
+            { type: 'note', label: 'AI – context setup',       src: SZZ + 'ai/Summary_2024-05-22_Context_Setup.md' },
+          ],
+        },
       ],
     },
 
@@ -240,6 +252,9 @@
             { type: 'note', label: '19a – Srovnání spektrálních reprezentací',                  src: SZZ + 'SAS/19a Srovnani spektralnich reprezentaci signalu.md' },
             { type: 'note', label: '20 – Soustavy LTI, konvoluce, stabilita, modulace',         src: SZZ + 'SAS/20 Soustavy LTI konvoluce stabilita pasmove signaly modulace.md' },
             { type: 'pdf',  label: 'SAS cvičení v0.96 (zápisky)', src: SZZ + 'SAS/sas_cviceni_v0.96_250225.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ + 'B2B37SAS.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM + 'B2B37SAS-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM + 'B2B37SAS-02.md' },
           ],
         },
         {
@@ -247,6 +262,9 @@
           resources: [
             { type: 'note', label: '21 – Bezdrátová komunikace, modulace, VF parametry', src: SZZ + 'TBK/21 Bezdratova komunikace modulace VF parametry vysilace prijimace.md' },
             { type: 'note', label: '22 – Antény, šíření, návrh rádiových spojů',          src: SZZ + 'TBK/22 Anteny sireni navrh radiovych spoju vykonova bilance.md' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ + 'B2B17TBK.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM + 'B2B17TBK-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM + 'B2B17TBK-02.md' },
           ],
         },
         {
@@ -259,6 +277,9 @@
             { type: 'pdf',  label: 'CZS DFT (pr3)',       src: SZZ + 'CZS/b2b31czs_pr3_DFT_HANDOUT.pdf' },
             { type: 'pdf',  label: 'CZS spektrum (pr4)',  src: SZZ + 'CZS/b2b31czs_pr4_spectrum_HANDOUT.pdf' },
             { type: 'pdf',  label: 'CZS filtry (pr5–8)',  src: SZZ + 'CZS/b2b31czs_pr5_filters_intro_HANDOUT.pdf' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ + 'B2B31CZS.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM + 'B2B31CZS-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM + 'B2B31CZS-02.md' },
           ],
         },
         {
@@ -287,6 +308,9 @@
           resources: [
             { type: 'note', label: '29 – Komunikační kanál, digitální přenosy, telefonie, xDSL', src: SZZ + 'TSI/29 Komunikacni kanal digitalni prenosy telefonie xDSL.md' },
             { type: 'note', label: '30 – Buňkové mobilní sítě, GSM, GPRS, UMTS',                  src: SZZ + 'TSI/30 Bunkove mobilni site GSM GPRS EDGE UMTS.md' },
+            { type: 'sum',  label: 'HEX – shrnutí okruhů', src: AQ + 'B2B32TSI.md' },
+            { type: 'sum',  label: 'Otázka 1 (detail)',    src: AM + 'B2B32TSI-01.md' },
+            { type: 'sum',  label: 'Otázka 2 (detail)',    src: AM + 'B2B32TSI-02.md' },
           ],
         },
       ],
@@ -298,9 +322,70 @@
   // matches subsetPath[0] in json/szz-open-micro.json one-to-one.
   for (const sec of SECTIONS) {
     for (const subj of sec.subjects) {
+      if (subj.code === 'GLOBALMETA') continue;   // meta overviews have no flashcards
       subj.resources.push({ type: 'cards', label: 'Kartičky (CARDS)', src: subj.code.slice(5) });
     }
   }
+
+  /* ── Section 3: Simulace — standalone interactive HTML simulations.
+   *  Appended AFTER the cards-injection loop so sim subjects get no
+   *  'cards'/'note' resources, only 'sim'. ── */
+  const SIM = 'sim/';
+  SECTIONS.push({
+    section: '3 – Simulace',
+    subjects: [
+      {
+        code: 'B2B17ELD', title: 'EM vlny a vedení',
+        resources: [
+          { type: 'sim', label: 'Vlnovody – COAX / RECT (TE, TM, TEM)', src: 'waveguide_simulator.html' },
+        ],
+      },
+      {
+        code: 'B2B17EMPA', title: 'Elektromagnetické pole',
+        resources: [
+          { type: 'sim', label: 'ES · Pole bodového náboje',            src: SIM + 'empa_pointcharge.html' },
+          { type: 'sim', label: 'ES · Dva náboje (siločáry, ekvipot.)', src: SIM + 'empa_two_charges.html' },
+          { type: 'sim', label: 'ES · Zrcadlení podle vodivé plochy',   src: SIM + 'empa_image_method.html' },
+          { type: 'sim', label: 'MS · Biot–Savart (B kolem vodiče)',    src: SIM + 'empa_biot_savart.html' },
+          { type: 'sim', label: 'MS · Ampérův zákon',                   src: SIM + 'empa_ampere.html' },
+          { type: 'sim', label: 'MS · Síla mezi dvěma vodiči',          src: SIM + 'empa_two_wires.html' },
+          { type: 'sim', label: 'MS · Závit a solenoid',               src: SIM + 'empa_loop_solenoid.html' },
+          { type: 'sim', label: 'AC · Faradayův zákon (indukce)',       src: SIM + 'empa_faraday.html' },
+        ],
+      },
+      {
+        code: 'B2B02FY2', title: 'Fyzika 2',
+        resources: [
+          { type: 'sim', label: 'Coulombův zákon',  src: SIM + 'fy2_coulomb.html' },
+          { type: 'sim', label: 'Carnotův cyklus',  src: SIM + 'fy2_carnot.html' },
+        ],
+      },
+      {
+        code: 'B2B34ELPA', title: 'Elektronické prvky',
+        resources: [
+          { type: 'sim', label: 'Dioda PN / PIN / Schottky (Shockley)', src: SIM + 'elpa_diode.html' },
+          { type: 'sim', label: 'BJT – výstupní charakteristika',       src: SIM + 'elpa_bjt.html' },
+          { type: 'sim', label: 'JFET – charakteristiky',               src: SIM + 'elpa_jfet.html' },
+          { type: 'sim', label: 'MOSFET (N, P)',                        src: SIM + 'elpa_mosfet.html' },
+        ],
+      },
+      {
+        code: 'B2B37SAS', title: 'Signály a soustavy',
+        resources: [
+          { type: 'sim', label: 'Skládání signálu',          src: SIM + 'sas_signal.html' },
+          { type: 'sim', label: 'Fourierova transformace',   src: SIM + 'sas_transform.html' },
+          { type: 'sim', label: 'Autokorelace',              src: SIM + 'sas_autocorr.html' },
+          { type: 'sim', label: 'Vzorkování a spektrum',     src: SIM + 'sas_sampling.html' },
+        ],
+      },
+      {
+        code: 'B2B32DATA', title: 'Datová komunikace',
+        resources: [
+          { type: 'sim', label: 'ISO/OSI – tok a zapouzdření', src: SIM + 'data_iso_osi.html' },
+        ],
+      },
+    ],
+  });
 
   /* ── Shared reference ── */
   const HEX_COMPOST = { type: 'pdf', label: 'hex_compost.pdf (hlavní reference)', src: SZZ + 'hex_compost.pdf' };
@@ -355,6 +440,7 @@
     pdf:  { label: 'PDF', cls: 'tag-pdf'  },
     sum:  { label: 'HEX', cls: 'tag-sum'  },
     cards:{ label: 'CARDS', cls: 'tag-cards' },
+    sim:  { label: 'SIM',  cls: 'tag-sim'  },
   };
 
   /* ═══════════════════════════════════════════════════════
@@ -538,6 +624,18 @@
       return;
     }
 
+    if (type === 'sim') {
+      /* SIM: embed a standalone interactive simulation HTML in an iframe */
+      const enc = encodePath(src);
+      targets.docBody.classList.remove('status');
+      targets.docBody.innerHTML =
+        `<div class="pdf-toolbar">` +
+          `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
+        `</div>` +
+        `<iframe src="${enc}" class="sim-frame" title="${esc(label)}"></iframe>`;
+      return;
+    }
+
     /* Markdown */
     targets.docBody.innerHTML = '';
     targets.docBody.classList.add('status');
@@ -682,9 +780,10 @@
     }
   }
 
-  /** Filter resources: skip all 'sum' type (assets/ markdown files) */
+  /** Filter resources for the sidebar. All types (note/pdf/sum/cards/sim)
+   *  are now browsable — summaries ('sum') were previously hidden. */
   function visibleResources(resources) {
-    return resources.filter(r => r.type !== 'sum');
+    return resources;
   }
 
   function makeResourceBtn(key, r, code) {

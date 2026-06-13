@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biot–Savartův zákon — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Biot–Savartův zákon — přímý vodič</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'd\\vec B=\\dfrac{\\mu_0 I}{4\\pi}\\dfrac{d\\vec l\\times\\hat r}{r^2},\\quad B=\\dfrac{\\mu_0 I}{2\\pi r}', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+    const mu0 = 4 * Math.PI * 1e-7;
+
+    let I = 10;          // A
+    let intoPage = true; // current direction
+    let probe = { x: 0.72, y: 0.5 };
+    let dragging = false;
+    const PX_PER_M = 1000; // 1 px = 1 mm  → r in meters = rpx/1000
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const cx = w * 0.42, cy = h * 0.5;
+
+      // Concentric B-field circles. Spacing ∝ 1/r? Field B∝1/r so to show equal
+      // flux per ring we space rings increasingly far apart; use rings at fixed
+      // visual radii but arrow length ∝ 1/r.
+      const dir = intoPage ? 1 : -1; // B circulates clockwise (seen) for current into page
+      ctx.save();
+      for (let k = 1; k <= 7; k++) {
+        const r = 26 * k;
+        if (r > Math.max(w, h)) break;
+        ctx.strokeStyle = t.mag; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke();
+        // arrowheads tangent to circle showing direction (right-hand rule)
+        const arrowLen = SK.clamp(900 / r, 5, 16);
+        ctx.globalAlpha = 0.9;
+        const nAr = 4;
+        for (let a = 0; a < nAr; a++) {
+          const ang = (a / nAr) * Math.PI * 2 + 0.4;
+          const px = cx + r * Math.cos(ang), py = cy + r * Math.sin(ang);
+          // tangent direction (clockwise when dir=1): rotate radial by +90°*dir
+          const tx = -Math.sin(ang) * dir, ty = Math.cos(ang) * dir;
+          SK.arrow(ctx, px - tx * arrowLen / 2, py - ty * arrowLen / 2,
+                        px + tx * arrowLen / 2, py + ty * arrowLen / 2,
+                        { color: t.mag, width: 1.6, head: 5 });
+        }
+      }
+      ctx.restore();
+
+      // Wire cross-section symbol at center
+      SK.dot(ctx, cx, cy, 12, t.fg);
+      ctx.save();
+      ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; ctx.lineWidth = 2;
+      if (intoPage) {
+        // ⊗
+        ctx.beginPath();
+        ctx.moveTo(cx - 7, cy - 7); ctx.lineTo(cx + 7, cy + 7);
+        ctx.moveTo(cx + 7, cy - 7); ctx.lineTo(cx - 7, cy + 7); ctx.stroke();
+      } else {
+        // ⊙
+        ctx.beginPath(); ctx.arc(cx, cy, 3, 0, 7); ctx.fill();
+      }
+      ctx.restore();
+      SK.label(ctx, intoPage ? 'I do nákresny ⊗' : 'I z nákresny ⊙', cx + 18, cy - 18,
+               { color: t.fg, font: 'bold 12px system-ui' });
+
+      // Probe point + B value
+      const ppx = probe.x * w, ppy = probe.y * h;
+      const rpx = Math.hypot(ppx - cx, ppy - cy);
+      const rM = rpx / PX_PER_M;
+      const B = mu0 * I / (2 * Math.PI * Math.max(rM, 1e-4));
+      // radial line
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ppx, ppy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.restore();
+      SK.label(ctx, 'r', (cx + ppx) / 2, (cy + ppy) / 2 - 6, { color: t.muted });
+      // B vector at probe (tangent)
+      if (rpx > 4) {
+        const ang = Math.atan2(ppy - cy, ppx - cx);
+        const tx = -Math.sin(ang) * dir, ty = Math.cos(ang) * dir;
+        const L = 26;
+        SK.arrow(ctx, ppx - tx * L / 2, ppy - ty * L / 2, ppx + tx * L / 2, ppy + ty * L / 2,
+                 { color: t.mag, width: 2.6, head: 7 });
+      }
+      SK.dot(ctx, ppx, ppy, 5, t.warn);
+      SK.label(ctx, 'B', ppx + 10, ppy - 8, { color: t.mag, font: 'bold 13px system-ui' });
+
+      ro.innerHTML = `Proud <b>I = ${SK.fmt(I, 1)} A</b> (${intoPage ? 'do nákresny ⊗' : 'z nákresny ⊙'})<br>` +
+                     `Vzdálenost r = <b>${SK.fmt(rM * 1000, 1)} mm</b><br>` +
+                     `B = µ₀I/(2πr) = <b>${(B * 1e6).toFixed(1)} µT</b><br>` +
+                     `Táhni sondu · B ∝ 1/r`;
+    }
+
+    function hit(p, w, h) { return Math.hypot(p.x - probe.x * w, p.y - probe.y * h) < 16; }
+    canvas.addEventListener('pointerdown', (e) => {
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      if (hit(p, w, h)) { dragging = true; canvas.setPointerCapture(e.pointerId); }
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const { w, h } = view.dims(); const p = SK.pointer(canvas, e);
+      probe.x = SK.clamp(p.x / w, 0.02, 0.98);
+      probe.y = SK.clamp(p.y / h, 0.02, 0.98);
+      view.redraw();
+    });
+    canvas.addEventListener('pointerup', () => dragging = false);
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Proud I', min: 1, max: 50, step: 1, value: 10, unit: 'A',
+                  fmt: (v) => v | 0, oninput: (v) => { I = v; view.redraw(); } }),
+      SK.toggle({ label: 'Směr do nákresny (⊗)', value: true,
+                  onchange: (v) => { intoPage = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Magnetické pole přímého vodiče tvoří soustředné kružnice. Směr určí pravidlo pravé ruky (palec ve směru proudu, prsty po B). Velikost klesá jako 1/r.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

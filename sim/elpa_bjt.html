@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Výstupní charakteristika BJT — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Výstupní charakteristika BJT + pracovní bod</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      'I_C=\\beta I_B\\quad(\\text{aktivní oblast}),\\qquad I_C=\\dfrac{U_{CC}-U_{CE}}{R_C}', false);
+
+    const ro = document.getElementById('ro');
+    const canvas = document.getElementById('c');
+
+    let type = 'NPN';
+    let beta = 150;        // current gain
+    let Ucc = 10;          // supply voltage (V)
+    let Rc = 1000;         // collector resistor (Ω)
+    let ibIdx = 3;         // which base-current curve hosts Q (1..5)
+
+    const IB = [10e-6, 20e-6, 30e-6, 40e-6, 50e-6]; // base currents (A)
+    const Vsat = 0.2;      // saturation knee (V)
+    const earlyVA = 80;    // Early voltage (V) for slight slope
+
+    // I_C (mA) as function of U_CE (V) for a given I_B (A)
+    function ic(Uce, Ib) {
+      const Icsat = beta * Ib;            // active-region collector current (A)
+      let I;
+      if (Uce <= Vsat) {
+        // steep rise in saturation: ~ linear from 0 to Icsat across [0,Vsat]
+        I = Icsat * (Uce / Vsat);
+      } else {
+        // active region: flat + slight Early-effect slope
+        I = Icsat * (1 + (Uce - Vsat) / earlyVA);
+      }
+      return Math.max(0, I) * 1000; // → mA
+    }
+
+    // Working point: intersection of load line with curve ibIdx
+    function workingPoint() {
+      const Ib = IB[ibIdx - 1];
+      // load line: Ic_mA = (Ucc - Uce)/Rc * 1000 ; solve ic(Uce)=loadline
+      let lo = 0, hi = Ucc;
+      const f = (u) => ic(u, Ib) - (Ucc - u) / Rc * 1000;
+      for (let i = 0; i < 60; i++) {
+        const mid = (lo + hi) / 2;
+        if (f(lo) * f(mid) <= 0) hi = mid; else lo = mid;
+      }
+      const u = (lo + hi) / 2;
+      return { Uce: u, Ic: ic(u, Ib) };
+    }
+
+    const view = SK.mount(canvas, draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const pnp = type === 'PNP';
+
+      const padL = 56, padB = 40, padT = 16, padR = 16;
+      const ox = padL, oy = h - padB;
+      const Umax = Math.max(12, Ucc * 1.1);
+      const Imax = Math.max(20, (Ucc / Rc) * 1000 * 1.15, beta * IB[4] * 1000 * 1.1);
+      const sx = (w - padL - padR) / Umax;
+      const sy = (h - padT - padB) / Imax;
+      const X = (U) => ox + U * sx;
+      const Y = (ImA) => oy - ImA * sy;
+
+      SK.grid(ctx, w, h, 32);
+      ctx.save();
+      ctx.strokeStyle = t.axis; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(Umax), Y(0));
+      ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(0), Y(Imax));
+      ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '12px system-ui';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText((pnp ? '|U_CE| [V]' : 'U_CE [V]'), X(Umax) - 2, Y(0) + 6);
+      ctx.textAlign = 'left';
+      ctx.fillText((pnp ? '|I_C| [mA]' : 'I_C [mA]'), X(0) + 6, Y(Imax) + 2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let u = 2; u <= Umax + 1e-9; u += 2) ctx.fillText(u | 0, X(u), Y(0) + 4);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      const istep = Imax > 60 ? 20 : (Imax > 30 ? 10 : 5);
+      for (let i = istep; i <= Imax; i += istep) ctx.fillText(i | 0, X(0) - 5, Y(i));
+      ctx.restore();
+
+      // Curve family
+      for (let n = 0; n < IB.length; n++) {
+        const Ib = IB[n];
+        ctx.save();
+        ctx.strokeStyle = (n + 1 === ibIdx) ? t.accent2 : t.accent;
+        ctx.lineWidth = (n + 1 === ibIdx) ? 2.6 : 1.8;
+        ctx.globalAlpha = (n + 1 === ibIdx) ? 1 : 0.7;
+        ctx.beginPath();
+        let started = false;
+        for (let px = X(0); px <= X(Umax); px++) {
+          const U = (px - ox) / sx;
+          const yy = Y(SK.clamp(ic(U, Ib), 0, Imax + 5));
+          if (!started) { ctx.moveTo(px, yy); started = true; } else ctx.lineTo(px, yy);
+        }
+        ctx.stroke();
+        SK.label(ctx, 'I_B=' + (Ib * 1e6).toFixed(0) + ' µA',
+          X(Umax) - 4, Y(SK.clamp(ic(Umax, Ib), 0, Imax)) - 4,
+          { color: (n + 1 === ibIdx) ? t.accent2 : t.muted, align: 'right', font: '10px system-ui' });
+        ctx.restore();
+      }
+
+      // Load line: Ic = (Ucc - Uce)/Rc
+      const ll0 = Ucc / Rc * 1000; // at Uce=0
+      ctx.save();
+      ctx.strokeStyle = t.warn; ctx.lineWidth = 1.8; ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(X(0), Y(SK.clamp(ll0, 0, Imax)));
+      ctx.lineTo(X(Math.min(Ucc, Umax)), Y(0));
+      ctx.stroke(); ctx.setLineDash([]);
+      SK.label(ctx, 'zatěžovací přímka', X(Math.min(Ucc, Umax)) - 4, Y(0) - 8,
+        { color: t.warn, align: 'right', font: '11px system-ui' });
+      ctx.restore();
+
+      // Working point Q
+      const wp = workingPoint();
+      const region = wp.Uce <= Vsat * 1.5 ? 'saturace' : 'aktivní';
+      const qx = X(wp.Uce), qy = Y(SK.clamp(wp.Ic, 0, Imax));
+      ctx.save();
+      ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(qx, qy); ctx.lineTo(qx, Y(0));
+      ctx.moveTo(qx, qy); ctx.lineTo(X(0), qy); ctx.stroke(); ctx.setLineDash([]);
+      SK.dot(ctx, qx, qy, 5, t.ok);
+      SK.label(ctx, 'Q', qx + 8, qy - 8, { color: t.ok, font: 'bold 13px system-ui' });
+      ctx.restore();
+
+      const s = pnp ? '−' : '';
+      ro.innerHTML =
+        `<b>${type}</b>, β = <b>${beta | 0}</b><br>` +
+        `Pracovní bod Q: U_CE=<b>${s}${SK.fmt(wp.Uce, 2)} V</b>, I_C=<b>${s}${SK.fmt(wp.Ic, 2)} mA</b><br>` +
+        `Oblast: <b>${region}</b> · I_B=${(IB[ibIdx - 1] * 1e6).toFixed(0)} µA`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.tabs({ options: [{ label: 'NPN', value: 'NPN' }, { label: 'PNP', value: 'PNP' }],
+        value: 'NPN', onchange: (v) => { type = v; view.redraw(); } }),
+      SK.slider({ label: 'Proudový zesilovací činitel β', min: 50, max: 300, step: 5, value: 150,
+        fmt: (v) => v | 0, oninput: (v) => { beta = v; view.redraw(); } }),
+      SK.slider({ label: 'Napájení U_CC', min: 2, max: 20, step: 0.5, value: 10, unit: 'V',
+        fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Ucc = v; view.redraw(); } }),
+      SK.slider({ label: 'Kolektorový odpor R_C', min: 100, max: 5000, step: 50, value: 1000, unit: 'Ω',
+        fmt: (v) => v | 0, oninput: (v) => { Rc = v; view.redraw(); } }),
+      SK.slider({ label: 'Křivka I_B pro Q', min: 1, max: 5, step: 1, value: 3,
+        fmt: (v) => (v | 0) + '. (' + (IB[(v | 0) - 1] * 1e6).toFixed(0) + ' µA)',
+        oninput: (v) => { ibIdx = v | 0; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div');
+    hint.className = 'sk-hint';
+    hint.textContent = 'Každá křivka odpovídá jednomu I_B: prudký nárůst v saturaci (U_CE<0,2 V), pak plató I_C≈β·I_B v aktivní oblasti (mírný sklon = Earlyho jev). ' +
+      'Pracovní bod Q = průsečík zvolené křivky se zatěžovací přímkou I_C=(U_CC−U_CE)/R_C.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
