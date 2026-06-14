@@ -392,6 +392,7 @@
         code: 'B2B31EO1', title: 'Elektronické obvody 1',
         resources: [
           { type: 'sim', label: 'Záporná zpětná vazba (A, β)', src: SIM + 'eo1_feedback.html' },
+          { type: 'sim', label: 'Filtry RC/RLC – modulová & fázová char.', src: SIM + 'eo1_filters.html' },
         ],
       },
       {

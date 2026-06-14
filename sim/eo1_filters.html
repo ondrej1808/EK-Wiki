@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filtry RC / RLC — modul a fáze — EO1</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Kmitočtové charakteristiky filtrů (modul &amp; fáze)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let type = 'lp', R = 1000, C = 1e-7, L = 0.01;
+    function setF() { SK.katex(fEl, type === 'lp' ? "\\underline{K}=\\dfrac{1}{1+j\\omega RC},\\ f_c=\\dfrac{1}{2\\pi RC}"
+      : type === 'hp' ? "\\underline{K}=\\dfrac{j\\omega RC}{1+j\\omega RC}"
+      : type === 'bp' ? "\\underline{K}=\\dfrac{j\\omega RC}{1-\\omega^2LC+j\\omega RC},\\ f_0=\\dfrac{1}{2\\pi\\sqrt{LC}}"
+      : "\\underline{K}=\\dfrac{1-\\omega^2LC}{1-\\omega^2LC+j\\omega RC}\\ (\\text{pásmová zádrž})", false); }
+    setF();
+
+    function H(w) { // returns {re, im}
+      const a = w * R * C;
+      if (type === 'lp') { const d = 1 + a * a; return { re: 1 / d, im: -a / d }; }
+      if (type === 'hp') { const d = 1 + a * a; return { re: a * a / d, im: a / d }; }
+      const x = 1 - w * w * L * C, y = a;                 // denom = x + jy
+      const dd = x * x + y * y;
+      if (type === 'bp') { /* num = j y */ return { re: (y * y) / dd, im: (y * x) / dd }; }
+      /* bs: num = x */ return { re: (x * x) / dd, im: (-x * y) / dd };
+    }
+    const fc = () => (type === 'bp' || type === 'bs') ? 1 / (2 * Math.PI * Math.sqrt(L * C)) : 1 / (2 * Math.PI * R * C);
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); SK.grid(ctx, w, h, 28);
+      const f0 = fc(), lfc = Math.log10(f0), fLo = lfc - 2.5, fHi = lfc + 2.5;
+      const padL = 44, padR = 14;
+      const hh = (h - 16) / 2 - 6, yM = 8, yP = 8 + hh + 10;
+      const X = (lf) => padL + (lf - fLo) / (fHi - fLo) * (w - padL - padR);
+      // magnitude panel (dB, −40..6)
+      const dbT = 6, dbB = -42, Ym = (db) => yM + (dbT - db) / (dbT - dbB) * hh;
+      // phase panel (−180..180)
+      const Yp = (ph) => yP + (180 - ph) / 360 * hh;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(padL, Ym(0)); ctx.lineTo(w - padR, Ym(0)); ctx.moveTo(padL, yM); ctx.lineTo(padL, yM + hh); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(padL, Yp(0)); ctx.lineTo(w - padR, Yp(0)); ctx.moveTo(padL, yP); ctx.lineTo(padL, yP + hh); ctx.stroke(); ctx.restore();
+      SK.label(ctx, '|K| [dB]', padL + 4, yM + 10, { color: t.muted, font: '11px system-ui' });
+      SK.label(ctx, 'fáze φ [°]', padL + 4, yP + 10, { color: t.muted, font: '11px system-ui' });
+      ctx.save(); ctx.fillStyle = t.muted; ctx.font = '9px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      [0, -20, -40].forEach(d => ctx.fillText(d, padL - 3, Ym(d))); [90, 0, -90].forEach(d => ctx.fillText(d, padL - 3, Yp(d))); ctx.restore();
+      // fc/f0 marker
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(X(lfc), yM); ctx.lineTo(X(lfc), yP + hh); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, (type === 'bp' || type === 'bs') ? 'f₀' : 'f_c', X(lfc) + 3, yM + 12, { color: t.warn, font: '10px system-ui' });
+      // curves
+      function plot(Yf, valf, col) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+        for (let px = 0; px <= w - padL - padR; px++) { const lf = fLo + px / (w - padL - padR) * (fHi - fLo); const wv = 2 * Math.PI * Math.pow(10, lf); const y = Yf(valf(H(wv))); s ? ctx.lineTo(padL + px, y) : (ctx.moveTo(padL + px, y), s = true); } ctx.stroke(); ctx.restore(); }
+      plot(Ym, (hh2) => SK.clamp(20 * Math.log10(Math.hypot(hh2.re, hh2.im) + 1e-9), dbB, dbT), t.accent);
+      plot(Yp, (hh2) => Math.atan2(hh2.im, hh2.re) * 180 / Math.PI, t.accent2);
+      SK.label(ctx, 'modulová', w - padR - 2, yM + 12, { color: t.accent, align: 'right', font: '11px system-ui' });
+      SK.label(ctx, 'fázová', w - padR - 2, yP + 12, { color: t.accent2, align: 'right', font: '11px system-ui' });
+
+      const Hc = H(2 * Math.PI * f0);
+      ro.innerHTML = `<b>${type === 'lp' ? 'Dolní propust (RC)' : type === 'hp' ? 'Horní propust (CR)' : type === 'bp' ? 'Pásmová propust (RLC)' : 'Pásmová zádrž (RLC)'}</b><br>` +
+        `${(type === 'bp' || type === 'bs') ? 'f₀' : 'f_c'} = <b>${f0 < 1000 ? SK.fmt(f0, 0) + ' Hz' : SK.fmt(f0 / 1000, 2) + ' kHz'}</b> · R=${R | 0} Ω, C=${SK.fmt(C * 1e9, 0)} nF` + ((type === 'bp' || type === 'bs') ? ', L=' + SK.fmt(L * 1e3, 0) + ' mH' : '') + `<br>` +
+        `Na ${(type === 'bp' || type === 'bs') ? 'f₀' : 'f_c'}: |K|=${SK.fmt(20 * Math.log10(Math.hypot(Hc.re, Hc.im)), 1)} dB, φ=${SK.fmt(Math.atan2(Hc.im, Hc.re) * 180 / Math.PI, 0)}°.<br>` +
+        (type === 'lp' ? 'Propouští nízké f; nad f_c klesá −20 dB/dek, fáze 0°→−90°.' : type === 'hp' ? 'Propouští vysoké f; pod f_c klesá; fáze +90°→0°.' : type === 'bp' ? 'Propouští okolí f₀ (na f₀ φ=0°); šířka pásma dána Q.' : 'Potlačuje okolí f₀ (na f₀ velký útlum).');
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Dolní (RC)', value: 'lp' }, { label: 'Horní (CR)', value: 'hp' }, { label: 'Pásmová (RLC)', value: 'bp' }, { label: 'Zádrž (RLC)', value: 'bs' }],
+      value: 'lp', onchange: (v) => { type = v; setF(); rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      const items = [
+        SK.slider({ label: 'Odpor R', min: 100, max: 10000, step: 100, value: R, unit: 'Ω', fmt: (v) => v | 0, oninput: (v) => { R = v; view.redraw(); } }),
+        SK.slider({ label: 'Kapacita C', min: 10, max: 1000, step: 10, value: C * 1e9, unit: 'nF', fmt: (v) => v | 0, oninput: (v) => { C = v * 1e-9; view.redraw(); } }),
+      ];
+      if (type === 'bp' || type === 'bs') items.push(SK.slider({ label: 'Indukčnost L', min: 1, max: 100, step: 1, value: L * 1e3, unit: 'mH', fmt: (v) => v | 0, oninput: (v) => { L = v * 1e-3; view.redraw(); } }));
+      SK.controls(holder, items);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Kmitočtová charakteristika = přenos K(jω) v závislosti na frekvenci: nahoře modulová (zesílení v dB), ' +
+      'dole fázová (fázový posuv). RC dolní propust propouští nízké kmitočty, nad zlomovou f_c=1/(2πRC) klesá −20 dB/dek ' +
+      'a fáze jde z 0° na −90° (na f_c je −3 dB a −45°). Horní propust je zrcadlově. RLC pásmová propust propouští okolí ' +
+      'rezonance f₀=1/(2π√LC) (na f₀ je fáze 0°), zádrž ji naopak potlačuje; šířku pásma určuje činitel jakosti Q. Měň R,C,L.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
