@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EK Viki – SZZ</title>
 
+  <!-- Cross-origin isolation is NOT needed (tikzjax beta24 nemá SharedArrayBuffer).
+       Odregistruj případný starý coi-serviceworker, který by COEP politikou
+       blokoval cizí vložená videa (YouTube) v poznámkách. Self-healing po reloadu. -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then(rs => { if (rs.length) { rs.forEach(r => r.unregister()); } })
+        .catch(() => {});
+    }
+  </script>
+
   <!-- KaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
