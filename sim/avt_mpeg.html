@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MPEG — I/P/B snímky — AVT</title>
+<link rel="stylesheet" href="sim-kit.css">
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>MPEG — predikce snímků a pohybová kompenzace</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    document.getElementById('formula').textContent = 'GOP: I B B P B B P… · I = intra, P = predikce z minulého, B = z minulého i příštího';
+    const ro = document.getElementById('ro');
+    const GOP = ['I', 'B', 'B', 'P', 'B', 'B', 'P', 'B', 'B'];
+    const SIZE = { I: 100, P: 30, B: 14 };
+    const COL = { I: '#dc2626', P: '#2563eb', B: '#16a34a' };
+    let f = 0, t = 0, playing = false, speed = 1;
+
+    // object position per frame index (moves left→right, slight vertical bob)
+    const objX = (i) => 0.12 + 0.085 * i;
+    const objY = (i) => 0.5 + 0.06 * Math.sin(i * 0.9);
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { t += dt * speed; if (t > 0.7) { t = 0; f = (f + 1) % GOP.length; } view.redraw(); });
+
+    function refOf(i) { // reference frame index(es) for prediction
+      const type = GOP[i];
+      if (type === 'P') { let j = i - 1; while (j >= 0 && GOP[j] === 'B') j--; return [j < 0 ? 0 : j]; }
+      if (type === 'B') { let p = i - 1; while (p >= 0 && GOP[p] === 'B') p--; let n = i + 1; while (n < GOP.length && GOP[n] === 'B') n++; return [p < 0 ? 0 : p, n >= GOP.length ? GOP.length - 1 : n]; }
+      return [];
+    }
+
+    function scene(ctx, x0, y0, w, h, type) {
+      const th = SK.theme();
+      ctx.save(); ctx.strokeStyle = th.axis; ctx.lineWidth = 1.5; ctx.strokeRect(x0, y0, w, h);
+      ctx.fillStyle = th.grid; ctx.globalAlpha = 0.4; ctx.fillRect(x0 + 1, y0 + 1, w - 2, h - 2); ctx.globalAlpha = 1; ctx.restore();
+      const refs = refOf(f);
+      // reference object(s) faint + motion vectors
+      refs.forEach((r) => { const rx = x0 + objX(r) * w, ry = y0 + objY(r) * h;
+        ctx.save(); ctx.globalAlpha = 0.3; ctx.fillStyle = COL[GOP[r]]; ctx.fillRect(rx - 12, ry - 12, 24, 24); ctx.restore(); });
+      const cx = x0 + objX(f) * w, cy = y0 + objY(f) * h;
+      refs.forEach((r) => { const rx = x0 + objX(r) * w, ry = y0 + objY(r) * h; SK.arrow(ctx, rx, ry, cx, cy, { color: th.warn, width: 2, head: 7 }); });
+      // current object
+      ctx.save(); ctx.fillStyle = COL[type]; ctx.fillRect(cx - 12, cy - 12, 24, 24); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(cx - 12, cy - 12, 24, 24); ctx.restore();
+      if (refs.length) SK.label(ctx, 'pohybový vektor', cx, cy - 18, { color: th.warn, align: 'center', font: '10px system-ui' });
+    }
+
+    function draw(ctx, w, h) {
+      const th = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const type = GOP[f];
+      // big current-frame scene
+      const sw = Math.min(w - 40, 420), sh = Math.min(h * 0.5, 200);
+      scene(ctx, (w - sw) / 2, 24, sw, sh, type);
+      SK.label(ctx, 'snímek ' + (f + 1) + '/' + GOP.length + ' — typ ' + type, w / 2, 16, { color: th.fg, align: 'center', font: '12px system-ui' });
+      // GOP strip with size bars
+      const gx = 30, gy = h - 70, cw = (w - 60) / GOP.length;
+      for (let i = 0; i < GOP.length; i++) {
+        const x = gx + i * cw; const sel = i === f;
+        ctx.save(); ctx.fillStyle = COL[GOP[i]]; ctx.globalAlpha = sel ? 1 : 0.55;
+        const bh = SIZE[GOP[i]] / 100 * 44; ctx.fillRect(x + 4, gy - bh, cw - 8, bh); ctx.globalAlpha = 1;
+        if (sel) { ctx.strokeStyle = th.fg; ctx.lineWidth = 2; ctx.strokeRect(x + 2, gy - 48, cw - 4, 64); }
+        ctx.fillStyle = th.fg; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center'; ctx.fillText(GOP[i], x + cw / 2, gy + 14); ctx.restore();
+      }
+      SK.label(ctx, 'GOP — výška sloupce ≈ velikost dat snímku', w / 2, gy + 30, { color: th.muted, align: 'center', font: '11px system-ui' });
+
+      const desc = type === 'I' ? 'celý obraz (intra, jako JPEG) — největší data, náhodný přístup/synchronizace'
+        : type === 'P' ? 'predikce z minulého I/P snímku: uloží se pohybové vektory + malé reziduum → ~3× menší'
+        : 'obousměrná predikce z minulého i příštího snímku → nejmenší data';
+      ro.innerHTML = `<b>Snímek typu ${type}</b><br>${desc}<br>Relativní velikost: I:P:B ≈ ${SIZE.I}:${SIZE.P}:${SIZE.B}.<br>` +
+        `Pohybová kompenzace: místo celého obrazu se přenese posun bloků (vektory) a rozdíl.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Přehrát'; } }),
+      SK.button({ label: '⏭ Další snímek', onclick: () => { f = (f + 1) % GOP.length; view.redraw(); } }),
+      SK.slider({ label: 'Rychlost', min: 0.3, max: 3, step: 0.1, value: 1, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'MPEG využívá časovou redundanci videa. I-snímek (intra) je samostatný obraz (komprese jako JPEG). ' +
+      'P-snímek se predikuje z předchozího I/P snímku pomocí pohybových vektorů (kam se bloky posunuly) a uloží se jen ' +
+      'malé reziduum. B-snímek se predikuje z minulého i budoucího snímku, takže je nejmenší. Posloupnost tvoří GOP. ' +
+      'Sleduj pohybové vektory (žluté) z referenčních snímků na aktuální polohu objektu a velikosti dat ve spodním pruhu.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

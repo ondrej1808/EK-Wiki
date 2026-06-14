@@ -456,6 +456,7 @@
           { type: 'sim', label: 'Elektroakustické měniče (mikrofon/repro)', src: SIM + 'avt_transducers.html' },
           { type: 'sim', label: 'Snímač CCD vs CMOS (vyčítání)', src: SIM + 'avt_ccd_cmos.html' },
           { type: 'sim', label: 'JPEG – bloková DCT a kvantování', src: SIM + 'avt_jpeg.html' },
+          { type: 'sim', label: 'MPEG – I/P/B snímky, pohyb. kompenzace', src: SIM + 'avt_mpeg.html' },
         ],
       },
     ],
