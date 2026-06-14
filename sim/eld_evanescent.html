@@ -10,7 +10,7 @@
 </head>
 <body class="sk">
   <div class="sk-head"><h1>Totální odraz a evanescentní vlna</h1><div class="sk-formula" id="formula"></div></div>
-  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
   <div class="sk-controls" id="ctrl"></div>
   <script src="sim-kit.js"></script>
   <script>(function () {
@@ -23,8 +23,43 @@
 
     const thetaC = () => Math.asin(SK.clamp(n2 / n1, 0, 1)) / DEG;
 
+    function waveParams() { const th = Math.max(thDeg, thetaC() + 0.5) * DEG;
+      const kx = k1 * Math.sin(th), kz1 = k1 * Math.cos(th), k0 = k1 / n1;
+      const kap = k0 * Math.sqrt(Math.max((n1 * Math.sin(th)) ** 2 - n2 * n2, 1e-4)); return { kx, kz1, kap }; }
+    function fieldVal(px, z, p) { if (z < 0) return 0.5 * (Math.cos(p.kx * px + p.kz1 * z - k1 * time) + Math.cos(p.kx * px - p.kz1 * z - k1 * time));
+      return Math.exp(-p.kap * z) * Math.cos(p.kx * px - k1 * time); }
     const view = SK.mount(document.getElementById('c'), draw);
-    const anim = SK.loop((dt) => { time += dt * speed; view.redraw(); });
+    const v2 = SK.mount(document.getElementById('c2'), drawProfile);
+    function redraw() { view.redraw(); v2.redraw(); }
+    const anim = SK.loop((dt) => { time += dt * speed; view.redraw(); v2.redraw(); });
+
+    // Animated wave-function profile E(z,t) at a fixed x: oscillation above, exponential decay below.
+    function drawProfile(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const p = waveParams(); const padL = 18, padR = 14, padT = 16, padB = 22;
+      const Zabove = 110, Zbelow = 200, xpx = 60;
+      const yi = padT + Zabove / (Zabove + Zbelow) * (h - padT - padB);   // interface y
+      const Z = (z) => padT + (z + Zabove) / (Zabove + Zbelow) * (h - padT - padB);
+      const cxv = w / 2, A = (w / 2 - padR - 6);
+      // medium tints
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.08; ctx.fillRect(0, padT, w, yi - padT);
+      ctx.fillStyle = t.warn; ctx.globalAlpha = 0.07; ctx.fillRect(0, yi, w, h - padB - yi); ctx.restore();
+      // zero axis (vertical) + interface (horizontal)
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cxv, padT); ctx.lineTo(cxv, h - padB); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, yi); ctx.lineTo(w, yi); ctx.stroke(); ctx.restore();
+      // envelope ±e^{-κz} below interface
+      ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([4, 3]); ctx.lineWidth = 1;
+      [1, -1].forEach(s => { ctx.beginPath(); for (let z = 0; z <= Zbelow; z += 2) { const x = cxv + s * Math.exp(-p.kap * z) * A, y = Z(z); z ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); }); ctx.setLineDash([]); ctx.restore();
+      // instantaneous E(z) curve (horizontal field vs vertical depth)
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      for (let z = -Zabove; z <= Zbelow; z += 2) { const E = fieldVal(xpx, z, p); const x = cxv + SK.clamp(E, -1.05, 1.05) * A, y = Z(z); z === -Zabove ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      ctx.stroke(); ctx.restore();
+      // penetration depth
+      ctx.save(); ctx.strokeStyle = '#f59e0b'; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(0, Z(1 / p.kap)); ctx.lineTo(w, Z(1 / p.kap)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'E(z) v čase · prostředí 1', cxv, padT + 2, { color: t.accent2, align: 'center', font: '10px system-ui' });
+      SK.label(ctx, 'exp. útlum e^{−κz} (δ=1/κ)', w - padR, Z(1 / p.kap) - 4, { color: '#f59e0b', align: 'right', font: '10px system-ui' });
+      SK.label(ctx, 'hloubka z →', cxv + 4, h - padB - 2, { color: t.muted, font: '10px system-ui' });
+    }
 
     function draw(ctx, w, h) {
       const t = SK.theme();
@@ -66,9 +101,9 @@
 
     SK.controls(document.getElementById('ctrl'), [
       SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
-      SK.slider({ label: 'Úhel dopadu θ', min: 10, max: 89, step: 1, value: 55, unit: '°', fmt: (v) => v | 0, oninput: (v) => { thDeg = v; view.redraw(); } }),
-      SK.slider({ label: 'Index n₁', min: 1.1, max: 2.5, step: 0.01, value: 1.50, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n1 = v; view.redraw(); } }),
-      SK.slider({ label: 'Index n₂', min: 1, max: 2.4, step: 0.01, value: 1.00, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n2 = Math.min(v, n1 - 0.05); view.redraw(); } }),
+      SK.slider({ label: 'Úhel dopadu θ', min: 10, max: 89, step: 1, value: 55, unit: '°', fmt: (v) => v | 0, oninput: (v) => { thDeg = v; redraw(); } }),
+      SK.slider({ label: 'Index n₁', min: 1.1, max: 2.5, step: 0.01, value: 1.50, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n1 = v; redraw(); } }),
+      SK.slider({ label: 'Index n₂', min: 1, max: 2.4, step: 0.01, value: 1.00, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n2 = Math.min(v, n1 - 0.05); redraw(); } }),
       SK.slider({ label: 'Rychlost', min: 0.5, max: 5, step: 0.1, value: 2.2, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } }),
     ]);
     const hint = document.createElement('div'); hint.className = 'sk-hint';
