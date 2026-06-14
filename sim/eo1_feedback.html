@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zpětná vazba zesilovače — EO1</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Záporná zpětná vazba zesilovače</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "A_f=\\dfrac{A}{1+A\\beta},\\quad T=A\\beta,\\quad B_f=B_0(1+A_0\\beta),\\ \\ A_0 B_0=\\text{konst}", false);
+    const ro = document.getElementById('ro');
+    let A0 = 1000, beta = 0.05, f0 = 100;        // open-loop DC gain, feedback factor, open-loop pole (Hz)
+    const Af0 = () => A0 / (1 + A0 * beta);
+    const BWf = () => f0 * (1 + A0 * beta);
+
+    const v1 = SK.mount(document.getElementById('c1'), drawBlocks);
+    const v2 = SK.mount(document.getElementById('c2'), drawBode);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function box(ctx, x, y, w, h, label, sub, t, col) { ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = 0.16; ctx.fillRect(x, y, w, h); ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = t.fg; ctx.font = 'bold 15px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x + w / 2, y + h / 2 - 6);
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.fillText(sub, x + w / 2, y + h / 2 + 12); ctx.restore(); }
+
+    function drawBlocks(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cy = h * 0.40;
+      // summing node
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(w * 0.22, cy, 16, 0, 7); ctx.stroke();
+      ctx.fillStyle = t.fg; ctx.font = '13px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Σ', w * 0.22, cy); ctx.restore();
+      SK.label(ctx, '+', w * 0.22 - 20, cy - 12, { color: t.ok, font: 'bold 13px system-ui' });
+      SK.label(ctx, '−', w * 0.22 + 6, cy + 22, { color: t.pos, font: 'bold 13px system-ui' });
+      // input
+      SK.arrow(ctx, w * 0.05, cy, w * 0.22 - 16, cy, { color: t.fg, width: 2, head: 7 });
+      SK.label(ctx, 'vstup', w * 0.05, cy - 8, { color: t.muted, font: '11px system-ui' });
+      // forward amp A
+      box(ctx, w * 0.36, cy - 24, w * 0.26, 48, 'A', 'A₀=' + (A0 | 0), t, t.accent2);
+      SK.arrow(ctx, w * 0.22 + 16, cy, w * 0.36, cy, { color: t.fg, width: 2, head: 7 });
+      // output
+      SK.arrow(ctx, w * 0.62, cy, w * 0.9, cy, { color: t.fg, width: 2, head: 7 });
+      const ox = w * 0.78; SK.dot(ctx, ox, cy, 3, t.fg);
+      SK.label(ctx, 'výstup', w * 0.86, cy - 8, { color: t.muted, font: '11px system-ui' });
+      // feedback β (below)
+      const fy = h * 0.74;
+      box(ctx, w * 0.40, fy - 20, w * 0.20, 40, 'β', 'β=' + SK.fmt(beta, 3), t, t.warn);
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(ox, cy); ctx.lineTo(ox, fy); ctx.lineTo(w * 0.60, fy); ctx.stroke();
+      SK.arrow(ctx, w * 0.40, fy, w * 0.22, fy, { color: t.fg, width: 1.6, head: 6 });
+      ctx.beginPath(); ctx.moveTo(w * 0.22, fy); ctx.lineTo(w * 0.22, cy + 16); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'zpětná vazba', w * 0.5, fy + 22, { color: t.warn, align: 'center', font: '11px system-ui' });
+    }
+
+    function drawBode(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); SK.grid(ctx, w, h, 28);
+      const padL = 42, padR = 12, padT = 16, padB = 28;
+      const fLo = 0, fHi = 7;            // log10(f) range 1..10^7
+      const dbMax = 20 * Math.log10(A0) + 6, dbMin = -10;
+      const X = (lf) => padL + (lf - fLo) / (fHi - fLo) * (w - padL - padR);
+      const Y = (db) => h - padB - (db - dbMin) / (dbMax - dbMin) * (h - padT - padB);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(padL, Y(0)); ctx.lineTo(w - padR, Y(0)); ctx.moveTo(padL, Y(dbMin)); ctx.lineTo(padL, Y(dbMax)); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '10px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let d = 0; d <= 7; d++) ctx.fillText('10^' + d, X(d), Y(dbMin) + 4); ctx.restore();
+      SK.label(ctx, 'log f [Hz]', w - padR, Y(dbMin) + 4, { color: t.muted, align: 'right', font: '10px system-ui' });
+      // open-loop |A(f)|
+      const mag = (A, bw, lf) => { const f = Math.pow(10, lf); return A / Math.sqrt(1 + (f / bw) ** 2); };
+      function curve(A, bw, col, lab, yl) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+        for (let px = 0; px <= w - padL - padR; px++) { const lf = fLo + px / (w - padL - padR) * (fHi - fLo); const db = 20 * Math.log10(mag(A, bw, lf)); const y = Y(SK.clamp(db, dbMin, dbMax + 4)); s ? ctx.lineTo(padL + px, y) : (ctx.moveTo(padL + px, y), s = true); } ctx.stroke(); ctx.restore();
+        SK.label(ctx, lab, w - padR - 2, yl, { color: col, align: 'right', font: '11px system-ui' }); }
+      curve(A0, f0, t.accent2, 'otevřená smyčka A', padT + 12);
+      curve(Af0(), BWf(), t.ok, 'uzavřená A_f', padT + 28);
+      // GBW line note
+      ro.innerHTML = `A₀=<b>${A0 | 0}</b> (${SK.fmt(20 * Math.log10(A0), 1)} dB), β=<b>${SK.fmt(beta, 3)}</b><br>` +
+        `Smyčkové zesílení T=A₀β=<b>${SK.fmt(A0 * beta, 1)}</b><br>` +
+        `A_f=A₀/(1+A₀β)=<b>${SK.fmt(Af0(), 1)}</b> · šířka pásma B_f=<b>${SK.fmt(BWf(), 0)} Hz</b> (×${SK.fmt(1 + A0 * beta, 1)})<br>` +
+        `Zisk klesl (1+T)×, ale pásmo se (1+T)× rozšířilo a zesílení se stabilizovalo — součin zisk×pásmo je konstantní.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Zesílení A₀', min: 50, max: 5000, step: 50, value: 1000, unit: '', fmt: (v) => v | 0, oninput: (v) => { A0 = v; redraw(); } }),
+      SK.slider({ label: 'Vazba β', min: 0, max: 0.3, step: 0.005, value: 0.05, unit: '', fmt: (v) => SK.fmt(v, 3), oninput: (v) => { beta = v; redraw(); } }),
+      SK.slider({ label: 'Pól otevřené smyčky f₀', min: 20, max: 1000, step: 10, value: 100, unit: 'Hz', fmt: (v) => v | 0, oninput: (v) => { f0 = v; redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Záporná zpětná vazba: část výstupu (β·výstup) se odečítá od vstupu. Výsledné zesílení A_f=A/(1+Aβ) je ' +
+      'menší, ale méně závislé na A (stabilita proti změnám součástek a teplotě — citlivost klesá 1+T×). Smyčkové zesílení ' +
+      'T=Aβ určuje vše: zisk klesne (1+T)×, šířka pásma se (1+T)× rozšíří, takže součin zisk×šířka pásma (GBW) zůstává ' +
+      'konstantní. Pro A₀β≫1 je A_f≈1/β — dáno jen pasivní zpětnou vazbou. Měň A₀ a β a sleduj blokové schéma i Bode.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
