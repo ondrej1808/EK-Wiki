@@ -359,6 +359,12 @@
         ],
       },
       {
+        code: 'B0B01KANA', title: 'Komplexní analýza a transformace',
+        resources: [
+          { type: 'sim', label: 'Póly a nuly – Laplace / Z, stabilita', src: SIM + 'kana_polezero.html' },
+        ],
+      },
+      {
         code: 'B2B02FY1', title: 'Fyzika 1',
         resources: [
           { type: 'sim', label: 'Šikmý vrh', src: SIM + 'fy1_projectile.html' },

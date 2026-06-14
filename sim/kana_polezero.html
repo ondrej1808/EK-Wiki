@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Póly a nuly — Laplace / Z — KANA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Póly a nuly — stabilita a odezva</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let mode = 's';            // 's' Laplace | 'z' diskrétní
+    let pRe = -0.6, pIm = 1.6; // pole (s-plane); for z derived from same coords
+    let dragging = false;
+    function setF() { SK.katex(fEl, mode === 's' ? "s = \\sigma\\pm j\\omega;\\ h(t)=e^{\\sigma t}\\cos\\omega t;\\ \\text{stabilní} \\Leftrightarrow \\sigma<0"
+      : "z = r e^{\\pm j\\theta};\\ h[n]=r^{n}\\cos(n\\theta);\\ \\text{stabilní} \\Leftrightarrow r<1", false); }
+    setF();
+
+    const RANGE = 2;           // plane half-range
+    const v1 = SK.mount(document.getElementById('c1'), drawPlane);
+    const v2 = SK.mount(document.getElementById('c2'), drawResp);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function planeMap(w, h) { const cx = w / 2, cy = h / 2, sc = Math.min(w, h) * 0.40 / RANGE;
+      return { cx, cy, sc, X: (re) => cx + re * sc, Y: (im) => cy - im * sc }; }
+
+    function drawPlane(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); SK.grid(ctx, w, h, 28);
+      const m = planeMap(w, h);
+      // stability region
+      ctx.save();
+      if (mode === 's') { ctx.fillStyle = t.ok; ctx.globalAlpha = 0.08; ctx.fillRect(0, 0, m.cx, h); }   // LHP
+      else { ctx.fillStyle = t.ok; ctx.globalAlpha = 0.08; ctx.beginPath(); ctx.arc(m.cx, m.cy, m.sc, 0, 7); ctx.fill(); }
+      ctx.restore();
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(0, m.cy); ctx.lineTo(w, m.cy); ctx.moveTo(m.cx, 0); ctx.lineTo(m.cx, h); ctx.stroke(); ctx.restore();
+      if (mode === 'z') { ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(m.cx, m.cy, m.sc, 0, 7); ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'jednotková kružnice', m.cx, m.cy - m.sc - 6, { color: t.mag, align: 'center', font: '10px system-ui' }); }
+      else { SK.label(ctx, 'jω', m.cx + 6, 14, { color: t.muted, font: '11px system-ui' }); SK.label(ctx, 'σ', w - 12, m.cy - 6, { color: t.muted, font: '11px system-ui' }); SK.label(ctx, 'LHP = stabilní', 8, h - 8, { color: t.ok, font: '10px system-ui' }); }
+      // pole pair (× ×) + conjugate
+      const drawPole = (re, im) => { const x = m.X(re), y = m.Y(im); ctx.save(); ctx.strokeStyle = t.pos; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(x - 7, y - 7); ctx.lineTo(x + 7, y + 7); ctx.moveTo(x + 7, y - 7); ctx.lineTo(x - 7, y + 7); ctx.stroke(); ctx.restore(); };
+      drawPole(pRe, pIm); drawPole(pRe, -pIm);
+      // zero at origin (typical)
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(m.X(0), m.Y(0), 6, 0, 7); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'táhni pól (×)', m.cx, h - 8, { color: t.muted, align: 'center', font: '10px system-ui', baseline: 'bottom' });
+    }
+
+    function drawResp(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const padL = 30, padR = 12, yc = h / 2, A = h * 0.34, x0 = padL, ww = w - padL - padR;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x0, yc); ctx.lineTo(x0 + ww, yc); ctx.stroke(); ctx.restore();
+      let stable, label;
+      if (mode === 's') {
+        const sig = pRe, om = pIm;
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2; ctx.beginPath();
+        for (let px = 0; px <= ww; px++) { const tt = px / ww * 8; const v = Math.exp(sig * tt) * Math.cos(om * tt); const y = yc - SK.clamp(v, -2.5, 2.5) * A; px ? ctx.lineTo(x0 + px, y) : ctx.moveTo(x0 + px, y); }
+        ctx.stroke(); ctx.restore();
+        // exp envelope
+        ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([4, 3]); ctx.beginPath();
+        for (let px = 0; px <= ww; px++) { const tt = px / ww * 8; const y = yc - SK.clamp(Math.exp(sig * tt), -2.5, 2.5) * A; px ? ctx.lineTo(x0 + px, y) : ctx.moveTo(x0 + px, y); } ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        stable = sig < 0; label = 'h(t) = e^{σt}·cos(ωt)';
+        ro.innerHTML = `<b>Laplace (s-rovina)</b><br>pól s = ${SK.fmt(pRe, 2)} ${pIm >= 0 ? '+' : '−'} j${SK.fmt(Math.abs(pIm), 2)}<br>` +
+          `${label}<br>σ=${SK.fmt(pRe, 2)} → <b style="color:${stable ? '#16a34a' : '#dc2626'}">${stable ? 'stabilní (tlumí se)' : (pRe > 0 ? 'NESTABILNÍ (roste)' : 'na mezi (kmitá)')}</b>`;
+      } else {
+        const r = Math.hypot(pRe, pIm), th = Math.atan2(pIm, pRe);
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.fillStyle = t.accent; ctx.lineWidth = 2;
+        const Ns = 28; for (let n = 0; n < Ns; n++) { const v = Math.pow(r, n) * Math.cos(n * th); const px = x0 + n / (Ns - 1) * ww, y = yc - SK.clamp(v, -2.5, 2.5) * A;
+          ctx.beginPath(); ctx.moveTo(px, yc); ctx.lineTo(px, y); ctx.stroke(); SK.dot(ctx, px, y, 2.5, t.accent); } ctx.restore();
+        stable = r < 1; label = 'h[n] = rⁿ·cos(nθ)';
+        ro.innerHTML = `<b>Z (z-rovina)</b><br>pól z = ${SK.fmt(r, 2)}·e^{±j${SK.fmt(th, 2)}}  (r=${SK.fmt(r, 2)})<br>` +
+          `${label}<br>r=${SK.fmt(r, 2)} → <b style="color:${stable ? '#16a34a' : '#dc2626'}">${stable ? 'stabilní (uvnitř kružnice)' : (r > 1 ? 'NESTABILNÍ (vně)' : 'na mezi (na kružnici)')}</b>`;
+      }
+    }
+
+    const c1 = document.getElementById('c1');
+    c1.addEventListener('pointerdown', (e) => { dragging = true; c1.setPointerCapture(e.pointerId); setPole(e); });
+    c1.addEventListener('pointermove', (e) => { if (dragging) setPole(e); });
+    c1.addEventListener('pointerup', () => dragging = false);
+    c1.addEventListener('pointercancel', () => dragging = false);
+    function setPole(e) { const { w, h } = v1.dims(); const m = planeMap(w, h); const p = SK.pointer(c1, e);
+      pRe = SK.clamp((p.x - m.cx) / m.sc, -RANGE, RANGE); pIm = Math.abs(SK.clamp((m.cy - p.y) / m.sc, -RANGE, RANGE)); redraw(); }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Laplace (spojité)', value: 's' }, { label: 'Z (diskrétní)', value: 'z' }],
+      value: 's', onchange: (v) => { mode = v; if (v === 'z') { pRe = 0.5; pIm = 0.6; } else { pRe = -0.6; pIm = 1.6; } setF(); redraw(); } }).el);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Poloha pólů určuje odezvu i stabilitu. Laplace (s-rovina): reálná část σ udává tlumení — pól v levé ' +
+      'polorovině (σ<0) dává tlumenou odezvu (stabilní), na imaginární ose netlumené kmity, v pravé polorovině rostoucí ' +
+      '(nestabilní); imaginární část ω je frekvence. Z-rovina (diskrétní): rozhoduje vzdálenost od počátku r — uvnitř ' +
+      'jednotkové kružnice (r<1) stabilní, na ní mez, vně nestabilní. Táhni pól a sleduj odezvu vpravo.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
