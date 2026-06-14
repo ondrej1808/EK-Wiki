@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elektroakustické měniče — AVT</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Elektroakustické měniče — mikrofon &amp; reproduktor</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let mode = 'cond', freq = 1, amp = 1, ph = 0, speed = 1.6;
+
+    function setFormula() {
+      SK.katex(fEl, mode === 'cond' ? "C=\\dfrac{\\varepsilon_0 A}{d},\\ u=\\dfrac{Q}{C}\\propto d\\ \\text{(výchylka)}"
+        : mode === 'dyn' ? "u=Blv\\ \\text{(rychlost)};\\ \\text{repro: } F=BIl"
+        : "MEMS: kapacitní mikrofon na čipu + ASIC", false);
+    }
+    setFormula();
+    const disp = () => amp * Math.sin(ph);        // diaphragm displacement
+    const vel = () => amp * Math.cos(ph);         // velocity
+
+    const v1 = SK.mount(document.getElementById('c1'), drawDev);
+    const v2 = SK.mount(document.getElementById('c2'), drawTrace);
+    const anim = SK.loop((dt) => { ph += dt * speed * freq * 2 * Math.PI / 2; v1.redraw(); v2.redraw(); });
+
+    function sound(ctx, x, y, t, n) { ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 1.4;
+      for (let i = 0; i < n; i++) { const xx = x - i * 10; ctx.globalAlpha = 0.7 - i * 0.1; ctx.beginPath(); ctx.arc(xx, y, 26, -0.7, 0.7); ctx.stroke(); } ctx.restore(); }
+
+    function drawDev(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, d = disp() * 16;
+      if (mode === 'cond' || mode === 'mems') {
+        const small = mode === 'mems';
+        const px = cx - (small ? 18 : 40), bx = cx + (small ? 18 : 40);
+        sound(ctx, px - 30, cy, t, 4);
+        // diaphragm (moving) + backplate (fixed)
+        ctx.save(); ctx.strokeStyle = t.pos; ctx.lineWidth = small ? 3 : 5; ctx.beginPath(); ctx.moveTo(px + d, cy - 44); ctx.lineTo(px + d, cy + 44); ctx.stroke();
+        ctx.strokeStyle = t.neg; ctx.lineWidth = small ? 3 : 5; ctx.beginPath(); ctx.moveTo(bx, cy - 44); ctx.lineTo(bx, cy + 44); ctx.stroke();
+        if (small) { for (let yy = cy - 36; yy <= cy + 36; yy += 12) { ctx.fillStyle = t.bg; ctx.fillRect(bx - 2, yy, 4, 5); } } // perforation
+        ctx.restore();
+        SK.label(ctx, 'membrána', px + d, cy - 50, { color: t.pos, align: 'center', font: '11px system-ui' });
+        SK.label(ctx, small ? 'backplate (děrovaná)' : 'pevná elektroda', bx, cy + 62, { color: t.neg, align: 'center', font: '11px system-ui' });
+        // gap dimension
+        ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.moveTo(px + d, cy); ctx.lineTo(bx, cy); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        SK.label(ctx, 'd', (px + d + bx) / 2, cy - 6, { color: t.muted, align: 'center', font: '11px system-ui' });
+        if (small) { ctx.save(); ctx.strokeStyle = t.fg; ctx.strokeRect(cx - 60, cy + 74, 120, 18); SK.label(ctx, 'ASIC (předzes.)', cx, cy + 83, { color: t.fg, align: 'center', font: '10px system-ui', baseline: 'middle' }); ctx.restore(); }
+        SK.label(ctx, 'C = ε₀A/d → u = Q/C ∝ výchylka', cx, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+      } else {
+        // electrodynamic: magnet gap + voice coil moving with diaphragm
+        ctx.save(); ctx.fillStyle = t.pos; ctx.globalAlpha = 0.8; ctx.fillRect(cx - 60, cy - 50, 30, 100);
+        ctx.fillStyle = t.neg; ctx.fillRect(cx + 30, cy - 50, 30, 100); ctx.globalAlpha = 1;
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 13px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('N', cx - 45, cy); ctx.fillText('S', cx + 45, cy); ctx.restore();
+        // field arrows in gap
+        ctx.save(); for (let yy = cy - 36; yy <= cy + 36; yy += 18) SK.arrow(ctx, cx - 28, yy, cx + 28, yy, { color: t.mag, width: 1.2, head: 4 }); ctx.restore();
+        // coil + diaphragm (moves vertically with disp)
+        const cv = d; ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(cx, cy + cv, 16, 0, 7); ctx.stroke();
+        ctx.strokeStyle = t.fg; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 70, cy + cv - 30); ctx.lineTo(cx + 70, cy + cv - 30); ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'kmitačka (cívka)', cx + 70, cy + cv, { color: t.ok, font: '10px system-ui', baseline: 'middle' });
+        SK.label(ctx, 'membrána', cx, cy + cv - 36, { color: t.fg, align: 'center', font: '11px system-ui' });
+        sound(ctx, cx - 96, cy, t, 4);
+        SK.label(ctx, 'u = B·l·v ∝ rychlost (repro: F=B·I·l)', cx, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+      }
+    }
+
+    function drawTrace(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const padL = 30, padR = 12, yc = h / 2, A = h * 0.30;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(padL, yc); ctx.lineTo(w - padR, yc); ctx.stroke(); ctx.restore();
+      const isVel = (mode === 'dyn');
+      const fn = isVel ? ((p) => Math.cos(p)) : ((p) => Math.sin(p));
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath();
+      for (let px = 0; px <= w - padL - padR; px++) { const p = ph - px / (w - padL - padR) * 4 * Math.PI; const y = yc - amp * fn(p) * A; px ? ctx.lineTo(padL + px, y) : ctx.moveTo(padL + px, y); }
+      ctx.stroke(); ctx.restore(); SK.dot(ctx, padL, yc - amp * fn(ph) * A, 4, t.accent);
+      SK.label(ctx, 'výstupní napětí u(t)', padL + 4, 16, { color: t.accent, font: '11px system-ui' });
+      const name = mode === 'cond' ? 'Kondenzátorový mikrofon' : mode === 'dyn' ? 'Elektrodynamický měnič' : 'MEMS mikrofon';
+      ro.innerHTML = `<b>${name}</b><br>` +
+        (isVel ? 'Výstup ∝ <b>rychlost</b> membrány (u=Blv) → fázově předbíhá výchylku o 90°.'
+               : 'Výstup ∝ <b>výchylka</b> membrány (změna kapacity při konstantním náboji).') +
+        `<br>f=${SK.fmt(freq, 1)}, amplituda=${SK.fmt(amp, 1)}. Spusť animaci.`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Kondenzátorový', value: 'cond' }, { label: 'Elektrodynamický', value: 'dyn' }, { label: 'MEMS', value: 'mems' }],
+      value: 'cond', onchange: (v) => { mode = v; setFormula(); v1.redraw(); v2.redraw(); } }).el);
+    SK.controls(ctrl, [
+      SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+      SK.slider({ label: 'Frekvence', min: 0.3, max: 3, step: 0.1, value: 1, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { freq = v; } }),
+      SK.slider({ label: 'Amplituda zvuku', min: 0.2, max: 1.4, step: 0.05, value: 1, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { amp = v; v1.redraw(); v2.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Měnič převádí akustický tlak na elektrický signál. Kondenzátorový mikrofon: zvuk rozkmitá membránu, ' +
+      'mění se vzdálenost elektrod d, a tím kapacita C=ε₀A/d; při konstantním náboji je u=Q/C úměrné výchylce (potřebuje ' +
+      'předpětí/fantomové napětí). Elektrodynamický: cívka (kmitačka) na membráně se pohybuje v poli magnetu → indukuje ' +
+      'se u=Blv úměrné rychlosti; reproduktor pracuje opačně (proud → síla F=BIl). MEMS: miniaturní kapacitní mikrofon ' +
+      'na čipu s děrovanou protielektrodou a integrovaným předzesilovačem (ASIC).';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -453,6 +453,7 @@
         code: 'B2B37AVT', title: 'Audiovizuální technika',
         resources: [
           { type: 'sim', label: 'Bayerova maska & demozaika', src: SIM + 'avt_bayer.html' },
+          { type: 'sim', label: 'Elektroakustické měniče (mikrofon/repro)', src: SIM + 'avt_transducers.html' },
         ],
       },
     ],
