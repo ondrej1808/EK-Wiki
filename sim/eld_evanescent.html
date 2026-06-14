@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evanescentní vlna — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Totální odraz a evanescentní vlna</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "E_t\\propto e^{-\\kappa z}\\cos(k_x x-\\omega t),\\ \\kappa=k_0\\sqrt{(n_1\\sin\\theta)^2-n_2^2}", false);
+    const ro = document.getElementById('ro');
+    const DEG = Math.PI / 180;
+    let n1 = 1.50, n2 = 1.00, thDeg = 55, time = 0, speed = 2.2;
+    const k1 = 2 * Math.PI / 42;     // wavenumber in medium 1 (px)
+
+    const thetaC = () => Math.asin(SK.clamp(n2 / n1, 0, 1)) / DEG;
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { time += dt * speed; view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const yi = Math.round(h * 0.46);            // interface y
+      const th = Math.max(thDeg, thetaC() + 0.5) * DEG;
+      const kx = k1 * Math.sin(th), kz1 = k1 * Math.cos(th);
+      const k0 = k1 / n1;
+      const kap = k0 * Math.sqrt(Math.max((n1 * Math.sin(th)) ** 2 - n2 * n2, 1e-4));   // decay (1/px)
+      const cell = 5;
+      for (let py = 0; py < h; py += cell) {
+        const z = py - yi;                         // depth from interface (px)
+        for (let px = 0; px < w; px += cell) {
+          let E;
+          if (z < 0) {
+            // medium 1: incident (down) + totally reflected (up), |r|=1
+            E = 0.5 * (Math.cos(kx * px + kz1 * z - k1 * time) + Math.cos(kx * px - kz1 * z - k1 * time));
+          } else {
+            // medium 2: evanescent — decays with depth, travels along x
+            E = Math.exp(-kap * z) * Math.cos(kx * px - k1 * time);
+          }
+          const g = Math.round(128 + 118 * SK.clamp(E, -1, 1));
+          ctx.fillStyle = `rgb(${g},${g},${g})`;
+          ctx.fillRect(px, py, cell, cell);
+        }
+      }
+      // interface line
+      ctx.save(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, yi); ctx.lineTo(w, yi); ctx.stroke(); ctx.restore();
+      const dp = 1 / kap;
+      SK.label(ctx, 'prostředí 1 (n₁=' + SK.fmt(n1, 2) + ') — dopad + totální odraz', 10, 16, { color: '#fff', font: '12px system-ui', stroke: '#000', strokeW: 3 });
+      SK.label(ctx, 'prostředí 2 (n₂=' + SK.fmt(n2, 2) + ') — evanescentní pole, hloubka vniku δ≈' + SK.fmt(dp, 0) + ' px', 10, h - 12, { color: '#fff', font: '12px system-ui', stroke: '#000', strokeW: 3, baseline: 'bottom' });
+      // penetration depth marker
+      ctx.save(); ctx.strokeStyle = '#f59e0b'; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(0, yi + dp); ctx.lineTo(w, yi + dp); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+
+      ro.innerHTML = `θ=<b>${SK.fmt(thDeg, 0)}°</b> (kritický θ_c=${SK.fmt(thetaC(), 1)}°)<br>` +
+        (thDeg < thetaC() ? '<b style="color:#f59e0b">θ &lt; θ_c</b> — část vlny by prošla (zde nastaveno na TIR).<br>' : '<b style="color:#16a34a">θ &gt; θ_c → totální odraz</b><br>') +
+        `Evanescentní vlna podél rozhraní, kolmo exp. zaniká (hloubka vniku δ=1/κ).`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+      SK.slider({ label: 'Úhel dopadu θ', min: 10, max: 89, step: 1, value: 55, unit: '°', fmt: (v) => v | 0, oninput: (v) => { thDeg = v; view.redraw(); } }),
+      SK.slider({ label: 'Index n₁', min: 1.1, max: 2.5, step: 0.01, value: 1.50, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n1 = v; view.redraw(); } }),
+      SK.slider({ label: 'Index n₂', min: 1, max: 2.4, step: 0.01, value: 1.00, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n2 = Math.min(v, n1 - 0.05); view.redraw(); } }),
+      SK.slider({ label: 'Rychlost', min: 0.5, max: 5, step: 0.1, value: 2.2, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Nad kritickým úhlem se vlna z hustšího prostředí totálně odráží. V řidším prostředí ale přesto vzniká ' +
+      'evanescentní pole: postupuje podél rozhraní (k_x = n₁k₀sinθ) a kolmo od rozhraní exponenciálně zaniká s hloubkou ' +
+      'vniku δ=1/κ. Nepřenáší výkon do hloubky — proto je odraz totální. Vlevo nahoře interferenční pruhy dopadající a ' +
+      'odražené vlny, dole tlumené evanescentní pole. Spusť animaci a měň úhel.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

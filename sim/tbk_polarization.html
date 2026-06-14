@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polarizace EM vlny — TBK</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Polarizace elektromagnetické vlny</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "E_x=A_x\\cos(\\omega t),\\; E_y=A_y\\cos(\\omega t-\\delta)", false);
+    const ro = document.getElementById('ro');
+    let Ax = 1, Ay = 1, delta = 90 * Math.PI / 180;   // phase difference
+    let phase = 0, speed = 1.4;
+
+    const Ex = (ph) => Ax * Math.cos(ph);
+    const Ey = (ph) => Ay * Math.cos(ph - delta);
+
+    const v1 = SK.mount(document.getElementById('c1'), drawPlane);
+    const v2 = SK.mount(document.getElementById('c2'), drawWaves);
+    const anim = SK.loop((dt) => { phase = (phase + dt * speed) % (2 * Math.PI); v1.redraw(); v2.redraw(); });
+
+    function kind() {
+      const d = ((delta % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+      const near = (a, b) => Math.abs(a - b) < 0.08;
+      if (near(d, 0) || near(d, Math.PI) || near(d, 2 * Math.PI)) return { name: 'lineární', hand: '' };
+      const circ = Math.abs(Ax - Ay) < 0.06 && (near(d, Math.PI / 2) || near(d, 3 * Math.PI / 2));
+      const hand = (Math.sin(d) > 0) ? ' (pravotočivá)' : ' (levotočivá)';
+      return { name: circ ? 'kruhová' : 'eliptická', hand };
+    }
+
+    function drawPlane(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const cx = w / 2, cy = h / 2, sc = Math.min(w, h) * 0.34;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(cx - sc - 14, cy); ctx.lineTo(cx + sc + 14, cy); ctx.moveTo(cx, cy - sc - 14); ctx.lineTo(cx, cy + sc + 14); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'E_x', cx + sc + 16, cy - 4, { color: t.muted, font: '11px system-ui' });
+      SK.label(ctx, 'E_y', cx + 6, cy - sc - 14, { color: t.muted, font: '11px system-ui' });
+      // polarisation locus over one period
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2; ctx.beginPath();
+      for (let i = 0; i <= 120; i++) { const ph = i / 120 * 2 * Math.PI; const x = cx + Ex(ph) * sc, y = cy - Ey(ph) * sc; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.closePath(); ctx.stroke(); ctx.restore();
+      // instantaneous E vector
+      const ex = Ex(phase), ey = Ey(phase);
+      SK.arrow(ctx, cx, cy, cx + ex * sc, cy - ey * sc, { color: t.pos, width: 2.8, head: 9 });
+      SK.dot(ctx, cx + ex * sc, cy - ey * sc, 4, t.pos);
+      const k = kind();
+      SK.label(ctx, 'příčná rovina · polarizace: ' + k.name + k.hand, cx, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawWaves(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const padL = 36, padR = 12, padT = 18, padB = 24, midX = padL;
+      const yA = h * 0.30, yB = h * 0.74, amp = h * 0.16;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(padL, yA); ctx.lineTo(w - padR, yA); ctx.moveTo(padL, yB); ctx.lineTo(w - padR, yB); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'E_x(t)', padL + 2, yA - amp - 2, { color: t.accent, font: '11px system-ui' });
+      SK.label(ctx, 'E_y(t)', padL + 2, yB - amp - 2, { color: t.accent2, font: '11px system-ui' });
+      function wave(yc, fn, color) { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+        for (let px = 0; px <= w - padL - padR; px++) { const ph = phase - px / (w - padL - padR) * 4 * Math.PI; const x = padL + px, y = yc - fn(ph) / 1.2 * amp; px ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke(); ctx.restore();
+        SK.dot(ctx, padL, yc - fn(phase) / 1.2 * amp, 4, color); }
+      wave(yA, Ex, t.accent); wave(yB, Ey, t.accent2);
+
+      ro.innerHTML = `A_x=<b>${SK.fmt(Ax, 2)}</b>, A_y=<b>${SK.fmt(Ay, 2)}</b><br>` +
+        `fázový posun δ=<b>${SK.fmt(delta * 180 / Math.PI, 0)}°</b><br>` +
+        `Polarizace: <b>${kind().name}${kind().hand}</b><br>` +
+        `δ=0/180° → lineární; A_x=A_y a δ=±90° → kruhová; jinak eliptická.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+      SK.slider({ label: 'Amplituda A_x', min: 0, max: 1.2, step: 0.05, value: 1, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { Ax = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Amplituda A_y', min: 0, max: 1.2, step: 0.05, value: 1, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { Ay = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Fázový posun δ', min: 0, max: 360, step: 5, value: 90, unit: '°', fmt: (v) => v | 0, oninput: (v) => { delta = v * Math.PI / 180; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Rychlost', min: 0.3, max: 3, step: 0.1, value: 1.4, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Polarizaci určuje vzájemná amplituda a fázový posun dvou kolmých složek E. Lineární (δ=0° nebo 180°): ' +
+      'vektor kmitá po přímce. Kruhová (A_x=A_y, δ=±90°): hrot opisuje kružnici. Obecně eliptická. Znaménko δ ' +
+      'rozhoduje o smyslu otáčení (pravo-/levotočivá). Vlevo příčná rovina s opisovanou křivkou, vpravo časové průběhy složek.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

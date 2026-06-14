@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reakce materiálu na pole — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Reakce látky na pole — polarizace &amp; magnetizace</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula');
+    const ro = document.getElementById('ro');
+    let mode = 'mag';        // 'mag' hysteréze | 'pol' dielektrikum
+    let H = 0, lastH = 0;    // magnetic field (rel.)
+    let Hc = 1.2;            // coercivity
+    let Efield = 0;          // electric field (rel.)
+    let branchUp = true;     // current hysteresis branch
+    const Bs = 1, aSlope = 0.7, Ps = 1, Ea = 1.2;
+
+    // fixed random base orientations for the domain/dipole grid (no jitter on redraw)
+    const NG = 7, base = [];
+    for (let i = 0; i < NG * NG; i++) base.push(Math.random() < 0.5 ? 1 : -1);
+
+    function setFormula() {
+      SK.katex(fEl, mode === 'mag'
+        ? "B=\\mu_0(H+M),\\ \\text{feromagnet: hystereze}"
+        : "D=\\varepsilon_0 E+P,\\ P=\\varepsilon_0\\chi_e E\\ (\\text{anizotrop.: } \\overline{\\overline{\\varepsilon}}\\,)", false);
+    }
+    setFormula();
+
+    // Ascending (lower) branch crosses B=0 at +Hc; descending (upper) at −Hc.
+    // This makes the B–H loop traverse counter-clockwise (energy dissipated).
+    const Basc = (h) => Bs * Math.tanh((h - Hc) / aSlope);
+    const Bdesc = (h) => Bs * Math.tanh((h + Hc) / aSlope);
+    const Bnow = () => branchUp ? Basc(H) : Bdesc(H);
+    const Pnow = () => Ps * Math.tanh(Efield / Ea);
+
+    const v1 = SK.mount(document.getElementById('c1'), drawMaterial);
+    const v2 = SK.mount(document.getElementById('c2'), drawCurve);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function drawMaterial(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const m = mode === 'mag' ? Bnow() / Bs : Pnow() / Ps;       // alignment −1..1
+      const align = Math.abs(m);
+      const cx0 = 30, cy0 = 30, gw = (w - 60) / NG, gh = (h - 70) / NG;
+      // external field arrow
+      SK.arrow(ctx, w / 2 - 40, 16, w / 2 + 40, 16, { color: t.warn, width: 2.4, head: 8 });
+      SK.label(ctx, mode === 'mag' ? 'vnější H →' : 'vnější E →', w / 2 + 46, 16, { color: t.warn, font: '11px system-ui', baseline: 'middle' });
+      for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) {
+        const x = cx0 + (j + 0.5) * gw, y = cy0 + (i + 0.5) * gh;
+        let ang;
+        if (mode === 'mag') { const up = (Math.random() < align) ? (m > 0 ? 1 : -1) : base[i * NG + j]; ang = up > 0 ? -Math.PI / 2 : Math.PI / 2; }
+        else { const fa = Efield >= 0 ? 0 : Math.PI; const ba = base[i * NG + j] > 0 ? -Math.PI / 3 : Math.PI / 3 + 0.4; ang = ba * (1 - align) + fa * align; }
+        const L = Math.min(gw, gh) * 0.34;
+        const col = mode === 'mag' ? t.mag : t.accent2;
+        SK.arrow(ctx, x - L * Math.cos(ang), y - L * Math.sin(ang), x + L * Math.cos(ang), y + L * Math.sin(ang), { color: col, width: 1.8, head: 5 });
+      }
+      SK.label(ctx, mode === 'mag' ? 'magnetické domény' : 'elektrické dipóly', w / 2, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawCurve(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const padL = 40, padR = 14, padT = 18, padB = 30;
+      const Xmax = mode === 'mag' ? 4 : 4, Ymax = 1.15;
+      const X = (v) => (w / 2) + v / Xmax * (w / 2 - padR);
+      const Y = (v) => (h / 2 + 4) - v / Ymax * (h / 2 - padT);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(X(-Xmax), Y(0)); ctx.lineTo(X(Xmax), Y(0)); ctx.moveTo(X(0), Y(-Ymax)); ctx.lineTo(X(0), Y(Ymax)); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText(mode === 'mag' ? 'H' : 'E', X(Xmax) - 2, Y(0) + 5); ctx.textAlign = 'left'; ctx.fillText(mode === 'mag' ? 'B' : 'P', X(0) + 6, Y(Ymax)); ctx.restore();
+
+      if (mode === 'mag') {
+        const drawBranch = (fn, col) => { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.2; ctx.beginPath(); let s = false;
+          for (let hh = -Xmax; hh <= Xmax; hh += 0.05) { const x = X(hh), y = Y(SK.clamp(fn(hh), -Ymax, Ymax)); s ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), s = true); } ctx.stroke(); ctx.restore(); };
+        drawBranch(Basc, t.accent2); drawBranch(Bdesc, t.accent);
+        // remanence & coercivity markers
+        SK.dot(ctx, X(0), Y(Bdesc(0)), 3, t.muted); SK.label(ctx, '+B_r', X(0) + 6, Y(Bdesc(0)) - 2, { color: t.muted, font: '9px system-ui' });
+        SK.dot(ctx, X(Hc), Y(0), 3, t.muted); SK.label(ctx, 'H_c', X(Hc) + 2, Y(0) - 4, { color: t.muted, font: '9px system-ui' });
+        const b = Bnow(); SK.dot(ctx, X(H), Y(SK.clamp(b, -Ymax, Ymax)), 6, t.warn);
+        ro.innerHTML = `<b>Feromagnetikum — hystereze</b><br>H=<b>${SK.fmt(H, 2)}</b> → B=<b>${SK.fmt(b, 2)}</b> (${branchUp ? 'vzestupná' : 'sestupná'} větev)<br>` +
+          `Remanence B_r=${SK.fmt(Bdesc(0), 2)}, koercivita H_c=${SK.fmt(Hc, 1)}<br>` +
+          `Plocha smyčky = hysterezní ztráty. Měkké × tvrdé materiály = malá × velká H_c.`;
+      } else {
+        ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+        for (let e = -Xmax; e <= Xmax; e += 0.05) { const x = X(e), y = Y(SK.clamp(Ps * Math.tanh(e / Ea), -Ymax, Ymax)); s ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), s = true); } ctx.stroke(); ctx.restore();
+        // linear tangent at origin
+        ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([4, 3]); ctx.lineWidth = 1; const sl = Ps / Ea;
+        ctx.beginPath(); ctx.moveTo(X(-Xmax), Y(-sl * Xmax)); ctx.lineTo(X(Xmax), Y(sl * Xmax)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        const p = Pnow(); SK.dot(ctx, X(Efield), Y(SK.clamp(p, -Ymax, Ymax)), 6, t.warn);
+        const chi = (Ps / Ea);
+        ro.innerHTML = `<b>Dielektrikum — polarizace</b><br>E=<b>${SK.fmt(Efield, 2)}</b> → P=<b>${SK.fmt(p, 2)}</b><br>` +
+          `Lineární oblast: P≈ε₀χ_e·E (χ_e∝${SK.fmt(chi, 2)}), pak nasycení.<br>` +
+          `U anizotropních látek je ε tenzor — D není rovnoběžné s E.`;
+      }
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Magnetizace (hystereze)', value: 'mag' }, { label: 'Polarizace', value: 'pol' }],
+      value: 'mag', onchange: (v) => { mode = v; setFormula(); rebuild(); redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      if (mode === 'mag') SK.controls(holder, [
+        SK.slider({ label: 'Pole H', min: -4, max: 4, step: 0.05, value: H, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { if (v > lastH) branchUp = true; else if (v < lastH) branchUp = false; lastH = v; H = v; redraw(); } }),
+        SK.slider({ label: 'Koercivita H_c', min: 0.2, max: 2.5, step: 0.1, value: Hc, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Hc = v; redraw(); } }),
+      ]);
+      else SK.controls(holder, [
+        SK.slider({ label: 'Pole E', min: -4, max: 4, step: 0.05, value: Efield, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { Efield = v; redraw(); } }),
+      ]);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Magnetizace: ve feromagnetiku se domény přeskupují podle H; závislost B(H) je nelineární a má hysterezi ' +
+      '(remanence, koercivita, plocha = ztráty). Táhni H tam a zpět a sleduj smyčku. Polarizace: dipóly se natáčejí podle E, ' +
+      'P roste lineárně (P=ε₀χ_e E) a pak saturuje. U anizotropních prostředí je místo skaláru ε_r tenzor a D obecně není ' +
+      'rovnoběžné s E.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

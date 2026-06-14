@@ -369,6 +369,8 @@
         resources: [
           { type: 'sim', label: 'Vlnovody – COAX / RECT (TE, TM, TEM)', src: 'waveguide_simulator.html' },
           { type: 'sim', label: 'Snellův zákon · lom, totální odraz', src: SIM + 'eld_snell.html' },
+          { type: 'sim', label: 'Rozhraní – Fresnel, Brewster, kritický úhel', src: SIM + 'eld_fresnel.html' },
+          { type: 'sim', label: 'Evanescentní vlna (totální odraz)', src: SIM + 'eld_evanescent.html' },
         ],
       },
       {
@@ -394,6 +396,7 @@
           { type: 'sim', label: 'MS · Síla mezi dvěma vodiči',          src: SIM + 'empa_two_wires.html' },
           { type: 'sim', label: 'MS · Závit a solenoid',               src: SIM + 'empa_loop_solenoid.html' },
           { type: 'sim', label: 'AC · Faradayův zákon (indukce)',       src: SIM + 'empa_faraday.html' },
+          { type: 'sim', label: 'Reakce látky · polarizace & hystereze', src: SIM + 'empa_materials.html' },
         ],
       },
       {
@@ -440,6 +443,7 @@
         code: 'B2B17TBK', title: 'Bezdrátová komunikace',
         resources: [
           { type: 'sim', label: 'Výkonová bilance spoje (Friis)', src: SIM + 'tbk_friis.html' },
+          { type: 'sim', label: 'Polarizace vlny (lin./kruh./elipt.)', src: SIM + 'tbk_polarization.html' },
         ],
       },
       {

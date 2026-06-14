@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vlna na rozhraní — Fresnel — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>EM vlna na rozhraní — odraz a prostup</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "R_\\perp,R_\\parallel(\\theta);\\ \\theta_B=\\arctan\\tfrac{n_2}{n_1};\\ \\theta_c=\\arcsin\\tfrac{n_2}{n_1}", false);
+    const ro = document.getElementById('ro');
+    const DEG = Math.PI / 180;
+    let n1 = 1.50, n2 = 1.00, th = 30 * DEG, dragging = false;
+
+    // Fresnel power reflectances for the two polarisations at incidence th1 (rad)
+    function coeffs(th1) {
+      const s2 = n1 / n2 * Math.sin(th1);
+      if (s2 > 1) return { tir: true };
+      const th2 = Math.asin(s2), c1 = Math.cos(th1), c2 = Math.cos(th2);
+      const rs = (n1 * c1 - n2 * c2) / (n1 * c1 + n2 * c2);
+      const rp = (n2 * c1 - n1 * c2) / (n2 * c1 + n1 * c2);
+      return { tir: false, th2, Rs: rs * rs, Rp: rp * rp };
+    }
+    const critical = () => (n1 > n2 ? Math.asin(n2 / n1) : null);
+    const brewster = () => Math.atan(n2 / n1);
+
+    const v1 = SK.mount(document.getElementById('c1'), drawRay);
+    const v2 = SK.mount(document.getElementById('c2'), drawGraph);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function drawRay(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, L = Math.min(w, h) * 0.38;
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.10; ctx.fillRect(0, 0, w, cy);
+      ctx.fillStyle = t.warn; ctx.globalAlpha = 0.08; ctx.fillRect(0, cy, w, h - cy); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+      ctx.strokeStyle = t.muted; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.moveTo(cx, cy - L - 14); ctx.lineTo(cx, cy + L + 14); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'n₁=' + SK.fmt(n1, 2), 10, 16, { color: t.accent2, font: 'bold 12px system-ui' });
+      SK.label(ctx, 'n₂=' + SK.fmt(n2, 2), 10, h - 10, { color: t.warn, font: 'bold 12px system-ui' });
+      const c = coeffs(th);
+      // incident
+      SK.arrow(ctx, cx - L * Math.sin(th), cy - L * Math.cos(th), cx, cy, { color: t.accent, width: 2.6, head: 9 });
+      // reflected (width ∝ sqrt mean R)
+      const Rm = c.tir ? 1 : (c.Rs + c.Rp) / 2;
+      SK.arrow(ctx, cx, cy, cx + L * Math.sin(th), cy - L * Math.cos(th), { color: t.mag, width: 1.5 + 3 * Math.sqrt(Rm), head: 8 });
+      if (!c.tir) {
+        SK.arrow(ctx, cx, cy, cx + L * Math.sin(c.th2), cy + L * Math.cos(c.th2), { color: t.ok, width: 1.5 + 3 * Math.sqrt(1 - Rm), head: 9 });
+        SK.label(ctx, 'lomený', cx + L * Math.sin(c.th2), cy + L * Math.cos(c.th2) + 12, { color: t.ok, align: 'center', font: '10px system-ui' });
+      } else {
+        SK.label(ctx, 'TOTÁLNÍ ODRAZ', cx, cy + L * 0.5, { color: t.pos, align: 'center', font: 'bold 13px system-ui' });
+      }
+      SK.label(ctx, 'dopad', cx - L * Math.sin(th), cy - L * Math.cos(th) - 4, { color: t.accent, align: 'center', font: '10px system-ui' });
+      SK.label(ctx, 'odraz', cx + L * Math.sin(th), cy - L * Math.cos(th) - 4, { color: t.mag, align: 'center', font: '10px system-ui' });
+      SK.label(ctx, 'táhni paprsek', cx, h - 6, { color: t.muted, align: 'center', font: '10px system-ui', baseline: 'bottom' });
+    }
+
+    function drawGraph(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const padL = 40, padR = 14, padT = 22, padB = 34;
+      const X = (deg) => padL + deg / 90 * (w - padL - padR);
+      const Y = (R) => h - padB - R * (h - padT - padB);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(padL, Y(0)); ctx.lineTo(w - padR, Y(0)); ctx.moveTo(padL, Y(0)); ctx.lineTo(padL, padT); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let d = 0; d <= 90; d += 30) ctx.fillText(d + '°', X(d), Y(0) + 5);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText('1', padL - 4, Y(1)); ctx.fillText('0', padL - 4, Y(0));
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('R (odrazivost) vs úhel dopadu', padL + 4, padT - 2); ctx.restore();
+      // curves Rs (perp) and Rp (parallel)
+      function curve(key, color) {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.4; ctx.beginPath(); let st = false;
+        for (let d = 0; d <= 90; d += 0.5) { const c = coeffs(d * DEG); const R = c.tir ? 1 : c[key]; const x = X(d), y = Y(R);
+          st ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), st = true); }
+        ctx.stroke(); ctx.restore();
+      }
+      curve('Rs', t.accent); curve('Rp', t.accent2);
+      SK.label(ctx, 'R⊥ (s)', w - padR - 2, padT + 12, { color: t.accent, align: 'right', font: '11px system-ui' });
+      SK.label(ctx, 'R∥ (p)', w - padR - 2, padT + 28, { color: t.accent2, align: 'right', font: '11px system-ui' });
+      // markers: Brewster, critical
+      const thB = brewster(), thc = critical();
+      ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = t.ok; ctx.beginPath(); ctx.moveTo(X(thB / DEG), padT); ctx.lineTo(X(thB / DEG), Y(0)); ctx.stroke();
+      if (thc) { ctx.strokeStyle = t.pos; ctx.beginPath(); ctx.moveTo(X(thc / DEG), padT); ctx.lineTo(X(thc / DEG), Y(0)); ctx.stroke(); }
+      ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'θ_B', X(thB / DEG), Y(0) + 16, { color: t.ok, align: 'center', font: '10px system-ui' });
+      if (thc) SK.label(ctx, 'θ_c', X(thc / DEG), padT + 10, { color: t.pos, align: 'center', font: '10px system-ui' });
+      // current angle marker
+      const c = coeffs(th);
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 1; ctx.setLineDash([2, 2]); ctx.beginPath(); ctx.moveTo(X(th / DEG), padT); ctx.lineTo(X(th / DEG), Y(0)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      if (!c.tir) { SK.dot(ctx, X(th / DEG), Y(c.Rs), 4, t.accent); SK.dot(ctx, X(th / DEG), Y(c.Rp), 4, t.accent2); }
+
+      const R0 = Math.pow((n1 - n2) / (n1 + n2), 2);
+      let txt = `θ = <b>${SK.fmt(th / DEG, 1)}°</b><br>`;
+      if (c.tir) txt += `<b style="color:#dc2626">Totální odraz</b> (θ > θ_c=${SK.fmt(thc / DEG, 1)}°), R=1.<br>`;
+      else txt += `R⊥=<b>${SK.fmt(c.Rs, 3)}</b>, R∥=<b>${SK.fmt(c.Rp, 3)}</b><br>`;
+      txt += `Kolmý dopad: R₀=((n₁−n₂)/(n₁+n₂))²=<b>${SK.fmt(R0, 3)}</b><br>` +
+             `θ_B=${SK.fmt(thB / DEG, 1)}° (R∥=0)` + (thc ? `, θ_c=${SK.fmt(thc / DEG, 1)}°` : ' (z řidšího → bez TIR)');
+      ro.innerHTML = txt;
+    }
+
+    const c1 = document.getElementById('c1');
+    c1.addEventListener('pointerdown', (e) => { dragging = true; c1.setPointerCapture(e.pointerId); setTh(e); });
+    c1.addEventListener('pointermove', (e) => { if (dragging) setTh(e); });
+    c1.addEventListener('pointerup', () => dragging = false);
+    c1.addEventListener('pointercancel', () => dragging = false);
+    function setTh(e) { const { w, h } = v1.dims(); const p = SK.pointer(c1, e); const vx = p.x - w / 2, vy = p.y - h / 2;
+      if (-vy <= 0) return; th = SK.clamp(Math.atan2(Math.abs(vx), -vy), 0, 89 * DEG); sTh.set(th / DEG); redraw(); }
+
+    const sTh = SK.slider({ label: 'Úhel dopadu θ', min: 0, max: 89, step: 1, value: 30, unit: '°', fmt: (v) => v | 0, oninput: (v) => { th = v * DEG; redraw(); } });
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Index n₁ (vstup)', min: 1, max: 2.5, step: 0.01, value: 1.50, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n1 = v; redraw(); } }),
+      SK.slider({ label: 'Index n₂ (výstup)', min: 1, max: 2.5, step: 0.01, value: 1.00, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n2 = v; redraw(); } }),
+      sTh,
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Na rozhraní se vlna dílem odráží, dílem prostupuje. Odrazivost závisí na úhlu a polarizaci: ' +
+      'R⊥ (kolmá, s) a R∥ (rovnoběžná, p). Při Brewsterově úhlu θ_B je R∥=0 → odražená vlna je úplně polarizovaná. ' +
+      'Z hustšího do řidšího (n₁>n₂) nad kritickým úhlem θ_c nastává totální odraz (R=1, evanescentní vlna). ' +
+      'Při kolmém dopadu R₀=((n₁−n₂)/(n₁+n₂))². Spojité jsou tečné složky E a H, normálová složka D a B.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
