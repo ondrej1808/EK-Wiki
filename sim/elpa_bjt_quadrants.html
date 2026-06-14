@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BJT — charakteristické pole — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>BJT — charakteristické pole (4 kvadranty)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "I_C=\\beta I_B;\\ I_B=I_{BS}(e^{U_{BE}/U_T}-1);\\ \\text{vstupní · převodní · výstupní · zpětná}", false);
+    const ro = document.getElementById('ro');
+    const UT = 0.02585, IBS = 1.3e-11;     // µA scale for I_B
+    let Ib = 25, Uce = 5, beta = 200;       // µA, V, −
+
+    const IbMax = 50, IcMax = 12, UceMax = 10, UbeMax = 0.85;
+    const ube = (ib) => UT * Math.log(ib / IBS + 1);
+    const ibOfUbe = (u) => IBS * (Math.exp(u / UT) - 1);
+    const icSat = (ib) => beta * ib / 1000;                      // mA
+    const icOut = (uce, ib) => { const Is = icSat(ib); if (uce <= 0) return 0; if (uce < 0.3) return Is * (uce / 0.3); return Is * (1 + uce / 60); };
+    const ubeFb = (uce) => ube(Ib) - 0.012 * uce;               // weak Early feedback
+
+    const view = SK.mount(document.getElementById('c'), draw);
+
+    function draw(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 30);
+      const padL = 40, padR = 24, padT = 22, padB = 30;
+      const ox = padL + (w - padL - padR) * 0.42, oy = padT + (h - padT - padB) * 0.46;
+      const sIb = (ox - padL) / IbMax, sUce = (w - padR - ox) / UceMax;
+      const sIc = (oy - padT) / IcMax, sUbe = (h - padB - oy) / UbeMax;
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(padL, oy); ctx.lineTo(w - padR, oy); ctx.moveTo(ox, padT); ctx.lineTo(ox, h - padB); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.fillStyle = t.muted; ctx.font = '10px system-ui';
+      ctx.textAlign = 'right'; ctx.fillText('U_CE [V] →', w - padR, oy - 5);
+      ctx.textAlign = 'left'; ctx.fillText('← I_B [µA]', padL, oy - 5);
+      ctx.fillText('I_C [mA] ↑', ox + 5, padT + 8); ctx.fillText('U_BE [V] ↓', ox + 5, h - padB - 2);
+      ctx.fillText('výstupní', ox + 6, padT + 22); ctx.textAlign = 'right'; ctx.fillText('převodní', ox - 6, padT + 22);
+      ctx.fillText('vstupní', ox - 6, h - padB - 16); ctx.textAlign = 'left'; ctx.fillText('zpětná', ox + 6, h - padB - 16); ctx.restore();
+
+      const P = {
+        q1: (uce, ic) => [ox + uce * sUce, oy - ic * sIc],
+        q2: (ib, ic) => [ox - ib * sIb, oy - ic * sIc],
+        q3: (ib, u) => [ox - ib * sIb, oy + u * sUbe],
+        q4: (uce, u) => [ox + uce * sUce, oy + u * sUbe],
+      };
+      function plot(fn, color) { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.2; ctx.beginPath();
+        fn((x, y, i) => { i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke(); ctx.restore(); }
+
+      // Q1 output family
+      const ibs = [Ib * 0.5, Ib, Ib * 1.5];
+      ibs.forEach((ib, n) => plot((m) => { for (let u = 0; u <= UceMax; u += 0.1) { const p = P.q1(u, SK.clamp(icOut(u, ib), 0, IcMax)); m(p[0], p[1], u > 0); } }, n === 1 ? t.accent : t.muted));
+      // Q2 transfer (Ic = β Ib)
+      plot((m) => { for (let ib = 0; ib <= IbMax; ib += 1) { const p = P.q2(ib, SK.clamp(icSat(ib), 0, IcMax)); m(p[0], p[1], ib > 0); } }, t.accent2);
+      // Q3 input (Ib vs Ube)
+      plot((m) => { for (let u = 0; u <= UbeMax; u += 0.005) { const ib = ibOfUbe(u); if (ib > IbMax) break; const p = P.q3(ib, u); m(p[0], p[1], u > 0); } }, t.mag);
+      // Q4 feedback (Ube vs Uce)
+      plot((m) => { for (let u = 0; u <= UceMax; u += 0.1) { const p = P.q4(u, SK.clamp(ubeFb(u), 0, UbeMax)); m(p[0], p[1], u > 0); } }, t.warn);
+
+      // operating point + linking rectangle
+      const Ic = SK.clamp(icOut(Uce, Ib), 0, IcMax), Ube = ube(Ib);
+      const a = P.q1(Uce, Ic), b = P.q2(Ib, Ic), c = P.q3(Ib, Ube), d = P.q4(Uce, SK.clamp(ubeFb(Uce), 0, UbeMax));
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 1; ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(a[0], a[1]); ctx.moveTo(b[0], b[1]); ctx.lineTo(c[0], c[1]);
+      ctx.moveTo(c[0], c[1]); ctx.lineTo(d[0], d[1]); ctx.moveTo(a[0], a[1]); ctx.lineTo(d[0], d[1]); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      [a, b, c, d].forEach(p => SK.dot(ctx, p[0], p[1], 5, t.ok));
+
+      ro.innerHTML = `<b>Pracovní bod</b> (β=${beta})<br>` +
+        `I_B=<b>${SK.fmt(Ib, 1)} µA</b> → U_BE=<b>${SK.fmt(Ube, 3)} V</b> (vstupní)<br>` +
+        `I_C=β·I_B=<b>${SK.fmt(icSat(Ib), 2)} mA</b> (převodní) · U_CE=<b>${SK.fmt(Uce, 1)} V</b><br>` +
+        `Zelený obdélník spojuje týž bod ve všech čtyřech charakteristikách.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Bázový proud I_B', min: 2, max: 48, step: 1, value: 25, unit: 'µA', fmt: (v) => v | 0, oninput: (v) => { Ib = v; view.redraw(); } }),
+      SK.slider({ label: 'Napětí U_CE', min: 0, max: 10, step: 0.1, value: 5, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Uce = v; view.redraw(); } }),
+      SK.slider({ label: 'Proudový zesil. β', min: 50, max: 400, step: 10, value: 200, unit: '', fmt: (v) => v | 0, oninput: (v) => { beta = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Charakteristické pole spojuje čtyři charakteristiky tranzistoru kolem společných os: ' +
+      'vstupní I_B=f(U_BE) (vlevo dole), převodní I_C=f(I_B)=β·I_B (vlevo nahoře), výstupní I_C=f(U_CE) | I_B (vpravo ' +
+      'nahoře) a zpětnou U_BE=f(U_CE) (vpravo dole, slabá – Earlyho jev). Zvolený pracovní bod se promítá zeleným ' +
+      'obdélníkem do všech čtyř kvadrantů — tak se graficky určí I_C, U_BE z I_B a U_CE.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JFET — zaškrcení kanálu — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>JFET — zaškrcení vodivého kanálu</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "U_{DS,sat}=U_{GS}-U_P,\\quad I_D=I_{DSS}\\left(1-\\tfrac{U_{GS}}{U_P}\\right)^2", false);
+    const ro = document.getElementById('ro');
+    let Vgs = -1, Vds = 3, Up = -4, Idss = 10, sweeping = false;
+
+    const idSat = (vgs) => (vgs <= Up ? 0 : Idss * Math.pow(1 - vgs / Up, 2));
+    function idOut(vds, vgs) { const Is = idSat(vgs), Vsat = vgs - Up; if (Vsat <= 0) return 0;
+      if (vds < Vsat) { const x = vds / Vsat; return Is * (2 * x - x * x); } return Is; }
+    // depletion fraction along channel (0=source,1=drain); reverse bias = |Vgs| + Vds·x
+    const frac = (x) => Math.sqrt(SK.clamp((-Vgs + Vds * x) / (-Up), 0, 1));
+
+    const v1 = SK.mount(document.getElementById('c1'), drawCh);
+    const v2 = SK.mount(document.getElementById('c2'), drawOut);
+    function redraw() { v1.redraw(); v2.redraw(); }
+    const anim = SK.loop((dt) => { Vds = Vds + dt * 2.2; if (Vds > 9) { Vds = 0; } sVds.set(Vds); redraw(); });
+
+    function drawCh(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const xS = w * 0.16, xD = w * 0.84, cy = h * 0.5, a0 = h * 0.20;
+      // gate electrodes (p+)
+      ctx.save(); ctx.fillStyle = t.pos; ctx.globalAlpha = 0.85;
+      ctx.fillRect(xS, cy - a0 - 26, xD - xS, 16); ctx.fillRect(xS, cy + a0 + 10, xD - xS, 16); ctx.restore();
+      SK.label(ctx, 'Gate (p⁺)', (xS + xD) / 2, cy - a0 - 30, { color: t.pos, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'Gate (p⁺)', (xS + xD) / 2, cy + a0 + 38, { color: t.pos, align: 'center', font: '11px system-ui' });
+      // channel band (N) outline
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.12; ctx.fillRect(xS, cy - a0, xD - xS, 2 * a0); ctx.restore();
+      // conducting channel (tapered) + depletion wedges
+      const N = 60; const topInner = [], botInner = [];
+      for (let i = 0; i <= N; i++) { const x = i / N; const px = xS + x * (xD - xS); const hh = a0 * (1 - frac(x));
+        topInner.push([px, cy - hh]); botInner.push([px, cy + hh]); }
+      // depletion (top + bottom) shaded
+      ctx.save(); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.30;
+      ctx.beginPath(); ctx.moveTo(xS, cy - a0); ctx.lineTo(xD, cy - a0); topInner.slice().reverse().forEach(p => ctx.lineTo(p[0], p[1])); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(xS, cy + a0); ctx.lineTo(xD, cy + a0); botInner.slice().reverse().forEach(p => ctx.lineTo(p[0], p[1])); ctx.closePath(); ctx.fill(); ctx.restore();
+      // conducting channel
+      ctx.save(); ctx.fillStyle = t.ok; ctx.globalAlpha = 0.55; ctx.beginPath();
+      topInner.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
+      botInner.slice().reverse().forEach(p => ctx.lineTo(p[0], p[1])); ctx.closePath(); ctx.fill(); ctx.restore();
+      // contacts
+      ctx.save(); ctx.fillStyle = t.fg;
+      ctx.fillRect(xS - 10, cy - a0, 10, 2 * a0); ctx.fillRect(xD, cy - a0, 10, 2 * a0); ctx.restore();
+      SK.label(ctx, 'S', xS - 14, cy, { color: t.fg, align: 'right', font: 'bold 12px system-ui', baseline: 'middle' });
+      SK.label(ctx, 'D', xD + 14, cy, { color: t.fg, font: 'bold 12px system-ui', baseline: 'middle' });
+      // pinch indicator
+      const Vsat = Vgs - Up, pinched = Vds >= Vsat;
+      if (pinched) { SK.label(ctx, '⟵ zaškrceno', xD - 6, cy - a0 * (1 - frac(1)) - 8, { color: t.pos, align: 'right', font: 'bold 11px system-ui' }); }
+      SK.label(ctx, 'řez JFET — proud S→D vodivým kanálem', (xS + xD) / 2, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawOut(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const padL = 44, padR = 14, padT = 16, padB = 32, Xmax = 10, Ymax = Idss * 1.15;
+      const X = (u) => padL + u / Xmax * (w - padL - padR), Y = (i) => h - padB - i / Ymax * (h - padT - padB);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4; ctx.beginPath();
+      ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(Xmax), Y(0)); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(0), Y(Ymax)); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('U_DS [V]', X(Xmax) - 2, Y(0) + 5); ctx.textAlign = 'left'; ctx.fillText('I_D [mA]', X(0) + 5, Y(Ymax)); ctx.restore();
+      // current curve for selected Vgs
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+      for (let px = 0; px <= w - padL - padR; px++) { const u = px / (w - padL - padR) * Xmax; const y = Y(SK.clamp(idOut(u, Vgs), 0, Ymax)); s ? ctx.lineTo(padL + px, y) : (ctx.moveTo(padL + px, y), s = true); }
+      ctx.stroke(); ctx.restore();
+      const Vsat = Vgs - Up;
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(X(Vsat), padT); ctx.lineTo(X(Vsat), Y(0)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'U_DS,sat', X(Vsat) + 3, padT + 10, { color: t.warn, font: '10px system-ui' });
+      const id = idOut(Vds, Vgs); SK.dot(ctx, X(SK.clamp(Vds, 0, Xmax)), Y(SK.clamp(id, 0, Ymax)), 5, t.ok);
+
+      const region = Vds < Vsat ? 'ohmická (lineární) oblast' : 'nasycení (kanál zaškrcen u D)';
+      ro.innerHTML = `U_GS=<b>${SK.fmt(Vgs, 1)} V</b>, U_DS=<b>${SK.fmt(Vds, 1)} V</b><br>` +
+        `U_DS,sat = U_GS−U_P = <b>${SK.fmt(Vsat, 1)} V</b><br>` +
+        `I_D = <b>${SK.fmt(id, 2)} mA</b> · <b>${region}</b><br>` +
+        `Zvyšuj U_DS: kanál se u drainu zužuje, při U_DS≥U_DS,sat se zaškrtí → proud se ustálí (nasycení).`;
+    }
+
+    const sVds = SK.slider({ label: 'Napětí U_DS', min: 0, max: 10, step: 0.1, value: 3, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Vds = v; redraw(); } });
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Zvyšovat U_DS', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Zvyšovat U_DS'; } }),
+      SK.slider({ label: 'Napětí U_GS', min: -4, max: 0, step: 0.1, value: -1, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Vgs = SK.clamp(v, Up, 0); redraw(); } }),
+      sVds,
+      SK.slider({ label: 'Zaškrcovací U_P', min: -6, max: -1.5, step: 0.1, value: -4, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Up = v; if (Vgs < Up) Vgs = Up; redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Hradlo (p⁺) je vůči kanálu závěrně polarizované → kolem přechodů roste ochuzená vrstva (žlutě), ' +
+      'která zužuje vodivý kanál (zeleně). Zápornější U_GS zužuje kanál rovnoměrně. U_DS přidává spád: ochuzení je větší ' +
+      'u drainu, kde je závěrné napětí největší. Při U_DS ≥ U_DS,sat=U_GS−U_P se kanál u drainu zaškrtí a proud přejde do ' +
+      'nasycení (dál už neroste). Spusť „Zvyšovat U_DS" a sleduj zaškrcení.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fotodioda — režimy — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Fotodioda — fotovoltaický a fotovodivostní režim</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "I=I_0\\left(e^{U/U_T}-1\\right)-I_{ph}", false);
+    const ro = document.getElementById('ro');
+    const I0 = 1e-3, UT = 25.85;   // µA, mV
+    let Iph = 20, U = -0.5;        // µA, V (bias / operating voltage)
+
+    const Idiode = (u) => I0 * (Math.exp(u * 1000 / UT) - 1) - Iph;   // µA, u in V
+    const Voc = () => UT / 1000 * Math.log(Iph / I0 + 1);
+    const Vbi = 0.7;
+
+    const v1 = SK.mount(document.getElementById('c1'), drawIV);
+    const v2 = SK.mount(document.getElementById('c2'), drawJunction);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function drawIV(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      SK.grid(ctx, w, h, 28);
+      const padL = 46, padR = 14, padT = 18, padB = 30;
+      const Umin = -2, Umax = 0.7, Imax = 6, Imin = -(Iph * 1.25 + 2);
+      const X = (u) => padL + (u - Umin) / (Umax - Umin) * (w - padL - padR);
+      const Y = (i) => padT + (Imax - i) / (Imax - Imin) * (h - padT - padB);
+      // 4th-quadrant (photovoltaic) shading: U>0, I<0
+      ctx.save(); ctx.fillStyle = t.ok; ctx.globalAlpha = 0.10; ctx.fillRect(X(0), Y(0), X(Umax) - X(0), Y(Imin) - Y(0)); ctx.restore();
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4; ctx.beginPath();
+      ctx.moveTo(X(Umin), Y(0)); ctx.lineTo(X(Umax), Y(0)); ctx.moveTo(X(0), Y(Imax)); ctx.lineTo(X(0), Y(Imin)); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.fillText('U [V]', X(Umax) - 2, Y(0) + 5); ctx.fillText('I [µA]', X(0) - 5, Y(Imax) + 2); ctx.restore();
+      // dark + illuminated curves
+      const curve = (shift, col, wd, dash) => { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = wd; if (dash) ctx.setLineDash(dash); ctx.beginPath(); let s = false;
+        for (let px = 0; px <= w - padL - padR; px++) { const u = Umin + px / (w - padL - padR) * (Umax - Umin); const i = I0 * (Math.exp(u * 1000 / UT) - 1) - shift; const y = Y(SK.clamp(i, Imin, Imax)); s ? ctx.lineTo(padL + px, y) : (ctx.moveTo(padL + px, y), s = true); } ctx.stroke(); ctx.setLineDash([]); ctx.restore(); };
+      curve(0, t.muted, 1.4, [4, 3]);   // dark
+      curve(Iph, t.accent, 2.4);        // illuminated
+      // Isc and Voc
+      SK.dot(ctx, X(0), Y(-Iph), 4, t.pos); SK.label(ctx, 'I_sc', X(0) + 6, Y(-Iph), { color: t.pos, font: '10px system-ui', baseline: 'middle' });
+      SK.dot(ctx, X(Voc()), Y(0), 4, t.accent2); SK.label(ctx, 'U_oc', X(Voc()) + 2, Y(0) - 6, { color: t.accent2, font: '10px system-ui' });
+      // operating point
+      const i = Idiode(U); SK.dot(ctx, X(U), Y(SK.clamp(i, Imin, Imax)), 6, t.warn);
+      SK.label(ctx, 'fotovoltaický (4. kv.)', X(Umax) - 4, Y(Imin) + 14, { color: t.ok, align: 'right', font: '10px system-ui' });
+      SK.label(ctx, 'fotovodivostní (3. kv., závěr)', X(Umin) + 4, Y(Imin) + 14, { color: t.accent, font: '10px system-ui' });
+    }
+
+    function drawJunction(ctx, w, h) {
+      const t = SK.theme();
+      ctx.clearRect(0, 0, w, h);
+      const cy = h * 0.5, x0 = 24, x1 = w - 24, xj = (x0 + x1) / 2;
+      const wdep = (x1 - x0) * 0.12 * Math.sqrt(Math.max(Vbi - U, 0.05));   // depletion grows in reverse (U<0)
+      // P and N regions
+      ctx.save(); ctx.fillStyle = t.pos; ctx.globalAlpha = 0.20; ctx.fillRect(x0, cy - 40, xj - x0, 80);
+      ctx.fillStyle = t.neg; ctx.globalAlpha = 0.20; ctx.fillRect(xj, cy - 40, x1 - xj, 80); ctx.restore();
+      SK.label(ctx, 'P', (x0 + xj) / 2, cy - 50, { color: t.pos, align: 'center', font: 'bold 13px system-ui' });
+      SK.label(ctx, 'N', (xj + x1) / 2, cy - 50, { color: t.neg, align: 'center', font: 'bold 13px system-ui' });
+      // depletion region (OPN)
+      ctx.save(); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.40; ctx.fillRect(xj - wdep, cy - 40, 2 * wdep, 80); ctx.restore();
+      SK.label(ctx, 'OPN (ochuzená)', xj, cy + 54, { color: t.warn, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'šířka ∝ √(V_bi−U)', xj, cy + 68, { color: t.muted, align: 'center', font: '10px system-ui' });
+      // incoming photons → e-h pairs in depletion
+      ctx.save();
+      for (let i = 0; i < 5; i++) { const px = xj - wdep + (i + 0.5) / 5 * 2 * wdep;
+        SK.arrow(ctx, px - 14, cy - 56, px, cy - 40, { color: t.accent2, width: 1.4, head: 4 }); }
+      SK.label(ctx, 'světlo hν', xj - wdep - 6, cy - 58, { color: t.accent2, align: 'right', font: '10px system-ui' });
+      // separated carriers
+      SK.dot(ctx, xj - wdep / 2, cy, 3, t.neg); SK.dot(ctx, xj + wdep / 2, cy, 3, t.pos); ctx.restore();
+
+      const i = Idiode(U);
+      const regime = U < -0.02 ? 'fotovodivostní (závěrná polarizace)' : (U > 0.02 && i < 0 ? 'fotovoltaický (generuje výkon)' : 'blízko nuly');
+      const P = U > 0 && i < 0 ? Math.abs(U * i) : 0;
+      ro.innerHTML = `Osvětlení I_ph=<b>${SK.fmt(Iph, 0)} µA</b> · U=<b>${SK.fmt(U, 2)} V</b><br>` +
+        `I = <b>${SK.fmt(i, 2)} µA</b> · režim: <b>${regime}</b><br>` +
+        `I_sc=${SK.fmt(Iph, 0)} µA, U_oc=${SK.fmt(Voc(), 3)} V` + (P > 0 ? ` · výkon P=${SK.fmt(P, 2)} µW` : '') + `<br>` +
+        `Závěrné napětí rozšiřuje OPN → menší kapacita → rychlejší, lineární odezva.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Osvětlení I_ph', min: 0, max: 50, step: 1, value: 20, unit: 'µA', fmt: (v) => v | 0, oninput: (v) => { Iph = v; redraw(); } }),
+      SK.slider({ label: 'Napětí U', min: -2, max: 0.6, step: 0.01, value: -0.5, unit: 'V', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { U = v; redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Dopadající světlo generuje v ochuzené oblasti páry elektron–díra, které vnitřní pole oddělí → fotoproud ' +
+      'I_ph. Osvětlení posune VA charakteristiku dolů o I_ph. Fotovoltaický režim (U>0, I<0, 4. kvadrant): bez vnějšího ' +
+      'zdroje dioda dodává výkon (solární článek), U_oc naprázdno, I_sc nakrátko. Fotovodivostní režim (závěrná ' +
+      'polarizace, 3. kvadrant): I≈−I_ph, lineární a rychlý; závěrné napětí rozšiřuje OPN a snižuje kapacitu přechodu.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
