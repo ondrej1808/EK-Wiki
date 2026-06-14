@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vzájemná indukčnost — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Vzájemná indukčnost dvou cívek</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "u_2=M\\dfrac{di_1}{dt},\\quad M=k\\sqrt{L_1 L_2},\\quad 0\\le k\\le 1", false);
+    const ro = document.getElementById('ro');
+    let k = 0.6, L1 = 10, L2 = 40, freq = 1, ph = 0, speed = 1.6;
+    const M = () => k * Math.sqrt(L1 * L2);
+    const i1 = (p) => Math.cos(p);
+    const di1 = (p) => -Math.sin(p);                 // d/d(ph)
+
+    const v1 = SK.mount(document.getElementById('c1'), drawCoils);
+    const v2 = SK.mount(document.getElementById('c2'), drawTraces);
+    const anim = SK.loop((dt) => { ph += dt * speed * freq * 2 * Math.PI / 2; v1.redraw(); v2.redraw(); });
+
+    function coil(ctx, x, cy, turns, color, t) {
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+      for (let i = 0; i < turns; i++) { ctx.beginPath(); ctx.ellipse(x, cy - 36 + i * 72 / (turns - 1), 7, 14, 0, 0, 7); ctx.stroke(); }
+      ctx.restore();
+    }
+    function drawCoils(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cy = h * 0.5, x1 = w * 0.30, x2 = w * 0.70;
+      const cur = i1(ph), flux = cur * k;
+      // shared flux lines linking both coils (intensity ∝ |i1|·k)
+      ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 1.5;
+      const nL = 4; for (let i = 0; i < nL; i++) { const ry = 18 + i * 16; ctx.globalAlpha = SK.clamp(Math.abs(flux) * (1 - i * 0.18), 0, 0.9);
+        ctx.beginPath(); ctx.ellipse((x1 + x2) / 2, cy, (x2 - x1) / 2 + 24, ry, 0, 0, 7); ctx.stroke(); }
+      ctx.restore();
+      // flux direction arrow
+      if (Math.abs(flux) > 0.05) { const dir = flux > 0 ? 1 : -1; SK.arrow(ctx, (x1 + x2) / 2 - dir * 14, cy - 2, (x1 + x2) / 2 + dir * 14, cy - 2, { color: t.mag, width: 2, head: 6 }); }
+      coil(ctx, x1, cy, 5, t.pos, t); coil(ctx, x2, cy, 5, t.accent2, t);
+      SK.label(ctx, 'primár L₁', x1, cy - 58, { color: t.pos, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'sekundár L₂', x2, cy - 58, { color: t.accent2, align: 'center', font: '11px system-ui' });
+      // primary current arrow (AC), secondary induced
+      SK.arrow(ctx, x1, cy + 52, x1 + 22 * cur, cy + 52, { color: t.pos, width: 2.4, head: 7 });
+      SK.label(ctx, 'i₁(t)', x1, cy + 70, { color: t.pos, align: 'center', font: '11px system-ui' });
+      const u2 = -M() * di1(ph) * freq * 0.03;
+      SK.arrow(ctx, x2, cy + 52, x2 + 60 * SK.clamp(u2, -1, 1), cy + 52, { color: t.ok, width: 2.4, head: 7 });
+      SK.label(ctx, 'u₂(t)', x2, cy + 70, { color: t.ok, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'k = ' + SK.fmt(k, 2) + ' (vazba)', (x1 + x2) / 2, h - 8, { color: t.muted, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+    }
+
+    function drawTraces(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const padL = 30, padR = 12, yA = h * 0.30, yB = h * 0.72, A = h * 0.16;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(padL, yA); ctx.lineTo(w - padR, yA); ctx.moveTo(padL, yB); ctx.lineTo(w - padR, yB); ctx.stroke(); ctx.restore();
+      const Mr = M(), u2amp = Mr * freq * 0.06;
+      const wave = (yc, fn, color, amp) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+        for (let px = 0; px <= w - padL - padR; px++) { const p = ph - px / (w - padL - padR) * 4 * Math.PI; const y = yc - fn(p) * amp; px ? ctx.lineTo(padL + px, y) : ctx.moveTo(padL + px, y); } ctx.stroke(); ctx.restore();
+        SK.dot(ctx, padL, yc - fn(ph) * amp, 4, color); };
+      wave(yA, i1, t.pos, A);
+      wave(yB, (p) => -Math.sin(p) * SK.clamp(u2amp / (A) * A, 0, 1.4), t.ok, A);
+      SK.label(ctx, 'i₁(t) = cos ωt', padL + 4, yA - A - 4, { color: t.pos, font: '11px system-ui' });
+      SK.label(ctx, 'u₂(t) = M·di₁/dt ∝ −sin ωt', padL + 4, yB - A - 4, { color: t.ok, font: '11px system-ui' });
+      ro.innerHTML = `L₁=${L1} mH, L₂=${L2} mH, k=<b>${SK.fmt(k, 2)}</b><br>` +
+        `M = k·√(L₁L₂) = <b>${SK.fmt(M(), 1)} mH</b><br>` +
+        `u₂ = M·di₁/dt → amplituda ∝ M·ω; fázově předbíhá i₁ o 90°.<br>` +
+        `Slabší vazba (menší k nebo větší vzdálenost) → menší u₂. k=1 = dokonalá vazba (transformátor).`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+      SK.slider({ label: 'Vazba k', min: 0, max: 1, step: 0.02, value: 0.6, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { k = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'L₁', min: 2, max: 50, step: 1, value: 10, unit: 'mH', fmt: (v) => v | 0, oninput: (v) => { L1 = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'L₂', min: 2, max: 80, step: 1, value: 40, unit: 'mH', fmt: (v) => v | 0, oninput: (v) => { L2 = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Frekvence', min: 0.4, max: 3, step: 0.1, value: 1, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { freq = v; v1.redraw(); v2.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Mění-li se proud v primární cívce, mění se magnetický tok, který je částečně spřažen se sekundární ' +
+      'cívkou, a indukuje v ní napětí u₂ = M·di₁/dt. Vzájemná indukčnost M = k·√(L₁L₂), kde činitel vazby k∈⟨0,1⟩ udává, ' +
+      'jaká část toku je společná (k=1 dokonalá vazba = ideální transformátor). Indukované napětí je úměrné rychlosti ' +
+      'změny proudu, proto je fázově posunuté o 90° a roste s frekvencí. Sniž k a uvidíš slabší přenos.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>

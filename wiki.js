@@ -403,6 +403,7 @@
           { type: 'sim', label: 'MS · Závit a solenoid',               src: SIM + 'empa_loop_solenoid.html' },
           { type: 'sim', label: 'AC · Faradayův zákon (indukce)',       src: SIM + 'empa_faraday.html' },
           { type: 'sim', label: 'Reakce látky · polarizace & hystereze', src: SIM + 'empa_materials.html' },
+          { type: 'sim', label: 'Vzájemná indukčnost (2 cívky)', src: SIM + 'empa_mutual.html' },
         ],
       },
       {
@@ -435,6 +436,12 @@
           { type: 'sim', label: 'Křížová korelace (2 signály)', src: SIM + 'sas_crosscorr.html' },
           { type: 'sim', label: 'Vzorkování a spektrum',     src: SIM + 'sas_sampling.html' },
           { type: 'sim', label: 'Spektra: FS / FT / DTFT',    src: SIM + 'sas_spectra.html' },
+        ],
+      },
+      {
+        code: 'B2B31CZS', title: 'Číslicové zpracování signálů',
+        resources: [
+          { type: 'sim', label: 'Decimace / interpolace (multirate)', src: SIM + 'czs_multirate.html' },
         ],
       },
       {
