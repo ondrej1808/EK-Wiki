@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elementární zářič — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Elementární zářič (Hertzův dipól)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "E_\\vartheta\\propto\\dfrac{\\sin\\vartheta}{r}\\cos(kr-\\omega t)\\ (\\text{vzdálené pole}),\\quad P\\propto\\sin^2\\vartheta", false);
+    const ro = document.getElementById('ro');
+    let lam = 46, time = 0, speed = 2.4;
+    const k = () => 2 * Math.PI / lam;
+
+    const v1 = SK.mount(document.getElementById('c1'), drawField);
+    const v2 = SK.mount(document.getElementById('c2'), drawPattern);
+    const anim = SK.loop((dt) => { time += dt * speed; v1.redraw(); v2.redraw(); });
+
+    function drawField(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, kk = k(), cell = 6;
+      for (let py = 0; py < h; py += cell) for (let px = 0; px < w; px += cell) {
+        const dx = px - cx, dy = py - cy, r = Math.hypot(dx, dy) + 6;
+        const sinth = Math.abs(dx) / r;                       // θ from vertical dipole axis
+        const A = SK.clamp(sinth * 46 / r, 0, 1);
+        const val = A * Math.cos(kk * r - time);
+        const g = Math.round(128 + 120 * SK.clamp(val, -1, 1));
+        ctx.fillStyle = `rgb(${g},${g},${g})`; ctx.fillRect(px, py, cell, cell);
+      }
+      // near-field boundary (~λ) and dipole
+      ctx.save(); ctx.strokeStyle = '#f59e0b'; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.arc(cx, cy, lam, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      ctx.save(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(cx, cy - 12); ctx.lineTo(cx, cy + 12); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'dipól ↕', cx + 8, cy, { color: '#ef4444', font: '11px system-ui', stroke: '#000', strokeW: 3, baseline: 'middle' });
+      SK.label(ctx, 'blízké pole (r≲λ)', cx + lam * 0.7, cy - lam * 0.7, { color: '#f59e0b', font: '10px system-ui', stroke: '#000', strokeW: 3 });
+      SK.label(ctx, 'vzdálené pole — vyzařování ∝ sinϑ/r', 10, h - 10, { color: '#fff', font: '11px system-ui', stroke: '#000', strokeW: 3, baseline: 'bottom' });
+    }
+
+    function drawPattern(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); SK.grid(ctx, w, h, 28);
+      const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+      // axes
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx - R - 10, cy); ctx.lineTo(cx + R + 10, cy); ctx.moveTo(cx, cy - R - 10); ctx.lineTo(cx, cy + R + 10); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'osa dipólu', cx + 4, cy - R - 6, { color: t.muted, font: '10px system-ui' });
+      // pattern |sinθ| (θ from vertical axis) → figure-eight horizontal
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.fillStyle = t.accent; ctx.lineWidth = 2.4; ctx.globalAlpha = 0.18; ctx.beginPath();
+      for (let a = 0; a <= 2 * Math.PI + 0.01; a += 0.03) { const th = a; const rr = R * Math.abs(Math.sin(th));
+        const x = cx + rr * Math.sin(th), y = cy - rr * Math.cos(th); a ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'vyzařovací charakteristika |sinϑ|', cx, h - 8, { color: t.accent, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+      SK.label(ctx, 'max', cx + R + 2, cy - 4, { color: t.accent, font: '10px system-ui' });
+      SK.label(ctx, 'nula', cx + 4, cy - R + 2, { color: t.muted, font: '10px system-ui' });
+
+      ro.innerHTML = `<b>Hertzův dipól</b> · λ=${lam} px<br>` +
+        `<b>Vzdálené pole</b> (r≫λ): vyzařovaná vlna E_ϑ∝sinϑ/r, příčná (TEM), výkon P∝sin²ϑ.<br>` +
+        `<b>Blízké pole</b> (r≲λ): převažují reaktivní složky (∝1/r², 1/r³), energie kmitá tam a zpět, nezáří.<br>` +
+        `Charakteristika je „toroid": maximum kolmo na dipól, nuly podél osy.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+      SK.slider({ label: 'Vlnová délka λ', min: 26, max: 70, step: 1, value: 46, unit: 'px', fmt: (v) => v | 0, oninput: (v) => { lam = v; v1.redraw(); v2.redraw(); } }),
+      SK.slider({ label: 'Rychlost', min: 0.5, max: 5, step: 0.1, value: 2.4, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Elementární (Hertzův) dipól je krátký úsek s harmonickým proudem. Okolo něj se rozlišují zóny: blízké ' +
+      '(reaktivní) pole r≲λ, kde převažují složky ∝1/r² a 1/r³ a energie se jen vrací; přechodná zóna; a vzdálené ' +
+      '(zářivé) pole r≫λ, kde zbývá příčná vlna E_ϑ∝sinϑ/r nesoucí výkon pryč. Vyzařovací charakteristika je |sinϑ| ' +
+      '(výkon ∝ sin²ϑ): maximum v rovině kolmé k dipólu, nuly podél jeho osy (prostorově toroid). Spusť animaci.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
