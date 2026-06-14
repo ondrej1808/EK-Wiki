@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typy vln — rovinná, kulová, válcová, Gaussův svazek — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Vlna rovinná, kulová, válcová &amp; Gaussův svazek</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let mode = 'plane', lam = 40, w0 = 26, time = 0, speed = 2.4, playing = false;
+    const k = () => 2 * Math.PI / lam;
+    fEl.textContent = 'rovinná: A=konst · kulová: A∝1/r · válcová: A∝1/√ρ · Gaussův svazek: pas w₀, z_R=πw₀²/λ';
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { time += dt * speed; view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      if (mode === 'gauss') return drawGauss(ctx, w, h, t);
+      const cell = 6, S = { x: w * 0.12, y: h / 2 }, kk = k();
+      for (let py = 0; py < h; py += cell) for (let px = 0; px < w; px += cell) {
+        let val;
+        if (mode === 'plane') val = Math.cos(kk * px - time);
+        else { const r = Math.hypot(px - S.x, py - S.y) + 6; const A = mode === 'sph' ? Math.min(1.1, 70 / r) : Math.min(1.1, Math.sqrt(70 / r)); val = A * Math.cos(kk * r - time); }
+        const g = Math.round(128 + 115 * SK.clamp(val, -1, 1));
+        ctx.fillStyle = `rgb(${g},${g},${g})`; ctx.fillRect(px, py, cell, cell);
+      }
+      if (mode !== 'plane') { ctx.save(); ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(S.x, S.y, 4, 0, 7); ctx.fill(); ctx.restore();
+        SK.label(ctx, 'zdroj', S.x, S.y - 10, { color: '#ef4444', align: 'center', font: '11px system-ui', stroke: '#000', strokeW: 3 }); }
+      const lab = mode === 'plane' ? 'Rovinná vlna — rovinné vlnoplochy, konstantní amplituda' : mode === 'sph' ? 'Kulová vlna — sférické vlnoplochy, amplituda ∝ 1/r' : 'Válcová vlna — válcové vlnoplochy, amplituda ∝ 1/√ρ';
+      SK.label(ctx, lab, 10, 16, { color: '#fff', font: '12px system-ui', stroke: '#000', strokeW: 3 });
+      ro.innerHTML = `<b>${mode === 'plane' ? 'Rovinná' : mode === 'sph' ? 'Kulová' : 'Válcová'} vlna</b> · λ=${lam} px<br>` +
+        (mode === 'plane' ? 'Vlnoplochy jsou rovnoběžné roviny, amplituda se nemění. Daleko od zdroje se každá vlna lokálně blíží rovinné.'
+          : mode === 'sph' ? 'Bodový zdroj → kulové vlnoplochy; intenzita ∝ 1/r² (amplituda ∝ 1/r) kvůli rozprostření výkonu na plochu 4πr².'
+          : 'Čárový zdroj → válcové vlnoplochy; výkon se rozprostírá na plášť 2πρ, proto amplituda ∝ 1/√ρ.');
+    }
+
+    function drawGauss(ctx, w, h, t) {
+      const cy = h / 2, zc = w * 0.5, kk = k();
+      const zR = Math.PI * w0 * w0 / lam;
+      const ww = (x) => w0 * Math.sqrt(1 + ((x - zc) / zR) ** 2);
+      // intensity field
+      const cell = 6;
+      for (let py = 0; py < h; py += cell) for (let px = 0; px < w; px += cell) {
+        const wz = ww(px), dy = py - cy; const I = (w0 / wz) * Math.exp(-(dy * dy) / (wz * wz));
+        const g = Math.round(18 + 230 * SK.clamp(I, 0, 1));
+        ctx.fillStyle = `rgb(${g},${Math.round(g * 0.7)},${Math.round(40 + g * 0.5)})`; ctx.fillRect(px, py, cell, cell);
+      }
+      // envelope ±w(z)
+      ctx.save(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.6; ctx.globalAlpha = 0.85;
+      [1, -1].forEach(s => { ctx.beginPath(); for (let x = 0; x <= w; x += 3) { const y = cy + s * ww(x); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); }); ctx.restore();
+      // axis + waist marker
+      ctx.save(); ctx.strokeStyle = '#fff'; ctx.globalAlpha = 0.5; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(zc, cy - ww(zc)); ctx.lineTo(zc, cy + ww(zc)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(zc + zR, cy - ww(zc + zR)); ctx.lineTo(zc + zR, cy + ww(zc + zR)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'pas w₀', zc, cy - ww(zc) - 6, { color: '#fff', align: 'center', font: '11px system-ui', stroke: '#000', strokeW: 3 });
+      SK.label(ctx, 'z_R', zc + zR, cy - ww(zc + zR) - 6, { color: '#fff', align: 'center', font: '11px system-ui', stroke: '#000', strokeW: 3 });
+      // moving phase fronts (curved)
+      ctx.save(); ctx.strokeStyle = '#fff'; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+      for (let m = -6; m <= 6; m++) { const xc = zc + (m * lam + (time / kk)) % (w); ctx.beginPath();
+        for (let y = cy - ww(xc < 0 ? 0 : xc); y <= cy + ww(xc < 0 ? 0 : xc); y += 4) { const curv = (y - cy) * (y - cy) / (2 * (zR * 2)); const x = xc + curv * ((xc - zc) > 0 ? 1 : -1); if (x > 0 && x < w) (y === cy - ww(xc) ? ctx.moveTo(x, y) : ctx.lineTo(x, y)); } ctx.stroke(); }
+      ctx.restore();
+      SK.label(ctx, 'Gaussův svazek (model laseru)', 10, 16, { color: '#fff', font: '12px system-ui', stroke: '#000', strokeW: 3 });
+      ro.innerHTML = `<b>Gaussův svazek</b> · pas w₀=${w0} px, λ=${lam} px<br>Rayleighova vzdálenost z_R = πw₀²/λ = <b>${SK.fmt(zR, 0)} px</b><br>` +
+        `U pasu je svazek nejužší a vlnoplochy téměř rovinné; do z_R se šíří skoro rovnoběžně, dál se rozbíhá (úhel ∝ λ/w₀). Menší pas → rychlejší rozbíhavost.`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Rovinná', value: 'plane' }, { label: 'Kulová', value: 'sph' }, { label: 'Válcová', value: 'cyl' }, { label: 'Gaussův svazek', value: 'gauss' }],
+      value: 'plane', onchange: (v) => { mode = v; rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      const items = [SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+        SK.slider({ label: 'Vlnová délka λ', min: 20, max: 70, step: 1, value: lam, unit: 'px', fmt: (v) => v | 0, oninput: (v) => { lam = v; view.redraw(); } }),
+        SK.slider({ label: 'Rychlost', min: 0.5, max: 5, step: 0.1, value: speed, unit: '×', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { speed = v; } })];
+      if (mode === 'gauss') items.push(SK.slider({ label: 'Pas svazku w₀', min: 10, max: 50, step: 1, value: w0, unit: 'px', fmt: (v) => v | 0, oninput: (v) => { w0 = v; view.redraw(); } }));
+      SK.controls(holder, items);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Tvar vlnoplochy závisí na zdroji. Rovinná vlna má rovnoběžné roviny a stálou amplitudu (ideál, daleké pole). ' +
+      'Bodový zdroj dává kulové vlnoplochy s amplitudou ∝ 1/r (intenzita ∝ 1/r²); čárový zdroj válcové s amplitudou ∝ 1/√ρ. ' +
+      'Gaussův svazek je model laseru: má nejužší pas w₀, kolem něj se do Rayleighovy vzdálenosti z_R=πw₀²/λ šíří téměř ' +
+      'rovnoběžně a dál se rozbíhá úměrně λ/w₀. Spusť animaci a měň λ, pas.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
