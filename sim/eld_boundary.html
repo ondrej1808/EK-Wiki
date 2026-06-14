@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Okrajové podmínky na rozhraní — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Rozhraní — tečná a normálová složka E, H</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let field = 'E', kase = 'cont', e1 = 1, e2 = 3, ang = 50, Ks = 0.4;
+    function setF() { SK.katex(fEl, field === 'E'
+      ? "E_{1t}=E_{2t},\\quad \\varepsilon_1 E_{1n}=\\varepsilon_2 E_{2n}\\ (D_n \\text{ spojitá})"
+      : "H_{1t}=H_{2t}\\,(-K),\\quad \\mu_1 H_{1n}=\\mu_2 H_{2n}\\ (B_n \\text{ spojitá})", false); }
+    setF();
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function comp(ctx, ox, oy, vx, vy, color, t) { // arrow + dashed tangential/normal components
+      SK.arrow(ctx, ox, oy, ox + vx, oy + vy, { color, width: 3, head: 9 });
+      ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = 0.5; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + vx, oy); ctx.stroke();             // tangential
+      ctx.beginPath(); ctx.moveTo(ox + vx, oy); ctx.lineTo(ox + vx, oy + vy); ctx.stroke();   // normal
+      ctx.restore();
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cy = h * 0.5, ox = w * 0.5, sc = 90;
+      // media tint
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.08; ctx.fillRect(0, 0, w, cy);
+      ctx.fillStyle = (kase === 'pec') ? t.fg : t.warn; ctx.globalAlpha = (kase === 'pec') ? 0.5 : 0.07; ctx.fillRect(0, cy, w, h - cy); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke(); ctx.restore();
+      const p1 = field === 'E' ? e1 : { v: e1 }.v, ratio = field === 'E' ? e1 / e2 : e1 / e2;
+      const sym = field === 'E' ? (kase === 'pec' ? 'vodič (PEC)' : 'ε') : 'μ';
+      SK.label(ctx, 'prostředí 1  (' + (field === 'E' ? 'ε₁=' + SK.fmt(e1, 1) : 'μ₁=' + SK.fmt(e1, 1)) + ')', 12, 18, { color: t.accent2, font: 'bold 12px system-ui' });
+      SK.label(ctx, kase === 'pec' ? 'prostředí 2  (dokonalý vodič)' : 'prostředí 2  (' + (field === 'E' ? 'ε₂=' + SK.fmt(e2, 1) : 'μ₂=' + SK.fmt(e2, 1)) + ')', 12, h - 12, { color: kase === 'pec' ? '#fff' : t.warn, font: 'bold 12px system-ui' });
+
+      const a = ang * Math.PI / 180;
+      const Et = Math.cos(a) * sc, En = Math.sin(a) * sc;          // medium-1 components (px)
+      // medium 1 field (into top)
+      comp(ctx, ox, cy, Et, -En, t.accent, t);
+      SK.label(ctx, field + '₁', ox + Et + 6, cy - En - 4, { color: t.accent, font: 'bold 12px system-ui' });
+      // medium 2 field (into bottom)
+      let Et2 = Et, En2 = En * ratio, note;
+      if (field === 'H' && kase === 'curr') { Et2 = Et - Ks * sc; note = 'Plošný proud K → tečná složka H se skokem mění: H₂t = H₁t − K.'; }
+      if (field === 'E' && kase === 'pec') { // conductor: E2 = 0, only normal E1 allowed at surface
+        comp(ctx, ox, cy, 0, En + Et * 0, t.muted, t);
+        SK.label(ctx, 'E₂ = 0 (uvnitř vodiče)', ox + 10, cy + 30, { color: '#fff', font: '11px system-ui' });
+        note = 'U dokonalého vodiče je uvnitř E=0, na povrchu E_t=0 (tečná složka vynulována); normálová E budí povrchový náboj σ=ε₁E₁n.';
+        ro.innerHTML = `<b>Pole E · vodič (PEC)</b><br>Tečná složka E na povrchu = <b>0</b>.<br>${note}`;
+        SK.label(ctx, 'táhni úhel pole', ox, h - 8, { color: t.muted, align: 'center', font: '10px system-ui', baseline: 'bottom' });
+        return;
+      }
+      comp(ctx, ox, cy, Et2, En2, field === 'E' ? t.ok : t.mag, t);
+      SK.label(ctx, field + '₂', ox + Et2 + 6, cy + En2 + 12, { color: field === 'E' ? t.ok : t.mag, font: 'bold 12px system-ui' });
+
+      const tEq = Math.abs(Et2 - Et) < 0.5;
+      ro.innerHTML = `<b>Pole ${field}</b> · ${field === 'E' ? 'ε₁/ε₂=' + SK.fmt(e1 / e2, 2) : 'μ₁/μ₂=' + SK.fmt(e1 / e2, 2)}<br>` +
+        `<b>Tečná složka:</b> ${field}₁t ${tEq ? '=' : '≠'} ${field}₂t ${tEq ? '(spojitá)' : '(skok o K)'}<br>` +
+        `<b>Normálová složka:</b> ${field === 'E' ? 'ε₁E₁n=ε₂E₂n → E₂n=(ε₁/ε₂)E₁n' : 'μ₁H₁n=μ₂H₂n → H₂n=(μ₁/μ₂)H₁n'} ` +
+        `→ <b>${field}_n nespojitá</b> (spojitá je ${field === 'E' ? 'D_n' : 'B_n'}).` + (note ? '<br>' + note : '');
+      SK.label(ctx, 'plné = vektor · čárkované = tečná/normálová složka', ox, h - 8, { color: t.muted, align: 'center', font: '10px system-ui', baseline: 'bottom' });
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Pole E', value: 'E' }, { label: 'Pole H', value: 'H' }],
+      value: 'E', onchange: (v) => { field = v; kase = 'cont'; setF(); rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      const caseOpts = field === 'E' ? [{ label: 'spojitost (bez náboje)', value: 'cont' }, { label: 'vodič (PEC)', value: 'pec' }]
+        : [{ label: 'spojitost (bez proudu)', value: 'cont' }, { label: 'plošný proud K', value: 'curr' }];
+      holder.appendChild(SK.tabs({ options: caseOpts, value: kase, onchange: (v) => { kase = v; rebuild2(); view.redraw(); } }).el);
+      rebuild2();
+    }
+    let holder2;
+    function rebuild2() {
+      if (holder2) holder2.remove(); holder2 = document.createElement('div'); holder.appendChild(holder2);
+      const items = [SK.slider({ label: 'Úhel pole', min: 5, max: 85, step: 1, value: ang, unit: '°', fmt: (v) => v | 0, oninput: (v) => { ang = v; view.redraw(); } })];
+      if (kase !== 'pec') items.push(SK.slider({ label: field === 'E' ? 'ε₁' : 'μ₁', min: 1, max: 6, step: 0.1, value: e1, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { e1 = v; view.redraw(); } }),
+        SK.slider({ label: field === 'E' ? 'ε₂' : 'μ₂', min: 1, max: 6, step: 0.1, value: e2, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { e2 = v; view.redraw(); } }));
+      if (kase === 'curr') items.push(SK.slider({ label: 'Plošný proud K', min: 0, max: 1, step: 0.05, value: Ks, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { Ks = v; view.redraw(); } }));
+      SK.controls(holder2, items);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Na rozhraní platí okrajové podmínky: tečné složky E a H jsou spojité (E₁t=E₂t, H₁t=H₂t), pokud není ' +
+      'plošný proud. Normálové složky D a B jsou spojité (D₁n=D₂n, B₁n=B₂n), takže E_n a H_n se mění skokem podle poměru ' +
+      'ε resp. μ. Speciální případy: u dokonalého vodiče je tečné E nulové (a budí povrchový náboj/proud); plošný proud K ' +
+      'způsobí skok tečné složky H. Měň úhel pole, ε/μ a sleduj, co zůstává spojité (čárkované = složky vektoru).';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

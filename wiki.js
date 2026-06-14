@@ -377,6 +377,7 @@
           { type: 'sim', label: 'Snellův zákon · lom, totální odraz', src: SIM + 'eld_snell.html' },
           { type: 'sim', label: 'Rozhraní – Fresnel, Brewster, kritický úhel', src: SIM + 'eld_fresnel.html' },
           { type: 'sim', label: 'Evanescentní vlna (totální odraz)', src: SIM + 'eld_evanescent.html' },
+          { type: 'sim', label: 'Rozhraní – tečná/normálová složka E, H', src: SIM + 'eld_boundary.html' },
         ],
       },
       {
