@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spektra signálů FS / FT / DTFT — SAS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Jak vypadají spektra — FS, FT, DTFT</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let mode = 'FS', param = 7;
+    function setF() { SK.katex(fEl, mode === 'FS' ? "\\text{period. spojitý} \\to \\text{Fourierova řada} \\to \\text{diskrétní (čárové) spektrum}"
+      : mode === 'FT' ? "\\text{aperiod. spojitý} \\to \\text{Fourierova transf.} \\to \\text{spojité spektrum}"
+      : "\\text{diskrétní} \\to \\text{DTFT} \\to \\text{spojité, periodické spektrum } (2\\pi)", false); }
+    setF();
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function axis(ctx, x, y, w, hh, t, lab) { ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(x, y + hh / 2); ctx.lineTo(x + w, y + hh / 2); ctx.stroke(); ctx.restore();
+      SK.label(ctx, lab, x + 2, y + 11, { color: t.muted, font: '11px system-ui' }); }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const x0 = 18, ww = w - 36, hh = (h - 24) / 2 - 8, yT = 8, yS = 8 + hh + 14;
+      axis(ctx, x0, yT, ww, hh, t, 'signál v čase'); axis(ctx, x0, yS, ww, hh, t, 'spektrum |X|');
+      const A = hh / 2 - 6;
+      if (mode === 'FS') {
+        // square wave from `param` odd harmonics + line spectrum
+        const K = param; ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2; ctx.beginPath();
+        for (let px = 0; px <= ww; px++) { const u = px / ww * 4 * Math.PI; let s = 0; for (let k = 1; k <= 2 * K; k += 2) s += Math.sin(k * u) / k; const y = yT + hh / 2 - (4 / Math.PI) * s * A * 0.8; px ? ctx.lineTo(x0 + px, y) : ctx.moveTo(x0 + px, y); } ctx.stroke(); ctx.restore();
+        // discrete (stem) spectrum at odd harmonics, amp 1/k
+        ctx.save(); ctx.strokeStyle = t.mag; ctx.fillStyle = t.mag; ctx.lineWidth = 2;
+        for (let k = 1; k <= 2 * K; k += 2) { const px = x0 + (k / (2 * K + 1)) * ww; const amp = (1 / k) * A * 1.6; ctx.beginPath(); ctx.moveTo(px, yS + hh / 2); ctx.lineTo(px, yS + hh / 2 - amp); ctx.stroke(); SK.dot(ctx, px, yS + hh / 2 - amp, 3, t.mag); }
+        ctx.restore();
+        ro.innerHTML = `<b>Fourierova řada (FS)</b> · ${param} harmonických<br>Periodický spojitý signál (obdélník) má ` +
+          `<b>diskrétní (čárové) spektrum</b> — jen na násobcích základní frekvence f₀. Více harmonických → ostřejší hrany.`;
+      } else if (mode === 'FT') {
+        // rectangular pulse width ∝ param; sinc spectrum
+        const Wd = param / 20; ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2; ctx.beginPath();
+        for (let px = 0; px <= ww; px++) { const u = px / ww * 2 - 1; const val = Math.abs(u) < Wd ? 1 : 0; const y = yT + hh / 2 - val * A; px ? ctx.lineTo(x0 + px, y) : ctx.moveTo(x0 + px, y); } ctx.stroke(); ctx.restore();
+        // continuous sinc spectrum
+        ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 2; ctx.beginPath();
+        for (let px = 0; px <= ww; px++) { const f = (px / ww * 2 - 1) * 18; const sinc = f === 0 ? 1 : Math.sin(Math.PI * f * Wd) / (Math.PI * f * Wd); const y = yS + hh / 2 - sinc * A; px ? ctx.lineTo(x0 + px, y) : ctx.moveTo(x0 + px, y); } ctx.stroke(); ctx.restore();
+        ro.innerHTML = `<b>Fourierova transformace (FT)</b> · šířka pulzu ${SK.fmt(Wd * 2, 2)}<br>Aperiodický spojitý signál ` +
+          `(obdélníkový pulz) má <b>spojité spektrum</b> tvaru sinc. Užší pulz → širší spektrum (princip neurčitosti).`;
+      } else {
+        // discrete rect (M samples) stems + Dirichlet (periodic) spectrum
+        const M = param; const Ns = 32; ctx.save(); ctx.strokeStyle = t.accent; ctx.fillStyle = t.accent; ctx.lineWidth = 2;
+        for (let n = 0; n < Ns; n++) { const val = (n < M) ? 1 : 0; const px = x0 + n / (Ns - 1) * ww; if (val) { ctx.beginPath(); ctx.moveTo(px, yT + hh / 2); ctx.lineTo(px, yT + hh / 2 - A); ctx.stroke(); SK.dot(ctx, px, yT + hh / 2 - A, 2.5, t.accent); } else SK.dot(ctx, px, yT + hh / 2, 1.5, t.muted); }
+        ctx.restore();
+        // |sin(Mω/2)/sin(ω/2)| over [-2π,2π] (periodic)
+        ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 2; ctx.beginPath();
+        for (let px = 0; px <= ww; px++) { const om = (px / ww * 2 - 1) * 2 * Math.PI; const den = Math.sin(om / 2); const val = Math.abs(den) < 1e-4 ? M : Math.abs(Math.sin(M * om / 2) / den); const y = yS + hh / 2 - (val / M) * A * 0.95; px ? ctx.lineTo(x0 + px, y) : ctx.moveTo(x0 + px, y); } ctx.stroke(); ctx.restore();
+        // ±π markers
+        ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([3, 3]); [0.25, 0.75].forEach(fr => { const px = x0 + fr * ww; ctx.beginPath(); ctx.moveTo(px, yS); ctx.lineTo(px, yS + hh); ctx.stroke(); }); ctx.setLineDash([]); ctx.restore();
+        SK.label(ctx, '−π', x0 + 0.25 * ww, yS + hh - 2, { color: t.muted, align: 'center', font: '9px system-ui' });
+        SK.label(ctx, '+π', x0 + 0.75 * ww, yS + hh - 2, { color: t.muted, align: 'center', font: '9px system-ui' });
+        ro.innerHTML = `<b>DTFT</b> · ${param} vzorků<br>Diskrétní signál má <b>spojité a periodické spektrum</b> ` +
+          `(opakuje se po 2π). Tvar = Dirichletovo jádro. Diskrétnost v čase ⇄ periodicita ve spektru.`;
+      }
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'FS (period.)', value: 'FS' }, { label: 'FT (aperiod.)', value: 'FT' }, { label: 'DTFT (diskr.)', value: 'DTFT' }],
+      value: 'FS', onchange: (v) => { mode = v; param = v === 'FS' ? 7 : v === 'FT' ? 6 : 8; sP.set(param); setF(); view.redraw(); } }).el);
+    const sP = SK.slider({ label: 'Parametr (harmonické / šířka / vzorky)', min: 1, max: 16, step: 1, value: 7, unit: '', fmt: (v) => v | 0, oninput: (v) => { param = v | 0; view.redraw(); } });
+    SK.controls(ctrl, [sP]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Tvar spektra určují dvě vlastnosti signálu. Periodicita v čase → diskrétní (čárové) spektrum (FS). ' +
+      'Spojitost a aperiodicita → spojité spektrum (FT). Diskrétnost v čase → periodické spektrum (DTFT, opakuje se po 2π). ' +
+      'Tedy: periodický↔diskrétní a diskrétní↔periodický se mezi časem a frekvencí „prohazují". Měň parametr a porovnej.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

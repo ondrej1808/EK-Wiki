@@ -428,6 +428,7 @@
           { type: 'sim', label: 'Autokorelace',              src: SIM + 'sas_autocorr.html' },
           { type: 'sim', label: 'Křížová korelace (2 signály)', src: SIM + 'sas_crosscorr.html' },
           { type: 'sim', label: 'Vzorkování a spektrum',     src: SIM + 'sas_sampling.html' },
+          { type: 'sim', label: 'Spektra: FS / FT / DTFT',    src: SIM + 'sas_spectra.html' },
         ],
       },
       {
