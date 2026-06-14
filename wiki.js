@@ -446,6 +446,7 @@
         code: 'B2B31CZS', title: 'Číslicové zpracování signálů',
         resources: [
           { type: 'sim', label: 'Decimace / interpolace (multirate)', src: SIM + 'czs_multirate.html' },
+          { type: 'sim', label: 'Overlap-Add / Overlap-Save (dlouhé signály)', src: SIM + 'czs_overlap.html' },
         ],
       },
       {

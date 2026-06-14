@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overlap-Add a Overlap-Save — CZS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Konvoluce dlouhého signálu — Overlap-Add &amp; Overlap-Save</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let method = 'ola', M = 5, L = 12, blk = 0, playing = false;
+    const Nx = 48;
+    // long input signal: pulse + impulse + triangle (recognizable after smoothing)
+    const x = [];
+    for (let n = 0; n < Nx; n++) { let v = 0; if (n >= 8 && n < 18) v = 1; if (n === 26) v = 1.2; if (n >= 34 && n < 44) v = (n < 39 ? (n - 34) / 5 : (44 - n) / 5); x.push(v); }
+    const hOf = () => Array.from({ length: M }, () => 1 / M);      // moving average
+    const xs = (n) => (n >= 0 && n < Nx ? x[n] : 0);
+
+    function convFull() { const h = hOf(); const y = new Array(Nx + M - 1).fill(0); for (let n = 0; n < y.length; n++) { let s = 0; for (let m = 0; m < M; m++) s += (xs(n - m)) * h[m]; y[n] = s; } return y; }
+    function blockOLA(k) { const h = hOf(); const out = new Array(L + M - 1).fill(0); for (let i = 0; i < L + M - 1; i++) { let s = 0; for (let m = 0; m < M; m++) { const xi = k * L + i - m; if (xi >= k * L && xi < k * L + L) s += xs(xi) * h[m]; } out[i] = s; } return { out, start: k * L }; }
+    function blockOLS(k) { const h = hOf(); const N = L + M - 1, s0 = k * L - (M - 1); const xb = []; for (let i = 0; i < N; i++) xb.push(xs(s0 + i));
+      const circ = new Array(N).fill(0); for (let n = 0; n < N; n++) { let s = 0; for (let m = 0; m < M; m++) s += h[m] * xb[((n - m) % N + N) % N]; circ[n] = s; }
+      return { circ, N, s0, valid: circ.slice(M - 1), start: k * L }; }
+    const nBlocks = () => Math.ceil(Nx / L);
+
+    function setF() { SK.katex(fEl, method === 'ola'
+      ? "OLA: bloky vstupu se nepřekrývají; výstupy délky L{+}M{-}1 se \\textbf{sčítají} v překryvu"
+      : "OLS: bloky vstupu se překrývají o M{-}1; po cyklické konvoluci se prvních M{-}1 \\textbf{zahodí}", false); }
+    setF();
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { acc += dt; if (acc > 0.9) { acc = 0; blk = (blk + 1) % nBlocks(); if (blk === 0) {/*loop*/ } } view.redraw(); });
+    let acc = 0;
+
+    function lane(ctx, y0, hh, t, title) { ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(40, y0 + hh / 2); ctx.lineTo(ctx.canvas.clientWidth - 12, y0 + hh / 2); ctx.stroke(); ctx.restore();
+      SK.label(ctx, title, 42, y0 + 11, { color: t.fg, font: '11px system-ui' }); }
+    function Xc(n, w) { return 40 + n / (Nx + M) * (w - 52); }
+    function stems(ctx, vals, off, y0, hh, color, w, alpha) { ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.globalAlpha = alpha || 1; ctx.lineWidth = 2;
+      const yc = y0 + hh / 2, A = hh / 2 - 6, mx = 1.2;
+      for (let i = 0; i < vals.length; i++) { const x0 = Xc(off + i, w), yv = yc - vals[i] / mx * A; ctx.beginPath(); ctx.moveTo(x0, yc); ctx.lineTo(x0, yv); ctx.stroke(); ctx.beginPath(); ctx.arc(x0, yv, 2, 0, 7); ctx.fill(); }
+      ctx.restore(); }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const hh = (h - 12) / 3 - 6;
+      const yA = 6, yB = 6 + hh + 8, yC = 6 + 2 * (hh + 8);
+      // Lane A: input x with current block highlighted
+      lane(ctx, yA, hh, t, 'vstup x[n] — aktuální blok ' + (blk + 1) + '/' + nBlocks());
+      if (method === 'ola') { ctx.save(); ctx.fillStyle = t.accent; ctx.globalAlpha = 0.12; ctx.fillRect(Xc(blk * L, w), yA, Xc(blk * L + L, w) - Xc(blk * L, w), hh); ctx.restore(); }
+      else { const s0 = blk * L - (M - 1); ctx.save(); ctx.fillStyle = t.accent; ctx.globalAlpha = 0.12; ctx.fillRect(Xc(Math.max(0, s0), w), yA, Xc(s0 + (L + M - 1), w) - Xc(Math.max(0, s0), w), hh); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.18; ctx.fillRect(Xc(Math.max(0, s0), w), yA, Xc(s0 + (M - 1), w) - Xc(Math.max(0, s0), w), hh); ctx.restore();
+        SK.label(ctx, 'překryv M−1', Xc(Math.max(0, s0), w) + 2, yA + hh - 4, { color: t.warn, font: '9px system-ui' }); }
+      stems(ctx, x, 0, yA, hh, t.accent2, w);
+
+      // Lane B: processing of current block
+      if (method === 'ola') {
+        lane(ctx, yB, hh, t, 'blok ⊛ h → délka L+M−1, přesah M−1 se přičte k dalšímu');
+        const b = blockOLA(blk); stems(ctx, b.out, b.start, yB, hh, t.ok, w);
+        // tail region (overlap with next)
+        ctx.save(); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.18; ctx.fillRect(Xc(b.start + L, w), yB, Xc(b.start + L + (M - 1), w) - Xc(b.start + L, w), hh); ctx.restore();
+        SK.label(ctx, 'přesah (+M−1) → SČÍTÁ se', Xc(b.start + L, w) + 2, yB + hh - 4, { color: t.warn, font: '9px system-ui' });
+      } else {
+        lane(ctx, yB, hh, t, 'blok (N=L+M−1) ⊛ cyklicky → prvních M−1 ZAHODIT, zbytek ULOŽIT');
+        const b = blockOLS(blk);
+        // discarded part (red) + kept part (green)
+        stems(ctx, b.circ.slice(0, M - 1), b.s0, yB, hh, t.pos, w, 0.5);
+        stems(ctx, b.valid, b.start, yB, hh, t.ok, w);
+        ctx.save(); ctx.fillStyle = t.pos; ctx.globalAlpha = 0.15; ctx.fillRect(Xc(b.s0, w), yB, Xc(b.s0 + (M - 1), w) - Xc(b.s0, w), hh); ctx.restore();
+        SK.label(ctx, 'zahodit (aliasing)', Xc(Math.max(0, b.s0), w) + 2, yB + hh - 4, { color: t.pos, font: '9px system-ui' });
+      }
+
+      // Lane C: accumulated output up to current block vs full reference
+      lane(ctx, yC, hh, t, 'výstup y[n] (sestaveno do bloku ' + (blk + 1) + ') vs. lineární konvoluce');
+      const full = convFull();
+      stems(ctx, full, 0, yC, hh, t.muted, w, 0.4);
+      const acc2 = new Array(Nx + M - 1).fill(0); let any = false;
+      for (let k = 0; k <= blk; k++) { if (method === 'ola') { const b = blockOLA(k); for (let i = 0; i < b.out.length; i++) if (b.start + i < acc2.length) acc2[b.start + i] += b.out[i]; }
+        else { const b = blockOLS(k); for (let i = 0; i < b.valid.length; i++) if (b.start + i < acc2.length) acc2[b.start + i] = b.valid[i]; } any = true; }
+      stems(ctx, acc2, 0, yC, hh, t.accent, w);
+
+      ro.innerHTML = `<b>${method === 'ola' ? 'Overlap-Add' : 'Overlap-Save'}</b> · blok ${blk + 1}/${nBlocks()} · L=${L}, M=${M}, N=L+M−1=${L + M - 1}<br>` +
+        (method === 'ola'
+          ? 'Vstup rozdělím na <b>nepřekrývající</b> bloky délky L. Každý lineárně konvoluji s h → výstup délky L+M−1 (o M−1 delší). Sousední výstupy se v překryvu <b>SČÍTAJÍ</b> → přesně lineární konvoluce.'
+          : 'Vstupní bloky se <b>překrývají</b> o M−1. Každý cyklicky konvoluji (délka N) — prvních M−1 vzorků je zkažených „obtočením" (aliasing), proto je <b>ZAHODÍM</b>, zbylých L uložím a poskládám za sebe.') +
+        '<br>Šedě je referenční lineární konvoluce — sestavený výstup ji přesně doplňuje.';
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Overlap-Add', value: 'ola' }, { label: 'Overlap-Save', value: 'ols' }],
+      value: 'ola', onchange: (v) => { method = v; blk = 0; setF(); view.redraw(); } }).el);
+    SK.controls(ctrl, [
+      SK.button({ label: '⏭ Další blok', primary: true, onclick: () => { blk = (blk + 1) % nBlocks(); view.redraw(); } }),
+      SK.button({ label: '▶ Přehrát', onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Přehrát'; } }),
+      SK.slider({ label: 'Délka bloku L', min: 6, max: 20, step: 1, value: 12, unit: '', fmt: (v) => v | 0, oninput: (v) => { L = v | 0; blk = 0; view.redraw(); } }),
+      SK.slider({ label: 'Délka filtru M', min: 2, max: 9, step: 1, value: 5, unit: '', fmt: (v) => v | 0, oninput: (v) => { M = v | 0; blk = 0; setF(); view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Dlouhý signál nelze konvoluovat najednou (paměť, zpoždění), tak se zpracuje po blocích. ' +
+      'Overlap-Add: vstup nakrájím na nepřekrývající bloky, každý konvoluji s filtrem (výstup je o M−1 delší) a ' +
+      'překrývající se „ocásky" sousedních výstupů SEČTU. Overlap-Save: beru překrývající se bloky, dělám rychlou ' +
+      '(cyklickou/FFT) konvoluci a prvních M−1 vzorků, které jsou zkažené cyklickým obtočením, ZAHODÍM; zbytek poskládám. ' +
+      'Oba dají identický výsledek jako přímá lineární konvoluce (šedá reference). Krokuj „Další blok" nebo přehraj.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
