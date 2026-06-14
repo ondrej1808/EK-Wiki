@@ -18,6 +18,12 @@ odporu.
 50.3. architektury IO
 Dvě hlavní rozdělení.
 50.3.1. Podle struktury paměti
+
+> 🎥 **How do SSDs Work?** (Branch Education) — Flash paměť, plovoucí hradlo, NAND buňky
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/5Mh3o886qpg" title="How do SSDs Work" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
 Von Neumannova architektura
 • Společná paměť pro data a program.
 • Výhoda: jednodušší návrh.

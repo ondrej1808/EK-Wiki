@@ -15,6 +15,30 @@ Jsou tři třídy adres - síťové adresy- první adresa v síti, nebo podsíti
 síti, nebo podsíti; umožňuje adresovat většímu počtu zařízení - loopback - pro testování, dělá to
 přesně to jak se to jmenuje
 Základy směrování v IP sítích
+
+> 🎥 **OSI Model Deep Dive** (Kevin Wallace) — vrstvový model komunikace
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/oVVlMqsLdro" title="OSI Model Deep Dive" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
+
+> 🎥 **Introducing the OSI Model** (krátké shrnutí)
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/L4A_cH23uCY" title="OSI Model intro" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
+
+> 🎥 **MAC adresy** (linková vrstva)
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/5LBrO4xwmR8" title="MAC Addresses" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
+
+> 🎥 **Typy IPv4/IPv6 komunikace** (unicast/multicast/broadcast)
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/EABf5cFlJH8" title="IPv4 IPv6 communication flows" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
 Směrování je proces nalezení optimální cesty v síti. Využívá k tomu informace obsažené v poli
 adresa cíle v záhlaví IP paketu. Proces probíhá na třetí vrstvě RM OSI a fyzické prvky které jej
 realizují se nazývají Směrovače (router).
