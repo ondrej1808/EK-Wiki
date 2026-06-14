@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Křížová korelace — SAS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Křížová korelace dvou signálů</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'), "R_{xy}(\\tau)=\\sum_n x[n]\\,y[n+\\tau]", false);
+    const ro = document.getElementById('ro');
+    const N = 128;
+    let typeA = 'pulse', typeB = 'pulse', delay = 20, noiseB = 0;
+    const noise = []; for (let i = 0; i < N; i++) noise.push(Math.random() * 2 - 1);
+
+    function sig(type, n) {
+      if (n < 0 || n >= N) return 0;
+      const u = n / N;
+      switch (type) {
+        case 'sin': return Math.sin(2 * Math.PI * 4 * u);
+        case 'square': return Math.sign(Math.sin(2 * Math.PI * 3 * u));
+        case 'pulse': return (n >= 20 && n < 40) ? 1 : 0;
+        case 'tri': { const p = (u * 4) % 1; return 2 * (p < 0.5 ? p : 1 - p) * 2 - 1; }
+        case 'chirp': return Math.sin(2 * Math.PI * (2 + 8 * u) * u);
+        case 'noise': return noise[n];
+      }
+      return 0;
+    }
+    const xOf = (n) => sig(typeA, n);
+    const yOf = (n) => sig(typeB, n - delay) + (noiseB ? 0.4 * noise[(n * 7) % N] : 0);
+
+    function crosscorr() {
+      const R = []; let peak = 0, peakTau = 0;
+      for (let tau = -N + 1; tau < N; tau++) { let s = 0; for (let n = 0; n < N; n++) s += xOf(n) * yOf(n + tau); R.push({ tau, v: s }); if (Math.abs(s) > Math.abs(peak)) { peak = s; peakTau = tau; } }
+      return { R, peak, peakTau };
+    }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function panel(ctx, x, y, w, hh, fn, color, label, t, mark) {
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y + hh / 2); ctx.lineTo(x + w, y + hh / 2); ctx.stroke(); ctx.restore();
+      let mx = 0.001; for (let n = 0; n < N; n++) mx = Math.max(mx, Math.abs(fn(n)));
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+      for (let n = 0; n < N; n++) { const px = x + n / (N - 1) * w, py = y + hh / 2 - fn(n) / mx * (hh / 2 - 4); n ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+      ctx.stroke(); ctx.restore();
+      SK.label(ctx, label, x + 2, y + 10, { color, font: '11px system-ui' });
+      if (mark != null) { const px = x + (mark + N) / (2 * N - 1) * w; ctx.save(); ctx.strokeStyle = t.warn; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(px, y); ctx.lineTo(px, y + hh); ctx.stroke(); ctx.setLineDash([]); ctx.restore(); }
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const x0 = 16, ww = w - 32, hh = (h - 30) / 3 - 8;
+      panel(ctx, x0, 8, ww, hh, xOf, t.accent, 'x[n] — signál A', t);
+      panel(ctx, x0, 8 + (hh + 8), ww, hh, yOf, t.accent2, 'y[n] — signál B (posun ' + delay + ')', t);
+      // cross-correlation panel
+      const cc = crosscorr(); const yR = 8 + 2 * (hh + 8);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, yR + hh / 2); ctx.lineTo(x0 + ww, yR + hh / 2); ctx.stroke(); ctx.restore();
+      let mx = 0.001; cc.R.forEach(p => mx = Math.max(mx, Math.abs(p.v)));
+      ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 2; ctx.beginPath();
+      cc.R.forEach((p, i) => { const px = x0 + i / (cc.R.length - 1) * ww, py = yR + hh / 2 - p.v / mx * (hh / 2 - 4); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'R_xy(τ) — křížová korelace', x0 + 2, yR + 10, { color: t.mag, font: '11px system-ui' });
+      // peak marker
+      const pIdx = cc.peakTau + N - 1, ppx = x0 + pIdx / (cc.R.length - 1) * ww, ppy = yR + hh / 2 - cc.peak / mx * (hh / 2 - 4);
+      SK.dot(ctx, ppx, ppy, 5, t.warn);
+      SK.label(ctx, 'τ_max=' + cc.peakTau, ppx + 6, ppy - 4, { color: t.warn, font: '11px system-ui' });
+
+      ro.innerHTML = `A=<b>${typeA}</b>, B=<b>${typeB}</b> (posun ${delay})<br>` +
+        `Maximum R_xy při <b>τ=${cc.peakTau}</b>` + (typeA === typeB ? ' = vzájemný posun signálů.' : ' (kde se signály nejvíc překrývají).') + `<br>` +
+        `Křížová korelace měří podobnost dvou signálů v závislosti na posunutí — využití: hledání zpoždění (radar, sonar, TDOA).`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    const opts = ['pulse', 'sin', 'square', 'tri', 'chirp', 'noise'].map(v => ({ label: v, value: v }));
+    const lblA = document.createElement('div'); lblA.className = 'sk-hint'; lblA.style.margin = '0'; lblA.textContent = 'Signál A:'; ctrl.appendChild(lblA);
+    ctrl.appendChild(SK.tabs({ options: opts, value: 'pulse', onchange: (v) => { typeA = v; view.redraw(); } }).el);
+    const lblB = document.createElement('div'); lblB.className = 'sk-hint'; lblB.style.margin = '0'; lblB.textContent = 'Signál B:'; ctrl.appendChild(lblB);
+    ctrl.appendChild(SK.tabs({ options: opts, value: 'pulse', onchange: (v) => { typeB = v; view.redraw(); } }).el);
+    SK.controls(ctrl, [
+      SK.slider({ label: 'Posun B (zpoždění)', min: -40, max: 60, step: 1, value: 20, unit: '', fmt: (v) => v | 0, oninput: (v) => { delay = v | 0; view.redraw(); } }),
+      SK.toggle({ label: 'Šum v B', value: false, onchange: (v) => { noiseB = v ? 1 : 0; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Vyber dva signály (A, B) a posun signálu B. Křížová korelace R_xy(τ) měří jejich podobnost při ' +
+      'posunutí o τ. Když jsou A i B stejné a B je zpožděné, maximum R_xy je přesně u toho zpoždění → tak se odhaduje ' +
+      'časové zpoždění (i v šumu — zapni „Šum v B"). Autokorelace je speciální případ A=B bez posunu (maximum v nule).';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

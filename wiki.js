@@ -426,6 +426,7 @@
           { type: 'sim', label: 'Skládání signálu',          src: SIM + 'sas_signal.html' },
           { type: 'sim', label: 'Fourierova transformace',   src: SIM + 'sas_transform.html' },
           { type: 'sim', label: 'Autokorelace',              src: SIM + 'sas_autocorr.html' },
+          { type: 'sim', label: 'Křížová korelace (2 signály)', src: SIM + 'sas_crosscorr.html' },
           { type: 'sim', label: 'Vzorkování a spektrum',     src: SIM + 'sas_sampling.html' },
         ],
       },
