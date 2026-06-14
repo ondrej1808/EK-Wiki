@@ -386,6 +386,7 @@
         code: 'B2B31ZEOA', title: 'Základy elektrických obvodů',
         resources: [
           { type: 'sim', label: 'RC přechod & RLC kmitočtová char.', src: SIM + 'zeoa_rc_rlc.html' },
+          { type: 'sim', label: 'Přechodné děje RC/RL (nabíjení/vybíjení)', src: SIM + 'zeoa_transients.html' },
         ],
       },
       {

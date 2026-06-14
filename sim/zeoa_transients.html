@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Přechodné děje RC / RL — ZEOA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Přechodné děje 1. řádu — nabíjení a vybíjení</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let elem = 'rc', phase = 'charge', R = 1000, C = 1e-6, L = 0.5, U = 5, tnow = 0, playing = false;
+    const tau = () => elem === 'rc' ? R * C : L / R;
+    function setF() { SK.katex(fEl, elem === 'rc'
+      ? (phase === 'charge' ? "u_C=U(1-e^{-t/\\tau}),\\ i=\\tfrac{U}{R}e^{-t/\\tau},\\ \\tau=RC" : "u_C=U e^{-t/\\tau},\\ i=\\tfrac{U}{R}e^{-t/\\tau}")
+      : (phase === 'charge' ? "i_L=\\tfrac{U}{R}(1-e^{-t/\\tau}),\\ u_L=U e^{-t/\\tau},\\ \\tau=\\tfrac{L}{R}" : "i_L=\\tfrac{U}{R}e^{-t/\\tau},\\ u_L=U e^{-t/\\tau}"), false); }
+    setF();
+
+    // normalized (0..1): voltage/U and current/(U/R)
+    function vals(tt) { const x = Math.exp(-tt / tau());
+      if (elem === 'rc') return phase === 'charge' ? { volt: 1 - x, cur: x } : { volt: x, cur: x };
+      return phase === 'charge' ? { cur: 1 - x, volt: x } : { cur: x, volt: x };
+    }
+    const I0mA = () => U / R * 1000;
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { tnow += dt * tau() * 1.2; if (tnow > 5 * tau()) tnow = 0; view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      // schematic (top)
+      const sx = 30, sy = 26, sw = 150, sh = 70;
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 2;
+      ctx.strokeRect(sx, sy, sw, sh);
+      // source
+      ctx.fillStyle = t.fg; ctx.font = '12px system-ui'; ctx.textAlign = 'center';
+      SK.label(ctx, (phase === 'charge' ? 'U=' + SK.fmt(U, 1) + ' V' : 'zkrat (vybíjení)'), sx + 24, sy - 6, { color: phase === 'charge' ? t.pos : t.muted, font: '11px system-ui' });
+      // R
+      ctx.fillStyle = t.accent2; ctx.fillRect(sx + sw / 2 - 16, sy - 5, 32, 10); SK.label(ctx, 'R', sx + sw / 2, sy - 8, { color: t.accent2, align: 'center', font: '11px system-ui' });
+      // element symbol
+      SK.label(ctx, elem === 'rc' ? 'C' : 'L', sx + sw - 6, sy + sh / 2, { color: t.accent, align: 'right', font: 'bold 13px system-ui', baseline: 'middle' });
+      ctx.restore();
+      SK.label(ctx, elem === 'rc' ? 'RC obvod' : 'RL obvod', sx + sw / 2, sy + sh + 14, { color: t.muted, align: 'center', font: '11px system-ui' });
+
+      // plot (rest)
+      const padL = 230, padR = 16, padT = 24, padB = 34;
+      const T = 5 * tau(); const X = (tt) => padL + tt / T * (w - padL - padR), Y = (v) => h - padB - v * (h - padT - padB);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(padL, Y(0)); ctx.lineTo(w - padR, Y(0)); ctx.moveTo(padL, Y(0)); ctx.lineTo(padL, padT); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let kk = 1; kk <= 5; kk++) { const x = X(kk * tau()); ctx.fillText(kk + 'τ', x, Y(0) + 5); ctx.strokeStyle = t.grid; ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, Y(0)); ctx.stroke(); }
+      ctx.restore();
+      // curves: voltage on the stored element + current
+      const vLabel = elem === 'rc' ? 'u_C' : 'i_L', cLabel = elem === 'rc' ? 'i' : 'u_L';
+      function plot(key, col) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.6; ctx.beginPath();
+        for (let px = 0; px <= w - padL - padR; px++) { const tt = px / (w - padL - padR) * T; const v = vals(tt)[key]; const y = Y(v); px ? ctx.lineTo(padL + px, y) : ctx.moveTo(padL + px, y); } ctx.stroke(); ctx.restore(); }
+      // primary stored quantity (charge→ uC for RC / iL for RL) bold accent; the other mag
+      plot(elem === 'rc' ? 'volt' : 'cur', t.accent);
+      plot(elem === 'rc' ? 'cur' : 'volt', t.mag);
+      SK.label(ctx, (elem === 'rc' ? 'u_C(t)' : 'i_L(t)') + ' (spojité)', w - padR - 4, padT + 12, { color: t.accent, align: 'right', font: '12px system-ui' });
+      SK.label(ctx, cLabel + '(t)', w - padR - 4, padT + 28, { color: t.mag, align: 'right', font: '12px system-ui' });
+      // τ marker (63%/37%)
+      const xT = X(tau()); ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(xT, padT); ctx.lineTo(xT, Y(0)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      // current time marker
+      const tt = SK.clamp(tnow, 0, T), vv = vals(tt);
+      SK.dot(ctx, X(tt), Y(elem === 'rc' ? vv.volt : vv.cur), 5, t.accent);
+      SK.dot(ctx, X(tt), Y(elem === 'rc' ? vv.cur : vv.volt), 5, t.mag);
+
+      const peakV = U, peakI = I0mA();
+      ro.innerHTML = `<b>${elem === 'rc' ? 'RC' : 'RL'} — ${phase === 'charge' ? 'nabíjení' : 'vybíjení'}</b><br>` +
+        `τ = ${elem === 'rc' ? 'RC' : 'L/R'} = <b>${SK.fmt(tau() * 1000, 2)} ms</b> · U=${SK.fmt(U, 1)} V, I₀=U/R=${SK.fmt(peakI, 2)} mA<br>` +
+        `t=${SK.fmt(tt * 1000, 2)} ms: ${vLabel}=${SK.fmt((elem === 'rc' ? vv.volt : vv.cur) * (elem === 'rc' ? peakV : peakI), 2)} ${elem === 'rc' ? 'V' : 'mA'}, ${cLabel}=${SK.fmt((elem === 'rc' ? vv.cur : vv.volt) * (elem === 'rc' ? peakI : peakV), 2)} ${elem === 'rc' ? 'mA' : 'V'}<br>` +
+        `Za τ je ${phase === 'charge' ? 'náběh na ~63 %' : 'pokles na ~37 %'}, za 5τ prakticky ustáleno. Skokem se nemění ${elem === 'rc' ? 'u_C' : 'i_L'}.`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'RC', value: 'rc' }, { label: 'RL', value: 'rl' }], value: 'rc', onchange: (v) => { elem = v; setF(); rebuild(); view.redraw(); } }).el);
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Nabíjení', value: 'charge' }, { label: 'Vybíjení', value: 'discharge' }], value: 'charge', onchange: (v) => { phase = v; setF(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      const items = [
+        SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+        SK.slider({ label: 'Odpor R', min: 100, max: 5000, step: 50, value: R, unit: 'Ω', fmt: (v) => v | 0, oninput: (v) => { R = v; view.redraw(); } }),
+        SK.slider({ label: 'Napětí U', min: 1, max: 12, step: 0.5, value: U, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { U = v; view.redraw(); } }),
+      ];
+      if (elem === 'rc') items.push(SK.slider({ label: 'Kapacita C', min: 0.1, max: 10, step: 0.1, value: C * 1e6, unit: 'µF', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { C = v * 1e-6; view.redraw(); } }));
+      else items.push(SK.slider({ label: 'Indukčnost L', min: 0.05, max: 2, step: 0.05, value: L, unit: 'H', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { L = v; view.redraw(); } }));
+      SK.controls(holder, items);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Obvod 1. řádu přechází po sepnutí exponenciálně do nového ustáleného stavu s časovou konstantou τ ' +
+      '(RC: τ=RC, RL: τ=L/R). Skokem se nemění napětí na kondenzátoru (u_C) ani proud cívkou (i_L) — to jsou „setrvačné" ' +
+      'veličiny. Při nabíjení roste sledovaná veličina k ustálené hodnotě (za τ ~63 %, za 5τ ~99 %), při vybíjení klesá ' +
+      '(za τ na ~37 %). Druhá veličina (proud u RC, napětí u RL) klesá z počáteční hodnoty. Přepínej RC/RL a nabíjení/vybíjení.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
