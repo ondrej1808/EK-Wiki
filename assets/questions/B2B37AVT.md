@@ -64,6 +64,12 @@ limitace výrobního procesu, kde různé fotorezistory nemají přesně stejnou
 2
 
 Obrázek 4: CCD vlevo, CMOS vpravo
+
+> 🎥 **The Chips That See: Rise of the Image Sensor** (Asianometry)
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/4dX2IsZDBfg" title="Rise of the Image Sensor" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
 Před senzorem bývá filtr dolní propusti k rozmazání obrazu, protože nebýt jich, tak se může porušit
 podmínkaprostorovéhovzorkovacíhokmitočtu.Taje0,5cyklunapixelcožznamenážemaximálněpůlka
 sinusovky se může vejít do pixelu jinak nastane porušení podmínky a vznikne aliasing.
@@ -123,6 +129,24 @@ blíží se entropii zdroje což je minimální počet bitů na jeden znak potř
 viz obr. 7. Huffmanovo kódování tedy přiřazuje nejkratší počet bitů hodnotám s nejpravděpodobnéjším
 výskytem.
 Ztrátová komprese používaná v JPEG je 2D Discrete Cosine Transform (DCT) kódování.
+
+> 🎥 **The Unreasonable Effectiveness of JPEG: A Signal Processing Approach** (Reducible)
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/0me3guauqOU" title="JPEG signal processing" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
+
+> 🎥 **How are Images Compressed? JPEG In Depth** (Branch Education)
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/Kv1Hiv3ox8I" title="JPEG In Depth" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
+
+> 🎥 **Huffman Coding and Huffman Trees** (Tom Scott) — bezeztrátové entropické kódování
+
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:14px 0;max-width:680px;border-radius:8px;overflow:hidden">
+<iframe src="https://www.youtube-nocookie.com/embed/JsTptu56GM8" title="Huffman Coding" loading="lazy" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
 Doporučení je podívat se na toto video, protože to je obtížné na vysvětlení, je to vhodný trochu umět a
 stejně to má celý odstavec (nebo skipnout protože se na to určitě nikdo nezeptá). Postup je v obr. 8. 2D
 DCT funguje postupně tak, že se nejprve vycentruje jas pixelu kolem nuly, což je v případě černobílého
