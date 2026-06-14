@@ -405,6 +405,7 @@
           { type: 'sim', label: 'AC · Faradayův zákon (indukce)',       src: SIM + 'empa_faraday.html' },
           { type: 'sim', label: 'Reakce látky · polarizace & hystereze', src: SIM + 'empa_materials.html' },
           { type: 'sim', label: 'Vzájemná indukčnost (2 cívky)', src: SIM + 'empa_mutual.html' },
+          { type: 'sim', label: 'Energie a hustota energie mag. pole', src: SIM + 'empa_energy.html' },
         ],
       },
       {

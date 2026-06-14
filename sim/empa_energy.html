@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energie magnetického pole — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Energie magnetického pole cívky</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "W_m=\\tfrac12 L I^2=\\tfrac12\\Phi I,\\quad w_m=\\tfrac12\\,\\vec B\\!\\cdot\\!\\vec H=\\dfrac{B^2}{2\\mu}", false);
+    const ro = document.getElementById('ro');
+    const mu0 = 4 * Math.PI * 1e-7;
+    let I = 2, N = 200, lcm = 10, rcm = 2, mur = 1;
+
+    function quantities() {
+      const l = lcm / 100, r = rcm / 100, A = Math.PI * r * r, mu = mu0 * mur;
+      const B = mu * N * I / l;            // T
+      const L = mu * N * N * A / l;        // H
+      const W = 0.5 * L * I * I;           // J
+      const w = B * B / (2 * mu);          // J/m³
+      const vol = A * l;
+      return { B, L, W, w, vol, A, l };
+    }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const q = quantities();
+      const cx = w * 0.36, cy = h * 0.5, sw = Math.min(w * 0.42, 260), sh = Math.min(h * 0.5, 150);
+      // energy-density shading inside the solenoid (alpha ∝ w, normalized to a reference)
+      const wn = SK.clamp(q.w / 2000, 0.05, 1);
+      ctx.save(); ctx.fillStyle = t.mag; ctx.globalAlpha = 0.10 + 0.5 * wn; ctx.fillRect(cx - sw / 2, cy - sh / 2, sw, sh); ctx.restore();
+      // solenoid coil (ellipse turns)
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2;
+      const turns = 9; for (let i = 0; i < turns; i++) { const x = cx - sw / 2 + (i + 0.5) * sw / turns; ctx.beginPath(); ctx.ellipse(x, cy, 8, sh / 2, 0, 0, 7); ctx.stroke(); }
+      ctx.restore();
+      // field lines inside (density ∝ B)
+      const nl = Math.round(SK.clamp(q.B / 0.02, 1, 7));
+      ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 1.5;
+      for (let i = 0; i < nl; i++) { const yy = cy - sh / 2 + (i + 0.5) * sh / nl; SK.arrow(ctx, cx - sw / 2 - 14, yy, cx + sw / 2 + 14, yy, { color: t.mag, width: 1.5, head: 6 }); }
+      ctx.restore();
+      SK.label(ctx, 'B = ' + SK.fmt(q.B * 1000, 1) + ' mT', cx, cy - sh / 2 - 10, { color: t.mag, align: 'center', font: '12px system-ui' });
+      SK.label(ctx, 'cívka: N=' + N + ', l=' + lcm + ' cm, r=' + rcm + ' cm, μr=' + SK.fmt(mur, 0), cx, cy + sh / 2 + 18, { color: t.muted, align: 'center', font: '11px system-ui' });
+
+      // energy bar (right)
+      const bx = w * 0.78, by0 = cy + sh / 2, by1 = cy - sh / 2;
+      const Wn = SK.clamp(q.W / 0.05, 0.02, 1);
+      ctx.save(); ctx.fillStyle = t.ok; ctx.globalAlpha = 0.8; ctx.fillRect(bx - 24, by0 - (by0 - by1) * Wn, 48, (by0 - by1) * Wn); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.strokeRect(bx - 24, by1, 48, by0 - by1); ctx.restore();
+      SK.label(ctx, 'energie W', bx, by1 - 10, { color: t.ok, align: 'center', font: '12px system-ui' });
+      SK.label(ctx, 'W = ½LI²', bx, by0 + 18, { color: t.muted, align: 'center', font: '11px system-ui' });
+
+      ro.innerHTML = `Indukčnost L = <b>${SK.fmt(q.L * 1e3, 3)} mH</b><br>` +
+        `Energie W_m = ½LI² = <b>${q.W < 1e-3 ? SK.fmt(q.W * 1e6, 1) + ' µJ' : SK.fmt(q.W * 1e3, 2) + ' mJ'}</b><br>` +
+        `Hustota energie w_m = B²/(2μ) = <b>${SK.fmt(q.w, 0)} J/m³</b><br>` +
+        `Kontrola: w·V = ${SK.fmt(q.w * q.vol * 1e6, 1)} µJ ≈ W (energie je „uložená" v objemu pole).`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Proud I', min: 0.2, max: 6, step: 0.1, value: 2, unit: 'A', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { I = v; view.redraw(); } }),
+      SK.slider({ label: 'Počet závitů N', min: 20, max: 500, step: 10, value: 200, unit: '', fmt: (v) => v | 0, oninput: (v) => { N = v | 0; view.redraw(); } }),
+      SK.slider({ label: 'Délka l', min: 4, max: 30, step: 1, value: 10, unit: 'cm', fmt: (v) => v | 0, oninput: (v) => { lcm = v; view.redraw(); } }),
+      SK.slider({ label: 'Poloměr r', min: 1, max: 5, step: 0.5, value: 2, unit: 'cm', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { rcm = v; view.redraw(); } }),
+      SK.slider({ label: 'Permeabilita μr', min: 1, max: 1000, step: 1, value: 1, unit: '', fmt: (v) => v | 0, oninput: (v) => { mur = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Cívka protékaná proudem si „uschovává" energii v magnetickém poli: W_m = ½LI² = ½ΦI. Tu lze také vyjádřit ' +
+      'jako integrál objemové hustoty energie w_m = ½B·H = B²/(2μ) přes objem pole — uvnitř solenoidu W ≈ w·V. Energie ' +
+      'roste s druhou mocninou proudu i počtu závitů a feromagnetické jádro (velké μr) ji při daném proudu výrazně zvýší. ' +
+      'Sleduj, jak se intenzita pole (hustota čar), hustota energie (jas) i celková energie (zelený sloupec) mění s parametry.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
