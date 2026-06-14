@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JPEG komprese — AVT</title>
+<link rel="stylesheet" href="sim-kit.css">
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>JPEG — bloková DCT a kvantování</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    document.getElementById('formula').textContent = 'RGB→YCbCr → 8×8 DCT → kvantování (kvalita) → klikatý sken → entropie';
+    const ro = document.getElementById('ro');
+    const S = 64;                         // image S×S, 8×8 blocks
+    let quality = 50;
+    // procedural grayscale image (gradient + edge + bright disk → low & high freq)
+    const img = new Float64Array(S * S);
+    for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+      let v = 90 + 90 * (x / S);
+      if (x + y > S) v += 70;                                   // diagonal edge
+      if ((x - 22) ** 2 + (y - 40) ** 2 < 120) v = 235;          // bright disk
+      img[y * S + x] = SK.clamp(v, 0, 255);
+    }
+    const QL = [16,11,10,16,24,40,51,61, 12,12,14,19,26,58,60,55, 14,13,16,24,40,57,69,56, 14,17,22,29,51,87,80,62,
+      18,22,37,56,68,109,103,77, 24,35,55,64,81,104,113,92, 49,64,78,87,103,121,120,101, 72,92,95,98,112,100,103,99];
+
+    function dct8(v) { const C = new Array(8);
+      for (let u = 0; u < 8; u++) { let s = 0; for (let x = 0; x < 8; x++) s += v[x] * Math.cos((2 * x + 1) * u * Math.PI / 16); C[u] = 0.5 * (u === 0 ? Math.SQRT1_2 : 1) * s; } return C; }
+    function idct8(C) { const v = new Array(8);
+      for (let x = 0; x < 8; x++) { let s = 0; for (let u = 0; u < 8; u++) s += (u === 0 ? Math.SQRT1_2 : 1) * C[u] * Math.cos((2 * x + 1) * u * Math.PI / 16); v[x] = 0.5 * s; } return v; }
+
+    function process() {
+      const s = quality < 50 ? 5000 / quality : 200 - 2 * quality;
+      const Qs = QL.map(q => Math.max(1, Math.floor((q * s + 50) / 100)));
+      const out = new Float64Array(S * S); let nz = 0, total = 0;
+      let blkCoef = null;
+      for (let by = 0; by < S; by += 8) for (let bx = 0; bx < S; bx += 8) {
+        // load block (level shift −128)
+        const blk = []; for (let y = 0; y < 8; y++) { const row = []; for (let x = 0; x < 8; x++) row.push(img[(by + y) * S + (bx + x)] - 128); blk.push(row); }
+        // 2D DCT: rows then cols
+        let C = blk.map(dct8); const Ct = [];
+        for (let x = 0; x < 8; x++) { const col = []; for (let y = 0; y < 8; y++) col.push(C[y][x]); Ct.push(dct8(col)); }
+        // Ct[x][y] = coeff; quantize
+        const Q = [];
+        for (let x = 0; x < 8; x++) { Q.push([]); for (let y = 0; y < 8; y++) { const qv = Math.round(Ct[x][y] / Qs[y * 8 + x]); Q[x].push(qv); total++; if (qv !== 0) nz++; } }
+        if (bx === 16 && by === 16) blkCoef = Q;
+        // dequantize + inverse
+        const D = []; for (let x = 0; x < 8; x++) { D.push([]); for (let y = 0; y < 8; y++) D[x].push(Q[x][y] * Qs[y * 8 + x]); }
+        // inverse: columns then rows
+        const Ci = []; for (let x = 0; x < 8; x++) Ci.push(idct8(D[x]));   // Ci[x][y]
+        for (let y = 0; y < 8; y++) { const row = []; for (let x = 0; x < 8; x++) row.push(Ci[x][y]); const rec = idct8(row);
+          for (let x = 0; x < 8; x++) out[(by + y) * S + (bx + x)] = SK.clamp(rec[x] + 128, 0, 255); }
+      }
+      return { out, nz, total, blkCoef };
+    }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const res = process();
+      const sc = Math.min((w - 60) / (2 * S + S / 2), (h - 70) / S);
+      const ox = 24, oy = 30;
+      const paint = (data, x0) => { for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) { const v = Math.round(data[y * S + x]); ctx.fillStyle = `rgb(${v},${v},${v})`; ctx.fillRect(x0 + x * sc, oy + y * sc, Math.ceil(sc), Math.ceil(sc)); } };
+      paint(img, ox);
+      paint(res.out, ox + S * sc + 24);
+      SK.label(ctx, 'originál', ox + S * sc / 2, oy - 8, { color: t.fg, align: 'center', font: '12px system-ui' });
+      SK.label(ctx, 'JPEG (kvalita ' + quality + ')', ox + S * sc + 24 + S * sc / 2, oy - 8, { color: t.fg, align: 'center', font: '12px system-ui' });
+      // 8×8 quantized DCT block viz (which coeffs survive)
+      const bx0 = ox + 2 * S * sc + 48, b = Math.min((w - bx0 - 16) / 8, (h - 70) / 8);
+      if (res.blkCoef && b > 4) {
+        for (let x = 0; x < 8; x++) for (let y = 0; y < 8; y++) { const nz = res.blkCoef[x][y] !== 0;
+          ctx.fillStyle = nz ? t.accent : t.grid; ctx.fillRect(bx0 + x * b, oy + y * b, b - 1, b - 1); }
+        SK.label(ctx, '8×8 DCT blok', bx0 + 4 * b, oy - 8, { color: t.fg, align: 'center', font: '11px system-ui' });
+        SK.label(ctx, 'fialově = nenulový koef.', bx0 + 4 * b, oy + 8 * b + 14, { color: t.muted, align: 'center', font: '10px system-ui' });
+        SK.label(ctx, 'DC ↖', bx0 + 2, oy + b - 3, { color: '#fff', font: '9px system-ui' });
+      }
+      const pct = 100 * res.nz / res.total;
+      ro.innerHTML = `<b>Kvalita ${quality}</b><br>Nenulových koeficientů: <b>${pct.toFixed(1)} %</b> (≈ míra komprese)<br>` +
+        `Nízká kvalita → hrubší kvantování → víc koef. na nulu → menší soubor, ale <b>blokové artefakty</b> a ztráta detailů.<br>` +
+        `Oko je tolerantnější k barvě (Cb,Cr se podvzorkují) než k jasu (Y).`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Kvalita', min: 5, max: 95, step: 5, value: 50, unit: '', fmt: (v) => v | 0, oninput: (v) => { quality = v | 0; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'JPEG: obraz se převede z RGB do YCbCr (barva Cb,Cr se podvzorkuje), rozdělí na bloky 8×8 a každý se ' +
+      'transformuje 2D diskrétní kosinovou transformací (DCT). Koeficienty se kvantují kvantizační maticí — vyšší ' +
+      'frekvence (detaily) se kvantují hruběji a často padnou na nulu. Klikatým skenem a entropickým kódováním vznikne ' +
+      'malý soubor. Nižší kvalita = víc nul = menší soubor, ale blokové artefakty. Měň kvalitu a porovnej.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
