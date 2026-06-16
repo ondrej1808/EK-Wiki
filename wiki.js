@@ -426,6 +426,7 @@
           { type: 'sim', label: 'Carnotův cyklus',  src: SIM + 'fy2_carnot.html' },
           { type: 'sim', label: 'Tenká čočka – spojka / rozptylka', src: SIM + 'fy2_lens.html' },
           { type: 'sim', label: 'Pohled pozorovatele skrz čočku', src: SIM + 'fy2_lens_view.html' },
+          { type: 'sim', label: 'Dvojštěrbina – interference & koherence', src: SIM + 'fy2_doubleslit.html' },
         ],
       },
       {

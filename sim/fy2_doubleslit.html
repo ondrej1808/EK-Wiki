@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dvojštěrbinový experiment — FY2</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Dvojštěrbinová interference (Young)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "d\\sin\\theta = m\\lambda\\ (\\text{maxima}),\\quad \\Delta y=\\dfrac{\\lambda L}{d}", false);
+    const ro = document.getElementById('ro');
+    let lam = 26, dsep = 70, coherent = true, time = 0, speed = 2.4, rndPh = 0;
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { time += dt * speed; if (!coherent) rndPh += (Math.random() - 0.5) * dt * 30; view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const sx = w * 0.10, cy = h / 2, kk = 2 * Math.PI / lam, fieldW = w * 0.74, cell = 6;
+      const s1 = { x: sx, y: cy - dsep / 2 }, s2 = { x: sx, y: cy + dsep / 2 };
+      const ph2 = coherent ? 0 : rndPh;
+      // field render (two circular sources)
+      for (let py = 0; py < h; py += cell) for (let px = 0; px < fieldW; px += cell) {
+        const r1 = Math.hypot(px - s1.x, py - s1.y), r2 = Math.hypot(px - s2.x, py - s2.y);
+        const val = 0.5 * (Math.cos(kk * r1 - time) + Math.cos(kk * r2 - time - ph2));
+        const g = Math.round(128 + 120 * SK.clamp(val, -1, 1));
+        ctx.fillStyle = `rgb(${g},${g},${g})`; ctx.fillRect(px, py, cell, cell);
+      }
+      // slit plane + sources
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, h); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.fillStyle = '#ef4444'; SK.dot(ctx, s1.x, s1.y, 4, '#ef4444'); SK.dot(ctx, s2.x, s2.y, 4, '#ef4444'); ctx.restore();
+      SK.label(ctx, 'štěrbiny (zdroje vlnek)', sx + 6, 16, { color: '#fff', font: '11px system-ui', stroke: '#000', strokeW: 3 });
+
+      // intensity on screen (right strip), time-averaged
+      const Xs = fieldW, px0 = fieldW + 8, pw = w - px0 - 12;
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(Xs, 0); ctx.lineTo(Xs, h); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2; ctx.beginPath(); let s = false;
+      for (let py = 0; py < h; py += 2) { const r1 = Math.hypot(Xs - s1.x, py - s1.y), r2 = Math.hypot(Xs - s2.x, py - s2.y);
+        const I = coherent ? (2 + 2 * Math.cos(kk * (r2 - r1))) : 2;       // coherent → fringes; incoherent → smooth sum
+        const x = px0 + I / 4 * pw; s ? ctx.lineTo(x, py) : (ctx.moveTo(x, py), s = true); }
+      ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'intenzita na stínítku', px0 + pw / 2, h - 8, { color: t.accent, align: 'center', font: '10px system-ui', baseline: 'bottom' });
+
+      const L = Xs - sx, dy = lam * L / dsep;
+      ro.innerHTML = `<b>${coherent ? 'Koherentní' : 'Nekoherentní'} vlnění</b> · λ=${lam} px, d=${dsep} px<br>` +
+        (coherent ? `Stálý fázový vztah → <b>stabilní proužky</b>. Maxima: d·sinθ=mλ; rozteč Δy≈λL/d≈<b>${SK.fmt(dy, 0)} px</b>.`
+          : `Náhodný fázový rozdíl → proužky se rozmazávají, intenzity se jen <b>sčítají</b> (žádný stabilní interferenční obrazec).`) +
+        `<br>Každá štěrbina je podle Huygensova principu zdrojem elementární vlnky; jejich superpozice tvoří obrazec.`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } }),
+      SK.tabs({ options: [{ label: 'Koherentní', value: 'coh' }, { label: 'Nekoherentní', value: 'inc' }], value: 'coh', onchange: (v) => { coherent = (v === 'coh'); view.redraw(); } }),
+      SK.slider({ label: 'Vlnová délka λ', min: 16, max: 44, step: 1, value: 26, unit: 'px', fmt: (v) => v | 0, oninput: (v) => { lam = v; view.redraw(); } }),
+      SK.slider({ label: 'Vzdálenost štěrbin d', min: 30, max: 140, step: 5, value: 70, unit: 'px', fmt: (v) => v | 0, oninput: (v) => { dsep = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Dvě štěrbiny osvětlené koherentním světlem se podle Huygensova principu chovají jako dva zdroje vln. ' +
+      'Vlny se na stínítku skládají: kde je dráhový rozdíl celistvý násobek λ (d·sinθ=mλ), nastává konstruktivní interference ' +
+      '(světlý proužek), kde lichý násobek λ/2, destruktivní (tmavý). Rozteč proužků Δy≈λL/d roste s λ a klesá s d. ' +
+      'Koherentní vlnění má stálý fázový vztah → stabilní proužky; u nekoherentního se fáze náhodně mění, proužky se ' +
+      'rozmažou a intenzity se jen sečtou. Přepni koherenci a měň λ, d.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
