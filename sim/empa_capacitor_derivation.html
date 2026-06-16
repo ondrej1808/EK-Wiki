@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odvození kapacity deskového kondenzátoru — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Odvození kapacity deskového kondenzátoru</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    const STEPS = [
+      { t: 'Sestava', c: 'Deskový kondenzátor: dvě desky plochy S ve vzdálenosti l, mezi nimi dielektrikum εr. Na deskách je náboj +Q a −Q.', tex: 'S,\\quad l,\\quad \\varepsilon=\\varepsilon_r\\varepsilon_0,\\quad \\pm Q' },
+      { t: 'Plošná hustota náboje', c: 'Náboj Q je rozprostřený rovnoměrně po ploše desky S → plošná hustota náboje σ = Q/S.', tex: '\\sigma=\\dfrac{Q}{S}' },
+      { t: 'Pole mezi deskami (Gaussova věta)', c: 'Pillbox kolem nabité desky: tok teče jen čelní plochou. Z Gaussovy věty vyjde mezi deskami homogenní pole E = σ/ε = Q/(εS). (Detail viz simulace Gaussovy věty.)', tex: 'E=\\dfrac{\\sigma}{\\varepsilon}=\\dfrac{Q}{\\varepsilon S}' },
+      { t: 'Napětí = ∫ E·dl', c: 'Napětí mezi deskami je integrál intenzity podél dráhy od záporné ke kladné desce. E je konstantní, dráha má délku l, takže U = E·l.', tex: 'U=\\int_{-}^{+}\\vec E\\cdot d\\vec l=E\\,l=\\dfrac{Q\\,l}{\\varepsilon S}' },
+      { t: 'Definice kapacity', c: 'Kapacita je poměr náboje a napětí. Dosadíme za U výraz z předchozího kroku.', tex: 'C=\\dfrac{Q}{U}=\\dfrac{Q}{\\;Q\\,l/(\\varepsilon S)\\;}' },
+      { t: 'Výsledek', c: 'Náboj Q se vykrátí → C = εS/l = εr·ε0·S/l. Kapacita roste s plochou desek a permitivitou, klesá se vzdáleností desek.', tex: 'C=\\dfrac{\\varepsilon S}{l}=\\dfrac{\\varepsilon_r\\varepsilon_0 S}{l}' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.55); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cx = w * 0.42, pw = Math.min(w * 0.5, 300), yTop = h * 0.26, yBot = h * 0.74, px0 = cx - pw / 2;
+      // dielectric fill
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.10; ctx.fillRect(px0, yTop, pw, yBot - yTop); ctx.restore();
+      if (p >= 0.6) SK.label(ctx, 'dielektrikum εr', cx, (yTop + yBot) / 2 + (p >= 1.6 ? -2 : 0), { color: t.accent2, align: 'center', font: '11px system-ui', baseline: 'middle' });
+      // plates
+      ctx.save(); ctx.fillStyle = t.pos; ctx.fillRect(px0, yTop - 9, pw, 9); ctx.fillStyle = t.neg; ctx.fillRect(px0, yBot, pw, 9); ctx.restore();
+      SK.label(ctx, '+Q', px0 - 8, yTop - 4, { color: t.pos, align: 'right', font: '12px system-ui', baseline: 'middle' });
+      SK.label(ctx, '−Q', px0 - 8, yBot + 4, { color: t.neg, align: 'right', font: '12px system-ui', baseline: 'middle' });
+      // S and l dimensions
+      SK.label(ctx, 'plocha S', cx, yTop - 16, { color: t.muted, align: 'center', font: '11px system-ui' });
+      ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.moveTo(px0 + pw + 16, yTop); ctx.lineTo(px0 + pw + 16, yBot); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'l', px0 + pw + 22, (yTop + yBot) / 2, { color: t.muted, font: '12px system-ui', baseline: 'middle' });
+      // σ (step ≥1)
+      if (p >= 0.7) { ctx.save(); ctx.globalAlpha = SK.clamp(p - 0.7, 0, 1); SK.label(ctx, 'σ = Q/S', px0 + 6, yTop - 16, { color: t.pos, font: '11px system-ui' }); ctx.restore(); }
+      // E field (step ≥2)
+      if (p >= 1.7) { const al = SK.clamp(p - 1.7, 0, 1); ctx.save(); ctx.globalAlpha = 0.85 * al;
+        const n = 7; for (let i = 0; i < n; i++) { const x = px0 + (i + 0.5) * pw / n; SK.arrow(ctx, x, yTop + 4, x, yBot - 4, { color: t.pos, width: 1.6, head: 6 }); }
+        ctx.restore(); SK.label(ctx, 'E = σ/ε (homogenní)', cx, yBot + 22, { color: t.pos, align: 'center', font: '11px system-ui' }); }
+      // integration (step 3 → 4): marker travels − → +, U bar fills
+      if (p >= 3) { const frac = SK.clamp(p - 3, 0, 1); const my = yBot - frac * (yBot - yTop);
+        ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx, yBot); ctx.lineTo(cx, my); ctx.stroke();
+        SK.dot(ctx, cx, my, 6, t.ok); SK.arrow(ctx, cx + 16, my, cx + 16, my - 14, { color: t.ok, width: 1.4, head: 5 }); SK.label(ctx, 'dl', cx + 22, my - 6, { color: t.ok, font: '10px system-ui' }); ctx.restore();
+        // U accumulator bar
+        const bx = px0 - 46, bh = (yBot - yTop) * frac; ctx.save(); ctx.fillStyle = t.ok; ctx.globalAlpha = 0.7; ctx.fillRect(bx, yBot - bh, 12, bh); ctx.globalAlpha = 1; ctx.strokeStyle = t.axis; ctx.strokeRect(bx, yTop, 12, yBot - yTop); ctx.restore();
+        SK.label(ctx, 'U=∫E·dl', bx - 2, yTop - 8, { color: t.ok, font: '10px system-ui' }); }
+      // result highlight
+      if (p >= 4.5) SK.label(ctx, 'C = εr·ε0·S/l', cx, h - 10, { color: t.accent, align: 'center', font: 'bold 14px system-ui', baseline: 'bottom' });
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj odvození krok po kroku (jako „ponder"): náboj → plošná hustota σ → pole E z Gaussovy věty → ' +
+      'napětí U=∫E·dl → kapacita C=Q/U → výsledek C=εr·ε0·S/l. Posuvníkem nebo tlačítky kroků skákej v čase. ' +
+      '&nbsp;<a href="gaussova_veta_simulace.html" target="_blank" rel="noopener" style="color:var(--sk-accent)">↗ Simulace Gaussovy věty</a> (odkud plyne E mezi deskami).';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>

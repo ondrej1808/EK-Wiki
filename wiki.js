@@ -220,6 +220,7 @@
             { type: 'note', label: '13 – El. a mag. pole, elektrostatika, kapacita', src: SZZ + 'EMPA/13 Elektricke a magneticke pole elektrostatika kapacita.md' },
             { type: 'note', label: '14 – Stacionární mag. pole, indukčnost, Faraday', src: SZZ + 'EMPA/14 Stacionarni magneticke pole indukcnost Faraday.md' },
             { type: 'pdf',  label: 'EMPA – complete edition',  src: SZZ + 'EMPA/empa_complete_edition.pdf' },
+            { type: 'sim',  label: 'Odvození kapacity kondenzátoru (krok za krokem)', src: 'sim/empa_capacitor_derivation.html' },
             { type: 'sum',  label: 'HEX – shrnutí okruhů',     src: AQ  + 'B2B17EMPA.md' },
             { type: 'sum',  label: 'Otázka 1 (detail)',         src: AM  + 'B2B17EMPA-01.md' },
             { type: 'sum',  label: 'Otázka 2 (detail)',         src: AM  + 'B2B17EMPA-02.md' },
