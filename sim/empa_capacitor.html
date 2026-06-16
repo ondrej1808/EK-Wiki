@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kapacita kondenzátoru — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Deskový kondenzátor — kapacita</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "C=\\dfrac{\\varepsilon_0\\varepsilon_r A}{d},\\quad Q=CU,\\quad E=\\dfrac{U}{d},\\quad W=\\tfrac12 CU^2", false);
+    const ro = document.getElementById('ro');
+    const e0 = 8.854e-12;
+    let A = 100, d = 2, er = 4, x = 0.5, U = 10;   // cm², mm, −, insertion fraction, V
+
+    function C() { const Am = A / 1e4, dm = d / 1000; return e0 * Am / dm * ((1 - x) + x * er); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const cx = w * 0.42, cyTop = h * 0.30, gap = SK.clamp(d * 18, 24, 150), pw = SK.clamp(A * 2.4, 120, w * 0.6);
+      const cyBot = cyTop + gap, px0 = cx - pw / 2;
+      // plates
+      ctx.save(); ctx.fillStyle = t.pos; ctx.fillRect(px0, cyTop - 8, pw, 8); ctx.fillStyle = t.neg; ctx.fillRect(px0, cyBot, pw, 8); ctx.restore();
+      SK.label(ctx, '+Q', px0 - 6, cyTop - 4, { color: t.pos, align: 'right', font: '12px system-ui', baseline: 'middle' });
+      SK.label(ctx, '−Q', px0 - 6, cyBot + 4, { color: t.neg, align: 'right', font: '12px system-ui', baseline: 'middle' });
+      // dielectric slab (inserted from right, covers fraction x of area)
+      const dw = pw * x; ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.18; ctx.fillRect(px0 + pw - dw, cyTop, dw, gap); ctx.globalAlpha = 1; ctx.strokeStyle = t.accent2; ctx.lineWidth = 1.5; ctx.strokeRect(px0 + pw - dw, cyTop, dw, gap); ctx.restore();
+      if (x > 0.05) SK.label(ctx, 'dielektrikum εr=' + (er | 0), px0 + pw - dw / 2, cyTop + gap / 2, { color: t.accent2, align: 'center', font: '11px system-ui', baseline: 'middle' });
+      // field lines (density ∝ E; denser in dielectric region where D continuous but more bound charge)
+      ctx.save(); ctx.strokeStyle = t.pos; ctx.lineWidth = 1.3;
+      const nv = Math.round(SK.clamp(pw / 22, 4, 16));
+      for (let i = 0; i < nv; i++) { const xx = px0 + (i + 0.5) * pw / nv; const inD = xx > px0 + pw - dw; SK.arrow(ctx, xx, cyTop, xx, cyBot, { color: t.pos, width: inD ? 2 : 1.2, head: 5 }); }
+      ctx.restore();
+      // dimension d
+      ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.moveTo(px0 + pw + 14, cyTop); ctx.lineTo(px0 + pw + 14, cyBot); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'd=' + SK.fmt(d, 1) + ' mm', px0 + pw + 18, (cyTop + cyBot) / 2, { color: t.muted, font: '11px system-ui', baseline: 'middle' });
+      SK.label(ctx, 'plocha A=' + (A | 0) + ' cm²', cx, cyBot + 30, { color: t.muted, align: 'center', font: '11px system-ui' });
+
+      const Cv = C(), Q = Cv * U, E = U / (d / 1000), W = 0.5 * Cv * U * U;
+      ro.innerHTML = `<b>C = ${Cv * 1e12 < 1000 ? SK.fmt(Cv * 1e12, 1) + ' pF' : SK.fmt(Cv * 1e9, 2) + ' nF'}</b>` +
+        ` (s dielektrikem z ${x * 100 | 0} % plochy)<br>` +
+        `Q = CU = <b>${SK.fmt(Q * 1e9, 2)} nC</b> · E = U/d = <b>${SK.fmt(E / 1000, 1)} kV/m</b><br>` +
+        `Energie W = ½CU² = <b>${SK.fmt(W * 1e6, 2)} µJ</b><br>` +
+        `C roste s plochou a εr, klesá se vzdáleností desek (C∝A·εr/d). Dielektrikum zvyšuje C (vázané náboje zeslabí pole).`;
+    }
+
+    SK.controls(document.getElementById('ctrl'), [
+      SK.slider({ label: 'Plocha desek A', min: 20, max: 300, step: 10, value: 100, unit: 'cm²', fmt: (v) => v | 0, oninput: (v) => { A = v; view.redraw(); } }),
+      SK.slider({ label: 'Vzdálenost d', min: 0.5, max: 8, step: 0.1, value: 2, unit: 'mm', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { d = v; view.redraw(); } }),
+      SK.slider({ label: 'Permitivita εr', min: 1, max: 12, step: 0.5, value: 4, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { er = v; view.redraw(); } }),
+      SK.slider({ label: 'Zasunutí dielektrika', min: 0, max: 1, step: 0.05, value: 0.5, unit: '', fmt: (v) => (v * 100 | 0) + ' %', oninput: (v) => { x = v; view.redraw(); } }),
+      SK.slider({ label: 'Napětí U', min: 1, max: 50, step: 1, value: 10, unit: 'V', fmt: (v) => v | 0, oninput: (v) => { U = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Kapacita deskového kondenzátoru C=ε₀εr·A/d: roste s plochou desek A a relativní permitivitou εr dielektrika, ' +
+      'klesá s jejich vzdáleností d. Dielektrikum mezi deskami se polarizuje — vázané náboje zeslabí pole, takže při stejném ' +
+      'napětí pojme víc náboje (C se zvětší εr×). Při částečném zasunutí se kondenzátor chová jako dvě paralelní kapacity ' +
+      '(vakuová + dielektrická část). Hraj si s plochou, mezerou, εr i mírou zasunutí a sleduj C, Q, E a energii.';
+    document.getElementById('ctrl').appendChild(hint);
+  })();</script>
+</body>
+</html>
