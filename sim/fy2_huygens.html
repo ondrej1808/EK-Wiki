@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Huygensův a Fermatův princip — FY2</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Huygensův a Fermatův princip</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let tab = 'huy', sub = 'plane', t0 = 0, playing = false, xp = 0.5, n1 = 1, n2 = 1.5;
+    function setF() { SK.katex(fEl, tab === 'huy'
+      ? "\\text{nová vlnoplocha = obálka elementárních vlnek z bodů staré vlnoplochy}"
+      : "t(P)=\\dfrac{n_1\\,|AP|+n_2\\,|PB|}{c}\\to\\min\\ \\Leftrightarrow\\ n_1\\sin\\theta_1=n_2\\sin\\theta_2", false); }
+    setF();
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { t0 += dt * 0.5; if (t0 > 1) t0 = 0; view.redraw(); });
+
+    function draw(ctx, w, h) { const t = SK.theme(); ctx.clearRect(0, 0, w, h); tab === 'huy' ? drawHuygens(ctx, w, h, t) : drawFermat(ctx, w, h, t); }
+
+    function drawHuygens(ctx, w, h, t) {
+      const x0 = w * 0.18, R = w * 0.26 * (0.3 + t0 * 0.7);
+      if (sub === 'plane') {
+        // old wavefront (vertical), wavelets, new wavefront (envelope)
+        ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(x0, 30); ctx.lineTo(x0, h - 30); ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'stará vlnoplocha', x0, 22, { color: t.accent2, align: 'center', font: '11px system-ui' });
+        ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 1; ctx.globalAlpha = 0.7;
+        for (let y = 50; y <= h - 50; y += 44) { ctx.beginPath(); ctx.arc(x0, y, R, -Math.PI / 2, Math.PI / 2); ctx.stroke(); SK.dot(ctx, x0, y, 2.5, t.mag); }
+        ctx.restore();
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(x0 + R, 30); ctx.lineTo(x0 + R, h - 30); ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'nová vlnoplocha (obálka)', x0 + R, h - 18, { color: t.accent, align: 'center', font: '11px system-ui' });
+        ro.innerHTML = '<b>Huygensův princip — rovinná vlna</b><br>Každý bod vlnoplochy je zdrojem elementární kulové vlnky. ' +
+          'Obálka (tečna) všech vlnek tvoří novou vlnoplochu → rovinná vlna zůstává rovinná.';
+      } else {
+        // barrier with slit; plane wave from left; slit → circular (diffracted) wavefronts
+        const xB = w * 0.42, cy = h / 2, slit = 14;
+        ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(xB, 30); ctx.lineTo(xB, cy - slit); ctx.moveTo(xB, cy + slit); ctx.lineTo(xB, h - 30); ctx.stroke(); ctx.restore();
+        // incoming plane wavefronts (left)
+        ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 1.6; ctx.globalAlpha = 0.7; for (let i = 0; i < 4; i++) { const x = xB - 20 - i * 22; ctx.beginPath(); ctx.moveTo(x, 40); ctx.lineTo(x, h - 40); ctx.stroke(); } ctx.restore();
+        // diffracted circular wavefronts from slit
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2; for (let i = 0; i < 5; i++) { const rr = (i * 36 + t0 * 36); ctx.beginPath(); ctx.arc(xB, cy, rr, -Math.PI / 2, Math.PI / 2); ctx.stroke(); } ctx.restore();
+        SK.dot(ctx, xB, cy, 4, '#ef4444');
+        SK.label(ctx, 'štěrbina = bodový zdroj', xB + 6, cy - slit - 8, { color: '#ef4444', font: '10px system-ui' });
+        SK.label(ctx, 'ohyb (difrakce) za překážkou', xB + 60, h - 18, { color: t.accent, align: 'center', font: '11px system-ui' });
+        ro.innerHTML = '<b>Huygensův princip — ohyb na štěrbině</b><br>Projde-li rovinná vlna úzkou štěrbinou, chová se ' +
+          'štěrbina jako bodový zdroj elementární vlnky → za překážkou se vlnoplochy zakřiví (difrakce). ' +
+          'Čím užší štěrbina vůči λ, tím výraznější ohyb.';
+      }
+    }
+
+    function drawFermat(ctx, w, h, t) {
+      const yi = h * 0.52, A = { x: w * 0.16, y: h * 0.18 }, B = { x: w * 0.78, y: h * 0.86 };
+      ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.08; ctx.fillRect(0, 0, w * 0.62, yi); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.07; ctx.fillRect(0, yi, w * 0.62, h - yi); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, yi); ctx.lineTo(w * 0.62, yi); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'n₁=' + SK.fmt(n1, 2), 8, 16, { color: t.accent2, font: '11px system-ui' });
+      SK.label(ctx, 'n₂=' + SK.fmt(n2, 2), 8, h - 10, { color: t.warn, font: '11px system-ui' });
+      const Px = w * 0.16 + xp * (w * 0.46);
+      // path A→P→B
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(Px, yi); ctx.lineTo(B.x, B.y); ctx.stroke(); ctx.restore();
+      SK.dot(ctx, A.x, A.y, 5, t.accent); SK.dot(ctx, B.x, B.y, 5, t.accent); SK.dot(ctx, Px, yi, 5, t.ok);
+      SK.label(ctx, 'A', A.x - 12, A.y, { color: t.fg, font: 'bold 12px system-ui', baseline: 'middle' });
+      SK.label(ctx, 'B', B.x + 8, B.y, { color: t.fg, font: 'bold 12px system-ui', baseline: 'middle' });
+      // time vs crossing position curve (right strip)
+      const px0 = w * 0.66, pw = w - px0 - 12, py0 = 30, ph = h - 70;
+      const time = (xx) => { const PX = w * 0.16 + xx * (w * 0.46); return n1 * Math.hypot(PX - A.x, yi - A.y) + n2 * Math.hypot(PX - B.x, yi - B.y); };
+      let tmin = 1e9, tmax = 0, xmin = 0; for (let i = 0; i <= 200; i++) { const tt = time(i / 200); if (tt < tmin) { tmin = tt; xmin = i / 200; } if (tt > tmax) tmax = tt; }
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(px0, py0); ctx.lineTo(px0, py0 + ph); ctx.lineTo(px0 + pw, py0 + ph); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2; ctx.beginPath(); for (let i = 0; i <= 200; i++) { const x = px0 + i / 200 * pw, y = py0 + ph - (time(i / 200) - tmin) / (tmax - tmin) * ph * 0.9; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'optická dráha (∝ čas)', px0 + pw / 2, py0 - 4, { color: t.accent, align: 'center', font: '10px system-ui' });
+      // minimum marker + current
+      const mx = px0 + xmin * pw; ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(mx, py0); ctx.lineTo(mx, py0 + ph); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'min (Snell)', mx, py0 + 8, { color: t.ok, align: 'center', font: '9px system-ui' });
+      const cur = px0 + xp * pw; SK.dot(ctx, cur, py0 + ph - (time(xp) - tmin) / (tmax - tmin) * ph * 0.9, 4, t.warn);
+      // angles
+      const PXm = w * 0.16 + xmin * (w * 0.46), th1 = Math.atan2(PXm - A.x, yi - A.y), th2 = Math.atan2(B.x - PXm, B.y - yi);
+      ro.innerHTML = `<b>Fermatův princip</b> · n₁=${SK.fmt(n1, 2)}, n₂=${SK.fmt(n2, 2)}<br>` +
+        `Světlo volí dráhu s <b>nejkratším časem</b> (extrém optické dráhy). Posuň bod P — minimum nastane přesně tam, ` +
+        `kde platí Snellův zákon: n₁sinθ₁=n₂sinθ₂ (${SK.fmt(n1 * Math.sin(th1), 2)} = ${SK.fmt(n2 * Math.sin(th2), 2)} v minimu).`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Huygens', value: 'huy' }, { label: 'Fermat', value: 'fer' }], value: 'huy', onchange: (v) => { tab = v; setF(); rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      if (tab === 'huy') { holder.appendChild(SK.tabs({ options: [{ label: 'Rovinná vlna', value: 'plane' }, { label: 'Ohyb na štěrbině', value: 'slit' }], value: sub, onchange: (v) => { sub = v; view.redraw(); } }).el);
+        SK.controls(holder, [SK.button({ label: '▶ Spustit', primary: true, onclick: (b) => { anim.toggle(); b.textContent = anim.running ? '⏸ Pauza' : '▶ Spustit'; } })]); }
+      else SK.controls(holder, [
+        SK.slider({ label: 'Poloha bodu P', min: 0, max: 1, step: 0.01, value: xp, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { xp = v; view.redraw(); } }),
+        SK.slider({ label: 'Index n₁', min: 1, max: 2.5, step: 0.05, value: n1, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n1 = v; view.redraw(); } }),
+        SK.slider({ label: 'Index n₂', min: 1, max: 2.5, step: 0.05, value: n2, unit: '', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { n2 = v; view.redraw(); } })]);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Huygensův princip: každý bod vlnoplochy je zdrojem elementární kulové vlnky a nová vlnoplocha je jejich ' +
+      'obálka — tím se vysvětlí přímočaré šíření, odraz, lom i ohyb (na úzké štěrbině se vlna „rozteče"). Fermatův princip: ' +
+      'světlo se mezi dvěma body šíří po dráze s nejkratším časem (extrém optické dráhy); minimalizace času na rozhraní ' +
+      'přímo vede na Snellův zákon n₁sinθ₁=n₂sinθ₂. Posuň bod P a najdi minimum — je tam, kde paprsek splňuje Snella.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
