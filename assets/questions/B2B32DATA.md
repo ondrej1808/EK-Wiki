@@ -10,6 +10,29 @@ maska. Takže například pro IP adresu 147.32.192.35 a masku 255.255.255.0 je �
 (stanice) a zbytek 147.32.192.0 NET ID (síť a subsíť).
 Host část identifikuje zařízení. Čísla 1 v masce značí síťovou část adresy, 0 v masce znační host část
 adresy.
+
+#### K čemu maska vlastně slouží?
+
+1. **Zjistit adresu sítě** – operací AND (IP & maska) zařízení pozná, do které sítě paket patří.
+2. **Rozhodnout, zda je cíl lokální, nebo vzdálený** – pokud cíl leží ve stejné síti, komunikuje zařízení přímo; jinak pošle paket na výchozí bránu (default gateway).
+3. **Rozdělit velkou síť na podsítě (subnetting)** – jedna přidělená adresa se dá rozdělit na více menších sítí, což šetří adresní prostor a zlepšuje organizaci.
+
+**Příklad rozhodnutí.** Mám IP `192.168.1.42/24` a chci komunikovat s `192.168.1.100`:
+
+```
+192.168.1.42  AND 255.255.255.0 = 192.168.1.0   ← moje síť
+192.168.1.100 AND 255.255.255.0 = 192.168.1.0   ← cílová síť
+```
+
+Stejná síť → komunikuji **přímo** (bez routeru). Kdybych chtěl `8.8.8.8`:
+
+```
+8.8.8.8 AND 255.255.255.0 = 8.8.8.0   ← jiná síť
+```
+
+Jiná síť → paket pošlu na **výchozí bránu**.
+
+**Zkrácený zápis (CIDR).** Místo `255.255.255.0` se píše `/24` – číslo udává počet jedničkových bitů v masce. Např. `255.255.0.0` = `/16`, `255.0.0.0` = `/8`. Čím větší číslo za lomítkem, tím větší síťová část a tím menší podsíť (méně hostů).
 IPv6 nepotřebuje masky. Je složená ze 128 bitových čísel.
 Jsou tři třídy adres - síťové adresy- první adresa v síti, nebo podsíti - broadcast - poslendí adresa v
 síti, nebo podsíti; umožňuje adresovat většímu počtu zařízení - loopback - pro testování, dělá to
