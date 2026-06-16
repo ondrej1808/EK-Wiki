@@ -15,7 +15,11 @@
   <script src="sim-kit.js"></script>
   <script>(function () {
     SK.katex(document.getElementById('formula'),
-      "P_r = P_t + G_t + G_r - L_{FSL},\\quad L_{FSL}=92{,}44+20\\log R_{km}+20\\log f_{GHz}", false);
+      "\\begin{aligned}" +
+      "P_r &= P_t + G_t + G_r - L_{FSL}\\\\[2pt]" +
+      "L_{FSL} &=\\left(\\frac{4\\pi R}{\\lambda}\\right)^2=\\left(\\frac{4\\pi R f}{c}\\right)^2\\\\[2pt]" +
+      "L_{FSL}\\,[\\mathrm{dB}] &= 20\\log\\!\\left(\\frac{4\\pi R}{\\lambda}\\right)=92{,}44+20\\log R_{km}+20\\log f_{GHz}" +
+      "\\end{aligned}", true);
 
     const ro = document.getElementById('ro');
     const canvas = document.getElementById('c');

@@ -66,7 +66,13 @@
         ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(bx, cy - 40); ctx.lineTo(bx, cy + 40); ctx.stroke(); SK.label(ctx, 'reflektor', bx, cy - 46, { color: t.muted, align: 'center', font: '9px system-ui' });
         ctx.strokeStyle = t.accent2; ctx.beginPath(); ctx.moveTo(bx + 24, cy - 34); ctx.lineTo(bx + 24, cy + 34); ctx.stroke(); SK.label(ctx, 'aktivní', bx + 24, cy + 46, { color: t.accent2, align: 'center', font: '9px system-ui' });
         ctx.strokeStyle = t.fg; for (let i = 0; i < Math.min(N - 2, 6); i++) { const x = bx + 50 + i * 18; ctx.beginPath(); ctx.moveTo(x, cy - 26); ctx.lineTo(x, cy + 26); ctx.stroke(); }
-        SK.label(ctx, 'direktory →', bx + 110, cy - 32, { color: t.muted, font: '9px system-ui' }); SK.label(ctx, 'Yagi (' + N + ' prvků)', cx, h - 16, { color: t.muted, align: 'center', font: '11px system-ui' }); }
+        SK.label(ctx, 'direktory →', bx + 110, cy - 32, { color: t.muted, font: '9px system-ui' }); SK.label(ctx, 'Yagi (' + N + ' prvků)', cx, h - 16, { color: t.muted, align: 'center', font: '11px system-ui' });
+        // ── rozteče prvků (dimension lines) ──
+        const dimY = cy + 52, dim = (x1, x2, txt) => { ctx.save(); ctx.strokeStyle = t.muted; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x1, dimY); ctx.lineTo(x2, dimY); ctx.moveTo(x1, dimY - 4); ctx.lineTo(x1, dimY + 4); ctx.moveTo(x2, dimY - 4); ctx.lineTo(x2, dimY + 4); ctx.stroke(); ctx.restore();
+          SK.label(ctx, txt, (x1 + x2) / 2, dimY + 12, { color: t.muted, align: 'center', font: '9px system-ui' }); };
+        dim(bx, bx + 24, '0,15–0,25 λ');
+        dim(bx + 50, bx + 68, '0,2–0,35 λ'); }
       else { ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 60, cy - 8); ctx.lineTo(cx - 60, cy + 8); ctx.lineTo(cx - 20, cy + 8); ctx.lineTo(cx - 20, cy - 8); ctx.closePath(); ctx.stroke();
         const ap = 10 + apert * 6; ctx.beginPath(); ctx.moveTo(cx - 20, cy - 8); ctx.lineTo(cx + 50, cy - ap); ctx.moveTo(cx - 20, cy + 8); ctx.lineTo(cx + 50, cy + ap); ctx.moveTo(cx + 50, cy - ap); ctx.lineTo(cx + 50, cy + ap); ctx.stroke();
         SK.label(ctx, 'vlnovod', cx - 40, cy - 14, { color: t.muted, align: 'center', font: '9px system-ui' }); SK.label(ctx, 'trychtýř (horn)', cx + 20, h - 16, { color: t.muted, align: 'center', font: '11px system-ui' }); }
@@ -76,7 +82,8 @@
       ro.innerHTML = `<b>${names[type]}</b><br>Směrovost D ≈ <b>${SK.fmt(m.Ddbi, 1)} dBi</b>` + (m.bw !== '—' ? `, šířka svazku ≈ <b>${m.bw}</b>` : '') + `<br>` +
         (type === 'dipole' ? 'Všesměrová v rovině kolmé na dipól (toroid), nuly podél osy. Referenční ~2,15 dBi.'
           : type === 'monopole' ? 'Půlka dipólu nad zemní rovinou → vyzařuje do horní polokoule, dvojnásobná směrovost (~5 dBi).'
-          : type === 'yagi' ? 'Aktivní prvek + reflektor + direktory → jeden směrový lalok. Více prvků = vyšší zisk a užší svazek.'
+          : type === 'yagi' ? 'Aktivní prvek + reflektor + direktory → jeden směrový lalok. Více prvků = vyšší zisk a užší svazek.<br>'
+              + 'Rozteče: reflektor–aktivní ≈ 0,15–0,25 λ, mezi direktory ≈ 0,2–0,35 λ. Délky: reflektor ≈ 0,5 λ, aktivní ≈ 0,47 λ, direktory ≈ 0,4–0,45 λ.'
           : 'Vlnovod plynule rozšířený do ústí → úzký „tužkový" svazek, vysoký zisk; čím větší ústí (vůči λ), tím užší.');
     }
 
