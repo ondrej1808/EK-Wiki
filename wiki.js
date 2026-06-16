@@ -332,9 +332,8 @@
    *  Appended AFTER the cards-injection loop so sim subjects get no
    *  'cards'/'note' resources, only 'sim'. ── */
   const SIM = 'sim/';
-  SECTIONS.push({
-    section: '3 – Simulace',
-    subjects: [
+  // All simulations link directly into their subjects (no separate "Simulace" category).
+  const SIM_SUBJECTS = [
       {
         code: 'B0B01LAGA', title: 'Lineární algebra',
         resources: [
@@ -500,8 +499,13 @@
           { type: 'sim', label: 'MPEG – I/P/B snímky, pohyb. kompenzace', src: SIM + 'avt_mpeg.html' },
         ],
       },
-    ],
-  });
+  ];
+  for (const ss of SIM_SUBJECTS) {
+    for (const sec of SECTIONS) {
+      const subj = sec.subjects.find(s => s.code === ss.code);
+      if (subj) { subj.resources.push(...ss.resources); break; }
+    }
+  }
 
   /* ── Shared reference ── */
   const HEX_COMPOST = { type: 'pdf', label: 'hex_compost.pdf (hlavní reference)', src: SZZ + 'hex_compost.pdf' };
