@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIS struktura a Flash buňka — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>MIS struktura — pásy a Flash buňka</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let tab = 'mosc', Vg = 0, Qfg = 0;                 // gate voltage; Flash floating-gate charge (V_th shift)
+    const Eg = 1.1, EcB = 0.85, phiF = 0.35, Vfb = -0.6, twoF = 2 * phiF;
+    const Vth = Vfb + twoF + 0.5;                      // ~ inversion threshold (schematic)
+    function setF() { SK.katex(fEl, tab === 'mosc'
+      ? "M\\,|\\,I\\,|\\,S:\\ U_G<U_{FB}\\ \\text{akumulace},\\ U_G>U_{th}\\ \\text{inverze (kanál)}"
+      : "Flash: náboj na plovoucím hradle posune U_{th}\\Rightarrow \\text{paměťový stav 0/1}", false); }
+    setF();
+
+    function psis(vg) { // surface potential: accumulation (<0), depletion, inversion (pinned ~2φF)
+      const s = (vg - Vfb) * 0.4;
+      return SK.clamp(s, -0.7, twoF);
+    }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) { const t = SK.theme(); ctx.clearRect(0, 0, w, h); if (tab === 'mosc') drawBands(ctx, w, h, t); else drawFlash(ctx, w, h, t); }
+
+    function drawBands(ctx, w, h, t) {
+      const padT = 30, padB = 30, x0 = 24, x1 = w - 16;
+      const xMet = x0 + (x1 - x0) * 0.20, xOx = xMet + (x1 - x0) * 0.12;
+      const Emax = 1.4, Emin = -0.6, Y = (E) => padT + (Emax - E) / (Emax - Emin) * (h - padT - padB);
+      // regions
+      ctx.save(); ctx.fillStyle = t.muted; ctx.globalAlpha = 0.30; ctx.fillRect(x0, padT, xMet - x0, h - padT - padB);
+      ctx.fillStyle = t.warn; ctx.globalAlpha = 0.12; ctx.fillRect(xMet, padT, xOx - xMet, h - padT - padB); ctx.restore();
+      SK.label(ctx, 'kov (G)', (x0 + xMet) / 2, padT + 12, { color: t.fg, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, 'oxid', (xMet + xOx) / 2, padT + 12, { color: t.warn, align: 'center', font: '10px system-ui' });
+      SK.label(ctx, 'polovodič (p)', (xOx + x1) / 2, padT + 12, { color: t.fg, align: 'center', font: '11px system-ui' });
+      const ps = psis(Vg), Wd = SK.clamp(80 * Math.sqrt(Math.abs(ps) / twoF + 0.02), 10, (x1 - xOx) * 0.7);
+      const Ec = (x) => { if (x <= xOx) return null; const u = (x - xOx) / Wd; if (u >= 1) return EcB; return EcB - ps * (1 - u) * (1 - u); };
+      // semiconductor bands
+      function band(off, col) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+        for (let px = xOx; px <= x1; px += 2) { const e = Ec(px); if (e == null) continue; const y = Y(e + off); s ? ctx.lineTo(px, y) : (ctx.moveTo(px, y), s = true); } ctx.stroke(); ctx.restore(); }
+      band(0, t.accent2); band(-Eg, t.accent2);
+      // E_F (flat, semiconductor)
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(xOx, Y(0)); ctx.lineTo(x1, Y(0)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'E_C', x1 - 2, Y(EcB) - 3, { color: t.accent2, align: 'right', font: '10px system-ui' });
+      SK.label(ctx, 'E_V', x1 - 2, Y(EcB - Eg) - 3, { color: t.accent2, align: 'right', font: '10px system-ui' });
+      SK.label(ctx, 'E_F', x1 - 2, Y(0) - 3, { color: t.ok, align: 'right', font: '10px system-ui' });
+      // metal Fermi (shifted by -Vg)
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(x0, Y(-Vg * 0.3)); ctx.lineTo(xMet, Y(-Vg * 0.3)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      // regime + inversion layer
+      let regime;
+      if (Vg < Vfb) regime = 'akumulace (díry u povrchu)';
+      else if (Vg < Vth) regime = 'deplece (ochuzená vrstva)';
+      else { regime = 'inverze — vodivý kanál (elektrony)'; ctx.save(); ctx.fillStyle = t.pos; for (let i = 0; i < 9; i++) SK.dot(ctx, xOx + 3 + i * 3, Y(Ec(xOx + 2)) + 2, 2, t.pos); ctx.restore(); SK.label(ctx, 'inverzní vrstva', xOx + 6, Y(Ec(xOx + 2)) + 16, { color: t.pos, font: '10px system-ui' }); }
+      if (Vg >= Vfb && Vg < Vth) { ctx.save(); ctx.fillStyle = t.warn; ctx.globalAlpha = 0.12; ctx.fillRect(xOx, padT, Wd, h - padT - padB); ctx.restore(); }
+      ro.innerHTML = `<b>MOS kondenzátor</b> · U_G=<b>${SK.fmt(Vg, 2)} V</b> (U_FB≈${SK.fmt(Vfb, 1)}, U_th≈${SK.fmt(Vth, 1)} V)<br>` +
+        `Režim: <b>${regime}</b><br>Povrchový potenciál ψ_s=${SK.fmt(ps, 2)} V.<br>` +
+        `Záporné U_G hromadí majoritní díry (akumulace); kladné ohýbá pásy dolů → nejdřív deplece, nad U_th inverze: vznikne elektronový kanál (princip MOSFETu).`;
+    }
+
+    function drawFlash(ctx, w, h, t) {
+      const cx = w * 0.30, x0 = w * 0.10, ww = w * 0.40;
+      let y = 30;
+      const layer = (label, col, hh) => { ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = 0.7; ctx.fillRect(x0, y, ww, hh); ctx.globalAlpha = 1; ctx.strokeStyle = t.fg; ctx.lineWidth = 1; ctx.strokeRect(x0, y, ww, hh); ctx.fillStyle = '#fff'; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x0 + ww / 2, y + hh / 2); ctx.restore(); y += hh + 2; };
+      layer('řídicí hradlo (CG)', t.fg, 22);
+      layer('oxid', t.warn, 12);
+      // floating gate (with trapped charge)
+      ctx.save(); ctx.fillStyle = t.accent; ctx.globalAlpha = 0.7; ctx.fillRect(x0, y, ww, 22); ctx.globalAlpha = 1; ctx.strokeStyle = t.fg; ctx.strokeRect(x0, y, ww, 22);
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('plovoucí hradlo (FG)', x0 + ww / 2, y + 11);
+      if (Qfg > 0) { ctx.fillStyle = '#fff'; for (let i = 0; i < 8; i++) ctx.fillText('−', x0 + 14 + i * (ww - 28) / 7, y + 11); } ctx.restore(); y += 24;
+      layer('tunelový oxid', t.warn, 10);
+      layer('kanál / substrát (Si)', t.accent2, 26);
+      SK.label(ctx, Qfg > 0 ? 'naprogramováno (náboj na FG)' : 'smazáno (FG bez náboje)', cx, y + 14, { color: t.muted, align: 'center', font: '11px system-ui' });
+
+      // transfer curve I_D(V_CG) shifted by stored charge
+      const px0 = w * 0.58, pw = w * 0.40 - 16, py0 = 40, ph = h - 90;
+      const Vmax = 6, Imax = 4, X = (v) => px0 + v / Vmax * pw, Y = (i) => py0 + ph - i / Imax * ph;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(px0, Y(0)); ctx.lineTo(px0 + pw, Y(0)); ctx.moveTo(px0, py0); ctx.lineTo(px0, Y(0)); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '10px system-ui'; ctx.textAlign = 'right'; ctx.fillText('I_D', px0 - 3, py0 + 6); ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('U_CG', px0 + pw, Y(0) + 4); ctx.restore();
+      const Vth0 = 1.0, dVth = Qfg > 0 ? 2.5 : 0, Vthf = Vth0 + dVth, Vread = 2.5;
+      function curve(vth, col, dash) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.2; if (dash) ctx.setLineDash([5, 4]); ctx.beginPath(); let s = false;
+        for (let px = 0; px <= pw; px++) { const v = px / pw * Vmax; const i = v > vth ? 0.6 * (v - vth) * (v - vth) : 0; const y = Y(SK.clamp(i, 0, Imax)); s ? ctx.lineTo(px0 + px, y) : (ctx.moveTo(px0 + px, y), s = true); } ctx.stroke(); ctx.setLineDash([]); ctx.restore(); }
+      curve(Vth0, t.muted, true);     // erased reference
+      curve(Vthf, t.accent);          // current
+      // read line
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(X(Vread), py0); ctx.lineTo(X(Vread), Y(0)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'U_read', X(Vread), py0 - 2, { color: t.ok, align: 'center', font: '10px system-ui' });
+      const conducts = Vread > Vthf, bit = conducts ? '1 (vede)' : '0 (nevede)';
+      ro.innerHTML = `<b>Flash buňka (plovoucí hradlo)</b><br>U_th = ${SK.fmt(Vthf, 1)} V ${Qfg > 0 ? '(posunuto o +' + SK.fmt(dVth, 1) + ' V nábojem na FG)' : '(smazáno)'}<br>` +
+        `Při U_read=${Vread} V buňka <b>${bit}</b>.<br>Programování: tunelováním/horké elektrony se náboj uloží na izolované plovoucí hradlo a posune U_th; mazání ho odvede. Stav drží i bez napájení (nevolatilní).`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'MOS kondenzátor (pásy)', value: 'mosc' }, { label: 'Flash buňka', value: 'flash' }], value: 'mosc', onchange: (v) => { tab = v; setF(); rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() {
+      holder.innerHTML = '';
+      if (tab === 'mosc') SK.controls(holder, [SK.slider({ label: 'Napětí hradla U_G', min: -3, max: 3, step: 0.1, value: Vg, unit: 'V', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Vg = v; view.redraw(); } })]);
+      else { holder.appendChild(SK.button({ label: '⚡ Programovat (0)', primary: true, onclick: () => { Qfg = 1; view.redraw(); } }).el);
+        holder.appendChild(SK.button({ label: '🧹 Smazat (1)', onclick: () => { Qfg = 0; view.redraw(); } }).el); }
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'MIS (kov–izolant–polovodič) je jádro MOSFETu. Napětí na hradle ohýbá pásy u povrchu polovodiče: ' +
+      'záporné U_G hromadí majoritní nosiče (akumulace), kladné vytvoří ochuzenou vrstvu (deplece) a nad prahovým ' +
+      'napětím U_th invertuje vodivost — vznikne tenký elektronový kanál (inverze), což je sepnutý MOSFET. Flash paměť ' +
+      'přidává mezi řídicí hradlo a kanál izolované „plovoucí hradlo": uložený náboj posune U_th, a tím se zakóduje bit ' +
+      '0/1, který vydrží i bez napájení. Měň U_G, nebo programuj/smaž Flash a sleduj posun převodní charakteristiky.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

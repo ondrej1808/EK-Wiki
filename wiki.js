@@ -438,6 +438,7 @@
           { type: 'sim', label: 'JFET – charakteristiky',               src: SIM + 'elpa_jfet.html' },
           { type: 'sim', label: 'JFET – zaškrcení kanálu (řez)',         src: SIM + 'elpa_jfet_pinch.html' },
           { type: 'sim', label: 'MOSFET (N, P)',                        src: SIM + 'elpa_mosfet.html' },
+          { type: 'sim', label: 'MIS struktura (pásy) & Flash buňka',   src: SIM + 'elpa_mis.html' },
         ],
       },
       {
