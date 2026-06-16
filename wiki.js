@@ -353,6 +353,12 @@
         ],
       },
       {
+        code: 'B0B01MA2A', title: 'Matematická analýza 2',
+        resources: [
+          { type: 'sim', label: 'Integrální věty (Green/Gauss/Stokes)', src: SIM + 'ma2a_theorems.html' },
+        ],
+      },
+      {
         code: 'B0B01STP', title: 'Statistika a pravděpodobnost',
         resources: [
           { type: 'sim', label: 'Centrální limitní věta', src: SIM + 'stp_clt.html' },

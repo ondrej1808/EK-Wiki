@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integrální věty — MA2A</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Integrální věty — cirkulace a tok</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let mode = 'curl', fld = 'rot', Rr = 2;
+    const FIELDS = {
+      rot: { F: (x, y) => [-y, x], div: 0, curl: 2, name: 'F=(−y, x) — vír' },
+      src: { F: (x, y) => [x, y], div: 2, curl: 0, name: 'F=(x, y) — zřídlo' },
+      shear: { F: (x, y) => [y, 0], div: 0, curl: -1, name: 'F=(y, 0) — smyk' },
+      mix: { F: (x, y) => [x - y, x + y], div: 2, curl: 2, name: 'F=(x−y, x+y)' },
+    };
+    function setF() { SK.katex(fEl, mode === 'curl'
+      ? "\\oint_{\\partial S}\\vec F\\cdot d\\vec r=\\iint_S(\\partial_x Q-\\partial_y P)\\,dA\\ (\\text{Green/rot})"
+      : "\\oint_{\\partial S}\\vec F\\cdot\\vec n\\,ds=\\iint_S \\operatorname{div}\\vec F\\,dA\\ (\\text{Gauss})", false); }
+    setF();
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); SK.grid(ctx, w, h, 28);
+      const cx = w / 2, cy = h / 2, sc = Math.min(w, h) / 8;
+      const S = (x, y) => [cx + x * sc, cy - y * sc];
+      const F = FIELDS[fld].F;
+      // interior tint by curl/div sign (constant for these fields)
+      const dens = mode === 'curl' ? FIELDS[fld].curl : FIELDS[fld].div;
+      ctx.save(); ctx.fillStyle = dens > 0 ? t.ok : dens < 0 ? t.pos : t.muted; ctx.globalAlpha = 0.10 + 0.04 * Math.abs(dens); ctx.beginPath(); ctx.arc(cx, cy, Rr * sc, 0, 7); ctx.fill(); ctx.restore();
+      // field arrows
+      ctx.save(); for (let gx = -3.5; gx <= 3.5; gx += 1) for (let gy = -3; gy <= 3; gy += 1) { const [fx, fy] = F(gx, gy); const m = Math.hypot(fx, fy) || 1; const L = 14; const p = S(gx, gy);
+        SK.arrow(ctx, p[0], p[1], p[0] + fx / m * L, p[1] - fy / m * L, { color: t.accent2, width: 1.3, head: 4 }); } ctx.restore();
+      // boundary circle + direction
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, cy, Rr * sc, 0, 7); ctx.stroke();
+      for (let i = 0; i < 8; i++) { const a = i / 8 * 2 * Math.PI; const p = S(Rr * Math.cos(a), Rr * Math.sin(a));
+        if (mode === 'curl') { const tx = -Math.sin(a), ty = Math.cos(a); SK.arrow(ctx, p[0] - tx * 8, p[1] + ty * 8, p[0] + tx * 8, p[1] - ty * 8, { color: t.accent, width: 1.6, head: 5 }); }
+        else { const nx = Math.cos(a), ny = Math.sin(a); SK.arrow(ctx, p[0], p[1], p[0] + nx * 12, p[1] - ny * 12, { color: t.accent, width: 1.6, head: 5 }); } }
+      ctx.restore();
+      SK.label(ctx, mode === 'curl' ? 'cirkulace po hranici (∮F·dr)' : 'tok hranicí (∮F·n ds)', cx, h - 8, { color: t.accent, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+
+      // numeric both sides
+      let line = 0; const n = 720; for (let i = 0; i < n; i++) { const a = i / n * 2 * Math.PI, da = 2 * Math.PI / n; const x = Rr * Math.cos(a), y = Rr * Math.sin(a); const [fx, fy] = F(x, y);
+        if (mode === 'curl') { const tx = -Math.sin(a), ty = Math.cos(a); line += (fx * tx + fy * ty) * Rr * da; }
+        else { const nx = Math.cos(a), ny = Math.sin(a); line += (fx * nx + fy * ny) * Rr * da; } }
+      const area = dens * Math.PI * Rr * Rr;
+      ro.innerHTML = `<b>${mode === 'curl' ? 'Greenova/Stokesova věta' : 'Gaussova (divergenční) věta'}</b> · ${FIELDS[fld].name}<br>` +
+        `${mode === 'curl' ? 'rot' : 'div'} = <b>${dens}</b> (konstantní) · poloměr R=${SK.fmt(Rr, 1)}<br>` +
+        `Hraniční integrál ∮ = <b>${SK.fmt(line, 2)}</b> ≈ plošný integrál ∬(${mode === 'curl' ? 'rot' : 'div'})dA = <b>${SK.fmt(area, 2)}</b><br>` +
+        `Obě strany se rovnají — to je podstata věty (převod hraničního integrálu na plošný).`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Green/Stokes (rot)', value: 'curl' }, { label: 'Gauss (div)', value: 'div' }], value: 'curl', onchange: (v) => { mode = v; setF(); view.redraw(); } }).el);
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'vír', value: 'rot' }, { label: 'zřídlo', value: 'src' }, { label: 'smyk', value: 'shear' }, { label: 'smíšené', value: 'mix' }], value: 'rot', onchange: (v) => { fld = v; view.redraw(); } }).el);
+    SK.controls(ctrl, [SK.slider({ label: 'Poloměr oblasti R', min: 0.8, max: 3.2, step: 0.1, value: 2, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { Rr = v; view.redraw(); } })]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Integrální věty převádějí integrál po hranici oblasti na integrál přes celou oblast. Greenova/Stokesova: ' +
+      'cirkulace pole po uzavřené křivce = plošný integrál rotace uvnitř (vír v poli „pohání" oběh). Gaussova (divergenční): ' +
+      'tok pole hranicí = plošný integrál divergence uvnitř (zřídla/propady uvnitř určují čistý tok ven). Vyber větu a pole, ' +
+      'měň poloměr — hraniční integrál ∮ se vždy rovná plošnému ∬ (rot/div). U víru je div=0, u zřídla rot=0.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
