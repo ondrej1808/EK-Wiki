@@ -416,6 +416,7 @@
           { type: 'sim', label: 'ES · Pole bodového náboje',            src: SIM + 'empa_pointcharge.html' },
           { type: 'sim', label: 'ES · Dva náboje (siločáry, ekvipot.)', src: SIM + 'empa_two_charges.html' },
           { type: 'sim', label: 'ES · Zrcadlení podle vodivé plochy',   src: SIM + 'empa_image_method.html' },
+          { type: 'sim', label: 'ES · Gaussova věta (tok, výpočet E)',  src: SIM + 'gaussova_veta_simulace.html' },
           { type: 'sim', label: 'MS · Biot–Savart (B kolem vodiče)',    src: SIM + 'empa_biot_savart.html' },
           { type: 'sim', label: 'MS · Ampérův zákon',                   src: SIM + 'empa_ampere.html' },
           { type: 'sim', label: 'MS · Síla mezi dvěma vodiči',          src: SIM + 'empa_two_wires.html' },
@@ -466,6 +467,7 @@
       {
         code: 'B2B31CZS', title: 'Číslicové zpracování signálů',
         resources: [
+          { type: 'sim', label: 'Lineární vs cyklická konvoluce', src: SIM + 'czs_convolution.html' },
           { type: 'sim', label: 'Decimace / interpolace (multirate)', src: SIM + 'czs_multirate.html' },
           { type: 'sim', label: 'Overlap-Add / Overlap-Save (dlouhé signály)', src: SIM + 'czs_overlap.html' },
         ],
