@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF, CDF a odhady — STP</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Rozdělení (PDF, CDF) a odhad parametrů</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let tab = 'dist', mu = 0, sg = 1, n = 8;
+    function setF() { SK.katex(fEl, tab === 'dist'
+      ? "F(x)=\\int_{-\\infty}^{x} f(t)\\,dt,\\quad \\hat\\mu=\\bar X=\\tfrac1n\\sum X_i"
+      : "s^2_{\\text{vých}}=\\tfrac1n\\sum(X_i-\\bar X)^2,\\quad s^2_{\\text{nevých}}=\\tfrac1{n-1}\\sum(X_i-\\bar X)^2", false); }
+    setF();
+    function randn() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+    const pdf = (x) => Math.exp(-((x - mu) ** 2) / (2 * sg * sg)) / (sg * Math.sqrt(2 * Math.PI));
+    function erf(z) { const t = 1 / (1 + 0.3275911 * Math.abs(z)); const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z); return z >= 0 ? y : -y; }
+    const cdf = (x) => 0.5 * (1 + erf((x - mu) / (sg * Math.SQRT2)));
+    let samples = []; function resample() { samples = []; for (let i = 0; i < n; i++) samples.push(mu + sg * randn()); }
+    resample();
+
+    const v1 = SK.mount(document.getElementById('c1'), draw1);
+    const v2 = SK.mount(document.getElementById('c2'), draw2);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function axisX(ctx, x0, y0, w, hh, t, lo, hi, lab) { ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x0, y0 + hh); ctx.lineTo(x0 + w, y0 + hh); ctx.stroke(); ctx.restore(); SK.label(ctx, lab, x0 + 2, y0 + 10, { color: t.fg, font: '11px system-ui' }); }
+
+    function draw1(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      if (tab === 'dist') {
+        // PDF + histogram
+        const pad = 30, lo = mu - 4 * sg, hi = mu + 4 * sg; const X = (x) => pad + (x - lo) / (hi - lo) * (w - 2 * pad), Yb = h - pad;
+        axisX(ctx, pad, 8, w - 2 * pad, h - pad - 8, t, lo, hi, 'PDF f(x) + histogram vzorků');
+        const bins = 16, cnt = new Array(bins).fill(0); samples.forEach(s => { let b = Math.floor((s - lo) / (hi - lo) * bins); b = SK.clamp(b, 0, bins - 1); cnt[b]++; });
+        const maxpdf = pdf(mu); const sy = (h - pad - 16) / (maxpdf * 1.3);
+        ctx.save(); ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.4; const maxc = Math.max(...cnt, 1);
+        for (let i = 0; i < bins; i++) { const x = X(lo + i / bins * (hi - lo)), x2 = X(lo + (i + 1) / bins * (hi - lo)); const hgt = cnt[i] / maxc * (h - pad - 16) * 0.8; ctx.fillRect(x, Yb - hgt, x2 - x - 1, hgt); } ctx.restore();
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath(); for (let px = 0; px <= w - 2 * pad; px++) { const xx = lo + px / (w - 2 * pad) * (hi - lo); const y = Yb - pdf(xx) * sy; px ? ctx.lineTo(pad + px, y) : ctx.moveTo(pad + px, y); } ctx.stroke(); ctx.restore();
+        // samples as ticks
+        ctx.save(); ctx.strokeStyle = t.pos; samples.forEach(s => { ctx.beginPath(); ctx.moveTo(X(s), Yb); ctx.lineTo(X(s), Yb + 6); ctx.stroke(); }); ctx.restore();
+        SK.label(ctx, 'μ', X(mu), 22, { color: t.muted, align: 'center', font: '10px system-ui' });
+      } else {
+        // estimator distributions over many trials
+        const T = 3000, biased = [], unb = []; for (let k = 0; k < T; k++) { let s = 0; const xs = []; for (let i = 0; i < n; i++) { const v = mu + sg * randn(); xs.push(v); s += v; } const m = s / n; let ss = 0; for (const v of xs) ss += (v - m) * (v - m); biased.push(ss / n); unb.push(ss / (n - 1)); }
+        const pad = 30, lo = 0, hi = sg * sg * 3.2; const X = (x) => pad + (x - lo) / (hi - lo) * (w - 2 * pad), Yb = h - pad;
+        axisX(ctx, pad, 8, w - 2 * pad, h - pad - 8, t, lo, hi, 'rozdělení odhadů rozptylu (přes 3000 výběrů)');
+        const bins = 40; function hist(arr, col, yoff) { const cnt = new Array(bins).fill(0); arr.forEach(v => { let b = Math.floor((v - lo) / (hi - lo) * bins); if (b >= 0 && b < bins) cnt[b]++; }); const mc = Math.max(...cnt, 1); ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = 0.45; for (let i = 0; i < bins; i++) { const x = X(lo + i / bins * (hi - lo)); ctx.fillRect(x, Yb - cnt[i] / mc * (h - pad - 20) * 0.9, (w - 2 * pad) / bins - 1, cnt[i] / mc * (h - pad - 20) * 0.9); } ctx.restore(); const mean = arr.reduce((a, b) => a + b, 0) / arr.length; ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(mean), 8); ctx.lineTo(X(mean), Yb); ctx.stroke(); ctx.restore(); return mean; }
+        const mb = hist(biased, t.pos), mu2 = hist(unb, t.ok);
+        // true sigma² line
+        ctx.save(); ctx.strokeStyle = t.fg; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(X(sg * sg), 8); ctx.lineTo(X(sg * sg), Yb); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        SK.label(ctx, 'σ²=' + SK.fmt(sg * sg, 2), X(sg * sg), 22, { color: t.fg, align: 'center', font: '10px system-ui' });
+        SK.label(ctx, 'vychýlený (÷n)', X(mb), Yb + 12, { color: t.pos, align: 'center', font: '9px system-ui' });
+        SK.label(ctx, 'nevychýlený (÷n−1)', X(mu2), Yb + 24, { color: t.ok, align: 'center', font: '9px system-ui' });
+        window._est = { mb, mu2 };
+      }
+    }
+    function draw2(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const pad = 30, lo = mu - 4 * sg, hi = mu + 4 * sg, X = (x) => pad + (x - lo) / (hi - lo) * (w - 2 * pad), Yb = h - pad, Ht = h - pad - 16;
+      if (tab === 'dist') {
+        axisX(ctx, pad, 8, w - 2 * pad, h - pad - 8, t, lo, hi, 'CDF F(x) (kumulativní)');
+        // true CDF
+        ctx.save(); ctx.strokeStyle = t.accent; ctx.lineWidth = 2.4; ctx.beginPath(); for (let px = 0; px <= w - 2 * pad; px++) { const xx = lo + px / (w - 2 * pad) * (hi - lo); const y = Yb - cdf(xx) * Ht; px ? ctx.lineTo(pad + px, y) : ctx.moveTo(pad + px, y); } ctx.stroke(); ctx.restore();
+        // empirical CDF (step)
+        const sorted = [...samples].sort((a, b) => a - b); ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 1.8; ctx.beginPath(); let acc = 0; ctx.moveTo(X(lo), Yb);
+        for (let i = 0; i < sorted.length; i++) { acc = (i + 1) / sorted.length; ctx.lineTo(X(sorted[i]), Yb - (i) / sorted.length * Ht); ctx.lineTo(X(sorted[i]), Yb - acc * Ht); } ctx.lineTo(X(hi), Yb - Ht); ctx.stroke(); ctx.restore();
+        const sm = samples.reduce((a, b) => a + b, 0) / n;
+        SK.label(ctx, 'teoretická (—) vs empirická (schody)', pad + 4, 24, { color: t.muted, font: '10px system-ui' });
+        ro.innerHTML = `<b>PDF a CDF</b> · N(μ=${SK.fmt(mu, 1)}, σ=${SK.fmt(sg, 1)}), n=${n} vzorků<br>` +
+          `CDF F(x)=∫f je rostoucí od 0 do 1; PDF f(x)=F′(x) je její sklon (hustota pravděpodobnosti).<br>` +
+          `Odhad střední hodnoty x̄ = <b>${SK.fmt(sm, 3)}</b> (skutečné μ=${SK.fmt(mu, 1)}); s rostoucím n se zpřesňuje (zákon velkých čísel).`;
+      } else {
+        // explanation text panel
+        ctx.save(); ctx.fillStyle = t.muted; ctx.font = '12px system-ui'; ctx.textAlign = 'left';
+        const e = window._est || { mb: 0, mu2: 0 };
+        const lines = ['Proč dělit (n−1)?', '', 'Vzorky se „přitahují" k výběrovému', 'průměru x̄, takže Σ(Xᵢ−x̄)² je', 'systematicky menší než Σ(Xᵢ−μ)².', '', 'Dělení n proto rozptyl PODHODNOTÍ', '(vychýlený odhad), kdežto dělení', '(n−1) to opraví → nevychýlený.'];
+        lines.forEach((l, i) => ctx.fillText(l, 16, 30 + i * 20)); ctx.restore();
+        ro.innerHTML = `<b>Vychýlený vs nevychýlený odhad rozptylu</b> · n=${n}, σ²=${SK.fmt(sg * sg, 2)}<br>` +
+          `Naměřeno (průměr přes výběry): vychýlený E[s²]≈<b style="color:#dc2626">${window._est ? SK.fmt(window._est.mb, 3) : '—'}</b>, ` +
+          `nevychýlený E[s²]≈<b style="color:#16a34a">${window._est ? SK.fmt(window._est.mu2, 3) : '—'}</b><br>` +
+          `Teorie: E[÷n]=σ²·(n−1)/n=<b>${SK.fmt(sg * sg * (n - 1) / n, 3)}</b> (podhodnocuje), E[÷(n−1)]=σ²=<b>${SK.fmt(sg * sg, 3)}</b>. ` +
+          `Vychýlení = −σ²/n → s rostoucím n mizí.`;
+      }
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'PDF & CDF', value: 'dist' }, { label: 'Odhad (vých./nevých.)', value: 'est' }], value: 'dist', onchange: (v) => { tab = v; setF(); resample(); redraw(); } }).el);
+    SK.controls(ctrl, [
+      SK.slider({ label: 'Velikost výběru n', min: 2, max: 30, step: 1, value: 8, unit: '', fmt: (v) => v | 0, oninput: (v) => { n = v | 0; resample(); redraw(); } }),
+      SK.slider({ label: 'Stř. hodnota μ', min: -3, max: 3, step: 0.5, value: 0, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { mu = v; resample(); redraw(); } }),
+      SK.slider({ label: 'Směr. odchylka σ', min: 0.5, max: 2.5, step: 0.1, value: 1, unit: '', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { sg = v; resample(); redraw(); } }),
+      SK.button({ label: '🎲 Nový výběr', onclick: () => { resample(); redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'PDF f(x) je hustota pravděpodobnosti, CDF F(x)=∫f je pravděpodobnost, že hodnota ≤ x (roste od 0 do 1; ' +
+      'PDF je její derivace). Z náhodného výběru odhadujeme parametry: výběrový průměr x̄ je nevychýlený odhad střední ' +
+      'hodnoty μ. U rozptylu pozor: dělení počtem vzorků n dává VYCHÝLENÝ odhad (systematicky podhodnocuje, protože ' +
+      'odchylky se počítají od x̄, ne od μ), zatímco dělení (n−1) je NEVYCHÝLENÉ. V záložce „Odhad" je vidět, že průměr ' +
+      'vychýleného odhadu leží pod σ², kdežto nevychýleného přesně na σ².';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

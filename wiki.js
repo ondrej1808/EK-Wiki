@@ -363,6 +363,7 @@
         code: 'B0B01STP', title: 'Statistika a pravděpodobnost',
         resources: [
           { type: 'sim', label: 'Centrální limitní věta', src: SIM + 'stp_clt.html' },
+          { type: 'sim', label: 'Rozdělení (PDF, CDF) a odhad parametrů', src: SIM + 'stp_estimators.html' },
         ],
       },
       {
