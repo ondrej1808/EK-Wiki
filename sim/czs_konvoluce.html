@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konvoluce — lineární vs. cyklická · interaktivní laboratoř</title>
+<style>
+  :root{
+    --bg:#0a0f1f; --bg2:#0c1224; --panel:#111a31; --panel-soft:#0e1730;
+    --line:#243151; --line-soft:#1a2440; --grid:#15203c;
+    --ink:#e9eef9; --ink-dim:#9aa7c6; --ink-faint:#6a7798;
+    --x:#2dd4bf; --h:#a78bfa; --lin:#fbbf24; --bad:#ff5670; --good:#34d399; --wrap:#fb923c;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Fira Code",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:
+      radial-gradient(1200px 600px at 80% -10%, #122042 0%, transparent 55%),
+      radial-gradient(900px 500px at -10% 10%, #15103a 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink); font-family:var(--sans); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:32px 20px 80px}
+
+  /* ---------- header ---------- */
+  .scope-head{padding:18px 0 26px; border-bottom:1px solid var(--line-soft); margin-bottom:26px}
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--ink-faint); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:26px; height:1px; background:var(--x); display:inline-block}
+  h1{
+    font-size:clamp(28px,5vw,46px); line-height:1.05; margin:14px 0 8px; font-weight:700;
+    letter-spacing:-.02em;
+  }
+  h1 .a{color:var(--lin)} h1 .b{color:var(--x)}
+  .lede{color:var(--ink-dim); max-width:64ch; font-size:15px}
+
+  /* ---------- controls ---------- */
+  .controls{
+    background:linear-gradient(180deg,var(--panel),var(--panel-soft));
+    border:1px solid var(--line); border-radius:16px; padding:20px;
+    display:grid; gap:18px; margin-bottom:34px;
+    box-shadow:0 18px 50px -30px #000;
+  }
+  .fields{display:grid; grid-template-columns:1fr 1fr auto; gap:16px; align-items:end}
+  .field label{
+    display:block; font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--ink-dim); margin-bottom:7px;
+  }
+  .field label b{color:var(--ink); font-weight:600}
+  .field .sigx b{color:var(--x)} .field .sigh b{color:var(--h)}
+  .field input{
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
+    background:#0a1124; color:var(--ink); font-family:var(--mono); font-size:16px;
+    letter-spacing:.04em; transition:border-color .15s, box-shadow .15s;
+  }
+  .field.sigx input{caret-color:var(--x)} .field.sigh input{caret-color:var(--h)}
+  .field input:focus{outline:none; border-color:var(--x); box-shadow:0 0 0 3px #2dd4bf22}
+  .field.sigh input:focus{border-color:var(--h); box-shadow:0 0 0 3px #a78bfa22}
+  .btn{
+    padding:12px 22px; border-radius:10px; border:1px solid #2dd4bf55; cursor:pointer;
+    background:linear-gradient(180deg,#103a3a,#0c2b2b); color:var(--x);
+    font-family:var(--mono); font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:600; transition:transform .08s, box-shadow .15s, background .15s; white-space:nowrap;
+  }
+  .btn:hover{box-shadow:0 0 0 3px #2dd4bf22; background:linear-gradient(180deg,#14494a,#0e3333)}
+  .btn:active{transform:translateY(1px)}
+  .presets{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+  .presets .plabel{font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.14em; text-transform:uppercase}
+  .chip{
+    font-family:var(--mono); font-size:12.5px; padding:6px 11px; border-radius:999px;
+    border:1px solid var(--line); background:#0a1124; color:var(--ink-dim); cursor:pointer;
+    transition:border-color .15s,color .15s,background .15s;
+  }
+  .chip:hover{border-color:var(--x); color:var(--ink); background:#0d182e}
+  .err{display:none; color:var(--bad); font-family:var(--mono); font-size:13px}
+  .err.show{display:block}
+  .stats{
+    display:flex; flex-wrap:wrap; gap:8px 10px; font-family:var(--mono); font-size:12.5px;
+    border-top:1px solid var(--line-soft); padding-top:14px;
+  }
+  .stat{background:#0a1124; border:1px solid var(--line-soft); border-radius:8px; padding:6px 11px; color:var(--ink-dim)}
+  .stat b{color:var(--ink); font-weight:600}
+  .stat .v{color:var(--lin)}
+
+  /* ---------- panels ---------- */
+  .panel{
+    background:linear-gradient(180deg,var(--panel),var(--panel-soft));
+    border:1px solid var(--line); border-radius:16px; padding:24px;
+    margin-bottom:22px; box-shadow:0 18px 50px -34px #000;
+  }
+  .panel-head{display:flex; align-items:baseline; gap:14px; margin-bottom:6px}
+  .panel-head .pidx{
+    font-family:var(--mono); font-size:13px; font-weight:700; color:var(--bg);
+    background:var(--ink-dim); border-radius:6px; padding:3px 8px; letter-spacing:.04em;
+  }
+  .panel-head h2{font-size:19px; margin:0; font-weight:650; letter-spacing:-.01em}
+  .panel-sub{color:var(--ink-faint); font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; margin:0 0 16px 46px}
+
+  .charts-row{display:flex; gap:22px; flex-wrap:wrap}
+  .chart-card{flex:1 1 240px; min-width:0}
+  .chart-title{font-family:var(--mono); font-size:13px; letter-spacing:.04em; margin:0 0 6px; color:var(--ink-dim)}
+  .chart-title.x{color:var(--x)} .chart-title.h{color:var(--h)} .chart-title.lin{color:var(--lin)}
+  .chart-scroll{overflow-x:auto; overflow-y:hidden; padding-bottom:4px}
+  .chart-scroll svg{display:block; height:auto}
+  .chart-scroll::-webkit-scrollbar{height:8px}
+  .chart-scroll::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px}
+
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:14px 0 2px; font-family:var(--mono); font-size:12px; color:var(--ink-dim)}
+  .legend i{width:11px; height:11px; border-radius:3px; display:inline-block; margin-right:6px; vertical-align:-1px}
+  .legend .dash{background:transparent; border:1.5px dashed var(--lin)}
+
+  .explain{
+    margin:16px 0 0; padding:14px 16px; border-radius:12px;
+    background:#0a112480; border:1px solid var(--line-soft); color:var(--ink-dim);
+    font-size:14.5px;
+  }
+  .explain b{color:var(--ink); font-weight:600}
+  .explain .tagbad{color:var(--bad); font-weight:600}
+  .explain .taggood{color:var(--good); font-weight:600}
+  .explain code{font-family:var(--mono); background:#11203c; padding:1px 6px; border-radius:5px; color:var(--ink); font-size:13px}
+  .verdict{margin-top:10px; font-family:var(--mono); font-size:13px; padding:8px 12px; border-radius:9px; display:inline-block}
+  .verdict.bad{background:#ff567015; border:1px solid #ff567055; color:var(--bad)}
+  .verdict.good{background:#34d39915; border:1px solid #34d39955; color:var(--good)}
+
+  /* ---------- animation panel ---------- */
+  .anim-bar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+  .anim-status{font-family:var(--mono); font-size:13px; color:var(--ink-dim)}
+  .anim-status b{color:var(--wrap)}
+  .btn.wrapbtn{border-color:#fb923c66; background:linear-gradient(180deg,#3a2410,#2b1a0c); color:var(--wrap)}
+  .btn.wrapbtn:hover{box-shadow:0 0 0 3px #fb923c22; background:linear-gradient(180deg,#4a2e14,#33200e)}
+
+  footer{margin-top:40px; padding-top:22px; border-top:1px solid var(--line-soft); color:var(--ink-faint); font-size:13px}
+  footer code{font-family:var(--mono); color:var(--ink-dim)}
+
+  @media (max-width:680px){
+    .fields{grid-template-columns:1fr}
+    .panel{padding:18px}
+    .panel-sub{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="scope-head">
+    <div class="eyebrow">Konvoluce · interaktivní laboratoř</div>
+    <h1>Lineární vs. <span class="a">cyklická</span> <span class="b">konvoluce</span></h1>
+    <p class="lede">Zadej dva krátké signály a sleduj, kde se cyklická konvoluce rozejde s lineární — a proč ji nulové doplnění (zero&nbsp;padding) zase srovná. Klíč k pochopení rychlé konvoluce přes FFT.</p>
+  </header>
+
+  <div class="controls">
+    <div class="fields">
+      <div class="field sigx">
+        <label class="sigx">Signál <b>x[n]</b> — čísla oddělená čárkou</label>
+        <input id="inX" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1,2,3">
+      </div>
+      <div class="field sigh">
+        <label class="sigh">Signál <b>h[n]</b> — čísla oddělená čárkou</label>
+        <input id="inH" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1,1">
+      </div>
+      <button class="btn" id="go">Vykreslit</button>
+    </div>
+    <div class="presets">
+      <span class="plabel">Příklady:</span>
+      <button class="chip" data-x="1,2,3" data-h="1,1">1,2,3 ⊛ 1,1</button>
+      <button class="chip" data-x="1,1,1,1" data-h="1,-1">1,1,1,1 ⊛ 1,−1 <span style="color:var(--bad)">↯</span></button>
+      <button class="chip" data-x="1,2,3,4" data-h="1,1,1">1,2,3,4 ⊛ 1,1,1</button>
+      <button class="chip" data-x="2,-1,3" data-h="1,0,-1">2,−1,3 ⊛ 1,0,−1</button>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <!-- 01 inputs -->
+  <section class="panel">
+    <div class="panel-head"><span class="pidx">01</span><h2>Vstupní signály</h2></div>
+    <p class="panel-sub">co konvoluujeme</p>
+    <div class="charts-row">
+      <div class="chart-card"><p class="chart-title x">x[n]</p><div class="chart-scroll" id="chart-x"></div></div>
+      <div class="chart-card"><p class="chart-title h">h[n]</p><div class="chart-scroll" id="chart-h"></div></div>
+    </div>
+    <p class="explain" id="exp-in"></p>
+  </section>
+
+  <!-- 02 linear -->
+  <section class="panel">
+    <div class="panel-head"><span class="pidx">02</span><h2>Lineární konvoluce — referenční výsledek</h2></div>
+    <p class="panel-sub">délka N + M − 1</p>
+    <div class="chart-scroll" id="chart-lin"></div>
+    <p class="explain" id="exp-lin"></p>
+  </section>
+
+  <!-- 03 circular no pad -->
+  <section class="panel">
+    <div class="panel-head"><span class="pidx">03</span><h2>Cyklická konvoluce <em>bez</em> zero paddingu</h2></div>
+    <p class="panel-sub">perioda L = max(N, M) → aliasing</p>
+    <div class="legend">
+      <span><i style="background:var(--bad)"></i>liší se od lineární (obtočení)</span>
+      <span><i style="background:#3a4a6e"></i>shodné s lineární</span>
+      <span><i class="dash"></i>kde by byla lineární</span>
+    </div>
+    <div class="chart-scroll" id="chart-circ"></div>
+    <p class="explain" id="exp-circ"></p>
+    <div id="verdict-circ"></div>
+  </section>
+
+  <!-- 04 circular with pad -->
+  <section class="panel">
+    <div class="panel-head"><span class="pidx">04</span><h2>Cyklická konvoluce <em>se</em> zero paddingem</h2></div>
+    <p class="panel-sub">perioda L = N + M − 1 → bez aliasingu</p>
+    <div class="legend">
+      <span><i style="background:var(--good)"></i>shodné s lineární konvolucí</span>
+    </div>
+    <div class="chart-scroll" id="chart-circp"></div>
+    <p class="explain" id="exp-circp"></p>
+    <div id="verdict-circp"></div>
+  </section>
+
+  <!-- 05 wraparound -->
+  <section class="panel">
+    <div class="panel-head"><span class="pidx">05</span><h2>Obtékání krok za krokem</h2></div>
+    <p class="panel-sub">kam přitéká konec signálu</p>
+    <div class="anim-bar">
+      <button class="btn wrapbtn" id="playWrap">▶ Přehrát obtočení</button>
+      <span class="anim-status" id="animStatus"></span>
+    </div>
+    <div class="chart-scroll" id="chart-anim"></div>
+    <p class="explain" id="exp-anim"></p>
+  </section>
+
+  <footer>
+    Cyklická konvoluce délky <code>L</code> je totéž co lineární konvoluce, jejíž výsledek je „přeložen“ modulo <code>L</code> a sečten. Doplníš-li oba signály nulami aspoň na <code>N+M−1</code>, žádné překrytí nenastane — proto se konvoluce dá počítat přes <code>IFFT( FFT(x)·FFT(h) )</code> a metodami overlap-add / overlap-save.
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+const EPS = 1e-9;
+const $ = id => document.getElementById(id);
+/* hex palette — var() does NOT resolve inside SVG presentation attributes, so SVG uses these */
+const COL={x:'#2dd4bf',h:'#a78bfa',lin:'#fbbf24',bad:'#ff5670',good:'#34d399',wrap:'#fb923c',
+  ink:'#e9eef9',inkDim:'#9aa7c6',inkFaint:'#6a7798',line:'#243151',grid:'#15203c',neutral:'#3a4a6e'};
+
+/* ---------- math ---------- */
+function linearConv(x,h){
+  const N=x.length,M=h.length,y=new Array(Math.max(N+M-1,0)).fill(0);
+  for(let n=0;n<N;n++) for(let m=0;m<M;m++) y[n+m]+=x[n]*h[m];
+  return y;
+}
+function padTo(a,L){const r=a.slice();while(r.length<L)r.push(0);return r;}
+function circularConv(x,h,L){
+  const xp=padTo(x,L),hp=padTo(h,L),y=new Array(L).fill(0);
+  for(let n=0;n<L;n++) for(let k=0;k<L;k++) y[n]+=xp[k]*hp[((n-k)%L+L)%L];
+  return y;
+}
+const fmt = v => {
+  if(Math.abs(v)<EPS) v=0;
+  return Number.isInteger(v) ? String(v) : String(parseFloat(v.toFixed(2)));
+};
+
+/* ---------- geometry shared by all charts ---------- */
+const SLOT=46, BARW=28, H=240, PAD_T=40, PAD_B=42;
+function geom(values, maxAbs, hasNeg){
+  const n=values.length;
+  const plotTop=PAD_T, plotBottom=H-PAD_B;
+  const baseline = hasNeg ? (plotTop+plotBottom)/2 : plotBottom;
+  const span = hasNeg ? (plotBottom-plotTop)/2 : (plotBottom-plotTop);
+  const scale = span/(maxAbs||1);
+  const width = Math.max(n*SLOT+24, 120);
+  return {
+    n, width, baseline, scale, plotTop, plotBottom,
+    cx:i=>14+i*SLOT+SLOT/2,
+    yTop:v=>baseline - v*scale
+  };
+}
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* build one static bar chart -> svg string
+   opts: maxAbs, hasNeg, color(i,v)->hex, ghost(i)->value|null, sub(i)->{t,c}|null */
+function buildChart(values, opts={}){
+  const hasNeg = opts.hasNeg ?? values.some(v=>v<-EPS);
+  const maxAbs = opts.maxAbs ?? Math.max(1, ...values.map(v=>Math.abs(v)));
+  const g = geom(values, maxAbs, hasNeg);
+  const color = opts.color || (()=>COL.x);
+  let s = `<svg viewBox="0 0 ${g.width} ${H}" width="${g.width}" role="img" xmlns="http://www.w3.org/2000/svg">`;
+  // faint scope gridlines
+  for(let f of [0.5,1]){
+    if(hasNeg){
+      s+=`<line x1="0" x2="${g.width}" y1="${g.baseline-f*(g.plotBottom-g.plotTop)/2}" y2="${g.baseline-f*(g.plotBottom-g.plotTop)/2}" stroke="${COL.grid}" stroke-width="1"/>`;
+      s+=`<line x1="0" x2="${g.width}" y1="${g.baseline+f*(g.plotBottom-g.plotTop)/2}" y2="${g.baseline+f*(g.plotBottom-g.plotTop)/2}" stroke="${COL.grid}" stroke-width="1"/>`;
+    } else {
+      s+=`<line x1="0" x2="${g.width}" y1="${g.baseline-f*(g.plotBottom-g.plotTop)}" y2="${g.baseline-f*(g.plotBottom-g.plotTop)}" stroke="${COL.grid}" stroke-width="1"/>`;
+    }
+  }
+  // zero baseline
+  s+=`<line x1="0" x2="${g.width}" y1="${g.baseline}" y2="${g.baseline}" stroke="${COL.line}" stroke-width="1.5"/>`;
+
+  values.forEach((v,i)=>{
+    const cx=g.cx(i), top=g.yTop(v), c=color(i,v);
+    const y=Math.min(top,g.baseline), hgt=Math.max(Math.abs(top-g.baseline),0.5);
+    const x=cx-BARW/2;
+    // ghost outline (where linear would be)
+    if(opts.ghost){
+      const gv=opts.ghost(i);
+      if(gv!=null && Math.abs(gv-v)>EPS){
+        const gtop=g.yTop(gv);
+        const gy=Math.min(gtop,g.baseline), gh=Math.max(Math.abs(gtop-g.baseline),0.5);
+        s+=`<rect x="${x}" y="${gy}" width="${BARW}" height="${gh}" rx="4" fill="none" stroke="${COL.lin}" stroke-width="1.4" stroke-dasharray="4 3" opacity=".7"/>`;
+      }
+    }
+    s+=`<rect x="${x}" y="${y}" width="${BARW}" height="${hgt}" rx="4" fill="${c}" fill-opacity="${Math.abs(v)<EPS?0.18:0.9}"/>`;
+    // top cap
+    s+=`<line x1="${x}" x2="${x+BARW}" y1="${top}" y2="${top}" stroke="${c}" stroke-width="2.5"/>`;
+    // value label
+    const vy = v>=0 ? top-7 : top+15;
+    s+=`<text x="${cx}" y="${vy}" text-anchor="middle" fill="${COL.ink}" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="12.5" font-weight="600">${esc(fmt(v))}</text>`;
+    // index label
+    s+=`<text x="${cx}" y="${H-14}" text-anchor="middle" fill="${COL.inkFaint}" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11">${i}</text>`;
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+/* ---------- parsing ---------- */
+function parseSig(str){
+  const parts = str.split(/[,\s]+/).map(t=>t.trim()).filter(t=>t.length);
+  if(!parts.length) return {ok:false, msg:"Zadej alespoň jedno číslo."};
+  const out=[];
+  for(const p of parts){
+    const v=Number(p);
+    if(!isFinite(v)) return {ok:false, msg:`„${p}" není platné číslo.`};
+    out.push(v);
+  }
+  if(out.length>12) return {ok:false, msg:"Pro přehlednost nech maximálně 12 vzorků na signál."};
+  return {ok:true, arr:out};
+}
+
+/* ---------- main render ---------- */
+let LAST=null;
+function render(){
+  const rx=parseSig($('inX').value), rh=parseSig($('inH').value);
+  const err=$('err');
+  if(!rx.ok || !rh.ok){
+    err.textContent="⚠ "+((!rx.ok?("x[n]: "+rx.msg):"")+ (!rh.ok?("  h[n]: "+rh.msg):"")).trim();
+    err.classList.add('show'); return;
+  }
+  err.classList.remove('show');
+
+  const x=rx.arr, h=rh.arr, N=x.length, M=h.length;
+  const P=N+M-1;                       // lineární délka
+  const L=Math.max(N,M);               // cyklická délka bez paddingu
+  const yLin=linearConv(x,h);
+  const yCirc=circularConv(x,h,L);     // bez paddingu (aliasing možný)
+  const yCircP=circularConv(x,h,P);    // s paddingem (= lineární)
+  LAST={x,h,N,M,P,L,yLin,yCirc};
+
+  // stats
+  $('stats').innerHTML =
+    `<span class="stat">N = <b>${N}</b></span>`+
+    `<span class="stat">M = <b>${M}</b></span>`+
+    `<span class="stat">lineární délka N+M−1 = <span class="v">${P}</span></span>`+
+    `<span class="stat">cyklická perioda L = max(N,M) = <span class="v">${L}</span></span>`;
+
+  // 01 inputs
+  $('chart-x').innerHTML = buildChart(x,{color:()=> COL.x});
+  $('chart-h').innerHTML = buildChart(h,{color:()=> COL.h});
+  $('exp-in').innerHTML =
+    `Zadal jsi <b style="color:var(--x)">x[n]</b> o délce <b>N = ${N}</b> a <b style="color:var(--h)">h[n]</b> o délce <b>M = ${M}</b>. `+
+    `Konvoluce „posouvá" jeden signál přes druhý a v každé pozici sčítá součiny překrývajících se vzorků. Výška sloupce je hodnota vzorku; vodorovná osa je index <code>n</code>.`;
+
+  // 02 linear (shared scale across linear + circular charts)
+  const maxAbsAll = Math.max(1, ...yLin.map(Math.abs), ...yCirc.map(Math.abs));
+  const hasNegAll = yLin.some(v=>v<-EPS) || yCirc.some(v=>v<-EPS);
+  $('chart-lin').innerHTML = buildChart(yLin,{color:()=>COL.lin, maxAbs:maxAbsAll, hasNeg:hasNegAll});
+  $('exp-lin').innerHTML =
+    `Plná lineární konvoluce má vždy přesně <b>N + M − 1 = ${N} + ${M} − 1 = ${P}</b> vzorků — tolik různých poloh, kde se signály alespoň částečně překrývají. `+
+    `Toto je <b>referenční („správný") výsledek</b>: filtrace bez okrajových efektů. Žlutě ho používáme jako měřítko pro oba cyklické případy níže.`;
+
+  // 03 circular no pad
+  const diff = i => i<P ? Math.abs(yCirc[i]-yLin[i])>EPS : Math.abs(yCirc[i])>EPS;
+  const nDiff = yCirc.reduce((a,_,i)=>a+(diff(i)?1:0),0);
+  $('chart-circ').innerHTML = buildChart(yCirc,{
+    maxAbs:maxAbsAll, hasNeg:hasNegAll,
+    color:(i)=> diff(i) ? COL.bad : COL.neutral,
+    ghost:(i)=> i<yLin.length ? yLin[i] : 0
+  });
+  if(nDiff>0){
+    const overhang=P-L;
+    $('exp-circ').innerHTML =
+      `Cyklická konvoluce předpokládá, že jsou signály <b>periodické s periodou L = max(N,M) = ${L}</b>. Výsledek se ale „nevejde": má jen ${L} pozic, kdežto lineární jich potřebuje ${P}. `+
+      `Posledních <b>${overhang}</b> vzorků lineárního výsledku (indexy ${L}…${P-1}) se proto <b>obtočí</b> a přičte k začátku — to je <b>time-domain aliasing</b>. `+
+      `<span class="tagbad">Červené</span> sloupce se kvůli obtočení liší od lineární konvoluce; čárkovaný obrys ukazuje, kde by lineární hodnota byla.`;
+    $('verdict-circ').innerHTML = `<div class="verdict bad">✗ Liší se od lineární na ${nDiff} ${nDiff===1?'pozici':'pozicích'} — to je aliasing.</div>`;
+  } else {
+    $('exp-circ').innerHTML =
+      `Tady má perioda <b>L = ${L}</b> shodou okolností dost místa (jeden ze signálů má délku 1, takže <code>N+M−1 = max(N,M)</code>). Nic nepřetéká, takže cyklická i bez paddingu vyšla stejně jako lineární.`;
+    $('verdict-circ').innerHTML = `<div class="verdict good">✓ Shodné s lineární — pro tyto délky nevzniká žádné obtočení.</div>`;
+  }
+
+  // 04 circular with pad
+  $('chart-circp').innerHTML = buildChart(yCircP,{color:()=>COL.good, maxAbs:maxAbsAll, hasNeg:hasNegAll});
+  $('exp-circp').innerHTML =
+    `Když oba signály doplníme nulami na délku <b>L = N + M − 1 = ${P}</b>, je perioda dost dlouhá, aby se celý výsledek vešel <b>bez překrytí</b>. `+
+    `Cyklická konvoluce pak dává <span class="taggood">přesně stejný výsledek jako lineární</span>. Přesně tohle dělá rychlá konvoluce přes FFT: doplní nuly, vynásobí spektra a převede zpět.`;
+  $('verdict-circp').innerHTML = `<div class="verdict good">✓ Identické s lineární konvolucí ve všech ${P} vzorcích.</div>`;
+
+  // 05 wrap animation
+  buildWrapPanel();
+}
+
+/* ============ panel 05 : wrap animation ============ */
+let animRAF=null;
+function easeInOut(t){return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;}
+
+function buildWrapPanel(){
+  if(animRAF) cancelAnimationFrame(animRAF);
+  const {P,L,yLin}=LAST;
+  const overhang=P-L;
+  const status=$('animStatus'), btn=$('playWrap');
+  // shared scale: include possible summed peaks
+  const summed = yLin.slice(0,L).map((v,i)=> v + (i+L<P? yLin[i+L]:0));
+  const maxAbs = Math.max(1, ...yLin.map(Math.abs), ...summed.map(Math.abs));
+  const hasNeg = yLin.some(v=>v<-EPS) || summed.some(v=>v<-EPS);
+  const g = geom(yLin, maxAbs, hasNeg);
+
+  // base SVG drawn once; bars get ids so we can mutate them
+  let s = `<svg id="animSvg" viewBox="0 0 ${g.width} ${H+18}" width="${g.width}" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<line x1="0" x2="${g.width}" y1="${g.baseline}" y2="${g.baseline}" stroke="${COL.line}" stroke-width="1.5"/>`;
+  // divider after index L-1
+  if(overhang>0){
+    const dx = 14 + L*SLOT;
+    s+=`<line x1="${dx}" x2="${dx}" y1="6" y2="${g.baseline+8}" stroke="${COL.wrap}" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8"/>`;
+    s+=`<text x="${dx-6}" y="16" text-anchor="end" fill="${COL.wrap}" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11">hranice L=${L}</text>`;
+  }
+  yLin.forEach((v,i)=>{
+    const cx=g.cx(i), top=g.yTop(v), c = i>=L ? COL.wrap : COL.lin;
+    const y=Math.min(top,g.baseline), hgt=Math.max(Math.abs(top-g.baseline),0.5), x=cx-BARW/2;
+    const dash = i>=L ? ` stroke="${COL.wrap}" stroke-width="1.4" stroke-dasharray="4 3"` : ` stroke="${c}" stroke-width="0"`;
+    s+=`<rect id="ab${i}" x="${x}" y="${y}" width="${BARW}" height="${hgt}" rx="4" fill="${c}" fill-opacity="${i>=L?0.32:0.9}"${dash}/>`;
+    s+=`<line id="ac${i}" x1="${x}" x2="${x+BARW}" y1="${top}" y2="${top}" stroke="${c}" stroke-width="2.5"/>`;
+    s+=`<text id="av${i}" x="${cx}" y="${v>=0?top-7:top+15}" text-anchor="middle" fill="${COL.ink}" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="12.5" font-weight="600">${esc(fmt(v))}</text>`;
+    s+=`<text x="${cx}" y="${H-14}" text-anchor="middle" fill="${i>=L?COL.wrap:COL.inkFaint}" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11">${i}</text>`;
+    if(i>=L) s+=`<text x="${cx}" y="${H+1}" text-anchor="middle" fill="${COL.wrap}" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="9.5">${i} mod ${L} = ${i-L}</text>`;
+  });
+  s+=`</svg>`;
+  $('chart-anim').innerHTML=s;
+
+  // explanation
+  if(overhang>0){
+    $('exp-anim').innerHTML =
+      `Oranžové sloupce (indexy ${L}…${P-1}) leží <b>za hranicí periody L = ${L}</b>. Při cyklické konvoluci bez paddingu pro ně není místo, takže se vzorek z pozice <code>i</code> objeví na pozici <code>i mod L</code> (popsáno pod osou) a <b>přičte se</b> k tomu, co tam už je. `+
+      `Spusť animaci a sleduj, jak konec signálu „obtéká" zpět na začátek a mění žluté sloupce na <span class="tagbad">červené</span> — přesně ty z panelu&nbsp;03.`;
+    status.innerHTML = `Připraveno: <b>${overhang}</b> ${overhang===1?'vzorek se obtočí':(overhang<5?'vzorky se obtočí':'vzorků se obtočí')}.`;
+    btn.style.display='';
+  } else {
+    $('exp-anim').innerHTML = `Pro tyto délky je <code>N+M−1 = L</code>, takže nic nepřesahuje hranici periody — žádné obtékání nenastává a cyklická konvoluce se rovná lineární i bez paddingu. Zkus např. příklad <code>1,2,3 ⊛ 1,1</code>.`;
+    status.textContent = 'Žádné obtočení pro tyto délky.';
+    btn.style.display='none';
+  }
+
+  btn.onclick = playWrap;
+  btn.disabled=false; btn.style.opacity=1; btn.textContent='▶ Přehrát obtočení';
+}
+
+function setBar(i, value, g, color, opacity){
+  const top=g.yTop(value), y=Math.min(top,g.baseline), hgt=Math.max(Math.abs(top-g.baseline),0.5);
+  const rect=$('ab'+i), cap=$('ac'+i), lab=$('av'+i);
+  rect.setAttribute('y',y); rect.setAttribute('height',hgt);
+  rect.setAttribute('fill',color); rect.setAttribute('fill-opacity',opacity);
+  rect.removeAttribute('stroke-dasharray'); rect.setAttribute('stroke-width','0');
+  cap.setAttribute('y1',top); cap.setAttribute('y2',top); cap.setAttribute('stroke',color);
+  lab.setAttribute('y', value>=0?top-7:top+15); lab.textContent=fmt(value);
+}
+
+function playWrap(){
+  const {P,L,yLin}=LAST;
+  const overhang=P-L; if(overhang<=0) return;
+  if(animRAF) cancelAnimationFrame(animRAF);
+  const btn=$('playWrap'), status=$('animStatus');
+  const summed = yLin.slice(0,L).map((v,i)=> v + (i+L<P? yLin[i+L]:0));
+  const maxAbs = Math.max(1, ...yLin.map(Math.abs), ...summed.map(Math.abs));
+  const hasNeg = yLin.some(v=>v<-EPS) || summed.some(v=>v<-EPS);
+  const g = geom(yLin, maxAbs, hasNeg);
+  buildWrapPanel(); // reset to clean base state
+  const svg=$('animSvg');
+  btn.disabled=true; btn.style.opacity=.5;
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // running values for the destination positions
+  const running = yLin.slice(0,L);
+
+  // queue of overhang sources
+  const sources=[]; for(let i=L;i<P;i++) sources.push(i);
+  let qi=0;
+
+  function fadeSource(i){
+    ['ab'+i,'ac'+i,'av'+i].forEach(id=>{const e=document.getElementById(id); if(e){e.style.transition='opacity .4s'; e.style.opacity='.12';}});
+  }
+
+  function step(){
+    if(qi>=sources.length){
+      btn.disabled=false; btn.style.opacity=1;
+      btn.textContent='↺ Přehrát znovu';
+      status.innerHTML = `Hotovo: konec se obtočil na začátek → <span style="color:var(--bad)">červené</span> sloupce jsou výsledek z panelu 03.`;
+      return;
+    }
+    const src=sources[qi], dst=src-L;
+    status.innerHTML = `Vzorek <b>y[${src}] = ${fmt(yLin[src])}</b> → pozice <b>${src} mod ${L} = ${dst}</b> &nbsp;(${fmt(running[dst])} + ${fmt(yLin[src])} = ${fmt(running[dst]+yLin[src])})`;
+
+    const newVal = running[dst]+yLin[src];
+    const x0=g.cx(src), y0=g.yTop(yLin[src]);
+    const x2=g.cx(dst), y2=g.yTop(running[dst]);
+    const arc = Math.min(y0,y2)-70;        // control point lifts the arc
+    const cx1=(x0+x2)/2, cy1=arc;
+
+    // flying packet
+    const ns='http://www.w3.org/2000/svg';
+    const pkt=document.createElementNS(ns,'g');
+    const dot=document.createElementNS(ns,'circle');
+    dot.setAttribute('r','13'); dot.setAttribute('fill',COL.wrap); dot.setAttribute('fill-opacity','.95');
+    const txt=document.createElementNS(ns,'text');
+    txt.setAttribute('text-anchor','middle'); txt.setAttribute('dy','4');
+    txt.setAttribute('font-family','ui-monospace,Menlo,Consolas,monospace'); txt.setAttribute('font-size','11'); txt.setAttribute('font-weight','700');
+    txt.setAttribute('fill','#1a1006'); txt.textContent=fmt(yLin[src]);
+    pkt.appendChild(dot); pkt.appendChild(txt); svg.appendChild(pkt);
+    // arc trail
+    const trail=document.createElementNS(ns,'path');
+    trail.setAttribute('d',`M ${x0} ${y0} Q ${cx1} ${cy1} ${x2} ${y2}`);
+    trail.setAttribute('fill','none'); trail.setAttribute('stroke',COL.wrap);
+    trail.setAttribute('stroke-width','2'); trail.setAttribute('stroke-dasharray','3 5'); trail.setAttribute('opacity','.45');
+    svg.insertBefore(trail, svg.firstChild.nextSibling);
+
+    fadeSource(src);
+    const DUR = reduced ? 1 : 950;
+    const t0=performance.now();
+    function frame(now){
+      let t=Math.min((now-t0)/DUR,1), e=easeInOut(t);
+      const mt=1-e;
+      const px=mt*mt*x0 + 2*mt*e*cx1 + e*e*x2;
+      const py=mt*mt*y0 + 2*mt*e*cy1 + e*e*y2;
+      pkt.setAttribute('transform',`translate(${px},${py})`);
+      if(t<1){animRAF=requestAnimationFrame(frame);}
+      else{
+        // land: update destination bar to summed value, turn red, pop
+        running[dst]=newVal;
+        setBar(dst,newVal,g,COL.bad,0.92);
+        const r=$('ab'+dst);
+        r.style.transition='none';
+        r.setAttribute('transform-origin',`${g.cx(dst)}px ${g.baseline}px`);
+        r.style.transformBox='fill-box';
+        r.animate([{transform:'scaleY(1.18)'},{transform:'scaleY(1)'}],{duration:260,easing:'ease-out'});
+        // flash
+        const fl=$('av'+dst); if(fl){fl.animate([{fill:'#ffffff'},{fill:COL.ink}],{duration:400});}
+        trail.animate([{opacity:.45},{opacity:0}],{duration:500,fill:'forwards'});
+        pkt.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'}).onfinish=()=>{pkt.remove();};
+        setTimeout(()=>trail.remove(),520);
+        qi++;
+        setTimeout(step, reduced?60:380);
+      }
+    }
+    animRAF=requestAnimationFrame(frame);
+  }
+  step();
+}
+
+/* ---------- wiring ---------- */
+$('go').addEventListener('click', render);
+[$('inX'),$('inH')].forEach(el=>{
+  el.addEventListener('keydown',e=>{ if(e.key==='Enter') render(); });
+});
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{ $('inX').value=c.dataset.x; $('inH').value=c.dataset.h; render(); });
+});
+render();
+</script>
+</body>
+</html>

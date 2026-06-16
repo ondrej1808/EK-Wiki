@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decimace, interpolace, banky filtrů — CZS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Vícerychlostní zpracování — decimace / interpolace</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let mode = 'dec', factor = 3, Wb = 0.55 * Math.PI, filter = false;
+    function setF() { SK.katex(fEl, mode === 'dec' ? "\\downarrow M:\\ \\text{spektrum se roztáhne }M\\times \\Rightarrow \\text{aliasing, není-li omezeno na }\\pi/M"
+      : "\\uparrow L:\\ \\text{vzniknou obrazy po }2\\pi/L \\Rightarrow \\text{anti-image filtr (interpolační)}", false); }
+    setF();
+
+    const PI = Math.PI;
+    const view = SK.mount(document.getElementById('c'), draw);
+    function tri(ctx, X, Yb, c, hw, top, color, alpha) { ctx.save(); ctx.fillStyle = color; ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.globalAlpha = alpha;
+      ctx.beginPath(); ctx.moveTo(X(c - hw), Yb); ctx.lineTo(X(c), top); ctx.lineTo(X(c + hw), Yb); ctx.closePath(); ctx.fill(); ctx.restore(); }
+
+    function specPanel(ctx, x0, y0, w, hh, t, title, centers, hw, baseColor, repColor) {
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x0, y0 + hh); ctx.lineTo(x0 + w, y0 + hh); ctx.stroke();
+      // π markers
+      const X = (om) => x0 + w / 2 + om / (2 * PI) * w;     // show [-2π,2π] across width? use [-π,π]→ center
+      ctx.restore();
+      const Xm = (om) => x0 + w / 2 + (om / PI) * (w / 2 - 6);   // [-π,π] maps to panel
+      // band region [-π,π]
+      ctx.save(); ctx.strokeStyle = t.muted; ctx.setLineDash([3, 3]); [-PI, PI].forEach(o => { ctx.beginPath(); ctx.moveTo(Xm(o), y0); ctx.lineTo(Xm(o), y0 + hh); ctx.stroke(); }); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, '−π', Xm(-PI), y0 + hh + 12, { color: t.muted, align: 'center', font: '9px system-ui' });
+      SK.label(ctx, 'π', Xm(PI), y0 + hh + 12, { color: t.muted, align: 'center', font: '9px system-ui' });
+      let overlap = false;
+      centers.forEach(c => { if (c - hw < PI && c + hw > -PI) { const isBase = Math.abs(c) < 1e-6;
+        tri(ctx, Xm, y0 + hh, c, hw, y0 + 4, isBase ? baseColor : repColor, isBase ? 0.55 : 0.4);
+        if (!isBase && (c - hw) < PI && (c - hw) > -PI && hw + Math.abs(c) > PI) overlap = true; } });
+      SK.label(ctx, title, x0 + 4, y0 + 11, { color: t.fg, font: '11px system-ui' });
+      return overlap;
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const x0 = 20, ww = w - 40, hh = (h - 50) / 2 - 10;
+      // input spectrum (band ±Wb)
+      specPanel(ctx, x0, 12, ww, hh, t, 'vstupní spektrum', [0], Wb, t.accent2, t.pos);
+      const y2 = 12 + hh + 24;
+      let note, alias = false;
+      if (mode === 'dec') {
+        const M = factor; const hwEff = filter ? Math.min(Wb, PI / M) : Wb;
+        const hwOut = hwEff * M; const centers = [-2 * PI, 0, 2 * PI];
+        alias = specPanel(ctx, x0, y2, ww, hh, t, '↓' + M + ' výstup (spektrum ×' + M + ')', centers, hwOut, t.accent, t.pos);
+        if (filter) { note = 'Anti-aliasingový filtr omezil pásmo na π/M → po ↓M se vejde do (−π,π), bez aliasingu.'; }
+        else { note = alias ? 'Pásmo přesahuje π/M → po decimaci se repliky překryjí: ALIASING (červeně).' : 'Pásmo ≤ π/M → bez aliasingu (omezeně).'; }
+        ro.innerHTML = `<b>Decimace ↓${M}</b><br>${alias && !filter ? '<b style="color:#dc2626">ALIASING</b> — ' : ''}${note}<br>Před decimací musí být signál omezen dolní propustí na π/M.`;
+      } else {
+        const L = factor; const hwOut = Wb / L; const centers = [];
+        for (let k = -L + 1; k <= L - 1; k++) centers.push(k * 2 * PI / L);
+        const shown = filter ? [0] : centers;
+        specPanel(ctx, x0, y2, ww, hh, t, '↑' + L + ' výstup' + (filter ? ' + anti-image filtr' : ' (obrazy!)'), shown, hwOut, t.accent, t.warn);
+        note = filter ? 'Interpolační (anti-image) filtr odstranil spektrální obrazy → zůstal jen základní pás.' : 'Po vložení nul vzniknou spektrální OBRAZY po 2π/L (oranžově) — nutno odfiltrovat.';
+        ro.innerHTML = `<b>Interpolace ↑${L}</b><br>${note}<br>↑L vloží L−1 nul mezi vzorky; spektrum se zúží L× a vznikne L−1 obrazů.`;
+      }
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Decimace ↓M', value: 'dec' }, { label: 'Interpolace ↑L', value: 'int' }],
+      value: 'dec', onchange: (v) => { mode = v; setF(); view.redraw(); } }).el);
+    SK.controls(ctrl, [
+      SK.slider({ label: 'Činitel M / L', min: 2, max: 5, step: 1, value: 3, unit: '×', fmt: (v) => v | 0, oninput: (v) => { factor = v | 0; view.redraw(); } }),
+      SK.slider({ label: 'Šířka pásma signálu', min: 0.15, max: 0.95, step: 0.05, value: 0.55, unit: '·π', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { Wb = v * Math.PI; view.redraw(); } }),
+      SK.toggle({ label: 'Filtr (anti-alias / anti-image)', value: false, onchange: (v) => { filter = v; view.redraw(); } }),
+    ]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Decimace ↓M zahodí M−1 z M vzorků → spektrum se roztáhne M×. Pokud pásmo přesahuje π/M, repliky se ' +
+      'překryjí (aliasing) — proto se před decimací zařadí dolní propust na π/M. Interpolace ↑L vloží mezi vzorky L−1 nul ' +
+      '→ spektrum se zúží a objeví se L−1 spektrálních obrazů; ty odstraní interpolační (anti-image) filtr. Z těchto bloků ' +
+      'a dolních/horních propustí se staví banky filtrů (rozklad signálu do subpásem). Zapni filtr a porovnej.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lineární vs cyklická konvoluce — CZS</title>
+  <link rel="stylesheet" href="sim-kit.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <style>
+    .sk-stage { overflow: visible; }
+    #stage-inner { padding: 0.6rem; }
+    .czs-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .czs-col { }
+    .czs-col canvas { width: 100%; height: 220px !important; }
+    .czs-label { font-size: 12px; font-weight: bold; color: var(--sk-muted); margin-bottom: 0.3rem; }
+    .czs-ro { font-size: 11px; color: var(--sk-muted); margin-top: 0.3rem; }
+    @media (max-width: 1200px) { .czs-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body class="sk">
+  <div class="sk-head">
+    <h1>Lineární vs. cyklická konvoluce</h1>
+    <div class="sk-formula" id="formula"></div>
+  </div>
+  <div class="sk-stage">
+    <div id="stage-inner"></div>
+  </div>
+  <div class="sk-controls" id="ctrl"></div>
+
+  <script src="sim-kit.js"></script>
+  <script>
+(function () {
+  SK.katex(document.getElementById('formula'),
+    "y_\\text{lin}[n]=\\sum_k h[k]x[n-k] \\quad \\text{vs.} \\quad Y[k]=H[k]X[k] \\xrightarrow{\\text{IDFT}} y_\\text{cyc}[n]", false);
+
+  const sigTypes = ['pulse', 'tri', 'sin', 'step'];
+  let xType = 'pulse', hType = 'pulse';
+  let xLen = 16, hLen = 6;
+  let dftMode = 'auto', dftExact = 32;
+
+  // Generate signal
+  function sig(type, n, len) {
+    if (n < 0 || n >= len) return 0;
+    const u = n / len;
+    switch (type) {
+      case 'pulse': return (n >= 2 && n < 5) ? 1 : 0;
+      case 'tri': return Math.max(0, 1 - Math.abs(n - len/4) / (len/8));
+      case 'sin': return 0.5 * (1 + Math.sin(2 * Math.PI * 2 * u));
+      case 'step': return n >= len/2 ? 1 : 0;
+    }
+    return 0;
+  }
+
+  function getSignal(type, len) {
+    const s = [];
+    for (let n = 0; n < len; n++) s.push(sig(type, n, len));
+    return s;
+  }
+
+  // Linear convolution
+  function linearConv(x, h) {
+    const N = x.length, M = h.length;
+    const y = [];
+    for (let n = 0; n < N + M - 1; n++) {
+      let sum = 0;
+      for (let k = 0; k < M; k++) {
+        if (n - k >= 0 && n - k < N) sum += h[k] * x[n - k];
+      }
+      y.push(sum);
+    }
+    return y;
+  }
+
+  // DFT for real-valued input sequence
+  function dftReal(x) {
+    const N = x.length;
+    const result = [];
+    for (let k = 0; k < N; k++) {
+      let real = 0, imag = 0;
+      for (let n = 0; n < N; n++) {
+        const angle = -2 * Math.PI * k * n / N;
+        real += x[n] * Math.cos(angle);
+        imag += x[n] * Math.sin(angle);
+      }
+      result.push({ r: real, i: imag });
+    }
+    return result;
+  }
+
+  // IDFT for complex-valued spectrum sequence
+  function idftComplex(X) {
+    const N = X.length;
+    const result = [];
+    for (let n = 0; n < N; n++) {
+      let real = 0, imag = 0;
+      for (let k = 0; k < N; k++) {
+        const angle = 2 * Math.PI * k * n / N;
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        real += X[k].r * c - X[k].i * s;
+        imag += X[k].r * s + X[k].i * c;
+      }
+      result.push({ r: real / N, i: imag / N });
+    }
+    return result;
+  }
+
+  function mulComplex(a, b) {
+    return { r: a.r * b.r - a.i * b.i, i: a.r * b.i + a.i * b.r };
+  }
+
+  function cyclicConv(x, h, N) {
+    const xPad = x.concat(Array(N - x.length).fill(0));
+    const hPad = h.concat(Array(N - h.length).fill(0));
+    const X = dftReal(xPad);
+    const H = dftReal(hPad);
+    const Y = X.map((xk, k) => mulComplex(xk, H[k]));
+    const y = idftComplex(Y).map((yk) => yk.r);
+    return y;
+  }
+
+  function calculate() {
+    const x = getSignal(xType, xLen);
+    const h = getSignal(hType, hLen);
+    const yLin = linearConv(x, h);
+
+    let dftN;
+    if (dftMode === 'auto') {
+      dftN = Math.pow(2, Math.ceil(Math.log2(xLen + hLen - 1)));
+    } else {
+      dftN = dftExact;
+    }
+
+    const yCycSmall = cyclicConv(x, h, xLen);
+    const yCycProper = cyclicConv(x, h, dftN);
+
+    return { x, h, yLin, yCycSmall, yCycProper, dftN };
+  }
+
+  // Drawing function for a signal
+  function drawSig(ctx, w, h, signal, color, showLen) {
+    const t = SK.theme();
+    ctx.clearRect(0, 0, w, h);
+    SK.grid(ctx, w, h, 25);
+
+    if (!signal || signal.length === 0) return;
+
+    const pad = 30;
+    const pw = w - 2 * pad;
+    const ph = h - 2 * pad;
+    const ox = pad, oy = h - pad;
+
+    // Axes
+    ctx.save();
+    ctx.strokeStyle = t.axis;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ox, oy); ctx.lineTo(w - pad, oy);
+    ctx.moveTo(ox, pad); ctx.lineTo(ox, oy);
+    ctx.stroke();
+    ctx.restore();
+
+    // Scale
+    let maxVal = signal.reduce((a, b) => Math.max(a, Math.abs(b)), 0.1);
+    const sy = (ph / 2) / maxVal;
+
+    // Draw line
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < signal.length; i++) {
+      const px = ox + (i / (Math.max(1, signal.length - 1))) * pw;
+      const py = oy - signal[i] * sy;
+      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Dots
+    ctx.save();
+    ctx.fillStyle = color;
+    for (let i = 0; i < signal.length; i++) {
+      const px = ox + (i / (Math.max(1, signal.length - 1))) * pw;
+      const py = oy - signal[i] * sy;
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // Label
+    if (showLen) {
+      ctx.save();
+      ctx.fillStyle = t.muted;
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText('N=' + signal.length, w - 6, 6);
+      ctx.restore();
+    }
+  }
+
+  // Create pane structure
+  const stageInner = document.getElementById('stage-inner');
+
+  function renderPanes() {
+    const data = calculate();
+
+    stageInner.innerHTML = `
+      <div class="czs-row">
+        <div class="czs-col">
+          <div class="czs-label">x[n] — vstupní signál</div>
+          <canvas id="cX"></canvas>
+          <div class="czs-ro">délka: <b>${data.x.length}</b></div>
+        </div>
+        <div class="czs-col">
+          <div class="czs-label">h[n] — impulzní odezva</div>
+          <canvas id="cH"></canvas>
+          <div class="czs-ro">délka: <b>${data.h.length}</b></div>
+        </div>
+        <div class="czs-col">
+          <div class="czs-label">y[n] — lineární konvoluce</div>
+          <canvas id="cYLin"></canvas>
+          <div class="czs-ro">délka: <b>${data.yLin.length}</b></div>
+        </div>
+      </div>
+
+      <div class="czs-row">
+        <div class="czs-col">
+          <div class="czs-label" style="color: var(--sk-warn);">❌ cyklická (N=${xLen}) — aliasing!</div>
+          <canvas id="cYCycSmall"></canvas>
+          <div class="czs-ro">Chybně zpracovaná počáteční část</div>
+        </div>
+        <div class="czs-col">
+          <div class="czs-label" style="color: var(--sk-ok);">✓ cyklická (N=${data.dftN}) — správně</div>
+          <canvas id="cYCycProper"></canvas>
+          <div class="czs-ro">Shoduje se s lineární konvolucí</div>
+        </div>
+        <div class="czs-col">
+          <div class="czs-label">Rozdíl (správné - aliasing)</div>
+          <canvas id="cDiff"></canvas>
+          <div class="czs-ro">Ukazuje vliv aliasingu</div>
+        </div>
+      </div>
+
+      <div class="sk-hint">
+        <strong>Klíčová zjištění:</strong><br/>
+        • <strong>Lineární konvoluce:</strong> přirozená LTI operace, výstup délka N+M-1<br/>
+        • <strong>Cyklická s N=x-length:</strong> aliasing — začátek výstupu je zkreslený (oranžová barva)<br/>
+        • <strong>Cyklická s N≥N+M:</strong> po zero-paddingu dá stejné výsledky jako lineární<br/>
+        • <strong>Důsledek:</strong> Pro FFT výpočet lineární konvoluce je nutné <em>N_DFT ≥ N + M - 1</em>
+      </div>
+    `;
+
+    // Draw all canvases
+    const t = SK.theme();
+    function setupCanvas(id, color, signal) {
+      const c = document.getElementById(id);
+      const ctx = c.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = c.getBoundingClientRect();
+      const cw = Math.round(rect.width * dpr);
+      const ch = Math.round(rect.height * dpr);
+      c.width = cw; c.height = ch;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawSig(ctx, rect.width, rect.height, signal, color, true);
+    }
+
+    setupCanvas('cX', t.neg, data.x);
+    setupCanvas('cH', t.pos, data.h);
+    setupCanvas('cYLin', t.ok, data.yLin);
+    setupCanvas('cYCycSmall', t.warn, data.yCycSmall);
+    setupCanvas('cYCycProper', t.ok, data.yCycProper);
+
+    // Difference signal
+    const maxLen = Math.max(data.yCycProper.length, data.yCycSmall.length);
+    const diff = [];
+    for (let i = 0; i < maxLen; i++) {
+      const a = i < data.yCycProper.length ? data.yCycProper[i] : 0;
+      const b = i < data.yCycSmall.length ? data.yCycSmall[i] : 0;
+      diff.push(a - b);
+    }
+    setupCanvas('cDiff', t.muted, diff);
+  }
+
+  function refresh() {
+    renderPanes();
+  }
+
+  // Controls
+  const ctrl = document.getElementById('ctrl');
+  SK.controls(ctrl, [
+    SK.tabs({ label: 'x[n] — typ signálu',
+      options: sigTypes.map(t => ({ label: t, value: t })),
+      value: xType,
+      onchange: (v) => { xType = v; refresh(); } }),
+    SK.slider({ label: 'x[n] — délka',
+      min: 4, max: 32, step: 1, value: xLen,
+      fmt: (v) => v | 0,
+      oninput: (v) => { xLen = v; refresh(); } }),
+    SK.tabs({ label: 'h[n] — typ signálu',
+      options: sigTypes.map(t => ({ label: t, value: t })),
+      value: hType,
+      onchange: (v) => { hType = v; refresh(); } }),
+    SK.slider({ label: 'h[n] — délka',
+      min: 2, max: 20, step: 1, value: hLen,
+      fmt: (v) => v | 0,
+      oninput: (v) => { hLen = v; refresh(); } }),
+    SK.tabs({ label: 'N_DFT (cyklická konvoluce)',
+      options: [
+        { label: 'auto (2^n)', value: 'auto' },
+        { label: 'vlastní', value: 'custom' }
+      ],
+      value: dftMode,
+      onchange: (v) => { dftMode = v; refresh(); } }),
+    SK.slider({ label: 'N_DFT — vlastní hodnota',
+      min: 4, max: 128, step: 1, value: dftExact,
+      fmt: (v) => v | 0,
+      oninput: (v) => { dftExact = v; if (dftMode === 'custom') refresh(); } }),
+  ]);
+
+  // Initial render
+  renderPanes();
+
+})();
+  </script>
+</body>
+</html>
