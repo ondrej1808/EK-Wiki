@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Náhodný signál — autokorelace, PSD, stacionarita — SAS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Náhodný proces — autokorelace &amp; výkonová spektrální hustota</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    SK.katex(document.getElementById('formula'),
+      "S_x(\\omega)=\\mathcal F\\{R_x(\\tau)\\}\\ \\text{(Wiener–Chinčin)},\\quad R_x(\\tau)=\\overline{x(t)x(t+\\tau)}", false);
+    const ro = document.getElementById('ro');
+    const N = 256;
+    let kind = 'white', x = [];
+    function randn() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+    function gen() {
+      x = []; if (kind === 'white') { for (let i = 0; i < N; i++) x.push(randn()); }
+      else if (kind === 'ar') { let p = 0; for (let i = 0; i < N; i++) { p = 0.9 * p + randn() * 0.5; x.push(p); } }
+      else if (kind === 'sine') { for (let i = 0; i < N; i++) x.push(Math.sin(2 * Math.PI * 8 * i / N) + 0.5 * randn()); }
+      else { for (let i = 0; i < N; i++) x.push(randn() * (0.3 + 2 * i / N)); }   // nonstationary: variance grows
+    }
+    gen();
+    function autocorr() { const m = x.reduce((a, b) => a + b, 0) / N; const R = []; const L = 64;
+      for (let tau = 0; tau <= L; tau++) { let s = 0; for (let n = 0; n < N - tau; n++) s += (x[n] - m) * (x[n + tau] - m); R.push(s / N); } return R; }
+    function psd() { const P = []; const K = 64; for (let k = 0; k < K; k++) { let re = 0, im = 0; for (let n = 0; n < N; n++) { const a = -2 * Math.PI * k * n / N; re += x[n] * Math.cos(a); im += x[n] * Math.sin(a); } P.push((re * re + im * im) / N); } return P; }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function lane(ctx, x0, y0, w, hh, t, title) { ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y0 + hh / 2); ctx.lineTo(x0 + w, y0 + hh / 2); ctx.stroke(); ctx.restore(); SK.label(ctx, title, x0 + 2, y0 + 11, { color: t.fg, font: '11px system-ui' }); }
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h);
+      const x0 = 16, ww = w - 32, hh = (h - 16) / 3 - 8;
+      // realization
+      lane(ctx, x0, 6, ww, hh, t, 'realizace x[n]');
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 1.4; ctx.beginPath(); const mx = Math.max(...x.map(Math.abs)) || 1;
+      for (let i = 0; i < N; i++) { const px = x0 + i / (N - 1) * ww, py = 6 + hh / 2 - x[i] / mx * (hh / 2 - 4); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.stroke(); ctx.restore();
+      // autocorrelation
+      const R = autocorr(), yR = 6 + hh + 8; lane(ctx, x0, yR, ww, hh, t, 'autokorelace R(τ)');
+      ctx.save(); ctx.strokeStyle = t.accent; ctx.fillStyle = t.accent; ctx.lineWidth = 2; const mr = Math.max(...R.map(Math.abs)) || 1;
+      for (let i = 0; i < R.length; i++) { const px = x0 + i / (R.length - 1) * ww, py = yR + hh / 2 - R[i] / mr * (hh / 2 - 4); ctx.beginPath(); ctx.moveTo(px, yR + hh / 2); ctx.lineTo(px, py); ctx.stroke(); } ctx.restore();
+      // PSD
+      const P = psd(), yP = 6 + 2 * (hh + 8); lane(ctx, x0, yP, ww, hh, t, 'výkonová spektrální hustota S_x(ω) = FT{R}');
+      ctx.save(); ctx.strokeStyle = t.mag; ctx.lineWidth = 2; ctx.beginPath(); const mp = Math.max(...P) || 1;
+      for (let i = 0; i < P.length; i++) { const px = x0 + i / (P.length - 1) * ww, py = yP + hh - P[i] / mp * (hh - 6); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.stroke(); ctx.restore();
+      SK.label(ctx, '0', x0, yP + hh + 2, { color: t.muted, font: '9px system-ui' }); SK.label(ctx, 'π', x0 + ww, yP + hh + 2, { color: t.muted, align: 'right', font: '9px system-ui' });
+
+      const info = {
+        white: ['Bílý šum', 'WSS ✓, SSS ✓ (i.i.d. Gauss), ergodický ✓', 'R(τ)≈δ(τ) (vzorky nekorelované) → PSD plochá („bílá").'],
+        ar: ['Barevný šum (AR1)', 'WSS ✓, ergodický ✓', 'R(τ) klesá exponenciálně → PSD typu dolní propust (sousední vzorky korelované).'],
+        sine: ['Sinus + šum', 'WSS jen při náhodné fázi nosné', 'R(τ) obsahuje kosinus → PSD má výraznou čáru na frekvenci nosné.'],
+        nonstat: ['Nestacionární (rostoucí rozptyl)', 'NENÍ WSS (statistiky se mění v čase)', 'Rozptyl roste s časem → autokorelace závisí na absolutním čase, ne jen na τ. Ergodicita nemá smysl.'],
+      }[kind];
+      ro.innerHTML = `<b>${info[0]}</b><br>Stacionarita/ergodicita: <b>${info[1]}</b><br>${info[2]}<br>` +
+        `<span style="opacity:.8">WSS = střední hodnota a autokorelace nezávislé na čase · SSS = všechny statistiky invariantní v čase · ergodický = časový průměr = střední hodnota přes realizace.</span>`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'bílý šum', value: 'white' }, { label: 'barevný (AR)', value: 'ar' }, { label: 'sinus+šum', value: 'sine' }, { label: 'nestacionární', value: 'nonstat' }],
+      value: 'white', onchange: (v) => { kind = v; gen(); view.redraw(); } }).el);
+    SK.controls(ctrl, [SK.button({ label: '🎲 Nová realizace', primary: true, onclick: () => { gen(); view.redraw(); } })]);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Náhodný proces popisujeme statisticky. Autokorelace R(τ)=E[x(t)x(t+τ)] měří, jak spolu souvisí vzorky ' +
+      'vzdálené o τ; její Fourierova transformace je výkonová spektrální hustota S(ω) (Wiener–Chinčinova věta) — rozdělení ' +
+      'výkonu do frekvencí. Stacionarita: WSS (slabá) = neměnná střední hodnota a autokorelace v čase; SSS (silná) = ' +
+      'neměnné všechny statistiky. Ergodicita: časový průměr jedné (dost dlouhé) realizace = průměr přes soubor realizací ' +
+      '(pak stačí měřit jeden signál). Bílý a barevný šum jsou stacionární i ergodické; signál s rostoucím rozptylem není ani WSS.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
