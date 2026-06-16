@@ -286,6 +286,8 @@
         {
           code: 'B2B37AVT', title: 'Audiovizuální technika',
           resources: [
+            { type: 'note', label: '01 – Vidění, snímání a reprodukce obrazu, kódování', src: SZZ + 'AVT/01 Videni snimani a reprodukce obrazu zdrojove kodovani digitalni fotografie.md' },
+            { type: 'note', label: '02 – Slyšení, měniče, vzorkování a kódování zvuku',   src: SZZ + 'AVT/02 Slyseni elektrodynamicky a elektrostaticky menic vzorkovani kodovani zvuku.md' },
             { type: 'pdf', label: 'AVT 1 (ek-drive)',     src: EK  + 'AVT/avt1.pdf' },
             { type: 'pdf', label: 'AVT 2 (ek-drive)',     src: EK  + 'AVT/avt2.pdf' },
             { type: 'sum', label: 'HEX – shrnutí okruhů',  src: AQ  + 'B2B37AVT.md' },
