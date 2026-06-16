@@ -350,6 +350,7 @@
         code: 'B0B01DRN', title: 'Diferenciální rovnice',
         resources: [
           { type: 'sim', label: 'Směrové pole & Eulerova metoda', src: SIM + 'drn_slopefield.html' },
+          { type: 'sim', label: 'Numerické metody (kořen/integrál/ODR)', src: SIM + 'drn_methods.html' },
         ],
       },
       {
