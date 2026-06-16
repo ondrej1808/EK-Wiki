@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antény — typy a charakteristiky — TBK</title>
+<link rel="stylesheet" href="sim-kit.css">
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Antény — vyzařovací charakteristika a zisk</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage sk-split"><canvas id="c1"></canvas><canvas id="c2"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let type = 'dipole', N = 6, apert = 4;
+    fEl.textContent = 'zisk G = η·D · směrovost D ↑ ⇒ užší hlavní lalok · čím užší svazek, tím vyšší zisk';
+
+    // normalized radiated power g(a) ∈[0,1], a = screen angle (0 = right = hlavní směr / horizontální rovina)
+    function g(a) {
+      if (type === 'dipole' || type === 'monopole') {
+        const th = a - Math.PI / 2;                    // measure from vertical axis
+        let v = Math.abs(th) < 1e-3 || Math.abs(Math.abs(th) - Math.PI) < 1e-3 ? 0 : Math.cos(Math.PI / 2 * Math.cos(th)) / Math.sin(th);
+        v = v * v;
+        if (type === 'monopole' && Math.sin(a) < 0) v = 0;   // ground plane blocks lower half
+        return SK.clamp(v, 0, 1);
+      }
+      if (type === 'yagi') { const c = Math.cos(a); const fwd = c > 0 ? Math.pow(c, N) : 0; const back = c < 0 ? 0.08 * Math.pow(-c, 2) : 0; return SK.clamp(fwd + back, 0, 1); }
+      // horn: narrow forward pencil beam, width ∝ 1/apert
+      const d = a > Math.PI ? a - 2 * Math.PI : a; return Math.exp(-(d * apert) * (d * apert) * 1.2);
+    }
+    function metrics() {
+      // numeric directivity D = max / mean(g) over sphere-ish (2D approx) → to dBi via representative offsets
+      let mean = 0, n = 720; for (let i = 0; i < n; i++) mean += g(i / n * 2 * Math.PI); mean /= n;
+      const D = 1 / Math.max(mean, 1e-3);
+      // half-power beamwidth (−3 dB) around main lobe
+      let bw = '—';
+      if (type !== 'dipole' && type !== 'monopole') { let lo = 0; for (let d = 0; d < Math.PI; d += 0.003) if (g(d) < 0.5) { lo = d; break; } bw = SK.fmt(2 * lo * 180 / Math.PI, 0) + '°'; }
+      const Ddbi = 10 * Math.log10(D);
+      return { Ddbi, bw };
+    }
+
+    const v1 = SK.mount(document.getElementById('c1'), drawPattern);
+    const v2 = SK.mount(document.getElementById('c2'), drawGeom);
+    function redraw() { v1.redraw(); v2.redraw(); }
+
+    function drawPattern(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); SK.grid(ctx, w, h, 28);
+      const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.40;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; for (const rr of [0.5, 1]) { ctx.beginPath(); ctx.arc(cx, cy, R * rr, 0, 7); ctx.stroke(); }
+      ctx.beginPath(); ctx.moveTo(cx - R - 8, cy); ctx.lineTo(cx + R + 8, cy); ctx.moveTo(cx, cy - R - 8); ctx.lineTo(cx, cy + R + 8); ctx.stroke(); ctx.restore();
+      // lobe
+      ctx.save(); ctx.fillStyle = t.accent; ctx.globalAlpha = 0.20; ctx.strokeStyle = t.accent; ctx.lineWidth = 2.2; ctx.beginPath();
+      let started = false; for (let i = 0; i <= 360; i++) { const a = i / 360 * 2 * Math.PI; const rr = R * g(a); const x = cx + rr * Math.cos(a), y = cy - rr * Math.sin(a); started ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), started = true); }
+      ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'vyzařovací charakteristika', cx, h - 8, { color: t.accent, align: 'center', font: '11px system-ui', baseline: 'bottom' });
+      if (type === 'monopole') SK.label(ctx, 'zem', cx, cy + 12, { color: t.muted, align: 'center', font: '10px system-ui' });
+    }
+
+    function drawGeom(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const cx = w / 2, cy = h / 2;
+      ctx.save(); ctx.strokeStyle = t.fg; ctx.lineWidth = 3;
+      if (type === 'dipole') { ctx.beginPath(); ctx.moveTo(cx, cy - 60); ctx.lineTo(cx, cy - 6); ctx.moveTo(cx, cy + 6); ctx.lineTo(cx, cy + 60); ctx.stroke(); SK.label(ctx, 'λ/2 dipól', cx + 10, cy, { color: t.muted, font: '11px system-ui', baseline: 'middle' }); SK.label(ctx, 'napájení', cx + 10, cy + 16, { color: t.muted, font: '10px system-ui' }); }
+      else if (type === 'monopole') { ctx.beginPath(); ctx.moveTo(cx, cy - 50); ctx.lineTo(cx, cy + 40); ctx.stroke(); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 70, cy + 40); ctx.lineTo(cx + 70, cy + 40); ctx.stroke(); SK.label(ctx, 'λ/4 monopól', cx + 10, cy - 10, { color: t.muted, font: '11px system-ui' }); SK.label(ctx, 'zemní rovina', cx, cy + 54, { color: t.muted, align: 'center', font: '10px system-ui' }); }
+      else if (type === 'yagi') { const bx = cx - 70; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx, cy); ctx.lineTo(bx + 150, cy); ctx.stroke();
+        ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(bx, cy - 40); ctx.lineTo(bx, cy + 40); ctx.stroke(); SK.label(ctx, 'reflektor', bx, cy - 46, { color: t.muted, align: 'center', font: '9px system-ui' });
+        ctx.strokeStyle = t.accent2; ctx.beginPath(); ctx.moveTo(bx + 24, cy - 34); ctx.lineTo(bx + 24, cy + 34); ctx.stroke(); SK.label(ctx, 'aktivní', bx + 24, cy + 46, { color: t.accent2, align: 'center', font: '9px system-ui' });
+        ctx.strokeStyle = t.fg; for (let i = 0; i < Math.min(N - 2, 6); i++) { const x = bx + 50 + i * 18; ctx.beginPath(); ctx.moveTo(x, cy - 26); ctx.lineTo(x, cy + 26); ctx.stroke(); }
+        SK.label(ctx, 'direktory →', bx + 110, cy - 32, { color: t.muted, font: '9px system-ui' }); SK.label(ctx, 'Yagi (' + N + ' prvků)', cx, h - 16, { color: t.muted, align: 'center', font: '11px system-ui' }); }
+      else { ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 60, cy - 8); ctx.lineTo(cx - 60, cy + 8); ctx.lineTo(cx - 20, cy + 8); ctx.lineTo(cx - 20, cy - 8); ctx.closePath(); ctx.stroke();
+        const ap = 10 + apert * 6; ctx.beginPath(); ctx.moveTo(cx - 20, cy - 8); ctx.lineTo(cx + 50, cy - ap); ctx.moveTo(cx - 20, cy + 8); ctx.lineTo(cx + 50, cy + ap); ctx.moveTo(cx + 50, cy - ap); ctx.lineTo(cx + 50, cy + ap); ctx.stroke();
+        SK.label(ctx, 'vlnovod', cx - 40, cy - 14, { color: t.muted, align: 'center', font: '9px system-ui' }); SK.label(ctx, 'trychtýř (horn)', cx + 20, h - 16, { color: t.muted, align: 'center', font: '11px system-ui' }); }
+      ctx.restore();
+      const m = metrics();
+      const names = { dipole: 'Půlvlnný dipól', monopole: 'Čtvrtvlnný monopól', yagi: 'Yagi-Uda', horn: 'Trychtýřová (horn)' };
+      ro.innerHTML = `<b>${names[type]}</b><br>Směrovost D ≈ <b>${SK.fmt(m.Ddbi, 1)} dBi</b>` + (m.bw !== '—' ? `, šířka svazku ≈ <b>${m.bw}</b>` : '') + `<br>` +
+        (type === 'dipole' ? 'Všesměrová v rovině kolmé na dipól (toroid), nuly podél osy. Referenční ~2,15 dBi.'
+          : type === 'monopole' ? 'Půlka dipólu nad zemní rovinou → vyzařuje do horní polokoule, dvojnásobná směrovost (~5 dBi).'
+          : type === 'yagi' ? 'Aktivní prvek + reflektor + direktory → jeden směrový lalok. Více prvků = vyšší zisk a užší svazek.'
+          : 'Vlnovod plynule rozšířený do ústí → úzký „tužkový" svazek, vysoký zisk; čím větší ústí (vůči λ), tím užší.');
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Dipól', value: 'dipole' }, { label: 'Monopól', value: 'monopole' }, { label: 'Yagi', value: 'yagi' }, { label: 'Trychtýř', value: 'horn' }],
+      value: 'dipole', onchange: (v) => { type = v; rebuild(); redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() { holder.innerHTML = '';
+      if (type === 'yagi') SK.controls(holder, [SK.slider({ label: 'Počet prvků', min: 3, max: 15, step: 1, value: N, unit: '', fmt: (v) => v | 0, oninput: (v) => { N = v | 0; redraw(); } })]);
+      else if (type === 'horn') SK.controls(holder, [SK.slider({ label: 'Velikost ústí (λ)', min: 1.5, max: 8, step: 0.5, value: apert, unit: 'λ', fmt: (v) => SK.fmt(v, 1), oninput: (v) => { apert = v; redraw(); } })]);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Anténa vyzařuje do prostoru podle své vyzařovací charakteristiky. Dipól (λ/2) je téměř všesměrový ' +
+      'v rovině kolmé na vodič (~2,15 dBi); monopól (λ/4) nad zemní rovinou vyzařuje jen do horní polokoule a má ' +
+      'dvojnásobnou směrovost. Yagi-Uda (aktivní prvek + reflektor + direktory) soustřeďuje výkon do jednoho směru — ' +
+      'více prvků dává vyšší zisk a užší svazek. Trychtýř (horn) je rozšířený vlnovod s úzkým svazkem a vysokým ziskem. ' +
+      'Platí: čím užší hlavní lalok, tím vyšší směrovost a zisk G=η·D. Přepínej typy a měň počet prvků / velikost ústí.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>

@@ -477,6 +477,7 @@
         resources: [
           { type: 'sim', label: 'Výkonová bilance spoje (Friis)', src: SIM + 'tbk_friis.html' },
           { type: 'sim', label: 'Polarizace vlny (lin./kruh./elipt.)', src: SIM + 'tbk_polarization.html' },
+          { type: 'sim', label: 'Antény – dipól/monopól/Yagi/trychtýř', src: SIM + 'tbk_antennas.html' },
         ],
       },
       {
