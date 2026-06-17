@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DFT a spektrální analýza krok za krokem (ponder) — CZS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>DFT a spektrální analýza — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    const N = 32;
+
+    const STEPS = [
+      { t: 'Diskrétní signál', tex: 'x[n],\\quad n=0,\\dots,N-1',
+        c: 'Máme N vzorků signálu x[n]. Chceme zjistit, z jakých frekvencí se skládá.' },
+      { t: 'Definice DFT', tex: 'X[k]=\\sum_{n=0}^{N-1} x[n]\\,e^{-j 2\\pi k n / N}',
+        c: 'DFT promítne signál do báze N komplexních exponenciál (harmonických). Koeficient X[k] udává, kolik je v signálu k-té frekvence.' },
+      { t: 'Spektrum a rozlišení', tex: '|X[k]|,\\quad \\Delta f=\\dfrac{f_s}{N}',
+        c: 'Velikost |X[k]| je amplitudové spektrum. Frekvenční rozlišení (vzdálenost binů) je Δf = fs/N — víc vzorků (delší okno) → jemnější rozlišení.' },
+      { t: 'Frekvence přesně na binu', tex: 'f = k\\,\\Delta f \\Rightarrow \\text{ostrá čára}',
+        c: 'Pokud frekvence signálu padne přesně na některý bin (celý počet period v okně), zobrazí se jako jediná ostrá spektrální čára.' },
+      { t: 'Prosakování (leakage)', tex: 'f \\ne k\\,\\Delta f \\Rightarrow \\text{rozteče se}',
+        c: 'Když frekvence leží mezi biny (neceločíselný počet period), energie se „rozteče" do okolních binů — vzniká spektrální leakage (prosakování) a postranní laloky.' },
+      { t: 'Váhování oknem (Hann)', tex: 'x_w[n]=x[n]\\,w[n]',
+        c: 'Vynásobením signálu oknem (např. Hannovým) se zjemní okraje úseku → potlačí se postranní laloky a leakage. Cenou je širší hlavní lalok (horší rozlišení blízkých frekvencí).' },
+      { t: 'Kompromis', tex: '\\text{rozlišení} \\;\\leftrightarrow\\; \\text{leakage}',
+        c: 'Volba okna je kompromis: obdélníkové (žádné) okno = nejlepší rozlišení, ale velký leakage; hladká okna = malý leakage, ale širší lalok. Podle úlohy volíme vhodné okno.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function dftMag(freq, win) {
+      const x = []; for (let n = 0; n < N; n++) { let v = Math.sin(2 * Math.PI * freq * n / N);
+        if (win) v *= 0.5 - 0.5 * Math.cos(2 * Math.PI * n / (N - 1)); x.push(v); }
+      const mag = []; for (let k = 0; k <= N / 2; k++) { let re = 0, im = 0;
+        for (let n = 0; n < N; n++) { re += x[n] * Math.cos(2 * Math.PI * k * n / N); im -= x[n] * Math.sin(2 * Math.PI * k * n / N); }
+        mag.push(Math.hypot(re, im)); }
+      return { x, mag };
+    }
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const offBin = (k >= 4);
+      const win = (k >= 5);
+      const freq = offBin ? 4.5 : 4;
+      const { x, mag } = dftMag(freq, win);
+      const x0 = 36, x1 = w - 20;
+      // ── TOP: time domain stems ──
+      const tyc = h * 0.28, tA = h * 0.17;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, tyc); ctx.lineTo(x1, tyc); ctx.stroke(); ctx.restore();
+      for (let n = 0; n < N; n++) { const px = x0 + (x1 - x0) * n / (N - 1), py = tyc - tA * x[n];
+        ctx.save(); ctx.strokeStyle = t.accent2; ctx.globalAlpha = 0.8; ctx.beginPath(); ctx.moveTo(px, tyc); ctx.lineTo(px, py); ctx.stroke(); ctx.restore(); SK.dot(ctx, px, py, 2, t.pos); }
+      SK.label(ctx, win ? 'x[n]·w[n] (okno Hann)' : 'x[n] (' + (offBin ? 'neceločíselný' : 'celočíselný') + ' počet period)', x0 + 2, tyc - tA - 8, { color: t.accent2, font: '11px system-ui' });
+      if (win) { ctx.save(); ctx.strokeStyle = t.warn; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.4; ctx.setLineDash([4, 3]); ctx.beginPath();
+        for (let n = 0; n < N; n++) { const px = x0 + (x1 - x0) * n / (N - 1), wv = 0.5 - 0.5 * Math.cos(2 * Math.PI * n / (N - 1)), py = tyc - tA * wv; n ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.stroke(); ctx.setLineDash([]); ctx.restore(); }
+
+      // ── BOTTOM: magnitude spectrum stems ──
+      const byc = h * 0.92, bH = h * 0.42; let mmax = Math.max(...mag, 1e-6);
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, byc); ctx.lineTo(x1, byc); ctx.stroke(); ctx.restore();
+      SK.label(ctx, '|X[k]|', x0 + 2, byc - bH - 4, { color: t.fg, font: '11px system-ui' });
+      SK.label(ctx, 'k (bin)', x1, byc + 12, { color: t.muted, align: 'right', font: '10px system-ui' });
+      if (k >= 2) { for (let kk = 0; kk < mag.length; kk++) { const px = x0 + (x1 - x0) * kk / (mag.length - 1), py = byc - bH * (mag[kk] / mmax);
+        const isLeak = offBin && mag[kk] > 0.05 * mmax && Math.abs(kk - 4) > 1;
+        ctx.save(); ctx.strokeStyle = isLeak ? '#ef4444' : t.accent; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(px, byc); ctx.lineTo(px, py); ctx.stroke(); ctx.restore(); SK.dot(ctx, px, py, 2.5, isLeak ? '#ef4444' : t.accent); }
+        if (k === 3) SK.label(ctx, 'jedna ostrá čára (na binu)', (x0 + x1) / 2, byc - bH - 4, { color: t.ok, align: 'center', font: '11px system-ui' });
+        if (k === 4) SK.label(ctx, 'energie rozteklá → leakage', (x0 + x1) / 2, byc - bH - 4, { color: '#ef4444', align: 'center', font: 'bold 12px system-ui' });
+        if (k >= 5) SK.label(ctx, 'okno → menší leakage, širší lalok', (x0 + x1) / 2, byc - bH - 4, { color: t.warn, align: 'center', font: '11px system-ui' }); }
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj spektrální analýzu krok po kroku: signál x[n] → DFT X[k]=Σx[n]e^(−j2πkn/N) → spektrum a rozlišení Δf=fs/N → ' +
+      'frekvence na binu (ostrá čára) → mimo bin (leakage) → váhování oknem (Hann) → kompromis rozlišení/leakage. ' +
+      'Horní graf je čas, dolní amplitudové spektrum (počítáno reálnou DFT, N=32).';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>
