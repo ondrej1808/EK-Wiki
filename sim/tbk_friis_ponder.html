@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Friisova rovnice krok za krokem (ponder) — TBK</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Friisova rovnice spoje — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+
+    const STEPS = [
+      { t: 'Vysílač Pt, zisk Gt', tex: 'P_t,\\ G_t',
+        c: 'Vysílač dodá do antény výkon Pt. Anténa má zisk Gt — soustředí výkon do směru spoje oproti izotropnímu zářiči.' },
+      { t: 'Hustota výkonu ve vzdálenosti R', tex: 'S=\\dfrac{P_t G_t}{4\\pi R^2}',
+        c: 'Izotropní zářič rozprostře výkon na kouli o ploše 4πR². Se ziskem Gt je hustota výkonu ve směru spoje S = Pt·Gt/(4πR²). Součin Pt·Gt je EIRP.' },
+      { t: 'Efektivní apertura přijímače', tex: 'A_e=\\dfrac{G_r\\lambda^2}{4\\pi}',
+        c: 'Přijímací anténa „sbírá" výkon z plochy — efektivní apertury Ae. Platí univerzální vztah Ae = Gr·λ²/(4π).' },
+      { t: 'Přijatý výkon = S · Ae', tex: 'P_r = S\\,A_e = P_t G_t G_r\\left(\\dfrac{\\lambda}{4\\pi R}\\right)^2',
+        c: 'Přijatý výkon je hustota výkonu × efektivní apertura. Dosazením vyjde Friisova rovnice: Pr = Pt·Gt·Gr·(λ/4πR)².' },
+      { t: 'Útlum volného prostoru', tex: 'L_{FSL}=\\left(\\dfrac{4\\pi R}{\\lambda}\\right)^2',
+        c: 'Člen (4πR/λ)² je útlum šířením volným prostorem (FSL). Roste s druhou mocninou vzdálenosti i frekvence — je to geometrické ředění výkonu, ne ztráta v prostředí.' },
+      { t: 'Bilance v dB', tex: 'P_r[\\mathrm{dBm}] = P_t + G_t + G_r - L_{FSL}',
+        c: 'V logaritmické míře se násobení mění na sčítání: přijatý výkon = vysílaný výkon + zisky antén − útlum. FSL v dB: 92,44 + 20·log R[km] + 20·log f[GHz].' },
+      { t: 'Rezerva na únik (fade margin)', tex: 'M = P_r - P_{min} \\ge 0',
+        c: 'Spoj funguje, je-li přijatý výkon nad prahem citlivosti přijímače Pmin. Rozdíl M = Pr − Pmin je rezerva na únik (multipath, déšť) — typicky 20–30 dB.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function antenna(ctx, x, y, t, txt, col) {
+      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 30); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x - 11, y - 13); ctx.lineTo(x, y); ctx.lineTo(x + 11, y - 13); ctx.stroke();
+      ctx.fillStyle = t.muted; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.fillText(txt, x, y + 44); ctx.restore();
+    }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const cy = h * 0.5, xT = w * 0.14, xR = w * 0.86;
+      // link line + distance
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(xT, cy); ctx.lineTo(xR, cy); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'R', (xT + xR) / 2, cy - 10, { color: t.muted, align: 'center', font: '12px system-ui' });
+      // expanding sphere arcs from TX (step >=1)
+      if (k >= 1) { ctx.save(); ctx.strokeStyle = t.accent; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.4;
+        for (let i = 1; i <= 5; i++) { const r = (xR - xT) * i / 5.5; ctx.beginPath(); ctx.arc(xT, cy, r, -0.9, 0.9); ctx.stroke(); } ctx.restore();
+        SK.label(ctx, 'S = Pt·Gt / 4πR²', xT + 30, cy - 70, { color: t.accent, font: '11px system-ui' }); }
+      // RX effective area (step >=2)
+      if (k >= 2) { ctx.save(); ctx.fillStyle = t.ok; ctx.globalAlpha = 0.25; ctx.fillRect(xR - 26, cy - 34, 22, 68); ctx.globalAlpha = 1; ctx.strokeStyle = t.ok; ctx.strokeRect(xR - 26, cy - 34, 22, 68); ctx.restore();
+        SK.label(ctx, 'Ae = Grλ²/4π', xR - 30, cy - 44, { color: t.ok, align: 'right', font: '11px system-ui' }); }
+      antenna(ctx, xT, cy, t, 'TX · Pt, Gt', t.accent);
+      antenna(ctx, xR, cy, t, 'RX · Gr', t.ok);
+      // formula stack (right/bottom) building up
+      const lines = [];
+      if (k >= 3) lines.push(['Pr = S·Ae = Pt Gt Gr (λ/4πR)²', t.fg]);
+      if (k >= 4) lines.push(['L_FSL = (4πR/λ)²', t.warn]);
+      if (k >= 5) lines.push(['Pr[dBm] = Pt+Gt+Gr − L_FSL', t.accent]);
+      if (k >= 6) lines.push(['M = Pr − Pmin ≥ 0  (rezerva)', t.ok]);
+      let yy = h - 16 - (lines.length - 1) * 18;
+      lines.forEach(([s, col]) => { SK.label(ctx, s, w / 2, yy, { color: col, align: 'center', font: '12px system-ui' }); yy += 18; });
+      if (k === 0) SK.label(ctx, 'EIRP = Pt·Gt', xT + 30, cy - 70, { color: t.accent, font: '11px system-ui' });
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj odvození Friisovy rovnice krok po kroku: výkon Pt·Gt → hustota výkonu S=Pt Gt/4πR² → efektivní ' +
+      'apertura Ae=Grλ²/4π → Pr=S·Ae=Pt Gt Gr(λ/4πR)² → útlum FSL=(4πR/λ)² → bilance v dB → rezerva na únik. ' +
+      '&nbsp;<a href="tbk_friis.html" target="_blank" rel="noopener" style="color:var(--sk-accent)">↗ Interaktivní výkonová bilance</a>.';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>

@@ -493,6 +493,7 @@
         code: 'B2B17TBK', title: 'Bezdrátová komunikace',
         resources: [
           { type: 'sim', label: 'Výkonová bilance spoje (Friis)', src: SIM + 'tbk_friis.html' },
+          { type: 'sim', label: 'Friisova rovnice krok za krokem (ponder)', src: SIM + 'tbk_friis_ponder.html' },
           { type: 'sim', label: 'Polarizace vlny (lin./kruh./elipt.)', src: SIM + 'tbk_polarization.html' },
           { type: 'sim', label: 'Antény – dipól/monopól/Yagi/trychtýř', src: SIM + 'tbk_antennas.html' },
           { type: 'pdf', label: 'TBK (ek-drive)', src: EK + 'TBK/tbk.pdf' },
