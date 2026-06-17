@@ -445,6 +445,7 @@
         code: 'B2B34ELPA', title: 'Elektronické prvky',
         resources: [
           { type: 'sim', label: 'Dioda PN / PIN / Schottky (Shockley)', src: SIM + 'elpa_diode.html' },
+          { type: 'sim', label: 'Schottkyho bariéra (kov–polovodič, pásy)', src: SIM + 'elpa_schottky.html' },
           { type: 'sim', label: 'Fotodioda – fotovolt./fotovodiv. režim', src: SIM + 'elpa_photodiode.html' },
           { type: 'sim', label: 'BJT – výstupní charakteristika',       src: SIM + 'elpa_bjt.html' },
           { type: 'sim', label: 'BJT – charakteristické pole (4 kvadranty)', src: SIM + 'elpa_bjt_quadrants.html' },

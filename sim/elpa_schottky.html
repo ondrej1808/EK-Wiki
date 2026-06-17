@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schottkyho bariéra (kov–polovodič) — ELPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Kov–polovodič: Schottkyho bariéra (pásy)</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    let tab = 'schottky', V = 0;                 // applied bias (forward > 0)
+    const Eg = 1.1, PhiB = 0.8, Vbi0 = 0.6, phin = 0.2;   // schematic energies [eV]
+
+    function setF() { SK.katex(fEl, tab === 'schottky'
+      ? "\\Phi_B = \\Phi_M - \\chi,\\quad qV_{bi} = \\Phi_M - \\Phi_S,\\quad I = I_0\\big(e^{U/U_T}-1\\big)"
+      : "\\Phi_M < \\Phi_S\\ \\text{(n-typ)} \\Rightarrow \\text{ohmický kontakt: lineární } I\\text{-}U", false); }
+    setF();
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    function draw(ctx, w, h) { const t = SK.theme(); ctx.clearRect(0, 0, w, h); tab === 'schottky' ? drawSchottky(ctx, w, h, t) : drawOhmic(ctx, w, h, t); }
+
+    function frame(w, h) {
+      const padT = 28, padB = 28, x0 = 24, x1 = w - 16, xj = x0 + (x1 - x0) * 0.30;
+      const Emax = 1.2, Emin = -1.05, Y = (E) => padT + (Emax - E) / (Emax - Emin) * (h - padT - padB);
+      return { padT, padB, x0, x1, xj, Y };
+    }
+    function regions(ctx, h, t, f, semLabel) {
+      ctx.save(); ctx.fillStyle = t.muted; ctx.globalAlpha = 0.30; ctx.fillRect(f.x0, f.padT, f.xj - f.x0, h - f.padT - f.padB); ctx.restore();
+      SK.label(ctx, 'kov (M)', (f.x0 + f.xj) / 2, f.padT + 12, { color: t.fg, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, semLabel, (f.xj + f.x1) / 2, f.padT + 12, { color: t.fg, align: 'center', font: '11px system-ui' });
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(f.xj, f.padT); ctx.lineTo(f.xj, h - f.padB); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+    }
+
+    function drawSchottky(ctx, w, h, t) {
+      const f = frame(w, h); regions(ctx, h, t, f, 'polovodič (n)');
+      const bend = Vbi0 - V;                                  // band bending at junction
+      const W = SK.clamp(130 * Math.sqrt(Math.max(bend, 0.02) / Vbi0), 12, (f.x1 - f.xj) * 0.8);
+      const EcBulk = phin + V;                                // E_C far in bulk (E_F bulk = V)
+      const Ec = (x) => { const u = (x - f.xj) / W; if (u >= 1) return EcBulk; return EcBulk + (PhiB - EcBulk) * (1 - u) * (1 - u); };
+      // semiconductor bands
+      function band(off, col) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+        for (let px = f.xj; px <= f.x1; px += 2) { const y = f.Y(Ec(px) + off); s ? ctx.lineTo(px, y) : (ctx.moveTo(px, y), s = true); } ctx.stroke(); ctx.restore(); }
+      band(0, t.accent2); band(-Eg, t.accent2);
+      SK.label(ctx, 'E_C', f.x1 - 2, f.Y(EcBulk) - 3, { color: t.accent2, align: 'right', font: '10px system-ui' });
+      SK.label(ctx, 'E_V', f.x1 - 2, f.Y(EcBulk - Eg) - 3, { color: t.accent2, align: 'right', font: '10px system-ui' });
+      // metal Fermi (reference 0) and semiconductor Fermi (= V)
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(f.x0, f.Y(0)); ctx.lineTo(f.xj, f.Y(0)); ctx.stroke();
+      ctx.setLineDash([5, 4]); ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(f.xj, f.Y(V)); ctx.lineTo(f.x1, f.Y(V)); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'E_F (kov)', f.x0 + 2, f.Y(0) - 4, { color: t.ok, font: '10px system-ui' });
+      SK.label(ctx, 'E_F (pol.)', f.x1 - 2, f.Y(V) + 11, { color: t.ok, align: 'right', font: '10px system-ui' });
+      // barrier arrows
+      ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(f.xj + 3, f.Y(0)); ctx.lineTo(f.xj + 3, f.Y(PhiB)); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'Φ_B', f.xj + 8, f.Y(PhiB / 2), { color: t.warn, font: '10px system-ui', baseline: 'middle' });
+      // electrons in semiconductor conduction band trying to cross
+      ctx.save(); for (let i = 0; i < 7; i++) SK.dot(ctx, f.xj + W + 10 + i * 9, f.Y(EcBulk) + 4, 2, t.pos); ctx.restore();
+      const barr = PhiB - V;                                  // metal->sem fixed; sem->metal = bend+phin = Vbi0 - V + phin
+      const semBarr = bend + phin;
+      const I0 = 0.02, I = I0 * (Math.exp(V / 0.05) - 1);
+      const mode = V > 0.02 ? 'propustný směr' : V < -0.02 ? 'závěrný směr' : 'rovnováha (bez napětí)';
+      ro.innerHTML = `<b>Schottky (kov–n polovodič, Φ_M&gt;Φ_S)</b> · U=<b>${SK.fmt(V, 2)} V</b><br>` +
+        `Režim: <b>${mode}</b><br>` +
+        `Bariéra z kovu Φ_B≈${SK.fmt(PhiB, 2)} eV (na napětí <b>nezávislá</b>).<br>` +
+        `Ohyb pásů qV_bi≈${SK.fmt(bend, 2)} eV · bariéra pro elektrony z polovodiče ≈${SK.fmt(semBarr, 2)} eV.<br>` +
+        `Proud (schém.) I≈${SK.fmt(I, 2)} (rel.). Propustně klesá ohyb i bariéra → exponenciální nárůst proudu; ` +
+        `vede se <b>majoritami</b> → rychlé spínání, práh ~0,2–0,4 V.`;
+    }
+
+    function drawOhmic(ctx, w, h, t) {
+      const f = frame(w, h); regions(ctx, h, t, f, 'polovodič (n, silně dotovaný)');
+      const W = (f.x1 - f.xj) * 0.35, EcBulk = phin, EcJ = -0.12;   // bands bend DOWN (accumulation)
+      const Ec = (x) => { const u = (x - f.xj) / W; if (u >= 1) return EcBulk; return EcJ + (EcBulk - EcJ) * (1 - (1 - u) * (1 - u)); };
+      function band(off, col) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.4; ctx.beginPath(); let s = false;
+        for (let px = f.xj; px <= f.x1; px += 2) { const y = f.Y(Ec(px) + off); s ? ctx.lineTo(px, y) : (ctx.moveTo(px, y), s = true); } ctx.stroke(); ctx.restore(); }
+      band(0, t.accent2); band(-Eg, t.accent2);
+      ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(f.x0, f.Y(0)); ctx.lineTo(f.x1, f.Y(0)); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'E_F (společná)', f.x1 - 2, f.Y(0) - 4, { color: t.ok, align: 'right', font: '10px system-ui' });
+      SK.label(ctx, 'E_C', f.x1 - 2, f.Y(EcBulk) - 3, { color: t.accent2, align: 'right', font: '10px system-ui' });
+      // free electrons across junction (no barrier / tunneling)
+      ctx.save(); for (let i = 0; i < 8; i++) SK.dot(ctx, f.xj - 14 + i * 6, f.Y(-0.05) + 2, 2, t.pos); ctx.restore();
+      ro.innerHTML = `<b>Ohmický kontakt</b> (Φ_M&lt;Φ_S pro n-typ, nebo silné dotování)<br>` +
+        `U dna vodivostního pásu se u rozhraní <b>neohýbá nahoru</b> — žádná bariéra (případně tak tenká, že elektrony <b>tunelují</b>).<br>` +
+        `Vodivost <b>oběma směry</b>, lineární (ohmická) V-A charakteristika. Nutný pro přívodní elektrody všech součástek.`;
+    }
+
+    const ctrl = document.getElementById('ctrl');
+    ctrl.appendChild(SK.tabs({ options: [{ label: 'Schottky (usměrňující)', value: 'schottky' }, { label: 'Ohmický kontakt', value: 'ohmic' }], value: 'schottky', onchange: (v) => { tab = v; setF(); rebuild(); view.redraw(); } }).el);
+    const holder = document.createElement('div'); ctrl.appendChild(holder);
+    function rebuild() { holder.innerHTML = '';
+      if (tab === 'schottky') SK.controls(holder, [SK.slider({ label: 'Napětí U (propustně +)', min: -0.6, max: 0.5, step: 0.02, value: V, unit: 'V', fmt: (v) => SK.fmt(v, 2), oninput: (v) => { V = v; view.redraw(); } })]);
+    }
+    rebuild();
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.textContent = 'Kov–polovodič: o tom, jestli vznikne usměrňující (Schottky) nebo ohmický kontakt, rozhoduje výstupní práce kovu Φ_M ' +
+      'vůči polovodiči Φ_S. Pro n-typ a Φ_M>Φ_S elektrony přetečou do kovu, vznikne ochuzená vrstva a pásy se u rozhraní ohnou nahoru ' +
+      'o vestavěné napětí qV_bi. Bariéra z pohledu kovu Φ_B = Φ_M − χ je na napětí nezávislá; propustné napětí snižuje ohyb pásů, takže ' +
+      'proud roste exponenciálně. Schottky vede majoritními nosiči → velmi rychlé spínání a nízký práh (~0,2–0,4 V). Při Φ_M<Φ_S (nebo ' +
+      'silném dotování) bariéra nevznikne / je tak tenká, že elektrony tunelují → ohmický kontakt. Měň napětí a přepínej typ kontaktu.';
+    ctrl.appendChild(hint);
+  })();</script>
+</body>
+</html>
