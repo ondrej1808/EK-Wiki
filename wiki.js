@@ -472,6 +472,7 @@
         code: 'B2B31CZS', title: 'Číslicové zpracování signálů',
         resources: [
           { type: 'sim', label: 'Lineární vs cyklická konvoluce', src: SIM + 'czs_convolution.html' },
+          { type: 'sim', label: 'Vzorkovací teorém / aliasing (ponder)', src: SIM + 'czs_sampling_ponder.html' },
           { type: 'sim', label: 'Decimace / interpolace (multirate)', src: SIM + 'czs_multirate.html' },
           { type: 'sim', label: 'Overlap-Add / Overlap-Save (dlouhé signály)', src: SIM + 'czs_overlap.html' },
         ],

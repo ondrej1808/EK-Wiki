@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vzorkovací teorém krok za krokem (ponder) — CZS</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Vzorkovací teorém — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+
+    const STEPS = [
+      { t: 'Spojitý signál s omezeným spektrem', tex: '|X(f)|=0\\ \\text{pro}\\ |f|>f_{max}',
+        c: 'Máme spojitý signál x(t), jehož spektrum sahá nejvýš do frekvence f_max (pásmově omezený).' },
+      { t: 'Vzorkování', tex: 'x[n]=x(nT_s),\\quad T_s=\\dfrac{1}{f_s}',
+        c: 'Signál odečítáme v pravidelných okamžicích s periodou Ts = 1/fs (násobení hřebenem Diracových impulzů). Vznikne posloupnost vzorků x[n].' },
+      { t: 'Spektrum se periodicky opakuje', tex: 'X_s(f)=f_s\\sum_{k}X(f-k f_s)',
+        c: 'Vzorkování v čase = periodizace ve frekvenci: původní spektrum se opakuje (replikuje) kolem násobků vzorkovacího kmitočtu fs.' },
+      { t: 'Nyquistova podmínka', tex: 'f_s \\ge 2 f_{max}',
+        c: 'Aby se sousední repliky spektra nepřekrývaly, musí být vzorkovací kmitočet alespoň dvojnásobek nejvyšší frekvence. Pak lze signál bezchybně rekonstruovat.' },
+      { t: 'Aliasing (porušení podmínky)', tex: 'f_s < 2 f_{max}\\Rightarrow \\text{překryv}',
+        c: 'Při fs < 2·f_max se repliky překryjí — vysoké frekvence se „přehnou" a v základním pásmu se jeví jako nízké. Tomu se říká aliasing a je nevratný.' },
+      { t: 'Rekonstrukce (sinc interpolace)', tex: '\\hat x(t)=\\sum_n x[n]\\,\\mathrm{sinc}\\!\\left(\\dfrac{t-nT_s}{T_s}\\right)',
+        c: 'Ideální dolní propust vybere ze spektra jen základní pásmo → v čase to odpovídá interpolaci vzorků funkcemi sinc. Při splněné Nyquistově podmínce dostaneme přesně původní signál.' },
+      { t: 'V praxi', tex: '\\text{anti-alias filtr} + f_s\\uparrow',
+        c: 'Před vzorkováním se zařazuje antialiasingový filtr (dolní propust), který odřízne složky nad fs/2. Volí se i rezerva (např. audio 44,1/48 kHz pro pásmo do 20 kHz).' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function sig(tt) { return 0.6 * Math.sin(2 * Math.PI * 1.0 * tt) + 0.4 * Math.sin(2 * Math.PI * 2.0 * tt + 0.7); }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const x0 = 30, x1 = w - 20;
+      // ── TOP: time domain ──
+      const tyc = h * 0.27, tA = h * 0.16;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, tyc); ctx.lineTo(x1, tyc); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'čas t', x1, tyc - 6, { color: t.muted, align: 'right', font: '10px system-ui' });
+      ctx.save(); ctx.strokeStyle = t.accent2; ctx.lineWidth = 2; ctx.beginPath();
+      for (let i = 0; i <= (x1 - x0); i++) { const tt = i / (x1 - x0) * 3; const y = tyc - tA * sig(tt); i ? ctx.lineTo(x0 + i, y) : ctx.moveTo(x0 + i, y); } ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'x(t)', x0 + 2, tyc - tA - 6, { color: t.accent2, font: '11px system-ui' });
+      // samples (step >=1)
+      if (k >= 1) { const aliasing = (k === 4); const Ns = aliasing ? 7 : 16;
+        ctx.save(); for (let n = 0; n <= Ns; n++) { const tt = n / Ns * 3, x = x0 + (x1 - x0) * n / Ns, y = tyc - tA * sig(tt);
+          ctx.strokeStyle = t.muted; ctx.globalAlpha = 0.5; ctx.beginPath(); ctx.moveTo(x, tyc); ctx.lineTo(x, y); ctx.stroke(); ctx.globalAlpha = 1; SK.dot(ctx, x, y, 3, t.pos); } ctx.restore();
+        SK.label(ctx, 'vzorky x[n] · Ts=1/fs', x1, tyc + tA + 16, { color: t.pos, align: 'right', font: '10px system-ui' }); }
+
+      // ── BOTTOM: frequency domain ──
+      const fyc = h * 0.78, fbase = h * 0.92, cxF = (x0 + x1) / 2;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, fbase); ctx.lineTo(x1, fbase); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'frekvence f', x1, fbase + 12, { color: t.muted, align: 'right', font: '10px system-ui' });
+      const fmaxPx = 70, triH = fbase - fyc;
+      const tri = (cx, col, al) => { ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = al; ctx.beginPath(); ctx.moveTo(cx - fmaxPx, fbase); ctx.lineTo(cx, fbase - triH); ctx.lineTo(cx + fmaxPx, fbase); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.restore(); };
+      // baseband always (after step 0 we still show it)
+      tri(cxF, t.accent2, 0.5);
+      SK.label(ctx, 'X(f)', cxF, fbase - triH - 6, { color: t.accent2, align: 'center', font: '11px system-ui' });
+      SK.label(ctx, '±f_max', cxF + fmaxPx, fbase + 12, { color: t.muted, align: 'center', font: '9px system-ui' });
+      if (k >= 2) {
+        const aliasing = (k === 4);
+        const fsPx = aliasing ? fmaxPx * 1.4 : fmaxPx * 2.4;   // fs spacing: overlap when <2fmax
+        for (const s of [-2, -1, 1, 2]) { const cx = cxF + s * fsPx; if (cx > x0 - fmaxPx && cx < x1 + fmaxPx) tri(cx, t.accent, 0.45); }
+        // mark fs
+        ctx.save(); ctx.strokeStyle = t.warn; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(cxF + fsPx, fbase); ctx.lineTo(cxF + fsPx, fyc); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        SK.label(ctx, 'fs', cxF + fsPx, fyc - 4, { color: t.warn, align: 'center', font: '10px system-ui' });
+        if (aliasing) { // shade overlap region
+          ctx.save(); ctx.fillStyle = '#ef4444'; ctx.globalAlpha = 0.35; const ox = cxF + fsPx / 2;
+          ctx.beginPath(); ctx.moveTo(ox - (fmaxPx - fsPx / 2), fbase); ctx.lineTo(ox, fbase - triH * (2 * fmaxPx - fsPx) / (2 * fmaxPx)); ctx.lineTo(ox + (fmaxPx - fsPx / 2), fbase); ctx.closePath(); ctx.fill(); ctx.restore();
+          SK.label(ctx, 'PŘEKRYV → aliasing', cxF, fyc - 18, { color: '#ef4444', align: 'center', font: 'bold 12px system-ui' }); }
+        else SK.label(ctx, 'repliky se nepřekrývají (fs ≥ 2f_max)', cxF, fyc - 18, { color: t.ok, align: 'center', font: '11px system-ui' });
+      }
+      if (k >= 5 && k !== 4) { // reconstruction LPF
+        ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(cxF - fmaxPx * 1.4, fbase - triH * 1.05); ctx.lineTo(cxF - fmaxPx * 1.05, fbase - triH * 1.05); ctx.lineTo(cxF - fmaxPx * 1.05, fbase); ctx.moveTo(cxF + fmaxPx * 1.05, fbase); ctx.lineTo(cxF + fmaxPx * 1.05, fbase - triH * 1.05); ctx.lineTo(cxF + fmaxPx * 1.4, fbase - triH * 1.05); ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'dolní propust (rekonstrukce)', cxF, fbase - triH - 22, { color: t.ok, align: 'center', font: '10px system-ui' }); }
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj vzorkovací teorém krok po kroku: pásmově omezený signál → vzorkování (Ts=1/fs) → periodizace spektra → ' +
+      'Nyquist fs≥2f_max → aliasing při porušení → rekonstrukce sinc interpolací → antialiasing filtr v praxi. ' +
+      'Horní graf je čas, dolní frekvence (repliky spektra).';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>
