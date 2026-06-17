@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carnotův cyklus a účinnost krok za krokem (ponder) — FY2</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Carnotův cyklus a účinnost — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+
+    const STEPS = [
+      { t: 'Tepelný stroj', tex: 'W = Q_h - Q_c',
+        c: 'Stroj přijme teplo Q_h z teplého rezervoáru (Th), část přemění na práci W a zbytek Q_c odevzdá studenému rezervoáru (Tc).' },
+      { t: 'Carnotův cyklus (p–V)', tex: '\\text{2 izotermy} + \\text{2 adiabaty (vratné)}',
+        c: 'Ideální cyklus ze čtyř vratných dějů: izotermická expanze při Th, adiabatická expanze, izotermická komprese při Tc, adiabatická komprese. Plocha smyčky = práce W.' },
+      { t: 'Izotermická expanze (Th)', tex: '1\\to2:\\ T=T_h,\\ \\text{přijme } Q_h',
+        c: 'Při konstantní Th plyn expanduje a přijímá teplo Q_h z teplého rezervoáru (koná práci).' },
+      { t: 'Komprese a odvod Q_c (Tc)', tex: '3\\to4:\\ T=T_c,\\ \\text{odevzdá } Q_c',
+        c: 'Po adiabatické expanzi (T klesne na Tc) následuje izotermická komprese při Tc, kde plyn odevzdá teplo Q_c. Adiabatická komprese vrátí stav na začátek.' },
+      { t: 'Účinnost', tex: '\\eta=\\dfrac{W}{Q_h}=1-\\dfrac{Q_c}{Q_h}',
+        c: 'Účinnost je poměr získané práce a dodaného tepla. Z W = Q_h − Q_c plyne η = 1 − Q_c/Q_h.' },
+      { t: 'Poměr tepel = poměr teplot', tex: '\\dfrac{Q_c}{Q_h}=\\dfrac{T_c}{T_h}',
+        c: 'Pro vratný Carnotův cyklus platí, že poměr odevzdaného a přijatého tepla se rovná poměru absolutních teplot rezervoárů.' },
+      { t: 'Carnotova účinnost', tex: '\\eta_C = 1-\\dfrac{T_c}{T_h}',
+        c: 'Maximální možná účinnost tepelného stroje mezi teplotami Th a Tc. Je vždy < 1 (2. termodynamický zákon); η=1 jen při Tc=0 K. Reálné stroje mají účinnost nižší.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    // ── build Carnot loop in p–V ──
+    const g = 1.4, Th = 1, Tc = 0.62, V1 = 1, V2 = 1.8;
+    const p1 = Th / V1, p2 = Th / V2;
+    const V3 = Math.pow(p2 * Math.pow(V2, g) / Tc, 1 / (g - 1));
+    const V4 = Math.pow(p1 * Math.pow(V1, g) / Tc, 1 / (g - 1));
+    function sample(va, vb, fp, n) { const a = []; for (let i = 0; i <= n; i++) { const V = va + (vb - va) * i / n; a.push([V, fp(V)]); } return a; }
+    const segs = [
+      { pts: sample(V1, V2, (V) => Th / V, 30), name: '1→2 izoterma Th' },               // isothermal exp at Th
+      { pts: sample(V2, V3, (V) => p2 * Math.pow(V2 / V, g), 30), name: '2→3 adiabata' },  // adiabatic exp
+      { pts: sample(V3, V4, (V) => Tc / V, 30), name: '3→4 izoterma Tc' },                 // isothermal comp at Tc
+      { pts: sample(V4, V1, (V) => (Tc / V4) * Math.pow(V4 / V, g), 30), name: '4→1 adiabata' }, // adiabatic comp
+    ];
+    let Vmin = 1e9, Vmax = -1e9, Pmin = 1e9, Pmax = -1e9;
+    segs.forEach(s => s.pts.forEach(([V, P]) => { Vmin = Math.min(Vmin, V); Vmax = Math.max(Vmax, V); Pmin = Math.min(Pmin, P); Pmax = Math.max(Pmax, P); }));
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}` +
+        (k >= 6 ? `<br>Příklad: Th=600 K, Tc=300 K → η = 1 − 300/600 = <b>50 %</b>.` : '');
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      // ── left: p–V diagram ──
+      const ox = 50, oy = 30, pw = w * 0.52 - ox, ph = h - 80;
+      const X = (V) => ox + (V - Vmin) / (Vmax - Vmin) * pw;
+      const Y = (P) => oy + ph - (P - Pmin) / (Pmax - Pmin) * ph;
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox, oy + ph); ctx.lineTo(ox + pw, oy + ph); ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'p', ox - 6, oy + 4, { color: t.muted, align: 'right', font: '11px system-ui' });
+      SK.label(ctx, 'V', ox + pw, oy + ph + 14, { color: t.muted, align: 'right', font: '11px system-ui' });
+      // active segments by step
+      const active = k <= 1 ? [0,1,2,3] : k === 2 ? [0] : k === 3 ? [1,2,3] : [0,1,2,3];
+      segs.forEach((s, i) => { const on = active.includes(i); const col = i === 0 ? '#ef4444' : i === 2 ? t.accent : t.accent2;
+        ctx.save(); ctx.strokeStyle = on ? col : t.grid; ctx.globalAlpha = on ? 1 : 0.4; ctx.lineWidth = on ? 2.6 : 1.4; ctx.beginPath();
+        s.pts.forEach(([V, P], j) => { const x = X(V), y = Y(P); j ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke(); ctx.restore(); });
+      // state points
+      [[V1, p1, '1'], [V2, p2, '2'], [V3, Tc / V3, '3'], [V4, Tc / V4, '4']].forEach(([V, P, n]) => { SK.dot(ctx, X(V), Y(P), 4, t.fg); SK.label(ctx, n, X(V) + 6, Y(P) - 6, { color: t.fg, font: '11px system-ui' }); });
+      if (k === 2) SK.label(ctx, 'Q_h ⟶ (Th)', X(V1) + 10, Y(p1) - 18, { color: '#ef4444', font: '11px system-ui' });
+      if (k === 3) SK.label(ctx, 'Q_c ⟵ (Tc)', X(V3) - 6, Y(Tc / V3) + 16, { color: t.accent, align: 'right', font: '11px system-ui' });
+      if (k >= 1) SK.label(ctx, 'plocha = W', (X(V1) + X(V3)) / 2, Y(Pmax) + 30, { color: t.muted, align: 'center', font: '10px system-ui' });
+
+      // ── right: energy flow schematic ──
+      const sx = w * 0.74, bw = w * 0.20, hot = oy + 6, eng = oy + ph * 0.42, cold = oy + ph - 24;
+      const box = (y, hh, col, label) => { ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = 0.25; ctx.fillRect(sx - bw / 2, y, bw, hh); ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.strokeRect(sx - bw / 2, y, bw, hh); ctx.fillStyle = t.fg; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.fillText(label, sx, y + hh / 2); ctx.restore(); };
+      box(hot, 34, '#ef4444', 'Th (teplý)');
+      box(eng, 40, t.accent, 'stroj');
+      box(cold, 34, t.accent2, 'Tc (studený)');
+      SK.arrow(ctx, sx, hot + 34, sx, eng, { color: '#ef4444', width: 3, head: 7 }); SK.label(ctx, 'Q_h', sx + 8, (hot + 34 + eng) / 2, { color: '#ef4444', font: '11px system-ui', baseline: 'middle' });
+      SK.arrow(ctx, sx, eng + 40, sx, cold, { color: t.accent2, width: 3, head: 7 }); SK.label(ctx, 'Q_c', sx + 8, (eng + 40 + cold) / 2, { color: t.accent2, font: '11px system-ui', baseline: 'middle' });
+      SK.arrow(ctx, sx + bw / 2, eng + 20, sx + bw / 2 + 34, eng + 20, { color: t.ok, width: 3, head: 7 }); SK.label(ctx, 'W', sx + bw / 2 + 20, eng + 12, { color: t.ok, font: '11px system-ui' });
+      if (k >= 4) SK.label(ctx, 'η = 1 − Q_c/Q_h', sx, cold + 50, { color: t.accent, align: 'center', font: '12px system-ui' });
+      if (k >= 6) SK.label(ctx, 'η_C = 1 − Tc/Th', sx, cold + 70, { color: t.ok, align: 'center', font: 'bold 13px system-ui' });
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj Carnotův cyklus krok po kroku: tepelný stroj (Qh→W+Qc) → 4 vratné děje v p–V → izoterma Th (přijme Qh) → ' +
+      'izoterma Tc (odevzdá Qc) → účinnost η=1−Qc/Qh → Qc/Qh=Tc/Th → η_C=1−Tc/Th. Vlevo p–V diagram, vpravo tok energie.';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>
