@@ -421,6 +421,7 @@
           { type: 'sim', label: 'ES · Dva náboje (siločáry, ekvipot.)', src: SIM + 'empa_two_charges.html' },
           { type: 'sim', label: 'ES · Zrcadlení podle vodivé plochy',   src: SIM + 'empa_image_method.html' },
           { type: 'sim', label: 'ES · Gaussova věta (tok, výpočet E)',  src: SIM + 'gaussova_veta_simulace.html' },
+          { type: 'sim', label: 'ES · Pole nabité roviny / vodiče (ponder)', src: SIM + 'empa_plane_gauss_ponder.html' },
           { type: 'sim', label: 'MS · Biot–Savart (B kolem vodiče)',    src: SIM + 'empa_biot_savart.html' },
           { type: 'sim', label: 'MS · Ampérův zákon',                   src: SIM + 'empa_ampere.html' },
           { type: 'sim', label: 'MS · Síla mezi dvěma vodiči',          src: SIM + 'empa_two_wires.html' },

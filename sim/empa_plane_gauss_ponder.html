@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pole nabité roviny Gaussovou plochou (ponder) — EMPA</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Pole nabité roviny — Gaussovou plochou</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+
+    const STEPS = [
+      { t: 'Nabitá rovina σ', tex: '\\sigma=\\dfrac{Q}{S}',
+        c: 'Nekonečná rovina s rovnoměrnou plošnou hustotou náboje σ. Chceme zjistit intenzitu pole E v jejím okolí.' },
+      { t: 'Symetrie → pole kolmé a homogenní', tex: '\\mathbf E\\perp\\text{rovina},\\ E=\\text{konst.}',
+        c: 'Nekonečná rovina má translační symetrii ve dvou směrech → pole nesmí mít složku podél roviny. E míří kolmo a jeho velikost nezávisí na vzdálenosti (homogenní pole).' },
+      { t: 'Volba Gaussovy plochy (plechovka)', tex: '\\text{válec (pillbox), podstavy } S',
+        c: 'Zvolíme válcovou „plechovku" kolmou na rovinu, symetricky ji protínající. Má dvě podstavy o ploše S a plášť.' },
+      { t: 'Tok jen podstavami', tex: '\\oint\\mathbf E\\cdot d\\mathbf S = 2 E S',
+        c: 'Plášť je rovnoběžný s E → nepřispívá (E·dS=0). Obě podstavy jsou kolmé na E → každá přispívá E·S. Celkový tok je 2·E·S.' },
+      { t: 'Gaussova věta', tex: '2 E S = \\dfrac{Q_{vnitř}}{\\varepsilon_0}=\\dfrac{\\sigma S}{\\varepsilon_0}',
+        c: 'Uvnitř plechovky je náboj Q = σ·S. Z Gaussovy věty: tok = uzavřený náboj / ε₀, tedy 2 E S = σ S / ε₀.' },
+      { t: 'Pole nabité roviny', tex: 'E=\\dfrac{\\sigma}{2\\varepsilon_0}',
+        c: 'Plocha S se vykrátí → E = σ/(2ε₀). Pole vychází na OBĚ strany roviny (volně nabitá rovina / izolant), proto faktor 2 ve jmenovateli.' },
+      { t: 'Povrch vodiče: E = σ/ε₀', tex: 'E=\\dfrac{\\sigma}{\\varepsilon_0}',
+        c: 'U vodiče je pole uvnitř nulové → přispívá jen JEDNA podstava: E S = σ S/ε₀ ⇒ E = σ/ε₀. Dvojnásobek oproti volné rovině.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const cx = w * 0.5, cy = h * 0.5, planeH = Math.min(h * 0.7, 360);
+      const conductor = (k >= 6);
+      // conductor body (left half) for last step
+      if (conductor) { ctx.save(); ctx.fillStyle = t.muted; ctx.globalAlpha = 0.30; ctx.fillRect(cx - planeH, cy - planeH / 2, planeH, planeH); ctx.globalAlpha = 1; ctx.restore();
+        SK.label(ctx, 'vodič (E=0 uvnitř)', cx - planeH / 2, cy - planeH / 2 - 8, { color: t.muted, align: 'center', font: '11px system-ui' }); }
+      // charged plane (vertical)
+      ctx.save(); ctx.strokeStyle = t.pos; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cx, cy - planeH / 2); ctx.lineTo(cx, cy + planeH / 2); ctx.stroke();
+      ctx.fillStyle = t.pos; ctx.font = '13px system-ui'; ctx.textAlign = 'center'; for (let i = -4; i <= 4; i++) ctx.fillText('+', cx, cy + i * planeH / 9 + 4); ctx.restore();
+      SK.label(ctx, 'σ', cx + 6, cy - planeH / 2 - 6, { color: t.pos, font: '13px system-ui' });
+      // E field arrows (step >=1)
+      if (k >= 1) { const ll = 70; ctx.save();
+        for (let i = -3; i <= 3; i++) { const y = cy + i * planeH / 7;
+          SK.arrow(ctx, cx, y, cx + ll, y, { color: t.accent, width: 2, head: 6 });                       // right
+          if (!conductor) SK.arrow(ctx, cx, y, cx - ll, y, { color: t.accent, width: 2, head: 6 });        // left (only if not conductor)
+        } ctx.restore();
+        SK.label(ctx, 'E', cx + ll + 10, cy, { color: t.accent, font: '13px system-ui', baseline: 'middle' });
+        if (!conductor) SK.label(ctx, 'E', cx - ll - 10, cy, { color: t.accent, align: 'right', font: '13px system-ui', baseline: 'middle' }); }
+      // Gaussian pillbox (step >=2)
+      if (k >= 2) { const d = 95, fh = 120; const x1 = cx - d, x2 = cx + d, yT = cy - fh / 2, yB = cy + fh / 2;
+        ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 2; ctx.globalAlpha = 0.95;
+        // body (rectangle as side view of cylinder)
+        ctx.strokeRect(x1, yT, x2 - x1, fh);
+        // faces highlighted at step >=3
+        if (k >= 3) { ctx.lineWidth = 3.4; ctx.beginPath(); ctx.moveTo(x1, yT); ctx.lineTo(x1, yB); ctx.moveTo(x2, yT); ctx.lineTo(x2, yB); ctx.stroke(); }
+        ctx.restore();
+        SK.label(ctx, 'plechovka (Gaussova plocha)', cx, yT - 8, { color: t.warn, align: 'center', font: '11px system-ui' });
+        if (k >= 3) { SK.label(ctx, 'podstava S', x2 + 4, yB + 14, { color: t.warn, font: '10px system-ui' });
+          SK.label(ctx, 'plášť: E∥dS → tok 0', cx, yB + 16, { color: t.muted, align: 'center', font: '10px system-ui' }); } }
+      // formula progression
+      const lines = [];
+      if (k >= 3) lines.push(['Φ = 2·E·S', t.warn]);
+      if (k >= 4) lines.push(['2 E S = σS/ε₀', t.fg]);
+      if (k === 5) lines.push(['E = σ / 2ε₀  (rovina)', t.accent]);
+      if (k >= 6) lines.push(['E = σ / ε₀  (vodič: jen 1 podstava)', t.ok]);
+      let yy = h - 14 - (lines.length - 1) * 18;
+      lines.forEach(([s, col]) => { SK.label(ctx, s, w / 2, yy, { color: col, align: 'center', font: '13px system-ui' }); yy += 18; });
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj odvození pole nabité roviny krok po kroku: σ → symetrie (E kolmé, homogenní) → plechovka (Gaussova plocha) → ' +
+      'tok 2ES (plášť nepřispívá) → 2ES=σS/ε₀ → E=σ/2ε₀ (rovina) → E=σ/ε₀ (povrch vodiče). ' +
+      '&nbsp;<a href="gaussova_veta_simulace.html" target="_blank" rel="noopener" style="color:var(--sk-accent)">↗ Simulace Gaussovy věty</a>.';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>
