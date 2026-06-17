@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snellův zákon krok za krokem (ponder) — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>Snellův zákon — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+
+    const STEPS = [
+      { t: 'Vlna na rozhraní', tex: 'n_1 \\to n_2,\\quad n=\\dfrac{c}{v}',
+        c: 'Rovinná vlna dopadá z prostředí s indexem n₁ na rozhraní s prostředím n₂. Index lomu n = c/v udává, kolikrát je rychlost ve vakuu větší než v prostředí.' },
+      { t: 'Huygensův princip', tex: '\\text{každý bod čela = zdroj sekundárních vln}',
+        c: 'Každý bod vlnoplochy je zdrojem kulových sekundárních vlnek; jejich obálka tvoří nové čelo. Tím vysvětlíme, proč se vlna na rozhraní láme.' },
+      { t: 'Různá rychlost v prostředích', tex: 'v_1=\\dfrac{c}{n_1},\\quad v_2=\\dfrac{c}{n_2}',
+        c: 'V hustším prostředí (větší n) se vlna šíří pomaleji. Frekvence se zachovává, mění se rychlost a tím i vlnová délka.' },
+      { t: 'Geometrie čela', tex: '\\sin\\theta_1 = \\dfrac{v_1 t}{d},\\quad \\sin\\theta_2 = \\dfrac{v_2 t}{d}',
+        c: 'Za stejný čas t urazí okraj čela v prostředí 1 dráhu v₁t a v prostředí 2 dráhu v₂t podél stejné délky rozhraní d. Z trojúhelníků plynou oba siny.' },
+      { t: 'Snellův zákon', tex: 'n_1\\sin\\theta_1 = n_2\\sin\\theta_2',
+        c: 'Vydělením vztahů: sinθ₁/sinθ₂ = v₁/v₂ = n₂/n₁, odtud n₁sinθ₁ = n₂sinθ₂. Přechod do hustšího prostředí (n₂>n₁) láme paprsek KE kolmici.' },
+      { t: 'Totální odraz', tex: '\\theta_c=\\arcsin\\dfrac{n_2}{n_1}\\quad(n_1>n_2)',
+        c: 'Z hustšího do řidšího (n₁>n₂) se paprsek láme OD kolmice. Při kritickém úhlu θc je θ₂=90°; nad ním se vlna už neláme — nastává úplný (totální) odraz.' },
+      { t: 'Využití', tex: '\\theta_1>\\theta_c \\Rightarrow \\text{totální odraz}',
+        c: 'Totální odraz drží světlo uvnitř optického vlákna a hranolů. Těsně za rozhraním existuje exponenciálně tlumená evanescentní vlna.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+    const D2R = Math.PI / 180;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function ray(ctx, x1, y1, x2, y2, col, w) { SK.arrow(ctx, x1, y1, x2, y2, { color: col, width: w || 2, head: 7 }); }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const cx = w * 0.5, cy = h * 0.52, L = Math.min(w, h) * 0.36;
+      const tir = (k >= 5);
+      const n1 = tir ? 1.5 : 1.0, n2 = tir ? 1.0 : 1.5;
+      const th1 = (tir ? 52 : 38) * D2R;
+      const sin2 = n1 * Math.sin(th1) / n2;
+      const refract = sin2 <= 1;
+      const th2 = refract ? Math.asin(sin2) : null;
+      // media
+      ctx.save(); ctx.fillStyle = t.grid; ctx.globalAlpha = 0.12; ctx.fillRect(0, 0, w, cy); ctx.fillStyle = t.accent2; ctx.globalAlpha = tir ? 0.10 : 0.20; ctx.fillRect(0, cy, w, h - cy); ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+      ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(cx, cy - L * 1.1); ctx.lineTo(cx, cy + L * 1.1); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      SK.label(ctx, 'n₁ = ' + n1.toFixed(1), 10, 16, { color: t.fg, font: '12px system-ui' });
+      SK.label(ctx, 'n₂ = ' + n2.toFixed(1), 10, h - 10, { color: t.accent2, font: '12px system-ui' });
+      SK.label(ctx, 'kolmice', cx + 4, cy - L * 1.1 + 4, { color: t.muted, font: '10px system-ui' });
+      // incident ray
+      ray(ctx, cx - Math.sin(th1) * L, cy - Math.cos(th1) * L, cx, cy, t.pos);
+      SK.label(ctx, 'θ₁', cx - 22, cy - 26, { color: t.pos, font: '12px system-ui' });
+      // Huygens wavelets (step >=1)
+      if (k >= 1 && k <= 3) { ctx.save(); ctx.strokeStyle = t.warn; ctx.globalAlpha = 0.6; ctx.lineWidth = 1.2;
+        for (let i = -2; i <= 2; i++) { const x = cx + i * 18; ctx.beginPath(); ctx.arc(x, cy, 10, 0, Math.PI); ctx.stroke(); } ctx.restore();
+        SK.label(ctx, 'Huygens: sekundární vlnky', cx, cy + L * 0.5, { color: t.warn, align: 'center', font: '10px system-ui' }); }
+      // refracted or reflected
+      if (refract) { ray(ctx, cx, cy, cx + Math.sin(th2) * L, cy + Math.cos(th2) * L, t.accent);
+        SK.label(ctx, 'θ₂', cx + 16, cy + 28, { color: t.accent, font: '12px system-ui' }); }
+      if (tir || !refract) { ray(ctx, cx, cy, cx + Math.sin(th1) * L, cy - Math.cos(th1) * L, t.accent);
+        SK.label(ctx, 'odraz', cx + Math.sin(th1) * L * 0.6, cy - Math.cos(th1) * L * 0.6 - 6, { color: t.accent, font: '11px system-ui' }); }
+      if (k >= 5) { const thc = Math.asin(n2 / n1) / D2R; SK.label(ctx, 'θc = ' + thc.toFixed(1) + '°', cx + 30, cy + L * 0.8, { color: t.warn, font: '11px system-ui' });
+        if (!refract) SK.label(ctx, 'θ₁ > θc → totální odraz', cx, cy + L * 0.95, { color: '#ef4444', align: 'center', font: 'bold 12px system-ui' }); }
+      if (k >= 4 && !tir) SK.label(ctx, 'n₁ sinθ₁ = n₂ sinθ₂', cx, h - 10, { color: t.accent, align: 'center', font: '12px system-ui' });
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj odvození Snellova zákona krok po kroku: rozhraní n₁/n₂ → Huygensův princip → různé rychlosti v=c/n → ' +
+      'geometrie čela → n₁sinθ₁=n₂sinθ₂ → kritický úhel a totální odraz → využití (optické vlákno). ' +
+      '&nbsp;<a href="eld_snell.html" target="_blank" rel="noopener" style="color:var(--sk-accent)">↗ Interaktivní Snellův zákon</a>.';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>
