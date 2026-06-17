@@ -386,6 +386,7 @@
           { type: 'sim', label: 'Vlnovody – COAX / RECT (TE, TM, TEM)', src: 'waveguide_simulator.html' },
           { type: 'sim', label: 'Snellův zákon · lom, totální odraz', src: SIM + 'eld_snell.html' },
           { type: 'sim', label: 'Rozhraní – Fresnel, Brewster, kritický úhel', src: SIM + 'eld_fresnel.html' },
+          { type: 'sim', label: 'λ/4 antireflexní vrstva (ponder)', src: SIM + 'eld_ar_coating_ponder.html' },
           { type: 'sim', label: 'Evanescentní vlna (totální odraz)', src: SIM + 'eld_evanescent.html' },
           { type: 'sim', label: 'Rozhraní – tečná/normálová složka E, H', src: SIM + 'eld_boundary.html' },
           { type: 'sim', label: 'Vlna rovinná / kulová / válcová / Gauss. svazek', src: SIM + 'eld_wavetypes.html' },

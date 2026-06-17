@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>λ/4 antireflexní vrstva krok za krokem (ponder) — ELD</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>λ/4 antireflexní vrstva — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+
+    const STEPS = [
+      { t: 'Problém: odraz na skle', tex: 'R=\\left(\\dfrac{n_2-n_0}{n_2+n_0}\\right)^2\\approx 4\\,\\%',
+        c: 'Na rozhraní vzduch (n₀=1) → sklo (n₂≈1,5) se odráží ~4 % světla. Chceme tento odraz potlačit (objektivy, brýle, solární články).' },
+      { t: 'Přidáme tenkou vrstvu', tex: 'n_0 < n_1 < n_2',
+        c: 'Mezi vzduch a sklo vložíme tenkou průhlednou vrstvu s indexem lomu n₁ mezi n₀ a n₂. Vzniknou dvě rozhraní → dvě odražené vlny.' },
+      { t: 'Dvě odražené vlny', tex: 'r_1\\ (\\text{horní}),\\quad r_2\\ (\\text{spodní})',
+        c: 'Vlna r₁ se odrazí na horním rozhraní (vzduch–vrstva), vlna r₂ na spodním (vrstva–sklo). Chceme, aby se navzájem vyrušily.' },
+      { t: 'Dráhový rozdíl → tloušťka λ/4', tex: '2 n_1 d = \\dfrac{\\lambda}{2}\\;\\Rightarrow\\; d = \\dfrac{\\lambda}{4 n_1}',
+        c: 'Vlna r₂ navíc projde vrstvou tam a zpět → optická dráha 2·n₁·d. Pro destruktivní interferenci musí být tento rozdíl půl vlny: 2 n₁ d = λ/2, odtud d = λ/(4 n₁) — proto „čtvrtvlnná" vrstva.' },
+      { t: 'Fázové posuny při odrazu', tex: '\\Delta\\varphi_{r_1}=\\Delta\\varphi_{r_2}=\\pi',
+        c: 'Odraz na opticky hustším prostředí přidává fázi π. Protože n₀<n₁<n₂, mají oba odrazy posun π → ten se navzájem zruší a rozhoduje jen dráhový rozdíl z předchozího kroku.' },
+      { t: 'Amplitudová podmínka', tex: 'n_1 = \\sqrt{n_0\\,n_2}',
+        c: 'Aby se r₁ a r₂ vyrušily úplně (ne jen částečně), musí mít stejnou amplitudu. To nastane, když n₁ = √(n₀·n₂). Pro sklo (n₂=1,5) vychází n₁≈1,22; prakticky se volí MgF₂ (n≈1,38).' },
+      { t: 'Výsledek: antireflex', tex: 'r_1+r_2\\approx 0\\;\\Rightarrow\\;R\\downarrow',
+        c: 'Vlny r₁ a r₂ jsou v protifázi a se stejnou amplitudou → destruktivní interference, odraz klesne k nule (pro návrhovou vlnovou délku λ). Energie místo odrazu projde do skla.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}`;
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const x0 = 24, x1 = w * 0.56, oy = 30, H = h - 70;
+      const hasCoat = k >= 1;
+      const y1 = oy + H * 0.42;                       // top boundary (air/coat or air/glass)
+      const coatH = hasCoat ? 34 : 0;
+      const y2 = y1 + coatH;                          // bottom boundary (coat/glass)
+      // regions
+      ctx.save();
+      ctx.fillStyle = t.grid; ctx.globalAlpha = 0.15; ctx.fillRect(x0, oy, x1 - x0, y1 - oy);          // air
+      if (hasCoat) { ctx.fillStyle = t.accent2; ctx.globalAlpha = 0.22; ctx.fillRect(x0, y1, x1 - x0, coatH); } // coating
+      ctx.fillStyle = t.muted; ctx.globalAlpha = 0.30; ctx.fillRect(x0, y2, x1 - x0, oy + H - y2);     // glass
+      ctx.restore();
+      ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y1); ctx.lineTo(x1, y1); if (hasCoat) { ctx.moveTo(x0, y2); ctx.lineTo(x1, y2); } ctx.stroke(); ctx.restore();
+      SK.label(ctx, 'vzduch  n₀=1', x0 + 8, oy + 12, { color: t.fg, font: '11px system-ui' });
+      if (hasCoat) SK.label(ctx, 'vrstva n₁', x1 - 8, (y1 + y2) / 2, { color: t.accent2, align: 'right', font: '10px system-ui', baseline: 'middle' });
+      SK.label(ctx, 'sklo  n₂≈1,5', x0 + 8, y2 + 16, { color: t.fg, font: '11px system-ui' });
+
+      const xc = (x0 + x1) / 2 - 30;
+      // incoming ray
+      SK.arrow(ctx, xc - 70, y1 - 80, xc, y1, { color: '#fff', width: 2, head: 7 });
+      SK.label(ctx, 'dopadající', xc - 74, y1 - 84, { color: '#fff', font: '10px system-ui' });
+      // reflection r1 at top boundary
+      const showR2 = k >= 2;
+      SK.arrow(ctx, xc, y1, xc + 70, y1 - 80, { color: t.pos, width: 2, head: 7 });
+      SK.label(ctx, 'r₁', xc + 60, y1 - 70, { color: t.pos, font: 'bold 12px system-ui' });
+      if (hasCoat) {
+        // transmitted down through coating to bottom, then r2 back up
+        ctx.save(); ctx.strokeStyle = '#fff'; ctx.globalAlpha = 0.5; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(xc, y1); ctx.lineTo(xc + 10, y2); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        if (showR2) { SK.arrow(ctx, xc + 10, y2, xc + 80, y1 - 70, { color: t.accent, width: 2, head: 7 }); SK.label(ctx, 'r₂', xc + 84, y1 - 60, { color: t.accent, font: 'bold 12px system-ui' }); }
+        // path 2 n1 d highlight (step >=3)
+        if (k >= 3) { ctx.save(); ctx.strokeStyle = t.warn; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(xc + 2, y1 + 2); ctx.lineTo(xc + 10, y2 - 1); ctx.lineTo(xc + 18, y1 + 2); ctx.stroke(); ctx.restore();
+          SK.label(ctx, 'dráha 2·n₁·d', x0 + 8, (y1 + y2) / 2 + (coatH > 0 ? 0 : 0), { color: t.warn, font: '10px system-ui', baseline: 'middle' });
+          SK.label(ctx, 'd = λ/4n₁', x1 - 8, y2 + 14, { color: t.warn, align: 'right', font: '10px system-ui' }); }
+      }
+
+      // interference inset (right) — two reflected waves + sum
+      if (k >= 4) {
+        const bx = x1 + 26, bw = w - bx - 16, by = oy + 20, bh = H - 60, mid = by + bh / 2;
+        ctx.save(); ctx.strokeStyle = t.axis; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(bx, mid); ctx.lineTo(bx + bw, mid); ctx.stroke(); ctx.restore();
+        const A = bh * 0.20, kx = 4 * Math.PI / bw;
+        function wave(phase, col, amp, dash) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; if (dash) ctx.setLineDash([4, 3]); ctx.beginPath();
+          for (let i = 0; i <= bw; i++) { const y = mid - amp * Math.sin(kx * i + phase); i ? ctx.lineTo(bx + i, y) : ctx.moveTo(bx + i, y); } ctx.stroke(); ctx.setLineDash([]); ctx.restore(); }
+        wave(0, t.pos, A, false);                       // r1
+        wave(Math.PI, t.accent, A, true);               // r2 (antiphase)
+        SK.label(ctx, 'r₁', bx + 4, by + 4, { color: t.pos, font: '11px system-ui' });
+        SK.label(ctx, 'r₂ (posun π)', bx + 36, by + 4, { color: t.accent, font: '11px system-ui' });
+        if (k >= 6) { ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(bx, mid); ctx.lineTo(bx + bw, mid); ctx.stroke(); ctx.restore();
+          SK.label(ctx, 'r₁ + r₂ = 0 (antireflex)', bx + bw / 2, mid + 22, { color: t.ok, align: 'center', font: 'bold 12px system-ui' }); }
+        else SK.label(ctx, 'opačná fáze → budou se rušit', bx + bw / 2, by + bh - 6, { color: t.muted, align: 'center', font: '10px system-ui' });
+      }
+      if (k === 0) SK.label(ctx, '~4 % odraz', xc + 60, y1 - 70, { color: t.pos, font: '10px system-ui' });
+    }
+
+    // ── timeline controls ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj odvození λ/4 antireflexní vrstvy krok po kroku (jako „ponder"): odraz na skle → vložení vrstvy → ' +
+      'dvě odražené vlny → dráhový rozdíl 2n₁d=λ/2 (tloušťka λ/4) → fázové posuny π → amplitudová podmínka n₁=√(n₀n₂) → ' +
+      'destruktivní interference (antireflex). Funguje pro návrhovou λ; pro jiné vlnové délky je potlačení slabší (proto barevné odlesky čoček).';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>
