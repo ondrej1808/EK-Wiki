@@ -64,7 +64,7 @@
       // moving phase fronts (curved)
       ctx.save(); ctx.strokeStyle = '#fff'; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
       for (let m = -6; m <= 6; m++) { const xc = zc + (m * lam + (time / kk)) % (w); ctx.beginPath();
-        for (let y = cy - ww(xc < 0 ? 0 : xc); y <= cy + ww(xc < 0 ? 0 : xc); y += 4) { const curv = (y - cy) * (y - cy) / (2 * (zR * 2)); const x = xc + curv * ((xc - zc) > 0 ? 1 : -1); if (x > 0 && x < w) (y === cy - ww(xc) ? ctx.moveTo(x, y) : ctx.lineTo(x, y)); } ctx.stroke(); }
+        for (let y = cy - ww(xc < 0 ? 0 : xc); y <= cy + ww(xc < 0 ? 0 : xc); y += 4) { const curv = (y - cy) * (y - cy) / (2 * (zR * 2)); const x = xc + curv * ((xc - zc) > 0 ? -1 : 1); if (x > 0 && x < w) (y === cy - ww(xc) ? ctx.moveTo(x, y) : ctx.lineTo(x, y)); } ctx.stroke(); }
       ctx.restore();
       SK.label(ctx, 'Gaussův svazek (model laseru)', 10, 16, { color: '#fff', font: '12px system-ui', stroke: '#000', strokeW: 3 });
       ro.innerHTML = `<b>Gaussův svazek</b> · pas w₀=${w0} px, λ=${lam} px<br>Rayleighova vzdálenost z_R = πw₀²/λ = <b>${SK.fmt(zR, 0)} px</b><br>` +
