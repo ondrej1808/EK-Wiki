@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JPEG komprese krok za krokem (ponder) — AVT</title>
+<link rel="stylesheet" href="sim-kit.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  .tl { display:flex; align-items:center; gap:10px; width:100%; }
+  .tl input[type=range]{ flex:1 1 auto; }
+  .tl-steps{ display:flex; gap:6px; flex-wrap:wrap; width:100%; margin-top:6px; }
+  .tl-step{ font-size:11px; padding:3px 8px; border-radius:8px; border:1px solid var(--sk-border); color:var(--sk-muted); cursor:pointer; background:var(--sk-panel); }
+  .tl-step.on{ background:var(--sk-accent); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body class="sk">
+  <div class="sk-head"><h1>JPEG komprese — krok za krokem</h1><div class="sk-formula" id="formula"></div></div>
+  <div class="sk-stage"><canvas id="c"></canvas><div class="sk-readout" id="ro"></div></div>
+  <div class="sk-controls" id="ctrl"></div>
+  <script src="sim-kit.js"></script>
+  <script>(function () {
+    const fEl = document.getElementById('formula'), ro = document.getElementById('ro');
+    const N = 8;
+
+    // ── representative 8×8 luminance block (gradient + diagonal edge → low & high freq) ──
+    const px = [];
+    for (let r = 0; r < N; r++) { px.push([]); for (let c = 0; c < N; c++) {
+      let v = 70 + 16 * c;                 // horizontal gradient
+      if (r + c > 8) v += 70;              // diagonal edge → high freq
+      px[r].push(SK.clamp(Math.round(v), 0, 255)); } }
+
+    // ── standard JPEG luminance quantization table ──
+    const QL = [[16,11,10,16,24,40,51,61],[12,12,14,19,26,58,60,55],[14,13,16,24,40,57,69,56],[14,17,22,29,51,87,80,62],
+      [18,22,37,56,68,109,103,77],[24,35,55,64,81,104,113,92],[49,64,78,87,103,121,120,101],[72,92,95,98,112,100,103,99]];
+
+    const Cf = (k) => k === 0 ? Math.SQRT1_2 : 1;
+    function dct2(f) { const F = [];
+      for (let u = 0; u < N; u++) { F.push([]); for (let v = 0; v < N; v++) { let s = 0;
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) s += f[y][x] * Math.cos((2*x+1)*v*Math.PI/16) * Math.cos((2*y+1)*u*Math.PI/16);
+        F[u].push(0.25 * Cf(u) * Cf(v) * s); } } return F; }
+    function idct2(F) { const f = [];
+      for (let y = 0; y < N; y++) { f.push([]); for (let x = 0; x < N; x++) { let s = 0;
+        for (let u = 0; u < N; u++) for (let v = 0; v < N; v++) s += Cf(u) * Cf(v) * F[u][v] * Math.cos((2*x+1)*v*Math.PI/16) * Math.cos((2*y+1)*u*Math.PI/16);
+        f[y].push(0.25 * s); } } return f; }
+    function zigzag(n) { const o = []; for (let s = 0; s < 2*n-1; s++) {
+      if (s % 2 === 0) for (let r = Math.min(s, n-1); r >= Math.max(0, s-n+1); r--) o.push([r, s-r]);
+      else for (let r = Math.max(0, s-n+1); r <= Math.min(s, n-1); r++) o.push([r, s-r]); } return o; }
+
+    const shifted = px.map(row => row.map(v => v - 128));
+    const F = dct2(shifted);
+    const Q = F.map((row, u) => row.map((v, c) => Math.round(v / QL[u][c])));
+    const deq = Q.map((row, u) => row.map((v, c) => v * QL[u][c]));
+    const rec = idct2(deq).map(row => row.map(v => SK.clamp(Math.round(v + 128), 0, 255)));
+    const zz = zigzag(N);
+    const nzCount = Q.flat().filter(v => v !== 0).length;
+    let maxF = 0; F.forEach(r => r.forEach(v => maxF = Math.max(maxF, Math.abs(v))));
+
+    const STEPS = [
+      { t: 'Originál (blok 8×8)', tex: 'f(x,y)\\in[0,255]',
+        c: 'Obraz se zpracovává po blocích 8×8 pixelů. Vidíš jeden blok jasové složky Y (hodnoty 0–255).' },
+      { t: 'RGB → YCbCr', tex: 'Y,\\ C_b,\\ C_r',
+        c: 'Obraz se převede z RGB do YCbCr. Oko je citlivější na jas Y než na barvu, takže Cb, Cr se podvzorkují (4:2:0). Dál sledujeme jen jeden blok Y.' },
+      { t: 'Level shift −128', tex: 'f\\;\\to\\; f-128 \\in[-128,127]',
+        c: 'Od každého pixelu se odečte 128 → hodnoty se vycentrují kolem nuly. Připraví to data pro DCT (symetrické kolem 0).' },
+      { t: '2D DCT', tex: 'F(u,v)=\\tfrac14 C_uC_v\\!\\sum_{x,y} f(x,y)\\cos\\!\\tfrac{(2x{+}1)v\\pi}{16}\\cos\\!\\tfrac{(2y{+}1)u\\pi}{16}',
+        c: 'Blok se transformuje 2D diskrétní kosinovou transformací do frekvenční oblasti. Vlevo nahoře je DC složka (střední jas), směrem doprava dolů rostou frekvence (jemné detaily). Energie se koncentruje vlevo nahoře.' },
+      { t: 'Kvantizace (ZTRÁTA)', tex: 'Q(u,v)=\\mathrm{round}\\!\\left(\\dfrac{F(u,v)}{q(u,v)}\\right)',
+        c: 'Koeficienty se vydělí kvantizační maticí a zaokrouhlí. Vysoké frekvence (vpravo dole) se dělí velkými čísly → zaokrouhlí se na NULU. Zde vzniká ztráta informace; míru řídí nastavení kvality.' },
+      { t: 'Cik-cak sken + entropie', tex: '\\text{zigzag}\\Rightarrow\\text{RLE}+\\text{Huffman}',
+        c: 'Koeficienty se čtou klikatě (zigzag) od DC k nejvyšším frekvencím. Vzniklá řada končí dlouhým sledem nul (EOB), který se bezeztrátově zakóduje (RLE + Huffman) do pár bitů.' },
+      { t: 'Rekonstrukce (IDCT)', tex: '\\hat f = \\mathrm{IDCT}(q\\cdot Q)+128',
+        c: 'Při dekódování: dekvantování (× matice) a inverzní DCT. Výsledek se blíží originálu — drobné blokové artefakty jsou cenou za menší soubor.' },
+    ];
+    const NS = STEPS.length - 1;
+    let p = 0, playing = false;
+
+    function showStep() { const k = Math.round(p); SK.katex(fEl, STEPS[k].tex, false);
+      ro.innerHTML = `<b>Krok ${k}/${NS}: ${STEPS[k].t}</b><br>${STEPS[k].c}` +
+        (k >= 4 ? `<br>Nenulových koeficientů: <b>${nzCount}/64</b> → zbytek se zakóduje skoro zadarmo.` : '');
+      document.querySelectorAll('.tl-step').forEach((el, i) => el.classList.toggle('on', i === k)); }
+
+    const view = SK.mount(document.getElementById('c'), draw);
+    const anim = SK.loop((dt) => { p = Math.min(NS, p + dt * 0.5); scrub.value = p; if (p >= NS) { playing = false; anim.stop(); playBtn.set('▶ Přehrát'); } showStep(); view.redraw(); });
+
+    function grid(ctx, ox, oy, cell, cb) {
+      for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) { const o = cb(r, c);
+        ctx.fillStyle = o.fill; ctx.fillRect(ox + c*cell, oy + r*cell, cell-1, cell-1);
+        if (o.text != null && cell >= 16) { ctx.fillStyle = o.tc || '#000'; ctx.font = Math.floor(cell*0.36) + 'px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(o.text, ox + c*cell + cell/2, oy + r*cell + cell/2); } }
+    }
+    function gray(v) { return `rgb(${v},${v},${v})`; }
+
+    function draw(ctx, w, h) {
+      const t = SK.theme(); ctx.clearRect(0, 0, w, h); const k = Math.round(p);
+      const two = (k === NS);                              // last step shows two grids
+      const cell = Math.min((w - (two ? 90 : 60)) / (two ? 2*N : N), (h - 90)) ;
+      const cs = SK.clamp(cell, 14, 46);
+      const oy = 36, ox = two ? 24 : (w - N*cs) / 2 - (k >= 3 ? 0 : 0);
+
+      if (k <= 2) {
+        // pixel domain
+        grid(ctx, ox, oy, cs, (r, c) => { const raw = px[r][c]; const val = (k === 2 ? raw - 128 : raw);
+          return { fill: gray(raw), text: val, tc: raw > 128 ? '#000' : '#fff' }; });
+        SK.label(ctx, k === 2 ? 'blok po level shiftu (−128)' : 'blok 8×8 — jas Y [0–255]', ox + N*cs/2, oy - 10, { color: t.fg, align: 'center', font: '12px system-ui' });
+      } else if (k === 3) {
+        // DCT magnitudes heatmap
+        grid(ctx, ox, oy, cs, (r, c) => { const m = Math.abs(F[r][c]) / (maxF || 1); const g = Math.round(18 + 230*Math.sqrt(m));
+          return { fill: (r===0&&c===0) ? t.accent : gray(g), text: (cs>=22? Math.round(F[r][c]) : null), tc: g>140?'#000':'#fff' }; });
+        SK.label(ctx, 'DCT koeficienty F(u,v) — DC ↖, frekvence ↘', ox + N*cs/2, oy - 10, { color: t.fg, align: 'center', font: '12px system-ui' });
+      } else if (k === 4) {
+        grid(ctx, ox, oy, cs, (r, c) => { const z = Q[r][c] === 0;
+          return { fill: z ? t.grid : t.accent, text: (cs>=18 ? Q[r][c] : null), tc: '#fff' }; });
+        SK.label(ctx, 'kvantované koef. — šedě = 0 (zahozeno)', ox + N*cs/2, oy - 10, { color: t.fg, align: 'center', font: '12px system-ui' });
+      } else if (k === 5) {
+        grid(ctx, ox, oy, cs, (r, c) => { const z = Q[r][c] === 0; return { fill: z ? t.grid : t.accent, text: null }; });
+        // zigzag path (animated by frac within step)
+        const frac = SK.clamp(p - 5, 0, 1), nshow = Math.max(2, Math.round(frac * zz.length)) || zz.length;
+        ctx.save(); ctx.strokeStyle = t.ok; ctx.lineWidth = 2; ctx.beginPath();
+        for (let i = 0; i < (playing ? nshow : zz.length); i++) { const [r, c] = zz[i]; const x = ox + c*cs + cs/2, y = oy + r*cs + cs/2; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke(); ctx.restore();
+        SK.label(ctx, 'cik-cak (zigzag) sken: DC → vysoké frekvence', ox + N*cs/2, oy - 10, { color: t.fg, align: 'center', font: '12px system-ui' });
+        SK.label(ctx, 'konec řady = samé nuly → EOB (pár bitů)', ox + N*cs/2, oy + N*cs + 16, { color: t.muted, align: 'center', font: '10px system-ui' });
+      } else {
+        // reconstruction: original vs reconstructed
+        grid(ctx, ox, oy, cs, (r, c) => ({ fill: gray(px[r][c]), text: null }));
+        const ox2 = ox + N*cs + 40;
+        grid(ctx, ox2, oy, cs, (r, c) => ({ fill: gray(rec[r][c]), text: null }));
+        SK.label(ctx, 'originál', ox + N*cs/2, oy - 10, { color: t.fg, align: 'center', font: '12px system-ui' });
+        SK.label(ctx, 'po JPEG (IDCT)', ox2 + N*cs/2, oy - 10, { color: t.accent, align: 'center', font: '12px system-ui' });
+      }
+    }
+
+    // ── timeline controls (jako capacitor ponder) ──
+    const ctrl = document.getElementById('ctrl');
+    const scrub = document.createElement('input'); scrub.type = 'range'; scrub.min = 0; scrub.max = NS; scrub.step = 0.01; scrub.value = 0;
+    scrub.addEventListener('input', () => { p = parseFloat(scrub.value); showStep(); view.redraw(); });
+    const prev = SK.button({ label: '◀', onclick: () => { p = Math.max(0, Math.round(p) - 1); scrub.value = p; showStep(); view.redraw(); } });
+    const next = SK.button({ label: '▶', onclick: () => { p = Math.min(NS, Math.round(p) + 1); scrub.value = p; showStep(); view.redraw(); } });
+    const playBtn = SK.button({ label: '▶ Přehrát', primary: true, onclick: (b) => { if (p >= NS) p = 0; playing = !playing; if (playing) { anim.start(); b.textContent = '⏸ Pauza'; } else { anim.stop(); b.textContent = '▶ Přehrát'; } } });
+    const row = document.createElement('div'); row.className = 'tl'; row.appendChild(prev.el); row.appendChild(playBtn.el); row.appendChild(next.el); row.appendChild(scrub);
+    ctrl.appendChild(row);
+    const dots = document.createElement('div'); dots.className = 'tl-steps';
+    STEPS.forEach((s, i) => { const d = document.createElement('button'); d.className = 'tl-step'; d.textContent = i + '. ' + s.t; d.onclick = () => { p = i; scrub.value = i; showStep(); view.redraw(); }; dots.appendChild(d); });
+    ctrl.appendChild(dots);
+    const hint = document.createElement('div'); hint.className = 'sk-hint';
+    hint.innerHTML = 'Přehraj JPEG kompresi krok po kroku (jako „ponder"): YCbCr → bloky 8×8 → level shift → 2D DCT → ' +
+      'kvantizace (zde vzniká ztráta) → cik-cak sken + entropické kódování → rekonstrukce IDCT. Posuvníkem nebo tlačítky ' +
+      'kroků skákej v čase. &nbsp;<a href="avt_jpeg.html" target="_blank" rel="noopener" style="color:var(--sk-accent)">↗ Interaktivní JPEG (posuvník kvality)</a>.';
+    ctrl.appendChild(hint);
+
+    showStep();
+  })();</script>
+</body>
+</html>

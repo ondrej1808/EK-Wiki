@@ -501,6 +501,7 @@
         code: 'B2B37AVT', title: 'Audiovizuální technika',
         resources: [
           { type: 'sim', label: 'Bayerova maska & demozaika', src: SIM + 'avt_bayer.html' },
+          { type: 'sim', label: 'JPEG komprese krok za krokem (ponder)', src: SIM + 'avt_jpeg_ponder.html' },
           { type: 'sim', label: 'Elektroakustické měniče (mikrofon/repro)', src: SIM + 'avt_transducers.html' },
           { type: 'sim', label: 'Snímač CCD vs CMOS (vyčítání)', src: SIM + 'avt_ccd_cmos.html' },
           { type: 'sim', label: 'JPEG – bloková DCT a kvantování', src: SIM + 'avt_jpeg.html' },
