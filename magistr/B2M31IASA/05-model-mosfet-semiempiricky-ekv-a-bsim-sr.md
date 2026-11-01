@@ -11,8 +11,8 @@
 ![Příčný řez MOSFET s geometrickými parametry](magistr/B2M31IASA/img/mosfet_rez.png)
 *Příčný řez MOSFET s geometrickými parametry*
 
-- **Geometrické (neelektrické) parametry:** $L$ – délka hradla, $W$ – šířka kanálu, $t_{\mathrm{ox}}$ – tloušťka oxidu, $L_e$ – efektivní délka kanálu, $X_J$ – hloubka přechodu source/drain, $X_{JL}$ – laterální difúze (o kolik se S/D podsune pod hradlo, $L_e = L - 2X_{JL}$).
-- **Technologické parametry:** např. $N_{SUB}$ (dotace substrátu), $N_{SS}$ (povrchová hustota stavů), $T_{PG}$ (typ hradla), $\mu_0$ (pohyblivost), $R_{SH}$ (vrstvový odpor).
+- **Geometrické (neelektrické) parametry:** $L$ – délka gatu, $W$ – šířka kanálu, $t_{\mathrm{ox}}$ – tloušťka oxidu, $L_e$ – efektivní délka kanálu, $X_J$ – hloubka přechodu source/drain, $X_{JL}$ – laterální difúze (o kolik se S/D podsune pod gate, $L_e = L - 2X_{JL}$).
+- **Technologické parametry:** např. $N_{SUB}$ (dotace substrátu), $N_{SS}$ (povrchová hustota stavů), $T_{PG}$ (typ gatu), $\mu_0$ (pohyblivost), $R_{SH}$ (vrstvový odpor).
 
 ## Model MOSFET, základní parametry modelu, náhradní obvod modelu
 
@@ -82,7 +82,7 @@
 ![Meyerův model – kapacity $C_{GB}$, $C_{GS}$, $C_{GD}$ (normováno na $C_{\mathrm{ox}}$)](magistr/B2M31IASA/img/mosfet_meyer.png)
 *Meyerův model – kapacity $C_{GB}$, $C_{GS}$, $C_{GD}$ (normováno na $C_{\mathrm{ox}}$)*
 
-- Hradlo se chová jako deskový kondenzátor $C_{\mathrm{ox}} = \frac{\varepsilon_{\mathrm{ox}}}{t_{\mathrm{ox}}} L_e W$, kapacity jsou ale vysoce nelineární v závislosti na $v_{\mathrm{GS}}$.
+- Gate se chová jako deskový kondenzátor $C_{\mathrm{ox}} = \frac{\varepsilon_{\mathrm{ox}}}{t_{\mathrm{ox}}} L_e W$, kapacity jsou ale vysoce nelineární v závislosti na $v_{\mathrm{GS}}$.
 - **Akumulace / pod prahem** ($V_{GS} < V_{\mathrm{on}}$): kanál není, $C_{GB} \approx C_{\mathrm{ox}}$, $C_{GS} = C_{GD} = 0$.
 - **Saturace** ($0 < V_{GS} - V_{\mathrm{on}} < V_{DS}$): $C_{GB} \to 0$, $C_{GS} \approx \frac23 C_{\mathrm{ox}}$, $C_{GD} \approx 0$.
 - **Lineární oblast** ($V_{GS} - V_{\mathrm{on}} > V_{DS}$): $C_{GS}$ a $C_{GD}$ se blíží $\frac12 C_{\mathrm{ox}}$.
@@ -91,7 +91,7 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Kapitola4.MOSFET.pdf" target="_blank" rel="noopener">Kapitola4.MOSFET.pdf</a></small></p>
 
-Meyerův model počítá s kapacitami $C(v)$ a *nezachovává náboj*. V EKV a BSIM se proto používá **nábojově řízený Wardův model** – modelují se přímo náboje hradla, kanálu a substrátu ($q_G$, $q_D$, $q_S$, $q_B$, dělení náboje kanálu mezi D a S) a proudy jsou jejich časové derivace $\Rightarrow$ zachování náboje (obdoba integrální formulace u diody).
+Meyerův model počítá s kapacitami $C(v)$ a *nezachovává náboj*. V EKV a BSIM se proto používá **nábojově řízený Wardův model** – modelují se přímo náboje gatu, kanálu a substrátu ($q_G$, $q_D$, $q_S$, $q_B$, dělení náboje kanálu mezi D a S) a proudy jsou jejich časové derivace $\Rightarrow$ zachování náboje (obdoba integrální formulace u diody).
 
 ## Základní odlišnosti modelů EKV a BSIM (dokázat jednoduše slovně vysvětlit)
 
@@ -119,16 +119,16 @@ EKV – **desítky parametrů** (fyzikálně názorné), BSIM – **stovky param
 
 Pinch-off napětí $V_P$ je **potenciál kanálu**, při kterém je hustota inverzního náboje rovna hustotě náboje ochuzené oblasti (hranice slabé a silné inverze). Přibližně $V_P \approx (V_G - V_{T0})/n$, kde $n$ je faktor sklonu. Všechna napětí se v EKV vztahují k substrátu (bulk) – model je symetrický vůči S a D.
 
-![Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím hradla se sklonem $1/n$](magistr/B2M31IASA/img/pinchoff.png)
-*Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím hradla se sklonem $1/n$*
+![Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím gatu se sklonem $1/n$](magistr/B2M31IASA/img/pinchoff.png)
+*Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím gatu se sklonem $1/n$*
 
 - **a)** Když roste potenciál kanálu $V_{ch}$ (např. směrem k drainu), inverzní náboj (elektrony, které vedou proud) **ubývá**, kdežto náboj ochuzené oblasti **mírně přibývá**. Bod, kde jsou si rovny, je $V_P$. Vlevo od něj je silná inverze (vodivý kanál), vpravo slabá inverze (kanál prakticky zaškrcený).
-- **b)** $V_P$ vyjadřuje, jak moc hradlo „otevřelo“ kanál: začíná od prahového napětí $V_{T0}$ a roste pomaleji než $V_G$ (sklon $1/n$, $n \approx 1{,}2$–$1{,}5$), protože část napětí hradla „spotřebuje“ ochuzená oblast.
+- **b)** $V_P$ vyjadřuje, jak moc gate „otevřelo“ kanál: začíná od prahového napětí $V_{T0}$ a roste pomaleji než $V_G$ (sklon $1/n$, $n \approx 1{,}2$–$1{,}5$), protože část napětí gatu „spotřebuje“ ochuzená oblast.
 - Režim tranzistoru EKV určí porovnáním $V_S$ a $V_D$ s $V_P$: oba menší než $V_P$ $\Rightarrow$ silná inverze (lineární oblast), $V_S < V_P < V_D$ $\Rightarrow$ saturace, oba větší $\Rightarrow$ slabá inverze.
 
 **Po lopatě (N-MOSFET):**
 
-- Substrát je typu P. Kladné napětí na hradle „odtlačí“ díry od povrchu – zůstanou tam **pevné záporné ionty akceptorů** (to je ochuzená oblast, náboj $Q_B$, nic se tam nehýbe). Při ještě větším napětí se k povrchu přitáhnou **volné elektrony** – vznikne N kanál v P substrátu (inverzní vrstva, náboj $Q_{inv}$, ten vede proud).
+- Substrát je typu P. Kladné napětí na gatu „odtlačí“ díry od povrchu – zůstanou tam **pevné záporné ionty akceptorů** (to je ochuzená oblast, náboj $Q_B$, nic se tam nehýbe). Při ještě větším napětí se k povrchu přitáhnou **volné elektrony** – vznikne N kanál v P substrátu (inverzní vrstva, náboj $Q_{inv}$, ten vede proud).
 - Porovnávají se tedy **volné elektrony v kanálu** a **pevné ionty v ochuzené oblasti** – *ne* elektrony a díry (děr je u povrchu naopak skoro nula).
 - $V_P$ **není napětí, které připojím na gate.** Napětí na gate je $V_G$ (to nastavím). $V_P$ je **napětí kanálu** (proti substrátu), při kterém se elektronů v kanálu udělá právě tolik, kolik je iontů v ochuzené oblasti. Pro dané $V_G$ je $V_P$ jedno konkrétní číslo, s větším $V_G$ roste.
 - Představa: kanál je řeka elektronů. Kde je potenciál kanálu menší než $V_P$ (typicky u source), je řeka „hluboká“ – silná inverze. Kde je potenciál větší než $V_P$ (u drainu při velkém $V_{DS}$), řeka „vyschne“ na tenký pramínek – slabá inverze, kanál je zaškrcený. $V_P$ je hladina, kde se to láme.

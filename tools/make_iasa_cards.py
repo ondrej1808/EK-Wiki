@@ -60,7 +60,7 @@ CARDS = [
     ('JFET', 'Proč je JFET málo teplotně závislý?',
      'S teplotou se mění dvě věci, které působí **proti sobě**: '
      '1) klesá **pohyblivost** nosičů → proud **klesá**; '
-     '2) zužuje se vyprázdněná oblast hradla, kanál je **širší** (posun $V_T$) → proud **roste**. '
+     '2) zužuje se vyprázdněná oblast gatu, kanál je **širší** (posun $V_T$) → proud **roste**. '
      'Oba vlivy se z velké části vyruší, a dokonce existuje pracovní bod, kde je proud na teplotě téměř nezávislý.',
      None),
 
@@ -77,9 +77,9 @@ CARDS = [
      IMG + 'mesfet_kapacity.png'),
 
     ('MOSFET', 'Příčný řez MOSFET s vyznačenými geometrickými parametry.',
-     'Nakreslit: source a drain (dvě dotované oblasti), mezi nimi kanál, nad ním tenký oxid a hradlo (gate). '
-     'Parametry: **$L$** = délka hradla, **$W$** = šířka, **$t_{ox}$** = tloušťka oxidu, '
-     '**$X_J$** = hloubka přechodu S/D, **$X_{JL}$** = o kolik S/D zasahuje pod hradlo, '
+     'Nakreslit: source a drain (dvě dotované oblasti), mezi nimi kanál, nad ním tenký oxid a gate (gate). '
+     'Parametry: **$L$** = délka gatu, **$W$** = šířka, **$t_{ox}$** = tloušťka oxidu, '
+     '**$X_J$** = hloubka přechodu S/D, **$X_{JL}$** = o kolik S/D zasahuje pod gate, '
      '**$L_e$** = efektivní délka kanálu ($L_e = L - 2X_{JL}$).',
      IMG + 'mosfet_rez.png'),
     ('MOSFET', 'Závislost proudu kanálem na napětí gate-source, podprahový režim (obrázek).',

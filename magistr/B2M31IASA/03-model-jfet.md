@@ -58,7 +58,7 @@ V_T' = V_T + \mathrm{vttc}\,(T' - T), \qquad
 \beta' = \beta \cdot 1{,}01^{\,\mathrm{betatce}\,(T' - T)}
 $$
 
-- Se změnou teploty se mění **dva jevy**: *pohyblivost nosičů náboje* (s teplotou klesá $\Rightarrow$ proud klesá) a *průřez kanálu* (mění se šířka ochuzené oblasti přechodu hradla, tj. $V_T$ $\Rightarrow$ proud roste).
+- Se změnou teploty se mění **dva jevy**: *pohyblivost nosičů náboje* (s teplotou klesá $\Rightarrow$ proud klesá) a *průřez kanálu* (mění se šířka ochuzené oblasti přechodu gatu, tj. $V_T$ $\Rightarrow$ proud roste).
 - Tyto jevy působí svým účinkem **proti sobě** $\Rightarrow$ <u>JFET je málo teplotně závislý</u>.
 - V charakteristikách existuje **bod**, který je v relativně širokém intervalu teplot **teplotně nezávislý** – unikátní jev JFETu.
 
