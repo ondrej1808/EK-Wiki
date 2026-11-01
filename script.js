@@ -1125,6 +1125,13 @@ function revealOpenAnswer(btn) {
     evalBtns.classList.add('visible');
     
     renderMath(content);
+
+    // V nízkém okně (např. panel ve wiki) by odpověď zůstala pod tlačítky mimo dohled
+    const scroller = card.querySelector('.card-scrollable-content');
+    if (scroller && scroller.scrollHeight > scroller.clientHeight) {
+        const top = content.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+        scroller.scrollTo({ top: Math.max(0, top - 8), behavior: 'smooth' });
+    }
 }
 
 function rateOpenAnswer(qId, knewIt) {

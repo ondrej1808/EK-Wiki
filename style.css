@@ -676,3 +676,5 @@ body.dark-mode .subject-select {
     border-color: #475569;
     /* Změna barvy šipky na světlou pro dark mode (volitelné, SVG je hardcoded) */
 }
+/* Obrázek v odpovědi nesmí zabrat celou kartičku (nízké okno / panel ve wiki) */
+.answer-image { max-height: 40vh; width: auto; margin: 10px auto; object-fit: contain; }
