@@ -796,15 +796,16 @@
   async function renderResourceInto(targets, label, src, type) {
     targets.docTitle.textContent = label;
     targets.docMeta.textContent  = src;
+    if (type === 'pdf' || type === 'sim') {
+      targets.docMeta.insertAdjacentHTML('beforeend',
+        ` · <a href="${encodePath(src)}" target="_blank" rel="noopener" class="pdf-newtab-inline">↗ Otevřít v nové záložce</a>`);
+    }
 
     if (type === 'pdf') {
       /* PDF: show iframe + new-tab link */
       const enc = encodePath(src);
       targets.docBody.classList.remove('status');
       targets.docBody.innerHTML =
-        `<div class="pdf-toolbar">` +
-          `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
-        `</div>` +
         `<iframe class="pdf-frame" title="${esc(label)}"></iframe>`;
       const frame = targets.docBody.querySelector('.pdf-frame');
       // rozměry rámu jsou známé až po vykreslení (panely se teprve skládají)
@@ -829,9 +830,6 @@
       const enc = encodePath(src);
       targets.docBody.classList.remove('status');
       targets.docBody.innerHTML =
-        `<div class="pdf-toolbar">` +
-          `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
-        `</div>` +
         `<iframe src="${enc}" class="sim-frame" title="${esc(label)}"></iframe>`;
       return;
     }
@@ -1169,9 +1167,12 @@
     el.innerHTML =
       `<span class="res-tag ${tag.cls}">${tag.label}</span>` +
       `<span class="mc-tab-label">${esc(tab.label)}</span>` +
+      ((tab.type === 'pdf' || tab.type === 'sim')
+        ? `<a class="mc-tab-open" href="${encodePath(tab.src)}" target="_blank" rel="noopener" title="Otevřít v nové záložce">↗</a>`
+        : '') +
       `<button type="button" class="mc-tab-close" title="Zavřít">✕</button>`;
     el.addEventListener('click', e => {
-      if (e.target.closest('.mc-tab-close')) return;
+      if (e.target.closest('.mc-tab-close, .mc-tab-open')) return;
       activateTab(pane, tabId);
     });
     el.querySelector('.mc-tab-close').addEventListener('click', e => {

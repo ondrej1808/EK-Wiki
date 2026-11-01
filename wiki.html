@@ -122,6 +122,7 @@
 
     /* ── Multi content (split panes + tabs) ── */
     .mc-wrap{display:flex;flex-direction:column;flex:1;min-height:0}
+    .mc-wrap[hidden]{display:none}  /* jinak display:flex přebije atribut hidden */
     .mc-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;
                 padding:4px 0 8px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;min-height:36px}
     .mc-layout-picker{display:flex;gap:4px;flex-shrink:0}
@@ -168,6 +169,11 @@
     .layout.sidebar-collapsed .content.mc-active .mc-toolbar{padding-left:84px}
     /* hodně karet: tenký posuvník místo tlustého, ať lišta nezvětšuje výšku */
     .mc-tabbar{scrollbar-width:thin}
+    /* ↗ v kartě (PDF/simulace) = otevřít v nové záložce; v jednom okně odkaz za cestou */
+    .mc-tab-open{flex-shrink:0;color:#2563eb;text-decoration:none;font-size:12px;line-height:1;padding:0 2px;border-radius:4px}
+    .mc-tab-open:hover{background:#dbeafe}
+    .pdf-newtab-inline{color:#1d4ed8;text-decoration:none;font-weight:600}
+    .pdf-newtab-inline:hover{text-decoration:underline}
     .mc-tabbar::-webkit-scrollbar{height:4px}
     .mc-tabbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
     .mc-pane.compact{padding:6px}
