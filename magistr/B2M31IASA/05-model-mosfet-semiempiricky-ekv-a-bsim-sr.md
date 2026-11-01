@@ -119,6 +119,13 @@ EKV – **desítky parametrů** (fyzikálně názorné), BSIM – **stovky param
 
 Pinch-off napětí $V_P$ je **potenciál kanálu**, při kterém je hustota inverzního náboje rovna hustotě náboje ochuzené oblasti (hranice slabé a silné inverze). Přibližně $V_P \approx (V_G - V_{T0})/n$, kde $n$ je faktor sklonu. Všechna napětí se v EKV vztahují k substrátu (bulk) – model je symetrický vůči S a D.
 
+![Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím hradla se sklonem $1/n$](magistr/B2M31IASA/img/pinchoff.png)
+*Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím hradla se sklonem $1/n$*
+
+- **a)** Když roste potenciál kanálu $V_{ch}$ (např. směrem k drainu), inverzní náboj (elektrony, které vedou proud) **ubývá**, kdežto náboj ochuzené oblasti **mírně přibývá**. Bod, kde jsou si rovny, je $V_P$. Vlevo od něj je silná inverze (vodivý kanál), vpravo slabá inverze (kanál prakticky zaškrcený).
+- **b)** $V_P$ vyjadřuje, jak moc hradlo „otevřelo“ kanál: začíná od prahového napětí $V_{T0}$ a roste pomaleji než $V_G$ (sklon $1/n$, $n \approx 1{,}2$–$1{,}5$), protože část napětí hradla „spotřebuje“ ochuzená oblast.
+- Režim tranzistoru EKV určí porovnáním $V_S$ a $V_D$ s $V_P$: oba menší než $V_P$ $\Rightarrow$ silná inverze (lineární oblast), $V_S < V_P < V_D$ $\Rightarrow$ saturace, oba větší $\Rightarrow$ slabá inverze.
+
 ## ⭐ Základní vztah pro dopředný proud v modelu EKV (jen vědět, že se podobně jako např. v modelu bipolárního tranzistoru určuje jako rozdíl dopředného a zpětného proudu, přičemž v rovnici pro dopředný proud se používá interpolační funkce s <u>ln a exp, která umožňuje automatický přechod do exponenciální závislosti v slabé inverzi a do kvadratické závislosti v silné inverzi</u>, aniž by docházelo k nespojitostem v transkonduktancím, což je velmi důležité pro návrh analogových obvodů)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/ekv_v262.pdf" target="_blank" rel="noopener">ekv_v262.pdf</a></small></p>
