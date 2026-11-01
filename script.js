@@ -275,6 +275,7 @@ function toggleMenu() {
         const controls = [
             { text: '📂 Nahrát vlastní', class: 'btn-primary', action: "document.getElementById('fileInput').click()" },
             { text: '🔄 Import Anki', class: 'btn-warning', action: "document.getElementById('ankiInput').click()" },
+            { text: '📤 Export Anki', class: 'btn-success', action: 'exportAnki()' },
             { text: '🔀 Zamíchat set', class: 'btn-secondary', action: 'shuffleCurrentSet()' },
             { text: '✏️ Otevřít v editoru', class: 'btn-secondary', action: "openCurrentSetInEditor()" },
             { text: '↺ Resetovat', class: 'btn-secondary', action: "resetProgress()" },
@@ -1325,6 +1326,50 @@ function clearAppCache() {
     window.location.reload();
 }
 
+/**
+ * Převede text odpovědi (markdown + LaTeX $…$) na HTML pro Anki.
+ * @param {string} text  text části odpovědi
+ * @returns {string} HTML s MathJax oddělovači \( \) / \[ \], bez tabulátorů a nových řádků
+ */
+function ankiHtml(text) {
+    return String(text || '')
+        .replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => `\\[${m}\\]`)
+        .replace(/\$([^$]+?)\$/g, (_, m) => `\\(${m}\\)`)
+        .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+        .replace(/\t/g, ' ')
+        .replace(/\r?\n/g, '<br>');
+}
+
+/**
+ * Exportuje právě vyfiltrované otázky jako textový soubor pro import do Anki
+ * (Soubor → Importovat; oddělovač tab, HTML zapnuté, 3. sloupec = štítky).
+ * Obrázky se odkazují absolutní URL, takže se v Anki zobrazí při připojení k internetu.
+ * @returns {void} nic; stáhne soubor anki_export.txt
+ */
+function exportAnki() {
+    const list = getFilteredQuestions();
+    if (!list.length) { showMessage('Žádné otázky k exportu', 'info'); return; }
+    const lines = ['#separator:tab', '#html:true', '#tags column:3'];
+    for (const q of list) {
+        const parts = Array.isArray(q.answer_parts) ? q.answer_parts : [];
+        let back = parts.map(p => {
+            let h = (p.title ? `<b>${ankiHtml(p.title)}</b><br>` : '') + ankiHtml(p.text);
+            const img = p.image ? (typeof p.image === 'string' ? p.image : p.image.src) : p.imageSrc;
+            if (img) h += `<br><img src="${new URL(img, window.location.href).href}">`;
+            return h;
+        }).join('<br><br>');
+        if (!back && Array.isArray(q.options)) back = ankiHtml(q.options[q.correctIndex] || '') + (q.explanation ? '<br>' + ankiHtml(q.explanation) : '');
+        const tags = (q.subsetPath || []).map(s => String(s).replace(/\s+/g, '_')).join(' ');
+        lines.push([ankiHtml(q.question), back, tags].join('\t'));
+    }
+    const a = document.createElement('a');
+    a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(lines.join('\n'));
+    a.download = 'anki_export.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
 function downloadFailed() {
     const exportData = {
         title: "TSI - Export Chyb",
@@ -1500,7 +1545,7 @@ window.addEventListener('load', async () => {
     }
 
     if (subjectParam) {
-        await changeSubject('json/szz-open-micro.json');
+        await changeSubject(params.get('set') || 'json/szz-open-micro.json');
         if (getAvailableSubjectPaths().includes(subjectParam)) {
             changeSubjectFilter(subjectParam);
         }

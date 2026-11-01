@@ -80,6 +80,7 @@
                                 <option value="" disabled selected>📂 Vybrat sadu...</option>
                                 <option value="json/ozd-open-micro.json">OZD - Open microcards</option>
                                 <option value="json/szz-open-micro.json">SZZ - Open microcards</option>
+                                <option value="json/magistr-iasa.json">EK Magistr – IASA (⭐ otázky)</option>
                                 <option value="json/oks.json">OKS - Optické systémy</option>
                                 </select>
                         </div>
@@ -104,6 +105,7 @@
                             <button class="btn btn-warning" onclick="document.getElementById('ankiInput').click()">🔄 Import Anki</button>
                             <input type="file" id="ankiInput" accept=".txt">
                         </div>
+                        <button class="btn btn-success" onclick="exportAnki()">📤 Export Anki</button>
                         <button class="btn btn-secondary" onclick="shuffleCurrentSet()">🔀 Zamíchat set</button>
                         <button class="btn btn-secondary" onclick="openCurrentSetInEditor()">✏️ Otevřít v editoru</button>
                         <button class="btn btn-secondary" onclick="resetProgress()">↺ Resetovat</button>

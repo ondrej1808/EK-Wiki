@@ -320,12 +320,55 @@
     },
   ];
 
+  /* ── EK Magistr: samostatná kapitola (wiki.html?kap=magistr) ──
+   *  Vlastní strom předmětů — v tomto režimu se SZZ obsah nezobrazuje
+   *  a naopak; stav panelů se ukládá pod jinými klíči. */
+  const MAGISTR = new URLSearchParams(window.location.search).get('kap') === 'magistr';
+  const MG_IASA = 'magistr/B2M31IASA/';
+  const MAGISTR_SECTIONS = [
+    {
+      section: 'EK Magistr',
+      subjects: [
+        {
+          code: 'B2M31IASA', title: 'Implementace analogových soustav',
+          resources: [
+            { type: 'note', label: '1 – Model diody',                     src: MG_IASA + '01-model-diody.md' },
+            { type: 'note', label: '2 – Model bipolárního tranzistoru',   src: MG_IASA + '02-model-bipolarniho-tranzistoru.md' },
+            { type: 'note', label: '3 – Model JFET',                      src: MG_IASA + '03-model-jfet.md' },
+            { type: 'note', label: '4 – Model MESFET',                    src: MG_IASA + '04-model-mesfet.md' },
+            { type: 'note', label: '5 – Model MOSFET (EKV a BSIM)',       src: MG_IASA + '05-model-mosfet-semiempiricky-ekv-a-bsim-sr.md' },
+            { type: 'note', label: '6 – Přesnost modelů',                 src: MG_IASA + '06-presnost-modelu-prakticke-charakterizace.md' },
+            { type: 'note', label: '7 – Modely přenosových vedení (nezkouší se)', src: MG_IASA + '07-modely-prenosovych-vedeni.md' },
+            { type: 'cards', label: 'Kartičky ⭐ (podtržené otázky)',      src: 'set=json/magistr-iasa.json&subject=IASA' },
+            { type: 'pdf',  label: 'Témata 2026 – modely (zadání)',       src: MG_IASA + 'pdf/Temata2026modely.pdf' },
+            { type: 'pdf',  label: 'Semestrální test – celé PDF',         src: MG_IASA + 'pdf/IASA_sem_test.pdf' },
+            { type: 'pdf',  label: 'Prezentace – Dioda',                  src: MG_IASA + 'pdf/Diode6.pdf' },
+            { type: 'pdf',  label: 'Prezentace – BJT',                    src: MG_IASA + 'pdf/BJT6.pdf' },
+            { type: 'pdf',  label: 'Prezentace – JFET',                   src: MG_IASA + 'pdf/JFET6.pdf' },
+            { type: 'pdf',  label: 'Prezentace – MESFET',                 src: MG_IASA + 'pdf/MESFET-Delay-Dispersion-B2M31IASA26.pdf' },
+            { type: 'pdf',  label: 'Prezentace – MOSFET',                 src: MG_IASA + 'pdf/MOSFET6.pdf' },
+            { type: 'pdf',  label: 'Kapitola 4 – MOSFET (kniha)',         src: MG_IASA + 'pdf/Kapitola4.MOSFET.pdf' },
+            { type: 'pdf',  label: 'EKV vs. BSIM (IASA)',                 src: MG_IASA + 'pdf/EKVvsBSIMiasa26.pdf' },
+            { type: 'pdf',  label: 'EKV vs. BSIM (přehled)',              src: MG_IASA + 'pdf/EKVvsBSIMoverview26.pdf' },
+            { type: 'pdf',  label: 'EKV v2.6',                            src: MG_IASA + 'pdf/ekv_v262.pdf' },
+            { type: 'pdf',  label: 'Prezentace – Přenosová vedení',       src: MG_IASA + 'pdf/TransmissionLine6.pdf' },
+          ],
+        },
+      ],
+    },
+  ];
+  if (MAGISTR) SECTIONS.splice(0, SECTIONS.length, ...MAGISTR_SECTIONS);
+  /** Klíč localStorage oddělený pro režim magistr.
+   *  @param {string} k  základní klíč
+   *  @returns {string}  k, v režimu magistr s příponou '_magistr' */
+  const lsKey = k => MAGISTR ? k + '_magistr' : k;
+
   // Inject a CARDS subpage into every subject — links to the flashcard app
   // pre-filtered to that subject's short code (e.g. B2B02FY1 → FY1), which
   // matches subsetPath[0] in json/szz-open-micro.json one-to-one.
   for (const sec of SECTIONS) {
     for (const subj of sec.subjects) {
-      if (subj.code === 'GLOBALMETA') continue;   // meta overviews have no flashcards
+      if (subj.code === 'GLOBALMETA' || MAGISTR) continue;   // meta overviews / magistr have no flashcards
       subj.resources.push({ type: 'cards', label: 'Kartičky (CARDS)', src: subj.code.slice(5) });
     }
   }
@@ -756,7 +799,7 @@
       /* CARDS: embed the flashcard app pre-filtered to this subject */
       targets.docBody.classList.remove('status');
       targets.docBody.innerHTML =
-        `<iframe src="cards.html?subject=${encodeURIComponent(src)}" class="cards-frame" title="${esc(label)}"></iframe>`;
+        `<iframe src="cards.html?${src.includes('=') ? src : 'subject=' + encodeURIComponent(src)}" class="cards-frame" title="${esc(label)}"></iframe>`;
       return;
     }
 
@@ -863,13 +906,15 @@
   function renderSidebar() {
     els.topicList.innerHTML = '';
 
-    /* Shared reference */
+    /* Shared reference (jen SZZ) */
+    if (!MAGISTR) {
     const hexKey = makeKey('GLOBAL', HEX_COMPOST.src);
     const hexBtn = makeResourceBtn(hexKey, HEX_COMPOST, 'GLOBAL');
     const hexRow = document.createElement('div');
     hexRow.style.cssText = 'padding:0 0 8px 0';
     hexRow.appendChild(hexBtn);
     els.topicList.appendChild(hexRow);
+    }
 
     for (const sec of SECTIONS) {
       /* Section separator */
@@ -951,10 +996,10 @@
 
   function setSidebarCollapsed(collapsed) {
     applySidebarCollapsed(collapsed);
-    localStorage.setItem('wiki_sidebar_collapsed', collapsed ? '1' : '');
+    localStorage.setItem(lsKey('wiki_sidebar_collapsed'), collapsed ? '1' : '');
   }
 
-  applySidebarCollapsed(localStorage.getItem('wiki_sidebar_collapsed') === '1');
+  applySidebarCollapsed(localStorage.getItem(lsKey('wiki_sidebar_collapsed')) === '1');
 
   els.sidebarToggleBtn.addEventListener('click', () =>
     setSidebarCollapsed(!els.wikiLayout.classList.contains('sidebar-collapsed'))
@@ -972,7 +1017,7 @@
 
   function loadMultiState() {
     try {
-      const raw = localStorage.getItem('wiki_multi_state');
+      const raw = localStorage.getItem(lsKey('wiki_multi_state'));
       if (!raw) return null;
       const parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.panes) || !parsed.tabs || !MC_LAYOUTS[parsed.layout]) return null;
@@ -986,7 +1031,7 @@
   function saveMultiState() {
     clearTimeout(mcSaveTimer);
     mcSaveTimer = setTimeout(() => {
-      localStorage.setItem('wiki_multi_state', JSON.stringify(multiState));
+      localStorage.setItem(lsKey('wiki_multi_state'), JSON.stringify(multiState));
     }, 200);
   }
 
@@ -1205,7 +1250,7 @@
     els.docTitle.style.display = on ? 'none' : '';
     els.docMeta.style.display  = on ? 'none' : '';
     els.docBody.style.display  = on ? 'none' : '';
-    localStorage.setItem('wiki_multi_mode', on ? '1' : '');
+    localStorage.setItem(lsKey('wiki_multi_mode'), on ? '1' : '');
     if (on) {
       pruneStaleTabs();
       ensurePaneCount(MC_LAYOUTS[multiState.layout] || 1);
@@ -1228,6 +1273,10 @@
    * ═══════════════════════════════════════════════════════ */
 
   async function init() {
+    if (MAGISTR) {
+      document.title = 'EK Viki – Magistr';
+      document.querySelectorAll('.panel h1, .mob-bar-title').forEach(e => { e.textContent = 'EK Magistr'; });
+    }
     setupTikzjax();
     renderSidebar();
 
@@ -1246,7 +1295,7 @@
 
   function restoreMultiMode() {
     if (isMobile()) return; // multi content is desktop-only
-    if (localStorage.getItem('wiki_multi_mode') === '1') setMultiMode(true);
+    if (localStorage.getItem(lsKey('wiki_multi_mode')) === '1') setMultiMode(true);
   }
 
   /* ── Events ── */
