@@ -126,6 +126,13 @@ Pinch-off napětí $V_P$ je **potenciál kanálu**, při kterém je hustota inve
 - **b)** $V_P$ vyjadřuje, jak moc hradlo „otevřelo“ kanál: začíná od prahového napětí $V_{T0}$ a roste pomaleji než $V_G$ (sklon $1/n$, $n \approx 1{,}2$–$1{,}5$), protože část napětí hradla „spotřebuje“ ochuzená oblast.
 - Režim tranzistoru EKV určí porovnáním $V_S$ a $V_D$ s $V_P$: oba menší než $V_P$ $\Rightarrow$ silná inverze (lineární oblast), $V_S < V_P < V_D$ $\Rightarrow$ saturace, oba větší $\Rightarrow$ slabá inverze.
 
+**Po lopatě (N-MOSFET):**
+
+- Substrát je typu P. Kladné napětí na hradle „odtlačí“ díry od povrchu – zůstanou tam **pevné záporné ionty akceptorů** (to je ochuzená oblast, náboj $Q_B$, nic se tam nehýbe). Při ještě větším napětí se k povrchu přitáhnou **volné elektrony** – vznikne N kanál v P substrátu (inverzní vrstva, náboj $Q_{inv}$, ten vede proud).
+- Porovnávají se tedy **volné elektrony v kanálu** a **pevné ionty v ochuzené oblasti** – *ne* elektrony a díry (děr je u povrchu naopak skoro nula).
+- $V_P$ **není napětí, které připojím na gate.** Napětí na gate je $V_G$ (to nastavím). $V_P$ je **napětí kanálu** (proti substrátu), při kterém se elektronů v kanálu udělá právě tolik, kolik je iontů v ochuzené oblasti. Pro dané $V_G$ je $V_P$ jedno konkrétní číslo, s větším $V_G$ roste.
+- Představa: kanál je řeka elektronů. Kde je potenciál kanálu menší než $V_P$ (typicky u source), je řeka „hluboká“ – silná inverze. Kde je potenciál větší než $V_P$ (u drainu při velkém $V_{DS}$), řeka „vyschne“ na tenký pramínek – slabá inverze, kanál je zaškrcený. $V_P$ je hladina, kde se to láme.
+
 ## ⭐ Základní vztah pro dopředný proud v modelu EKV (jen vědět, že se podobně jako např. v modelu bipolárního tranzistoru určuje jako rozdíl dopředného a zpětného proudu, přičemž v rovnici pro dopředný proud se používá interpolační funkce s <u>ln a exp, která umožňuje automatický přechod do exponenciální závislosti v slabé inverzi a do kvadratické závislosti v silné inverzi</u>, aniž by docházelo k nespojitostem v transkonduktancím, což je velmi důležité pro návrh analogových obvodů)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/ekv_v262.pdf" target="_blank" rel="noopener">ekv_v262.pdf</a></small></p>
