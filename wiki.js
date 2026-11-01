@@ -615,7 +615,7 @@
 
   /* resource type → display tag */
   const TYPE_TAG = {
-    note: { label: 'SZZ', cls: 'tag-note' },
+    note: { label: MAGISTR ? 'MD' : 'SZZ', cls: 'tag-note' },
     pdf:  { label: 'PDF', cls: 'tag-pdf'  },
     sum:  { label: 'HEX', cls: 'tag-sum'  },
     cards:{ label: 'CARDS', cls: 'tag-cards' },

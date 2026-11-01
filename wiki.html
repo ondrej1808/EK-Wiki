@@ -193,6 +193,8 @@
     #docBody th{background:#f8fafc;font-weight:600}
     #docBody .katex-display{margin:.8em 0;overflow-x:auto}
     /* TikZ pre-rendered SVG images */
+    /* obrázky v poznámkách nesmí přetéct panel (i v rozdělených panelech) */
+    #docBody img,.mc-pane img{max-width:100%;height:auto}
     #docBody img.tikz-svg{display:block;max-width:100%;margin:1.2em auto;
                           border-radius:6px}
 
