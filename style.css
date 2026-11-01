@@ -689,3 +689,15 @@ body.dark-mode .subject-select {
     .card { top: 0 !important; max-height: 100%; }
     .card-reminder-actions { display: none; }
 }
+
+/* Kartičky vložené ve wiki (iframe): žádný výběr sady, karta vyplní zbytek výšky panelu
+   místo pevných 65vh × 85 % (sada je daná odkazem z wiki, menu ☰ zůstává dostupné) */
+body.embedded .container { display: flex; flex-direction: column; height: 100vh; padding-top: 0; box-sizing: border-box; }
+body.embedded .header-content { display: none; }
+body.embedded .menu-section { flex: 0 0 auto; }
+body.embedded .cards-section { flex: 1 1 auto; height: auto; min-height: 0; margin-top: 6px; }
+body.embedded .cards-grid { height: 100%; }
+body.embedded .cards-grid { align-items: stretch; }
+body.embedded .card { top: 0 !important; height: calc(100% - 8px); max-height: calc(100% - 8px); }
+body.embedded .card-content { height: 100%; box-sizing: border-box; }
+body.embedded .navigation-section { display: none; }

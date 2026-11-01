@@ -1077,9 +1077,16 @@ function buildAnswerContent(parts) {
     }).join('');
 }
 
+/**
+ * Připraví text odpovědi pro HTML: nové řádky → <br>, markdown **tučně** → <b>.
+ * @param {string|null|undefined} text  text části odpovědi
+ * @returns {string} HTML řetězec (prázdný pro null/undefined)
+ */
 function formatTextWithLineBreaks(text) {
     if (text === null || text === undefined) return '';
-    return String(text).replace(/\r\n|\r|\n/g, '<br>');
+    return String(text)
+        .replace(/\*\*([^*\n]+?)\*\*/g, '<b>$1</b>')
+        .replace(/\r\n|\r|\n/g, '<br>');
 }
 
 function createTable(data) {
@@ -1543,6 +1550,8 @@ function showMessage(text, type = 'info') {
 
 // Startup Logic
 window.addEventListener('load', async () => {
+    // Vloženo ve wiki (iframe) → kompaktní rozložení, karta vyplní celou výšku panelu
+    if (window.self !== window.top) document.body.classList.add('embedded');
     const params = new URLSearchParams(window.location.search);
     const fromCreator = params.get('from') === 'creator';
     const subjectParam = params.get('subject');
