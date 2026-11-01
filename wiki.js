@@ -779,6 +779,20 @@
   /** Render a resource (note/PDF/cards/summary) into an arbitrary set of
    *  {docTitle, docMeta, docBody} targets — shared by the single-document view
    *  and each multi-content pane. */
+  /** Spočítá zoom PDF tak, aby černý okraj vedle stránky byl poloviční oproti
+   *  „Automatické velikosti“ (stránka A4 na výšku celá na výšku rámu).
+   *  @param {HTMLIFrameElement} frame  rám PDF, už vložený v DOM (kvůli rozměrům)
+   *  @returns {string} '#zoom=N' (procenta), nebo '' když rozměry nejsou známé */
+  function pdfZoomHash(frame) {
+    const W = frame.clientWidth, H = frame.clientHeight;
+    if (!W || !H) return '';
+    const pageW100 = 595 * 96 / 72;                  // šířka A4 při 100 % (px)
+    const fitW = Math.max(0, H - 70) * 595 / 842;    // šířka stránky při „celá stránka“ (lišta prohlížeče ~56 px)
+    if (fitW >= W - 40) return '';                   // okraj už skoro není — nech výchozí
+    const target = (W - 30 + fitW) / 2;              // polovina okraje
+    return '#zoom=' + Math.round(target / pageW100 * 100);
+  }
+
   async function renderResourceInto(targets, label, src, type) {
     targets.docTitle.textContent = label;
     targets.docMeta.textContent  = src;
@@ -791,7 +805,14 @@
         `<div class="pdf-toolbar">` +
           `<a href="${enc}" target="_blank" rel="noopener" class="pdf-newtab">↗ Otevřít v nové záložce</a>` +
         `</div>` +
-        `<iframe src="${enc}" class="pdf-frame" title="${esc(label)}"></iframe>`;
+        `<iframe class="pdf-frame" title="${esc(label)}"></iframe>`;
+      const frame = targets.docBody.querySelector('.pdf-frame');
+      // rozměry rámu jsou známé až po vykreslení (panely se teprve skládají)
+      let tries = 0;
+      (function setSrc() {
+        if ((!frame.isConnected || !frame.clientWidth) && tries++ < 40) return setTimeout(setSrc, 50);
+        frame.src = enc + pdfZoomHash(frame);
+      })();
       return;
     }
 
@@ -1244,6 +1265,9 @@
     if (on && isMobile()) return; // no multi-view on mobile
     mcMode = on;
     els.multiToggleBtn.classList.toggle('active', on);
+    // tlačítko „Více oken“ v režimu panelů do lišty s kartami (ušetří řádek)
+    if (on) els.mcCloseBtn.before(els.multiToggleBtn);
+    else els.contentToolbar.appendChild(els.multiToggleBtn);
     document.querySelector('.content').classList.toggle('mc-active', on);
     els.wikiLayout.classList.toggle('mc-fullwidth', on);
     els.mcWrap.hidden = !on;
