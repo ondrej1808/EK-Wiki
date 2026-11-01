@@ -8,13 +8,47 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=2" target="_blank" rel="noopener">BJT6.pdf, s. 2</a></small></p>
 
+![Model BJT – jádro (červeně), kvazisaturační a substrátová část](magistr/B2M31IASA/img/bjt_jadro.png)
+*Model BJT – jádro (červeně), kvazisaturační a substrátová část*
+
+**Jádro modelu** (vnitřní uzly b, c, e):
+
+- $i_1$ – dioda báze-emitor, $i_2$ – dioda báze-kolektor,
+- $i_3$ – **hlavní řízený zdroj proudu** kolektor-emitor (zesilovací vlastnost tranzistoru),
+- $i_4$ – bázový odpor $r_b$, $i_5$ – kolektorový odpor, $i_6$ – emitorový odpor (sériové odpory přívodů),
+- $i_7$, $i_8$, $i_9$ – kapacity přechodů (báze-emitor, báze-kolektor vnitřní a vnější část).
+
+Kvazisaturační část ($i_{12}$–$i_{14}$) a substrátová část ($i_{10}$, $i_{11}$) jsou doplňky, které jádro rozšiřují.
+
 ## Základní vztah pro proud hlavním řízeným proudovým zdrojem modelu
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=6" target="_blank" rel="noopener">BJT6.pdf, s. 6–8</a></small></p>
 
+![Základní statické proudy modelu BJT](magistr/B2M31IASA/img/bjt_rovnice.png)
+*Základní statické proudy modelu BJT*
+
+$$
+i_3 = k_i\,k_v\,(i_f - i_r), \qquad
+i_f = I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right), \quad
+i_r = I_S\left(e^{\frac{v_{\mathrm{bc}}}{n_R v_T}} - 1\right)
+$$
+
+- Proud hlavního zdroje je **rozdíl dopředného $i_f$ (řízen $v_{\mathrm{be}}$) a zpětného $i_r$ (řízen $v_{\mathrm{bc}}$) proudu** – Shockleyho vztahy.
+- $k_i = \dfrac{2}{1 + \left[1 + 4\left(\frac{i_f}{I_{KF}} + \frac{i_r}{I_{KR}}\right)\right]^{n_K}}$ – **pokles zesílení při velkých proudech** (vysoká injekce), při malých proudech $k_i \approx 1$.
+- $k_v = 1 - \frac{v_{\mathrm{be}}}{V_{AR}} - \frac{v_{\mathrm{bc}}}{V_{AF}}$ – **sklon výstupních charakteristik** (Earlyho jev).
+- Proudy diod: $i_1 = \frac{i_f}{\beta_F} + i_e$, \quad $i_2 = \frac{i_r}{\beta_R} + i_c$.
+
 ## Mechanismus poklesu zesílení bipolárního tranzistoru při malém proudu kolektorem (stačí vyložit pojem „svodový“ (leakage) proud)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=9" target="_blank" rel="noopener">BJT6.pdf, s. 9, 13</a></small></p>
+
+![Pokles zesílení při malých proudech – užitečná část proudu báze $i_f/\beta_F$ vs. svodový proud $i_e$](magistr/B2M31IASA/img/bjt_svodovy.png)
+*Pokles zesílení při malých proudech – užitečná část proudu báze $i_f/\beta_F$ vs. svodový proud $i_e$*
+
+- Proud báze má dvě složky: **užitečnou** $i_f/\beta_F$ (souvisí s proudem kolektoru) a **svodovou (leakage)** $i_e = I_{SE}\left(e^{\frac{v_{\mathrm{be}}}{n_E v_T}} - 1\right)$ – rekombinace v přechodu báze-emitor, která do kolektoru vůbec nedoteče.
+- Svodový proud má emisní koeficient $n_E \approx 2$, roste tedy s napětím *pomaleji* než užitečný proud ($n_F \approx 1$).
+- **Velké proudy** (0{,}8 V): $i_e = 527$ nA $\ll i_f/\beta_F = 278\,\mu$A $\Rightarrow$ svod je zanedbatelný, $\beta$ plné.
+- **Malé proudy** (0{,}4 V): $i_e = 230$ pA $>$ $i_f/\beta_F = 52{,}7$ pA $\Rightarrow$ většinu proudu báze tvoří svod, kolektorový proud je proti němu malý $\Rightarrow$ **zesílení $\beta = i_C/i_B$ klesá**.
 
 ## ⭐ Mechanismus poklesu zesílení bipolárního tranzistoru při velkém proudu kolektorem (znát obrázek „<u>Závislost logaritmu bázového a kolektotvého proudu…</u>“, stačí znát jen přibližné číselné hodnoty pro směrnice (1 a $\frac{1}{2}$))
 
