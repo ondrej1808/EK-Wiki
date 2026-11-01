@@ -122,7 +122,10 @@
 
     /* ── Multi content (split panes + tabs) ── */
     .mc-wrap{display:flex;flex-direction:column;flex:1;min-height:0}
-    .mc-wrap[hidden]{display:none}  /* jinak display:flex přebije atribut hidden */
+    .mc-wrap[hidden]{display:none}
+    /* vždy režim panelů: přepínač „Více oken“ a ✕ (návrat na jedno okno) nejsou potřeba */
+    #multiToggleBtn,#mcCloseBtn,.content-toolbar{display:none!important}
+    .mc-pane.focused{box-shadow:0 0 0 2px #93c5fd}  /* jinak display:flex přebije atribut hidden */
     .mc-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;
                 padding:4px 0 8px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;min-height:36px}
     .mc-layout-picker{display:flex;gap:4px;flex-shrink:0}

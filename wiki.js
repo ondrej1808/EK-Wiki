@@ -875,6 +875,22 @@
     }
   }
 
+  /** Otevře zdroj podle režimu: na desktopu do aktivního panelu, na mobilu do jednoho okna.
+   *  @param {string} key  klíč zdroje (kód|cesta)
+   *  @param {{label:string, src:string, type:string}} r  popis zdroje
+   *  @returns {Promise<void>} nic; aktualizuje strom a hash URL */
+  async function openKey(key, r) {
+    if (mcMode) {
+      if (activePaneIdx >= multiState.panes.length) activePaneIdx = 0;
+      openInPane(multiState.panes[activePaneIdx], { key, label: r.label, src: r.src, type: r.type });
+      activeKey = key;
+      renderSidebar();
+      updateHash(key);
+      return;
+    }
+    await openResource(key, r.label, r.src, r.type);
+  }
+
   async function openResource(key, label, src, type) {
     if (key === activeKey) return;
     activeKey = key;
@@ -994,7 +1010,7 @@
     btn.innerHTML =
       `<span class="res-tag ${tag.cls}">${tag.label}</span>` +
       `<span class="res-label">${esc(r.label)}</span>`;
-    btn.addEventListener('click', () => openResource(key, r.label, r.src, r.type));
+    btn.addEventListener('click', () => openKey(key, r));
 
     /* Drag into a multi-content pane */
     btn.draggable = true;
@@ -1044,7 +1060,8 @@
     } catch { return null; }
   }
 
-  const multiState = loadMultiState() || { layout: '1x2', panes: [], tabs: {} };
+  const multiState = loadMultiState() || { layout: '1x1', panes: [], tabs: {} };
+  let activePaneIdx = 0;   // panel, do kterého se otevře klik ve stromu
 
   let mcSaveTimer = null;
   function saveMultiState() {
@@ -1099,6 +1116,7 @@
   }
 
   function openInPane(pane, resource) {
+    activePaneIdx = Math.max(0, multiState.panes.indexOf(pane));
     let tabId = pane.tabIds.find(id => multiState.tabs[id] && multiState.tabs[id].key === resource.key);
     if (!tabId) {
       tabId = newTabId();
@@ -1200,7 +1218,14 @@
 
   function makePaneEl(pane) {
     const el = document.createElement('div');
-    el.className = 'mc-pane';
+    const idx = multiState.panes.indexOf(pane);
+    el.className = 'mc-pane' + (multiState.panes.length > 1 && idx === activePaneIdx ? ' focused' : '');
+    el.addEventListener('mousedown', () => {
+      if (activePaneIdx === idx) return;
+      activePaneIdx = idx;
+      els.mcGrid.querySelectorAll('.mc-pane').forEach((p, i) =>
+        p.classList.toggle('focused', multiState.panes.length > 1 && i === idx));
+    });
 
     el.addEventListener('dragover', e => {
       if (!e.dataTransfer.types.includes('application/json')) return;
@@ -1266,9 +1291,6 @@
     if (on && isMobile()) return; // no multi-view on mobile
     mcMode = on;
     els.multiToggleBtn.classList.toggle('active', on);
-    // tlačítko „Více oken“ v režimu panelů do lišty s kartami (ušetří řádek)
-    if (on) els.mcCloseBtn.before(els.multiToggleBtn);
-    else els.contentToolbar.appendChild(els.multiToggleBtn);
     document.querySelector('.content').classList.toggle('mc-active', on);
     els.wikiLayout.classList.toggle('mc-fullwidth', on);
     els.mcWrap.hidden = !on;
@@ -1291,6 +1313,7 @@
 
   window.addEventListener('resize', () => {
     if (mcMode && isMobile()) setMultiMode(false);
+    else if (!mcMode && !isMobile()) setMultiMode(true);
   });
 
   /* ═══════════════════════════════════════════════════════
@@ -1305,22 +1328,31 @@
     setupTikzjax();
     renderSidebar();
 
+    if (!isMobile()) setMultiMode(true);
+    const hasTabs = mcMode && multiState.panes.some(p => p.activeTabId);
+
     const fromHash = getKeyFromHash();
     if (fromHash) {
       const r = resolveKey(fromHash);
-      if (r) { await openResource(fromHash, r.label, r.src, r.type); return; }
+      if (r) {
+        const open = mcMode && Object.values(multiState.tabs).some(t => t.key === fromHash);
+        if (!open) await openKey(fromHash, r);
+        else { activeKey = fromHash; renderSidebar(); }
+        return;
+      }
     }
+    if (hasTabs) return;
 
     /* Default: first SZZ note (ELD-15) */
     const first = SECTIONS[0].subjects[0];
     const firstRes = first.resources[0];
     const firstKey = makeKey(first.code, firstRes.src);
-    await openResource(firstKey, firstRes.label, firstRes.src, firstRes.type);
+    await openKey(firstKey, firstRes);
   }
 
+  /** Desktop = vždy režim panelů (výchozí jedno okno); mobil = jedno okno. */
   function restoreMultiMode() {
-    if (isMobile()) return; // multi content is desktop-only
-    if (localStorage.getItem(lsKey('wiki_multi_mode')) === '1') setMultiMode(true);
+    if (!isMobile() && !mcMode) setMultiMode(true);
   }
 
   /* ── Events ── */
@@ -1333,7 +1365,7 @@
     const key = getKeyFromHash();
     if (!key || key === activeKey) return;
     const r = resolveKey(key);
-    if (r) openResource(key, r.label, r.src, r.type);
+    if (r) openKey(key, r);
   });
 
   /* ── Mobile drawer ── */
