@@ -161,6 +161,15 @@
     .mc-pane .pdf-toolbar{margin:0 0 4px}
     .mc-pane .pdf-newtab{padding:2px 8px;font-size:11px;border-radius:6px}
     .mc-pane:has(.pdf-frame){padding:6px}
+    /* rám (PDF/kartičky/simulace) vyplní zbytek panelu pod lištou, nepřeteče dolů */
+    .mc-pane-body:has(> iframe){display:flex;flex-direction:column;overflow:hidden}
+    .mc-pane-body > iframe{flex:1;height:auto!important;min-height:0}
+    /* zavřený strom: plovoucí „⮞ Témata“ nesmí překrýt volbu rozložení */
+    .layout.sidebar-collapsed .content.mc-active .mc-toolbar{padding-left:84px}
+    /* hodně karet: tenký posuvník místo tlustého, ať lišta nezvětšuje výšku */
+    .mc-tabbar{scrollbar-width:thin}
+    .mc-tabbar::-webkit-scrollbar{height:4px}
+    .mc-tabbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
     .mc-pane.compact{padding:6px}
     .mc-pane.compact .mc-pane-title,.mc-pane.compact .mc-pane-meta{display:none}
     .mc-pane.drag-over{outline:2px dashed #2563eb;outline-offset:-2px;background:#eff6ff}
