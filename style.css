@@ -678,3 +678,14 @@ body.dark-mode .subject-select {
 }
 /* Obrázek v odpovědi nesmí zabrat celou kartičku (nízké okno / panel ve wiki) */
 .answer-image { max-height: 40vh; width: auto; margin: 10px auto; object-fit: contain; }
+
+/* Nízké okno (např. čtvrtina obrazovky v režimu „Více oken“ ve wiki):
+   skrýt lištu postupu a připomínky, zmenšit hlavičku, kartička dostane zbytek výšky */
+@media (max-height: 480px) {
+    .progress-bar-container { display: none; }
+    .mobile-header { top: 0; padding: 4px 12px; }
+    .container { padding-top: 0; }
+    .cards-section { padding-top: 46px; margin-top: 0; }
+    .card { top: 0 !important; max-height: 100%; }
+    .card-reminder-actions { display: none; }
+}

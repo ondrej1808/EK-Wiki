@@ -24,6 +24,10 @@ Kvazisaturační část ($i_{12}$–$i_{14}$) a substrátová část ($i_{10}$, 
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=6" target="_blank" rel="noopener">BJT6.pdf, s. 6–8</a></small></p>
 
+$$
+\boldsymbol{i_f = I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right)}
+$$
+
 ![Základní statické proudy modelu BJT](magistr/B2M31IASA/img/bjt_rovnice.png)
 *Základní statické proudy modelu BJT*
 
