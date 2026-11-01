@@ -1283,8 +1283,24 @@
     }
 
     els.mcGrid.className = `mc-grid layout-${multiState.layout}`;
-    els.mcGrid.innerHTML = '';
-    for (const pane of multiState.panes) els.mcGrid.appendChild(makePaneEl(pane));
+    // Překreslit jen panely, kterým se změnila aktivní karta — ostatní nechat na místě,
+    // jinak se jejich iframe (kartičky, PDF) načte znovu a markdown ztratí pozici posuvníku.
+    // (Přesun iframe v DOM ho také znovu načte, proto se panely nikdy nepřesouvají.)
+    const multi = multiState.panes.length > 1;
+    multiState.panes.forEach((pane, i) => {
+      const cur = els.mcGrid.children[i];
+      const tabKey = pane.activeTabId || '';
+      if (cur && cur.dataset.paneId === pane.id && cur.dataset.tab === tabKey) {
+        cur.classList.toggle('focused', multi && i === activePaneIdx);
+        return;
+      }
+      const el = makePaneEl(pane);
+      el.dataset.paneId = pane.id;
+      el.dataset.tab = tabKey;
+      if (cur) els.mcGrid.replaceChild(el, cur);
+      else els.mcGrid.appendChild(el);
+    });
+    while (els.mcGrid.children.length > multiState.panes.length) els.mcGrid.lastElementChild.remove();
   }
 
   function setMultiMode(on) {
