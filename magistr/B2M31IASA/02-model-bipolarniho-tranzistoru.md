@@ -60,7 +60,7 @@ Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu
 
 **Co je svodový (leakage) proud:** neideální složka proudu báze, kterou tvoří **rekombinace nosičů v přechodu báze-emitor** (v jeho vyprázdněné oblasti a na povrchu). Tyto nosiče zaniknou dřív, než by prošly bází do kolektoru – proud báze tedy teče, ale kolektorový proud nepřibude. V Gummel–Poonově modelu ho popisují parametry $I_{SE}$ („B–E leakage saturation current“) a $n_E$ („B–E leakage emission coefficient“, výchozí hodnota 1,5).
 
-*Zdroje:* [Wikipedia – Gummel–Poon model](https://en.wikipedia.org/wiki/Gummel%E2%80%93Poon_model) (tabulka parametrů ISE, NE); [TU Delft – Bipolar transistors](https://analog-electronics.tudelft.nl/webbook/SED/_build/html/ModelingActiveDevices/ActiveDevices_Bipolar_transistors.html) (neideální proud báze = rekombinace minoritních nosičů).
+*Zdroje:* [Wikipedia – Gummel–Poon model](https://en.wikipedia.org/wiki/Gummel%E2%80%93Poon_model) (tabulka parametrů ISE, NE); [H. Spieler (LBNL) – Amplifying Devices, s. 5](https://www-physics.lbl.gov/ spieler/Heidelberg_Notes_2001/pdf/V_Amplifying_Devices_and_Microelectronics.pdf\#page=5) (pokles zesílení při malém proudu = rekombinace ve vyprázdněné oblasti přechodu B-E).
 
 **Proud báze má dvě složky** (dioda $i_1$ jádra): $i_B = \underbrace{i_f/\beta_F}_{\text{užitečná}} + \underbrace{i_e}_{\text{svodová}}$.
 
@@ -84,9 +84,6 @@ $$
 - Na každých 0,1 V vzroste $i_f/\beta_F$ asi $48\times$ ($n_F \approx 1$), ale $i_e$ jen asi $7\times$ $\Rightarrow$ $n_E = \frac{0{,}1}{v_T \ln 6{,}9} \approx 2$. Svod roste pomaleji.
 - **Malý proud** ($v_{\mathrm{be}} = 0{,}4$ V): svod tvoří většinu proudu báze $\Rightarrow$ zesílení klesne asi na $\frac15 \beta_F$.
 - **Velký proud** ($v_{\mathrm{be}} = 0{,}8$ V): svod je zanedbatelný $\Rightarrow$ $\beta \approx \beta_F$.
-
-![Slide z prezentace (BJT6.pdf, s. 9)](magistr/B2M31IASA/img/bjt_svodovy.png)
-*Slide z prezentace (BJT6.pdf, s. 9)*
 
 ## ⭐ Mechanismus poklesu zesílení bipolárního tranzistoru při velkém proudu kolektorem (znát obrázek „<u>Závislost logaritmu bázového a kolektotvého proudu…</u>“, stačí znát jen přibližné číselné hodnoty pro směrnice (1 a $\frac{1}{2}$))
 
