@@ -86,6 +86,7 @@ def inline(s, pre):
 
     s = re.sub(r'\\priorita\s*', '⭐ ', s)
     s = replace_cmd(s, 'href', lambda u, t: f'[{t}]({u.replace(chr(92) + "%", "%")})', 2)
+    s = replace_cmd(s, 'hyperref', lambda t: t)   # interní odkaz v PDF → ve wiki jen text (např. „1.7“)
     s = replace_cmd(s, 'podtr', lambda a: f'<u>{a}</u>')
     s = replace_cmd(s, 'skrt', lambda a: f'<del>{a}</del>')
     s = replace_cmd(s, 'textbf', lambda a: f'**{a}**')
