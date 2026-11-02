@@ -68,6 +68,8 @@ $$
 
 **Co je $\phi_0$:** po spojení P a N se elektrony a díry difúzí přelijí přes přechod a zrekombinují. Po obou stranách zůstanou nevykompenzované pevné ionty (vyprázdněná oblast), které vytvoří vnitřní elektrické pole – potenciálovou bariéru o velikosti $\phi_0$. Ta další difúzi zastaví (rovnováha). Ve vzorci je $\phi_0$ napětí, při kterém by vyprázdněná oblast zmizela a $c_b \to \infty$ – proto se kapacita od $F_C\phi_0$ linearizuje (otázka 1.6). S rostoucí teplotou $\phi_0$ klesá (otázka 1.7).
 
+\needspace{14cm}
+
 ## ⭐ <u>Linearizace rovnic modelu bariérové kapacity</u> (znát obrázek)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=21" target="_blank" rel="noopener">Diode6.pdf, s. 21</a></small></p>
@@ -81,6 +83,20 @@ Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=23" target="_blank" rel="noopener">Diode6.pdf, s. 23–26</a></small></p>
 
-$I_S$, $\phi_0$,$C_{J0}$, idk nebudu zkoumat dál
+**Teplotně závislé parametry:** $I_S$ (saturační proud), $\phi_0$ (difúzní napětí) a $C_{J0}$ (bariérová kapacita při nulovém napětí). Teplotní chování určují parametry $X_{TI}$ (teplotní exponent $I_S$) a $E_g$ (šířka zakázaného pásu); $T$ je jmenovitá, $T'$ nová teplota:
+
+$$
+I_S' = I_S\left(\frac{T'}{T}\right)^{\frac{X_{TI}}{n}} e^{\frac{qE_g}{nk}\left(\frac{1}{T}-\frac{1}{T'}\right)}, \qquad
+C_{J0}' = C_{J0}\left(\frac{\phi_0}{\phi_0'}\right)^m
+$$
+
+($\phi_0$ s teplotou klesá, tím se mění i $C_{J0}$.)
+
+**Problém Schottkyho diod:**
+
+- $X_{TI}$ určuje, jak rychle roste saturační proud $I_S$ s teplotou.
+- Pro **PN diodu** je $X_{TI} \approx 3$ – to je **implicitní (výchozí) hodnota v SPICE**.
+- Pro **Schottkyho diodu** (přechod kov–polovodič, proud tvoří termoemise majoritních nosičů přes bariéru, ne difúze minoritních) je $X_{TI} \approx 2$.
+- **Problém:** když se u Schottkyho diody parametr nezadá, SPICE použije výchozí $X_{TI} = 3$ $\Rightarrow$ špatná teplotní závislost $I_S$, a tím i proudu diodou při jiné teplotě než jmenovité. U Schottkyho diod se proto musí $X_{TI} = 2$ zadat ručně.
 
 ## <del>Tři typy šumu v modelu diody, fyzikální příčiny, matematické vztahy pro spektrální výkonové hustoty</del>
