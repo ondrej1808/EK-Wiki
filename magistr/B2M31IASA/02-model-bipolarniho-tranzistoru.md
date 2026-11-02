@@ -97,10 +97,10 @@ $$
 | Proud | Směrnice $i_C$ | Směrnice $i_B$ | $\beta$ | Proč |
 |---|---|---|---|---|
 | malý | $1/n_F \approx 1$ | $1/n_E \approx \frac12$ | klesá | v $i_B$ převládá svodový proud $i_e$ |
-| střední | $1/n_F \approx 1$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
-| velký (nad $I_{KF}$) | $(1-n_K)/n_F \approx \frac12$ | $1/n_F \approx 1$ | **klesá** | vysoká injekce – $i_C$ roste pomaleji |
+| střední | $\boldsymbol{1/n_F \approx 1}$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
+| velký (nad $I_{KF}$) | $\boldsymbol{(1-n_K)/n_F \approx \frac12}$ | $1/n_F \approx 1$ | **klesá** | vysoká injekce – $i_C$ roste pomaleji |
 
-*Vysoká injekce:* koncentrace injektovaných nosičů v bázi je srovnatelná s dotací báze, kolektorový proud pak roste jen jako $e^{v_{\mathrm{BE}}/2v_T}$.
+**Tučně** = směrnice ze zadání (1 a $\frac12$): $i_C$ se při velkém proudu zlomí ze směrnice 1 na $\frac12$. *Vysoká injekce:* koncentrace injektovaných nosičů v bázi je srovnatelná s dotací báze, kolektorový proud pak roste jen jako $e^{v_{\mathrm{BE}}/2v_T}$.
 
 ## ⭐ Závislost zesílení bipolárního tranzistoru na přímém proudu, znát obrázek „<u>Závislost logaritmu proudového zesílení…</u>“, opět stačí jen přibližné číselné hodnoty směrnic, tj. $\frac{1}{2}$ a $-1$)
 
