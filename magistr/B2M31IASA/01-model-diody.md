@@ -50,7 +50,7 @@ $$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba – **průměrná doba, za ktero
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=18" target="_blank" rel="noopener">Diode6.pdf, s. 18–20</a></small></p>
 
-Fyzikálně je způsobena vyprázdněnou oblastí v okolí přechodu PN. Dioda je závěrně polarizovaná (P na - a N na +).
+Fyzikálně je způsobena vyprázdněnou oblastí v okolí přechodu PN. Uplatní se při každém napětí $v_{AC} < \phi_0$ – vyprázdněná oblast tam existuje a s rostoucím napětím se zužuje (kapacita roste). Hlavně v **závěrném směru** (P na $-$, N na $+$), kde je jediná (difúzní kapacita je tam prakticky nulová). V propustném směru ji při větším proudu přebije difúzní kapacita.
 
 $$
 dq_b=c_b dv_{AC}
