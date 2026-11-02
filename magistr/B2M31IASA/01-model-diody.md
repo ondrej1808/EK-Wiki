@@ -85,7 +85,7 @@ Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C
 |---|---|---|
 | $I_S$ | saturační proud | roste (určuje $X_{TI}$ a $E_g$) |
 | $\phi_0$ | difúzní napětí | klesá |
-| $C_{J0}$ | kapacita při 0 V | mění se přes $\phi_0$ |
+| $C_{J0}$ | kapacita při 0 V | roste ($C_{J0}' = C_{J0}(\phi_0/\phi_0')^m$, $\phi_0$ klesá) |
 
 | Dioda | $X_{TI}$ | Poznámka |
 |---|---|---|
