@@ -92,21 +92,15 @@ $$
 ![Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$](magistr/B2M31IASA/img/bjt_lnIB_lnIC.png)
 *Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$*
 
-**Vysvětlení:** V grafu $\ln i$ vs. $v_{\mathrm{BE}}/v_T$ je každá exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ přímka se směrnicí $1/n$, kde $n$ je *emisní koeficient té složky proudu, která právě převládá*:
+**Vysvětlení:** v grafu $\ln i$ vs. $v_{\mathrm{BE}}/v_T$ je exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ přímka se směrnicí $1/n$ ($n$ = emisní koeficient složky proudu, která právě převládá). Svislá vzdálenost přímek $i_C$ a $i_B$ je $\ln\beta$ – když se přímky sbližují, zesílení klesá.
 
-| Úsek | Směrnice | Proč |
-|---|---|---|
-| $i_C$, malé a střední proudy | $1/n_F \approx 1$ | ideální dopředný proud $i_f$ |
-| $i_C$, velké proudy (nad $I_{KF}$) | $(1-n_K)/n_F \approx \frac12$ | vysoká injekce ($k_i$) |
-| $i_B$, malé proudy | $1/n_E \approx \frac12$ | převládá svodový proud $i_e$ ($n_E \approx 2$) |
-| $i_B$, střední a velké proudy | $1/n_F \approx 1$ | převládá ideální část $i_f/\beta_F$ |
+| Proud | Směrnice $i_C$ | Směrnice $i_B$ | $\beta$ | Proč |
+|---|---|---|---|---|
+| malý | $1/n_F \approx 1$ | $1/n_E \approx \frac12$ | klesá | v $i_B$ převládá svodový proud $i_e$ |
+| střední | $1/n_F \approx 1$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
+| velký (nad $I_{KF}$) | $(1-n_K)/n_F \approx \frac12$ | $1/n_F \approx 1$ | **klesá** | vysoká injekce – $i_C$ roste pomaleji |
 
-- **Střední proudy:** $i_C$ i $i_B$ rostou se stejnou směrnicí $1/n_F \approx 1$ (ideální stav, $n_F \approx 1$). Přímky jsou rovnoběžné, jejich vzdálenost je $\ln\beta_F$, takže zesílení je konstantní.
-- **Velké proudy** (nad $\approx I_{KF}$, *knee current*): nastává *vysoká injekce* – koncentrace injektovaných minoritních nosičů v bázi je srovnatelná s dotací báze. Kolektorový proud pak roste pomaleji, směrnice klesne na $(1-n_K)/n_F \approx \frac{1}{2}$ (pro $n_K \approx 0{,}5$), tj. $i_C \sim e^{v_{\mathrm{BE}}/2v_T}$.
-- Bázový proud ale dál roste se směrnicí $1/n_F \approx 1$ $\Rightarrow$ přímky se přibližují, poměr $\beta = i_C/i_B$ **klesá**.
-- (Pro úplnost: při *malých* proudech má $i_B$ směrnici $1/n_E \approx \frac{1}{2}$ kvůli svodovému/rekombinačnímu proudu, $n_E \approx 2$ – proto zesílení klesá i tam.)
-
-Stručně: *směrnice $i_C$ se při velkém proudu zlomí z 1 na $\frac12$ (vysoká injekce), $i_B$ zůstává na 1 $\Rightarrow$ $\beta$ klesá.*
+*Vysoká injekce:* koncentrace injektovaných nosičů v bázi je srovnatelná s dotací báze, kolektorový proud pak roste jen jako $e^{v_{\mathrm{BE}}/2v_T}$.
 
 ## ⭐ Závislost zesílení bipolárního tranzistoru na přímém proudu, znát obrázek „<u>Závislost logaritmu proudového zesílení…</u>“, opět stačí jen přibližné číselné hodnoty směrnic, tj. $\frac{1}{2}$ a $-1$)
 
