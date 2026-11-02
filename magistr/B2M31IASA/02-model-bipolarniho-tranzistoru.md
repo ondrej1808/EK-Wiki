@@ -48,8 +48,11 @@ Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu
 | $I_{KF}$, $I_{KR}$ |  | zlomové proudy („knee“) – začátek vysoké injekce |
 | $n_K$ |  | exponent poklesu zesílení ($\approx 0{,}5$) |
 | $V_{AF}$, $V_{AR}$ |  | Earlyho napětí (dopředné, zpětné) |
-
-Proudy diod jádra: $i_1 = \frac{i_f}{\beta_F} + i_e$, \quad $i_2 = \frac{i_r}{\beta_R} + i_c$.
+| $i_1$ | $\frac{i_f}{\beta_F} + i_e$ | proud diodou b–e (jádro) |
+| $i_2$ | $\frac{i_r}{\beta_R} + i_c$ | proud diodou b–c (jádro) |
+| $i_e$ | $I_{SE}\left(e^{\frac{v_{\mathrm{be}}}{n_E v_T}} - 1\right)$ | svodový (rekombinační) proud přechodu b–e |
+| $i_c$ | $\ldots$ | svodový proud přechodu b–c; vzorec není v prezentaci |
+| $\beta_F$, $\beta_R$ |  | ideální proudové zesílení (dopředné, zpětné) |
 
 ![Základní statické proudy modelu BJT (BJT6.pdf, s. 7)](magistr/B2M31IASA/img/bjt_rovnice.png)
 *Základní statické proudy modelu BJT (BJT6.pdf, s. 7)*
