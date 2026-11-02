@@ -136,17 +136,16 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=15" target="_blank" rel="noopener">BJT6.pdf, s. 15–18</a></small></p>
 
+> **Odpověď:** Bázový odpor $r_b$ **klesá s rostoucím proudem báze** – monotónně z hodnoty $r_B$ (malý proud) k minimu $r_{Bm}$ (velký proud), viz obrázek níže. Příčinou je *vytlačování proudu k okraji emitoru* (current crowding): úbytek na bázovém odporu způsobí, že se emitor otevírá hlavně na okrajích u bázového kontaktu, proud teče kratší cestou bází $\Rightarrow$ efektivní odpor je menší. Průběh popisují **tři parametry** $r_B$, $r_{Bm}$, $I_{rB}$.
+
 ![Proudová závislost bázové rezistance](magistr/B2M31IASA/img/bjt_rb_iB.png)
 *Proudová závislost bázové rezistance*
 
-**Vysvětlení:**
-
-- Bázový odpor $r_b$ **klesá s rostoucím proudem báze** – příčinou je *vytlačování proudu k okraji emitoru* (current crowding): úbytek na bázovém odporu způsobí, že se emitor otevírá hlavně na okrajích u bázového kontaktu, proud teče kratší cestou bází $\Rightarrow$ efektivní odpor je menší.
-- **Tři parametry modelu:**
-    - $r_B$ – odpor báze při nulovém (malém) proudu (maximální hodnota),
-    - $r_{Bm}$ – minimální odpor báze při velkém proudu (asymptota),
-    - $I_{rB}$ – proud, při kterém $r_b$ klesne zhruba na průměr $\frac{r_B + r_{Bm}}{2}$.
-- Průběh tedy monotónně klesá z $r_B$ k $r_{Bm}$.
+| Parametr | Význam |
+|---|---|
+| $r_B$ | odpor báze při nulovém (malém) proudu – maximální hodnota |
+| $r_{Bm}$ | minimální odpor báze při velkém proudu – asymptota |
+| $I_{rB}$ | proud, při kterém $r_b$ klesne zhruba na průměr $\frac{r_B + r_{Bm}}{2}$ |
 
 ## Kvazisaturace tranzistoru (znát obrázek), jaká je fyzikální příčina kvazisaturace?
 
