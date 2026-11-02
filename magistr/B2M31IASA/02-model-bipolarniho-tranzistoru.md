@@ -82,8 +82,8 @@ $$
 | 0,8 V | 278 $\mu$A | 527 nA | 0,0019 | **1,00** |
 
 - Na každých 0,1 V vzroste $i_f/\beta_F$ asi $48\times$ ($n_F \approx 1$), ale $i_e$ jen asi $7\times$ $\Rightarrow$ $n_E = \frac{0{,}1}{v_T \ln 6{,}9} \approx 2$. Svod roste pomaleji.
-- **Malý proud** (0,4 V): svod tvoří většinu proudu báze $\Rightarrow$ zesílení klesne asi na $\frac15 \beta_F$.
-- **Velký proud** (0,8 V): svod je zanedbatelný $\Rightarrow$ $\beta \approx \beta_F$.
+- **Malý proud** ($v_{\mathrm{be}} = 0{,}4$ V): svod tvoří většinu proudu báze $\Rightarrow$ zesílení klesne asi na $\frac15 \beta_F$.
+- **Velký proud** ($v_{\mathrm{be}} = 0{,}8$ V): svod je zanedbatelný $\Rightarrow$ $\beta \approx \beta_F$.
 
 ## ⭐ Mechanismus poklesu zesílení bipolárního tranzistoru při velkém proudu kolektorem (znát obrázek „<u>Závislost logaritmu bázového a kolektotvého proudu…</u>“, stačí znát jen přibližné číselné hodnoty pro směrnice (1 a $\frac{1}{2}$))
 
