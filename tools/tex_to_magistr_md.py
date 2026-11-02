@@ -137,6 +137,9 @@ def convert_body(body, pre):
         if path.endswith('.png') and TEX_DIR and (TEX_DIR / path[:-4]).with_suffix('.gif').exists():
             path = path[:-4] + '.gif'
         return f'\n![{caption}]({pre}/{path})\n\n*{caption}*\n'
+    # příkazy jen pro sazbu PDF (zalomení stran) — ve wiki nemají smysl
+    body = re.sub(r'\\(needspace|vspace\*?|enlargethispage)\{[^}]*\}%?', '', body)
+    body = re.sub(r'\\(newpage|clearpage|pagebreak)\b', '', body)
     body = re.sub(r'\\begin\{figure\}.*?\\end\{figure\}', fig, body, flags=re.S)
     # TikZ/circuitikz kresby v markdownu nevykreslíme
     body = re.sub(r'\\begin\{(tikzpicture|circuitikz)\}.*?\\end\{\1\}', '', body, flags=re.S)

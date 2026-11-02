@@ -68,8 +68,6 @@ $$
 
 **Co je $\phi_0$:** po spojení P a N se elektrony a díry difúzí přelijí přes přechod a zrekombinují. Po obou stranách zůstanou nevykompenzované pevné ionty (vyprázdněná oblast), které vytvoří vnitřní elektrické pole – potenciálovou bariéru o velikosti $\phi_0$. Ta další difúzi zastaví (rovnováha). Ve vzorci je $\phi_0$ napětí, při kterém by vyprázdněná oblast zmizela a $c_b \to \infty$ – proto se kapacita od $F_C\phi_0$ linearizuje (otázka 1.6). S rostoucí teplotou $\phi_0$ klesá (otázka 1.7).
 
-\needspace{14cm}
-
 ## ⭐ <u>Linearizace rovnic modelu bariérové kapacity</u> (znát obrázek)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=21" target="_blank" rel="noopener">Diode6.pdf, s. 21</a></small></p>
