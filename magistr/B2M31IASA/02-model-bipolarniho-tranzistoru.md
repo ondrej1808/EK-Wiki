@@ -206,12 +206,7 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 - U mikrovlnných obvodů se ukázalo, že **změřený fázový posun** kolektorového proudu je *větší*, než předpovídá model se soustředěnými (difúzními a bariérovými) kapacitami.
 - Na velmi vysokých kmitočtech se báze chová jako obvod s *rozprostřenými* parametry (krátké přenosové vedení) – rigorózní parciální diferenciální rovnice by ale model neúměrně zkomplikovaly.
-- Proto se **fázové zpoždění aproximuje Besselovou funkcí** (2. řádu) v kmitočtové oblasti:
-$$
-\Phi(s) = \frac{3\omega_0^2}{s^2 + 3\omega_0 s + 3\omega_0^2}, \qquad I_f'(s) = I_f(s)\,\Phi(s)
-$$
-
-Besselův filtr má maximálně plochou skupinovou dobu zpoždění, tj. aproximuje čisté zpoždění. Velikost dodatečné fáze určuje parametr $\varphi_{\tau F}$ (při $f = 1/(2\pi\tau_F)$).
+- Proto se zpoždění **modeluje pomocí Besselovy funkce**.
 
 ## Teplotní závislost proudového zesilovacího činitele bipolárního tranzistoru
 
