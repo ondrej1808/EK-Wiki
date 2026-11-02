@@ -173,6 +173,8 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=23" target="_blank" rel="noopener">BJT6.pdf, s. 23–24</a></small></p>
 
+> **Odpověď:** **Průletová doba** $\tau_f$ je průměrná doba, za kterou minoritní nosiče injektované z emitoru **projdou bází do kolektoru**. Určuje, kolik náboje je v bázi uloženo ($q_f = \tau_f\, i_f$, difúzní kapacita), a tím i **rychlost tranzistoru** (mezní kmitočet $f_T \approx 1/(2\pi\tau_f)$). Závislost na přímém proudu (obrázek níže): pro **malé a střední proudy je konstantní** $\tau_f = \tau_F$, pro **velké proudy** (nad $I_{\tau F}$) **prudce roste** – tranzistor je pomalejší.
+
 ![Závislost průletové doby $\tau_f$ na přímém proudu $i_f$](magistr/B2M31IASA/img/bjt_tauf_if.png)
 *Závislost průletové doby $\tau_f$ na přímém proudu $i_f$*
 
