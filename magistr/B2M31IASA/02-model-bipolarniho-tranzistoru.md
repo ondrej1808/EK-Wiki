@@ -91,7 +91,7 @@ $$
 
 > **Odpověď:** Při velkém proudu kolektoru (nad zlomovým proudem $I_{KF}$) nastává **vysoká injekce** – v bázi je tolik injektovaných nosičů jako příměsí. Kolektorový proud pak roste s napětím $v_{\mathrm{BE}}$ pomaleji: v grafu $\ln i_C$ se jeho směrnice zlomí z **1 na $\frac12$**, kdežto bázový proud roste dál se směrnicí 1. Přímky $\ln i_C$ a $\ln i_B$ se sbližují, a protože jejich vzdálenost je $\ln\beta$, **zesílení $\beta = i_C/i_B$ klesá**.
 
-**Jak číst graf:** na ose $x$ je $v_{\mathrm{BE}}/v_T$, na ose $y$ logaritmus proudu. Exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ je v takovém grafu přímka se směrnicí $1/n$ ($n$ = emisní koeficient složky proudu, která právě převládá). Svislá vzdálenost přímek $i_C$ a $i_B$ je $\ln\beta$.
+Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{\mathrm{BE}}/v_T$. Exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ je v něm přímka se směrnicí $1/n$ ($n$ = emisní koeficient složky proudu, která právě převládá), a svislá vzdálenost přímek $i_C$ a $i_B$ odpovídá $\ln\beta$.
 
 | Proud | Směrnice $i_C$ | Směrnice $i_B$ | $\beta$ | Proč |
 |---|---|---|---|---|
