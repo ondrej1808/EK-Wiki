@@ -31,22 +31,28 @@ Nakreslené jádro je pro tranzistor **NPN** (diody mají anodu na bázi). U PNP
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=6" target="_blank" rel="noopener">BJT6.pdf, s. 6–8</a></small></p>
 
 $$
-\boldsymbol{i_f = I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right)}
+\boldsymbol{i_3 = k_i\,k_v\,(i_f - i_r)}
 $$
 
-![Základní statické proudy modelu BJT](magistr/B2M31IASA/img/bjt_rovnice.png)
-*Základní statické proudy modelu BJT*
+Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu**, upravený dvěma korekčními činiteli $k_i$ a $k_v$.
 
-$$
-i_3 = k_i\,k_v\,(i_f - i_r), \qquad
-i_f = I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right), \quad
-i_r = I_S\left(e^{\frac{v_{\mathrm{bc}}}{n_R v_T}} - 1\right)
-$$
+| Veličina | Vzorec | Význam |
+|---|---|---|
+| $i_f$ | $\boldsymbol{I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right)}$ | dopředný proud (řízen $v_{\mathrm{be}}$) |
+| $i_r$ | $I_S\left(e^{\frac{v_{\mathrm{bc}}}{n_R v_T}} - 1\right)$ | zpětný proud (řízen $v_{\mathrm{bc}}$) |
+| $k_i$ | $\dfrac{2}{1 + \left[1 + 4\left(\frac{i_f}{I_{KF}} + \frac{i_r}{I_{KR}}\right)\right]^{n_K}}$ | pokles zesílení při velkých proudech; při malých $k_i \approx 1$ |
+| $k_v$ | $1 - \frac{v_{\mathrm{be}}}{V_{AR}} - \frac{v_{\mathrm{bc}}}{V_{AF}}$ | sklon výstupních charakteristik (Earlyho jev) |
+| $I_S$ |  | saturační proud |
+| $n_F$, $n_R$ |  | emisní koeficienty (dopředný, zpětný) |
+| $v_T$ | $kT/q$ | teplotní napětí ($\approx 26$ mV) |
+| $I_{KF}$, $I_{KR}$ |  | zlomové proudy („knee“) – začátek vysoké injekce |
+| $n_K$ |  | exponent poklesu zesílení ($\approx 0{,}5$) |
+| $V_{AF}$, $V_{AR}$ |  | Earlyho napětí (dopředné, zpětné) |
 
-- Proud hlavního zdroje je **rozdíl dopředného $i_f$ (řízen $v_{\mathrm{be}}$) a zpětného $i_r$ (řízen $v_{\mathrm{bc}}$) proudu** – Shockleyho vztahy.
-- $k_i = \dfrac{2}{1 + \left[1 + 4\left(\frac{i_f}{I_{KF}} + \frac{i_r}{I_{KR}}\right)\right]^{n_K}}$ – **pokles zesílení při velkých proudech** (vysoká injekce), při malých proudech $k_i \approx 1$.
-- $k_v = 1 - \frac{v_{\mathrm{be}}}{V_{AR}} - \frac{v_{\mathrm{bc}}}{V_{AF}}$ – **sklon výstupních charakteristik** (Earlyho jev).
-- Proudy diod: $i_1 = \frac{i_f}{\beta_F} + i_e$, \quad $i_2 = \frac{i_r}{\beta_R} + i_c$.
+Proudy diod jádra: $i_1 = \frac{i_f}{\beta_F} + i_e$, \quad $i_2 = \frac{i_r}{\beta_R} + i_c$.
+
+![Základní statické proudy modelu BJT (BJT6.pdf, s. 7)](magistr/B2M31IASA/img/bjt_rovnice.png)
+*Základní statické proudy modelu BJT (BJT6.pdf, s. 7)*
 
 ## Mechanismus poklesu zesílení bipolárního tranzistoru při malém proudu kolektorem (stačí vyložit pojem „svodový“ (leakage) proud)
 

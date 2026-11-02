@@ -193,8 +193,21 @@ def convert_body(body, pre):
         out = ['| ' + ' | '.join(rows[0]) + ' |', '|' + '---|' * len(rows[0])]
         out += ['| ' + ' | '.join(r) + ' |' for r in rows[1:]]
         return '\n' + '\n'.join(out) + '\n'
-    body = re.sub(r'\\begin\{tabular\}\{[^}]*\}(.*?)\\end\{tabular\}', table, body, flags=re.S)
+    # specifikace sloupců může mít vnořené závorky (>{\raggedright}p{…}) → přeskočit ji počítáním závorek
+    out_t, pos = [], 0
+    while True:
+        k = body.find(r'\begin{tabular}', pos)
+        if k < 0:
+            out_t.append(body[pos:])
+            break
+        out_t.append(body[pos:k])
+        _, j = read_group(body, k + len(r'\begin{tabular}'))
+        e = body.find(r'\end{tabular}', j)
+        out_t.append(table(re.match(r'(.*)', body[j:e], flags=re.S)))
+        pos = e + len(r'\end{tabular}')
+    body = ''.join(out_t)
     body = re.sub(r'\\(begin|end)\{center\}', '', body)
+    body = re.sub(r'\\renewcommand\{\\arraystretch\}\{[^}]*\}', '', body)
     # TikZ/circuitikz kresby v markdownu nevykreslíme
     body = re.sub(r'\\begin\{(tikzpicture|circuitikz)\}.*?\\end\{\1\}', '', body, flags=re.S)
     # rovnice
