@@ -39,7 +39,7 @@ Modelujeme diodu pomocí přímého a zpětného proudu. Přímý proud $i_{1F}$
 
 Fyzikálně je způsobena setrvačností nahromaděných nosičů náboje (elektrony a díry). Při propustném směru se v okolí přechodu hromadí minoritní nosiče. Když se změní napětí, tento náboj se nestihne okamžitě přizpůsobit, a proto se přechod chová jako kapacita. Uplatní se hlavně v propustném směru, protože je úměrná proudu.
 
-$$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba, $i_1$ je proud diodou ze shockleho vzorečku.
+$$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba, $i_1$ je proud diodou ze Shockleyho vzorečku.
 
 ## Fyzikální princip bariérové kapacity, matematický vztah, tři parametry modelu (v diferenciálním tvaru, komplikovaný integrální tvar uveden jen pro informaci)
 
