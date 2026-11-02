@@ -93,7 +93,8 @@ def inline(s, pre):
     s = replace_cmd(s, 'textit', lambda a: f'*{a}*')
     s = replace_cmd(s, 'texttt', lambda a: f'`{a}`')
     s = replace_cmd(s, 'uv', lambda a: f'„{a}“')
-    s = replace_cmd(s, 'ref', lambda a: '')
+    # ve wiki nejsou čísla obrázků: „obrázek \ref{fig:…}“ → „obrázek níže“, jiné odkazy pryč
+    s = replace_cmd(s, 'ref', lambda a: 'níže' if a.startswith('fig:') else '')
     s = replace_cmd(s, 'label', lambda a: '')
     s = s.replace(r'\dots', '…').replace('~', ' ').replace(r'\,', ' ').replace('{,}', ',')
     s = s.replace(r'\ ', ' ').replace('---', '—').replace('--', '–')
