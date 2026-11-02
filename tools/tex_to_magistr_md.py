@@ -175,7 +175,20 @@ def convert_body(body, pre):
             return ''
         return f'\n![{caption}]({img_path(img.group(1))})\n\n*{caption}*\n'
     # \odpoved{…} (rámeček s přímou odpovědí) → zvýrazněný citační blok na jednom řádku
-    body = replace_cmd(body, 'odpoved', lambda a: '\n\n> **Odpověď:** ' + ' '.join(a.split()) + '\n\n')
+    def odpoved(a):
+        """Převede obsah \\odpoved{…} na citační blok; odrážky itemize → řádky „> - …“.
+
+        Parametry:
+            a -- LaTeX obsah rámečku
+        Vrací: markdown citační blok obklopený prázdnými řádky.
+        """
+        a = re.sub(r'\\setlength\{\\[a-zA-Z]+\}\{[^}]*\}', '', a)
+        head, *items = re.split(r'\\item\b', re.sub(r'\\(begin|end)\{itemize\}', '', a))
+        out = '> **Odpověď:** ' + ' '.join(head.split())
+        for it in items:
+            out += '\n>\n> - ' + ' '.join(it.split())
+        return '\n\n' + out + '\n\n'
+    body = replace_cmd(body, 'odpoved', odpoved)
     # příkazy jen pro sazbu PDF (zalomení stran) — ve wiki nemají smysl
     body = re.sub(r'\\(needspace|vspace\*?|enlargethispage)\{[^}]*\}%?', '', body)
     body = re.sub(r'\\(newpage|clearpage|pagebreak)\b', '', body)
@@ -282,10 +295,11 @@ def convert_body(body, pre):
             bullet = '1.' if counters[-1] else '-'
             out.append('    ' * (depth - 1) + f'{bullet} {inline(text, pre)}')
             continue
-        if st.startswith('|'):        # řádek markdown tabulky — nespojovat do odstavce
+        if st.startswith('|') or st.startswith('>'):   # tabulka / citační blok — nespojovat do odstavce
             flush()
-            out.append(st)
-            if i >= len(lines) or not lines[i].strip().startswith('|'):
+            out.append(inline(st, pre) if st.startswith('>') else st)
+            mark = st[0]
+            if i >= len(lines) or not lines[i].strip().startswith(mark):
                 out.append('')
             continue
         if st.startswith('<p class="zdroj">') or st.startswith('<div'):

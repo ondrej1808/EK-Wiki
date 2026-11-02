@@ -108,8 +108,16 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=11" target="_blank" rel="noopener">BJT6.pdf, s. 11</a></small></p>
 
-![Závislost logaritmu proudového zesílení na logaritmu kolektorového proudu](magistr/B2M31IASA/img/bjt_ln_beta.png)
-*Závislost logaritmu proudového zesílení na logaritmu kolektorového proudu*
+> **Odpověď:** Graf $\ln\beta$ v závislosti na $\ln i_C$ má tvar „kopce“ (navazuje na 2.3 a 2.4):
+>
+> - **malé $i_C$** – zesílení **roste** se směrnicí $1 - n_F/n_E \approx \boldsymbol{\frac12}$; v proudu báze převládá svodový proud (2.3),
+>
+> - **střední $i_C$** – zesílení je **konstantní**, maximum $\beta \approx \beta_F$,
+>
+> - **velké $i_C$** (nad $I_{KF}$) – zesílení **klesá** se směrnicí $-\frac{n_K}{1-n_K} \approx \boldsymbol{-1}$; vysoká injekce (2.4).
+
+![Závislost logaritmu proudového zesílení na logaritmu kolektorového proudu (BJT6.pdf, s. 11)](magistr/B2M31IASA/img/bjt_ln_beta.png)
+*Závislost logaritmu proudového zesílení na logaritmu kolektorového proudu (BJT6.pdf, s. 11)*
 
 ## ⭐ <u>Výstupní charakteristiky tranzistoru</u>, Earlyho napětí, detail počátku (kde charakteristiky začínají?)
 
