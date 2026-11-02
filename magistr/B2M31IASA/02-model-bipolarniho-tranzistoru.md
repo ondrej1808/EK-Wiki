@@ -58,13 +58,14 @@ Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=9" target="_blank" rel="noopener">BJT6.pdf, s. 9, 13</a></small></p>
 
-![Pokles zesílení při malých proudech – užitečná část proudu báze $i_f/\beta_F$ vs. svodový proud $i_e$](magistr/B2M31IASA/img/bjt_svodovy.png)
-*Pokles zesílení při malých proudech – užitečná část proudu báze $i_f/\beta_F$ vs. svodový proud $i_e$*
+**Co je svodový (leakage) proud:** neideální složka proudu báze, kterou tvoří **rekombinace nosičů v přechodu báze-emitor** (v jeho vyprázdněné oblasti a na povrchu). Tyto nosiče zaniknou dřív, než by prošly bází do kolektoru – proud báze tedy teče, ale kolektorový proud nepřibude. V Gummel–Poonově modelu ho popisují parametry $I_{SE}$ („B–E leakage saturation current“) a $n_E$ („B–E leakage emission coefficient“, výchozí hodnota 1,5).
 
-- Proud báze má dvě složky: **užitečnou** $i_f/\beta_F$ (souvisí s proudem kolektoru) a **svodovou (leakage)** $i_e = I_{SE}\left(e^{\frac{v_{\mathrm{be}}}{n_E v_T}} - 1\right)$ – rekombinace v přechodu báze-emitor, která do kolektoru vůbec nedoteče.
-- Svodový proud má emisní koeficient $n_E \approx 2$, roste tedy s napětím *pomaleji* než užitečný proud ($n_F \approx 1$).
-- **Velké proudy** (0{,}8 V): $i_e = 527$ nA $\ll i_f/\beta_F = 278\,\mu$A $\Rightarrow$ svod je zanedbatelný, $\beta$ plné.
-- **Malé proudy** (0{,}4 V): $i_e = 230$ pA $>$ $i_f/\beta_F = 52{,}7$ pA $\Rightarrow$ většinu proudu báze tvoří svod, kolektorový proud je proti němu malý $\Rightarrow$ **zesílení $\beta = i_C/i_B$ klesá**.
+*Zdroje:* [Wikipedia – Gummel–Poon model](https://en.wikipedia.org/wiki/Gummel%E2%80%93Poon_model) (tabulka parametrů ISE, NE); [TU Delft – Bipolar transistors](https://analog-electronics.tudelft.nl/webbook/SED/_build/html/ModelingActiveDevices/ActiveDevices_Bipolar_transistors.html) (neideální proud báze = rekombinace minoritních nosičů).
+
+- Proud báze má tedy dvě složky: **užitečnou** $i_f/\beta_F$ (souvisí s proudem kolektoru) a **svodovou** $i_e = I_{SE}\left(e^{\frac{v_{\mathrm{be}}}{n_E v_T}} - 1\right)$.
+- Svodový proud má emisní koeficient $n_E$ větší než 1 (typicky 1,5–2), roste tedy s napětím *pomaleji* než užitečný proud ($n_F \approx 1$).
+- **Velké proudy** (0,8 V): $i_e = 527$ nA $\ll i_f/\beta_F = 278\,\mu$A $\Rightarrow$ svod je zanedbatelný, $\beta$ plné.
+- **Malé proudy** (0,4 V): $i_e = 230$ pA $>$ $i_f/\beta_F = 52{,}7$ pA $\Rightarrow$ většinu proudu báze tvoří svod, kolektorový proud je proti němu malý $\Rightarrow$ **zesílení $\beta = i_C/i_B$ klesá**.
 
 ## ⭐ Mechanismus poklesu zesílení bipolárního tranzistoru při velkém proudu kolektorem (znát obrázek „<u>Závislost logaritmu bázového a kolektotvého proudu…</u>“, stačí znát jen přibližné číselné hodnoty pro směrnice (1 a $\frac{1}{2}$))
 

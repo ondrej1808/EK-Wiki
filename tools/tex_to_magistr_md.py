@@ -85,6 +85,7 @@ def inline(s, pre):
     s = re.sub(r'\$\$.*?\$\$|\\\[.*?\\\]|\$[^$]+\$', keep, s, flags=re.S)
 
     s = re.sub(r'\\priorita\s*', '⭐ ', s)
+    s = replace_cmd(s, 'href', lambda u, t: f'[{t}]({u.replace(chr(92) + "%", "%")})', 2)
     s = replace_cmd(s, 'podtr', lambda a: f'<u>{a}</u>')
     s = replace_cmd(s, 'skrt', lambda a: f'<del>{a}</del>')
     s = replace_cmd(s, 'textbf', lambda a: f'**{a}**')
@@ -94,7 +95,7 @@ def inline(s, pre):
     s = replace_cmd(s, 'uv', lambda a: f'„{a}“')
     s = replace_cmd(s, 'ref', lambda a: '')
     s = replace_cmd(s, 'label', lambda a: '')
-    s = s.replace(r'\dots', '…').replace('~', ' ').replace(r'\,', ' ')
+    s = s.replace(r'\dots', '…').replace('~', ' ').replace(r'\,', ' ').replace('{,}', ',')
     s = s.replace(r'\ ', ' ').replace('---', '—').replace('--', '–')
     s = re.sub(r'\\(medskip|par|noindent|centering|newpage)\b', '', s)
     s = re.sub(r'\x00(\d+)\x00', lambda m: maths[int(m.group(1))], s)
