@@ -8,15 +8,13 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/MESFET-Delay-Dispersion-B2M31IASA26.pdf#page=3" target="_blank" rel="noopener">MESFET-Delay-Dispersion-B2M31IASA26.pdf, s. 3–4</a></small></p>
 
-![Náhradní obvod modelu MESFET](magistr/B2M31IASA/img/mesfet_model.png)
-*Náhradní obvod modelu MESFET*
+> **Odpověď:** Hlavní zdroj proudu modelu je $I_D = \beta (V_{gs} - V_{T1})^{n_2}(1 + \lambda V_{ds})\tanh(\alpha V_{ds})$ (obrázek níže). Obecný exponent $n_2$ (místo pevné kvadratické závislosti) a funkce $\tanh$ (plynulý přechod lineární $\to$ saturační oblast) dělají model dost pružný, takže **tytéž vztahy lze použít i pro pHEMT**.
 
-![Rovnice statické části modelu MESFET](magistr/B2M31IASA/img/mesfet_staticke.png)
-*Rovnice statické části modelu MESFET*
+<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between"><figure style="flex:0 1 48%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/mesfet_model.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Náhradní obvod</em></figcaption></figure><figure style="flex:0 1 48%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/mesfet_staticke.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Rovnice statické části</em></figcaption></figure></div>
 
-- Hlavní napěťově řízený proudový zdroj: $I_D = \beta (V_{gs} - V_{T1})^{n_2}(1 + \lambda V_{ds})\tanh(\alpha V_{ds})$ pro $V_{gs} > V_{T1}$, jinak $0$.
-- Obecný exponent $n_2$ (místo pevné kvadratické závislosti) a funkce $\tanh$ (plynulý přechod lineární $\to$ saturační oblast) dělají model dostatečně pružný, takže **tytéž vztahy lze použít i pro přesné modelování pHEMT**.
-- Pro inverzní mód ($V_{ds} < 0$) platí obdobné vztahy (záměna $V_{gs} \leftrightarrow V_{gd}$).
+*Model MESFET (MESFET-Delay-Dispersion, s. 3–4)*
+
+Pro inverzní mód ($V_{ds} < 0$) platí obdobné vztahy (záměna $V_{gs} \leftrightarrow V_{gd}$).
 
 ## ⭐ <u>Způsob modelování kmitočtové disperze charakteristik</u> dodatečným řízeným proudovým zdrojem (*není třeba* znát celý model, jen vyložit část modelování disperze)
 
@@ -45,15 +43,18 @@ $$
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/MESFET-Delay-Dispersion-B2M31IASA26.pdf#page=5" target="_blank" rel="noopener">MESFET-Delay-Dispersion-B2M31IASA26.pdf, s. 5–6</a></small></p>
 
-![Příklad identifikace parametrů modelu GaAsFET (výstupní charakteristiky)](magistr/B2M31IASA/img/mesfet_vystupni.png)
-*Příklad identifikace parametrů modelu GaAsFET (výstupní charakteristiky)*
+> **Odpověď:** Výstupní charakteristiky MESFET/pHEMT mají strmý lineární náběh a pak saturační oblast. **Oblast záporné diferenciální vodivosti** je ta část saturace, kde proud $I_D$ **s rostoucím $V_{DS}$ klesá** ($\partial I_D/\partial V_{DS} < 0$) – u pHEMT na obrázku níže u horních křivek ($V_{GS} = 0{,}5$ a $0$ V) za maximem při $V_{DS} \approx 2$ V (červeně). V modelu ji umožní záporné $\lambda$.
 
-- Charakteristiky mají strmý lineární náběh (popsaný $\tanh(\alpha V_{ds})$) a saturační oblast.
-- U pHEMT (a výkonových MESFET) může proud v saturaci s rostoucím $V_{ds}$ **klesat** – **negativní diferenciální vodivost** $\partial I_D / \partial V_{ds} < 0$. Příčinou je hlavně *samoohřev* (vyšší ztrátový výkon $\Rightarrow$ vyšší teplota $\Rightarrow$ nižší pohyblivost) a jevy pastí; v modelu záporné $\lambda$.
+![Výstupní charakteristiky pHEMT (MESFET-Delay-Dispersion, s. 6) – vyznačena oblast záporné diferenciální vodivosti](magistr/B2M31IASA/img/mesfet_phemt_ndr.png)
+*Výstupní charakteristiky pHEMT (MESFET-Delay-Dispersion, s. 6) – vyznačena oblast záporné diferenciální vodivosti*
+
+Příčinou poklesu je hlavně *samoohřev* (vyšší ztrátový výkon $\Rightarrow$ vyšší teplota $\Rightarrow$ nižší pohyblivost) a jevy pastí.
 
 ## ⭐ <u>Typický tvar napěťové závislosti kapacit MESFET</u> a mikrovlnných varaktorů … samozřejmě není nutné znát složité vztahy, stačí charakterizovat obrázkem
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/MESFET-Delay-Dispersion-B2M31IASA26.pdf#page=8" target="_blank" rel="noopener">MESFET-Delay-Dispersion-B2M31IASA26.pdf, s. 8–10</a></small></p>
+
+> **Odpověď:** Kapacity gate-source a gate-drain mají **lomený průběh** (obrázek níže): pod prahem malá, téměř konstantní kapacita, kolem prahu **skok**, nad prahem roste jako u Schottkyho přechodu. Stejný tvar mají mikrovlnné varaktory.
 
 ![Typický tvar napěťových závislostí kapacit gate-source a gate-drain MESFET](magistr/B2M31IASA/img/mesfet_kapacity.png)
 *Typický tvar napěťových závislostí kapacit gate-source a gate-drain MESFET*

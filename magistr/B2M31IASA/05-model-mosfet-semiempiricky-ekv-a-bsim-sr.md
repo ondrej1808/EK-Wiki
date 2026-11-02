@@ -11,8 +11,19 @@
 ![Příčný řez MOSFET s geometrickými parametry](magistr/B2M31IASA/img/mosfet_rez.png)
 *Příčný řez MOSFET s geometrickými parametry*
 
-- **Geometrické (neelektrické) parametry:** $L$ – délka gatu, $W$ – šířka kanálu, $t_{\mathrm{ox}}$ – tloušťka oxidu, $L_e$ – efektivní délka kanálu, $X_J$ – hloubka přechodu source/drain, $X_{JL}$ – laterální difúze (o kolik se S/D podsune pod gate, $L_e = L - 2X_{JL}$).
-- **Technologické parametry:** např. $N_{SUB}$ (dotace substrátu), $N_{SS}$ (povrchová hustota stavů), $T_{PG}$ (typ gatu), $\mu_0$ (pohyblivost), $R_{SH}$ (vrstvový odpor).
+| Druh | Parametr | Význam |
+|---|---|---|
+| geometrický | $L$ | délka gatu |
+|  | $W$ | šířka kanálu |
+|  | $t_{\mathrm{ox}}$ | tloušťka oxidu |
+|  | $L_e$ | efektivní délka kanálu ($L_e = L - 2X_{JL}$) |
+|  | $X_J$ | hloubka přechodu source/drain |
+|  | $X_{JL}$ | laterální difúze (o kolik S/D zasahuje pod gate) |
+| technologický | $N_{SUB}$ | dotace substrátu |
+|  | $N_{SS}$ | povrchová hustota stavů |
+|  | $T_{PG}$ | typ materiálu gatu |
+|  | $\mu_0$ | pohyblivost nosičů |
+|  | $R_{SH}$ | vrstvový odpor |
 
 ## Model MOSFET, základní parametry modelu, náhradní obvod modelu
 
@@ -25,13 +36,7 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/MOSFET6.pdf#page=5" target="_blank" rel="noopener">MOSFET6.pdf, s. 5–6</a></small></p>
 
-![Dvojznačnost definic parametrů MOSFET](magistr/B2M31IASA/img/mosfet_dvojznacnost.png)
-*Dvojznačnost definic parametrů MOSFET*
-
-1. **Hodnota vs. hodnota na plochu:** např. $R_D$ lze zadat přímo, nebo jako vrstvový odpor $R_{SH}$ a počet čtverců $N_{RD}$ ($R_D = R_{SH} N_{RD}$).
-1. **Elektrické vs. technologické parametry:** elektrické parametry ($K_P$, $V_{TO}$, $\varphi$, …) lze zadat přímo, nebo je simulátor *vypočítá* z technologických ($\mu_0$, $t_{\mathrm{ox}}$, $N_{SUB}$, $N_{SS}$, …).
-
-**Problém:** když se zadají obě varianty (nebo jen část), není zřejmé, která má přednost – simulátor některé hodnoty tiše přepočítá/ignoruje, takže model nemusí dělat to, co uživatel čekal.
+> **Odpověď:** Některé parametry lze zadat **dvojím způsobem**: (1) přímo, nebo **na plochu** (např. $R_D = R_{SH} N_{RD}$), (2) jako **elektrický** parametr ($K_P$, $V_{TO}$, …), nebo ho simulátor **spočítá z technologických** ($\mu_0$, $t_{\mathrm{ox}}$, $N_{SUB}$, …). **Problém:** když se zadá obojí, není jasné, která hodnota platí – model pak nemusí dělat to, co uživatel čekal.
 
 ## Závislost prahového napětí MOSFET na napětí drain-source a její velký význam pro krátkokanálové tranzistory (stačí jen vědět o sekundárním parametru $\sigma$)
 
