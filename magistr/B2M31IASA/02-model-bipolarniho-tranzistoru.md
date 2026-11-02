@@ -89,10 +89,9 @@ $$
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=10" target="_blank" rel="noopener">BJT6.pdf, s. 10, 12</a></small></p>
 
-![Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$](magistr/B2M31IASA/img/bjt_lnIB_lnIC.png)
-*Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$*
+> **Odpověď:** Při velkém proudu kolektoru (nad zlomovým proudem $I_{KF}$) nastává **vysoká injekce** – v bázi je tolik injektovaných nosičů jako příměsí. Kolektorový proud pak roste s napětím $v_{\mathrm{BE}}$ pomaleji: v grafu $\ln i_C$ se jeho směrnice zlomí z **1 na $\frac12$**, kdežto bázový proud roste dál se směrnicí 1. Přímky $\ln i_C$ a $\ln i_B$ se sbližují, a protože jejich vzdálenost je $\ln\beta$, **zesílení $\beta = i_C/i_B$ klesá**.
 
-**Vysvětlení:** v grafu $\ln i$ vs. $v_{\mathrm{BE}}/v_T$ je exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ přímka se směrnicí $1/n$ ($n$ = emisní koeficient složky proudu, která právě převládá). Svislá vzdálenost přímek $i_C$ a $i_B$ je $\ln\beta$ – když se přímky sbližují, zesílení klesá.
+**Jak číst graf:** na ose $x$ je $v_{\mathrm{BE}}/v_T$, na ose $y$ logaritmus proudu. Exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ je v takovém grafu přímka se směrnicí $1/n$ ($n$ = emisní koeficient složky proudu, která právě převládá). Svislá vzdálenost přímek $i_C$ a $i_B$ je $\ln\beta$.
 
 | Proud | Směrnice $i_C$ | Směrnice $i_B$ | $\beta$ | Proč |
 |---|---|---|---|---|
@@ -100,7 +99,10 @@ $$
 | střední | $\boldsymbol{1/n_F \approx 1}$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
 | velký (nad $I_{KF}$) | $\boldsymbol{(1-n_K)/n_F \approx \frac12}$ | $1/n_F \approx 1$ | **klesá** | vysoká injekce – $i_C$ roste pomaleji |
 
-**Tučně** = směrnice ze zadání (1 a $\frac12$). *Vysoká injekce:* koncentrace injektovaných nosičů v bázi je srovnatelná s dotací báze, kolektorový proud pak roste jen jako $e^{v_{\mathrm{BE}}/2v_T}$.
+**Tučně** = směrnice ze zadání (1 a $\frac12$).
+
+![Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$ (BJT6.pdf, s. 10)](magistr/B2M31IASA/img/bjt_lnIB_lnIC.png)
+*Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$ (BJT6.pdf, s. 10)*
 
 ## ⭐ Závislost zesílení bipolárního tranzistoru na přímém proudu, znát obrázek „<u>Závislost logaritmu proudového zesílení…</u>“, opět stačí jen přibližné číselné hodnoty směrnic, tj. $\frac{1}{2}$ a $-1$)
 

@@ -174,6 +174,8 @@ def convert_body(body, pre):
         if not img:
             return ''
         return f'\n![{caption}]({img_path(img.group(1))})\n\n*{caption}*\n'
+    # \odpoved{…} (rámeček s přímou odpovědí) → zvýrazněný citační blok na jednom řádku
+    body = replace_cmd(body, 'odpoved', lambda a: '\n\n> **Odpověď:** ' + ' '.join(a.split()) + '\n\n')
     # příkazy jen pro sazbu PDF (zalomení stran) — ve wiki nemají smysl
     body = re.sub(r'\\(needspace|vspace\*?|enlargethispage)\{[^}]*\}%?', '', body)
     body = re.sub(r'\\(newpage|clearpage|pagebreak)\b', '', body)
