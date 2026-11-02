@@ -39,7 +39,7 @@ Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu
 | Veličina | Vzorec | Význam |
 |---|---|---|
 | $i_f$ | $\boldsymbol{I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right)}$ | dopředný proud (řízen $v_{\mathrm{be}}$) |
-| $i_r$ | $I_S\left(e^{\frac{v_{\mathrm{bc}}}{n_R v_T}} - 1\right)$ | zpětný proud (řízen $v_{\mathrm{bc}}$) |
+| $i_r$ | $I_S\left(e^{\frac{v_{\mathrm{bc}}}{n_R v_T}} - 1\right)$ | zpětný proud (řízen $v_{\mathrm{bc}}$); na slidu jen „$i_r = \ldots$“, tvar doplněn analogicky k $i_f$ |
 | $k_i$ | $\dfrac{2}{1 + \left[1 + 4\left(\frac{i_f}{I_{KF}} + \frac{i_r}{I_{KR}}\right)\right]^{n_K}}$ | pokles zesílení při velkých proudech; při malých $k_i \approx 1$ |
 | $k_v$ | $1 - \frac{v_{\mathrm{be}}}{V_{AR}} - \frac{v_{\mathrm{bc}}}{V_{AF}}$ | sklon výstupních charakteristik (Earlyho jev) |
 | $I_S$ |  | saturační proud |
