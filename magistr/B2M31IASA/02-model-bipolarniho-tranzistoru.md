@@ -85,6 +85,9 @@ $$
 - **Malý proud** ($v_{\mathrm{be}} = 0{,}4$ V): svod tvoří většinu proudu báze $\Rightarrow$ zesílení klesne asi na $\frac15 \beta_F$.
 - **Velký proud** ($v_{\mathrm{be}} = 0{,}8$ V): svod je zanedbatelný $\Rightarrow$ $\beta \approx \beta_F$.
 
+![Slide z prezentace (BJT6.pdf, s. 9)](magistr/B2M31IASA/img/bjt_svodovy.png)
+*Slide z prezentace (BJT6.pdf, s. 9)*
+
 ## ⭐ Mechanismus poklesu zesílení bipolárního tranzistoru při velkém proudu kolektorem (znát obrázek „<u>Závislost logaritmu bázového a kolektotvého proudu…</u>“, stačí znát jen přibližné číselné hodnoty pro směrnice (1 a $\frac{1}{2}$))
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=10" target="_blank" rel="noopener">BJT6.pdf, s. 10, 12</a></small></p>
