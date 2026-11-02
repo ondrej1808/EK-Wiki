@@ -209,6 +209,8 @@ def convert_body(body, pre):
     body = ''.join(out_t)
     body = re.sub(r'\\(begin|end)\{center\}', '', body)
     body = re.sub(r'\\renewcommand\{\\arraystretch\}\{[^}]*\}', '', body)
+    body = re.sub(r'\\setlength\{\\[a-zA-Z]+\}\{[^}]*\}', '', body)
+    body = re.sub(r'\\(small|footnotesize|scriptsize|normalsize)\b', '', body)
     # TikZ/circuitikz kresby v markdownu nevykreslíme
     body = re.sub(r'\\begin\{(tikzpicture|circuitikz)\}.*?\\end\{\1\}', '', body, flags=re.S)
     # rovnice
