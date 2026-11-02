@@ -92,7 +92,14 @@ $$
 ![Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$](magistr/B2M31IASA/img/bjt_lnIB_lnIC.png)
 *Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$*
 
-**Vysvětlení:** V grafu $\ln i$ vs. $v_{\mathrm{BE}}/v_T$ odpovídá exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ přímce se směrnicí $1/n$.
+**Vysvětlení:** V grafu $\ln i$ vs. $v_{\mathrm{BE}}/v_T$ je každá exponenciála $e^{v_{\mathrm{BE}}/(n v_T)}$ přímka se směrnicí $1/n$, kde $n$ je *emisní koeficient té složky proudu, která právě převládá*:
+
+| Úsek | Směrnice | Proč |
+|---|---|---|
+| $i_C$, malé a střední proudy | $1/n_F \approx 1$ | ideální dopředný proud $i_f$ |
+| $i_C$, velké proudy (nad $I_{KF}$) | $(1-n_K)/n_F \approx \frac12$ | vysoká injekce ($k_i$) |
+| $i_B$, malé proudy | $1/n_E \approx \frac12$ | převládá svodový proud $i_e$ ($n_E \approx 2$) |
+| $i_B$, střední a velké proudy | $1/n_F \approx 1$ | převládá ideální část $i_f/\beta_F$ |
 
 - **Střední proudy:** $i_C$ i $i_B$ rostou se stejnou směrnicí $1/n_F \approx 1$ (ideální stav, $n_F \approx 1$). Přímky jsou rovnoběžné, jejich vzdálenost je $\ln\beta_F$, takže zesílení je konstantní.
 - **Velké proudy** (nad $\approx I_{KF}$, *knee current*): nastává *vysoká injekce* – koncentrace injektovaných minoritních nosičů v bázi je srovnatelná s dotací báze. Kolektorový proud pak roste pomaleji, směrnice klesne na $(1-n_K)/n_F \approx \frac{1}{2}$ (pro $n_K \approx 0{,}5$), tj. $i_C \sim e^{v_{\mathrm{BE}}/2v_T}$.
