@@ -8,15 +8,21 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=2" target="_blank" rel="noopener">BJT6.pdf, s. 2</a></small></p>
 
-![Model BJT – jádro (červeně), kvazisaturační a substrátová část](magistr/B2M31IASA/img/bjt_jadro.png)
-*Model BJT – jádro (červeně), kvazisaturační a substrátová část*
+<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between"><figure style="flex:0 1 56%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Celý model (BJT6.pdf, s. 2)</em></figcaption></figure><figure style="flex:0 1 40%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro_only.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Jen jádro ($i_1$–$i_9$)</em></figcaption></figure></div>
 
-**Jádro modelu** (vnitřní uzly b, c, e):
+*Model BJT – jádro, kvazisaturační a substrátová část*
 
-- $i_1$ – dioda báze-emitor, $i_2$ – dioda báze-kolektor,
-- $i_3$ – **hlavní řízený zdroj proudu** kolektor-emitor (zesilovací vlastnost tranzistoru),
-- $i_4$ – bázový odpor $r_b$, $i_5$ – kolektorový odpor, $i_6$ – emitorový odpor (sériové odpory přívodů),
-- $i_7$, $i_8$, $i_9$ – kapacity přechodů (báze-emitor, báze-kolektor vnitřní a vnější část).
+| Proud | Prvek | Popis |
+|---|---|---|
+| $i_1$ | dioda b–e | přechod báze-emitor, $i_1 = \frac{i_f}{\beta_F} + i_e$ |
+| $i_2$ | dioda b–c | přechod báze-kolektor, $i_2 = \frac{i_r}{\beta_R} + i_c$ |
+| $i_3$ | řízený zdroj c–e | **hlavní zdroj** (zesílení), $i_3 = k_i k_v (i_f - i_r)$ |
+| $i_4$ | odpor $r_b$ (B–b) | bázový odpor, závisí na proudu báze |
+| $i_5$ | odpor $r_C$ (C–c) | sériový odpor kolektoru |
+| $i_6$ | odpor $r_E$ (E–e) | sériový odpor emitoru |
+| $i_7$ | kapacita b–e | bariérová + difúzní kapacita přechodu B-E |
+| $i_8$ | kapacita b–c | vnitřní část kapacity B-C (podíl $X_{CJC}$) |
+| $i_9$ | kapacita B–c | vnější část kapacity B-C ($1 - X_{CJC}$) |
 
 Kvazisaturační část ($i_{12}$–$i_{14}$) a substrátová část ($i_{10}$, $i_{11}$) jsou doplňky, které jádro rozšiřují.
 

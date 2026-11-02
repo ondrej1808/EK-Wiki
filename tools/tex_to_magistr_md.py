@@ -125,18 +125,54 @@ def convert_body(body, pre):
     Vrací: markdown text.
     """
     # obrázky
-    def fig(m):
-        g = m.group(0)
-        img = re.search(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]*)\}', g)
-        cap = re.search(r'\\caption\{', g)
-        caption = inline(read_group(g, cap.end() - 1)[0], pre) if cap else ''
-        if not img:
-            return ''
-        path = img.group(1)
-        # PDF neumí animaci: když vedle PNG leží GIF se stejným jménem, wiki použije GIF
+    def img_path(path):
+        """Cesta k obrázku pro wiki; PDF neumí animaci, takže když vedle PNG leží GIF, použije GIF.
+
+        Parametry:
+            path -- cesta z \\includegraphics (relativně k .tex)
+        Vrací: cestu relativní k wiki.html.
+        """
         if path.endswith('.png') and TEX_DIR and (TEX_DIR / path[:-4]).with_suffix('.gif').exists():
             path = path[:-4] + '.gif'
-        return f'\n![{caption}]({pre}/{path})\n\n*{caption}*\n'
+        return f'{pre}/{path}'
+
+    def caption_of(g):
+        """Vrátí převedený text prvního \\caption{…} v řetězci (nebo '').
+
+        Parametry:
+            g -- LaTeX text (figure nebo subfigure)
+        Vrací: markdown text popisku.
+        """
+        cap = re.search(r'\\caption\{', g)
+        return inline(read_group(g, cap.end() - 1)[0], pre) if cap else ''
+
+    def fig(m):
+        """Převede prostředí figure (i s podobrázky subfigure) na markdown/HTML.
+
+        Parametry:
+            m -- shoda regexu s celým prostředím figure
+        Vrací: markdown s obrázkem a popiskem; podobrázky vedle sebe (flex).
+        """
+        g = m.group(0)
+        subs = re.findall(r'\\begin\{subfigure\}.*?\\end\{subfigure\}', g, flags=re.S)
+        if subs:
+            rest = re.sub(r'\\begin\{subfigure\}.*?\\end\{subfigure\}', '', g, flags=re.S)
+            caption = caption_of(rest)
+            cells = []
+            for s in subs:
+                im = re.search(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]*)\}', s)
+                if im:
+                    c = caption_of(s)
+                    wm = re.search(r'\{([0-9.]+)\\textwidth\}', s)   # šířka subfigure jako v PDF
+                    basis = f'{float(wm.group(1)) * 100:.0f}%' if wm else 'auto'
+                    cells.append(f'<figure style="flex:0 1 {basis};min-width:0;margin:0"><img src="{img_path(im.group(1))}" alt="" style="width:100%">'
+                                 f'<figcaption style="text-align:center;font-size:.9em"><em>{c}</em></figcaption></figure>')
+            return f'\n<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between">{"".join(cells)}</div>\n\n*{caption}*\n'
+        img = re.search(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]*)\}', g)
+        caption = caption_of(g)
+        if not img:
+            return ''
+        return f'\n![{caption}]({img_path(img.group(1))})\n\n*{caption}*\n'
     # příkazy jen pro sazbu PDF (zalomení stran) — ve wiki nemají smysl
     body = re.sub(r'\\(needspace|vspace\*?|enlargethispage)\{[^}]*\}%?', '', body)
     body = re.sub(r'\\(newpage|clearpage|pagebreak)\b', '', body)
@@ -234,7 +270,7 @@ def convert_body(body, pre):
             if i >= len(lines) or not lines[i].strip().startswith('|'):
                 out.append('')
             continue
-        if st.startswith('<p class="zdroj">'):
+        if st.startswith('<p class="zdroj">') or st.startswith('<div'):
             flush()
             out.append(st)
             out.append('')
