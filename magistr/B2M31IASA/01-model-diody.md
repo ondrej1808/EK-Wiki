@@ -41,6 +41,11 @@ Fyzikálně je způsobena setrvačností nahromaděných nosičů náboje (elekt
 
 $$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba, $i_1$ je proud diodou ze Shockleyho vzorečku.
 
+**Průletová doba $\tau_d$** (u BJT $\tau_F$) je průměrná doba, kterou injektovaný minoritní nosič „přežije“ v oblasti za přechodem, než zrekombinuje (u BJT: než projde bází do kolektoru). Čím déle tam nosiče vydrží, tím víc se jich při daném proudu nahromadí $\Rightarrow$ $Q_d = \tau_d\, i_1$ je větší $\Rightarrow$ větší difúzní kapacita a pomalejší dioda.
+
+![Vznik difúzní kapacity: při propustném napětí se za přechodem hromadí minoritní nosiče (náboj $Q_d$). Kmitá-li napětí, musí se tento náboj dobíjet a vybíjet $\Rightarrow$ kapacita $C_d = dQ_d/dv_{AC}$ (ve wiki jako animace)](magistr/B2M31IASA/img/difuzni_kapacita.gif)
+*Vznik difúzní kapacity: při propustném napětí se za přechodem hromadí minoritní nosiče (náboj $Q_d$). Kmitá-li napětí, musí se tento náboj dobíjet a vybíjet $\Rightarrow$ kapacita $C_d = dQ_d/dv_{AC}$ (ve wiki jako animace)*
+
 ## Fyzikální princip bariérové kapacity, matematický vztah, tři parametry modelu (v diferenciálním tvaru, komplikovaný integrální tvar uveden jen pro informaci)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=18" target="_blank" rel="noopener">Diode6.pdf, s. 18–20</a></small></p>

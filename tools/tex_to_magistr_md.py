@@ -12,6 +12,8 @@ import sys
 import unicodedata
 from pathlib import Path
 
+TEX_DIR = None  # složka se zdrojovým .tex (kvůli hledání GIF vedle PNG), nastaví main()
+
 
 def read_group(s, i):
     """Načte vyvážený {…} blok začínající na indexu i.
@@ -130,7 +132,11 @@ def convert_body(body, pre):
         caption = inline(read_group(g, cap.end() - 1)[0], pre) if cap else ''
         if not img:
             return ''
-        return f'\n![{caption}]({pre}/{img.group(1)})\n\n*{caption}*\n'
+        path = img.group(1)
+        # PDF neumí animaci: když vedle PNG leží GIF se stejným jménem, wiki použije GIF
+        if path.endswith('.png') and TEX_DIR and (TEX_DIR / path[:-4]).with_suffix('.gif').exists():
+            path = path[:-4] + '.gif'
+        return f'\n![{caption}]({pre}/{path})\n\n*{caption}*\n'
     body = re.sub(r'\\begin\{figure\}.*?\\end\{figure\}', fig, body, flags=re.S)
     # TikZ/circuitikz kresby v markdownu nevykreslíme
     body = re.sub(r'\\begin\{(tikzpicture|circuitikz)\}.*?\\end\{\1\}', '', body, flags=re.S)
@@ -239,7 +245,9 @@ def main():
     Parametry: bere z sys.argv (tex, cílová složka, url prefix).
     Vrací: nic; vypíše seznam vytvořených souborů (číslo|nadpis|soubor).
     """
+    global TEX_DIR
     tex, outdir, pre = sys.argv[1], Path(sys.argv[2]), sys.argv[3].rstrip('/')
+    TEX_DIR = Path(tex).resolve().parent
     s = Path(tex).read_text(encoding='utf8')
     s = s[s.index(r'\begin{document}'):s.index(r'\end{document}')]
     s = re.sub(r'(?<!\\)%.*', '', s)
