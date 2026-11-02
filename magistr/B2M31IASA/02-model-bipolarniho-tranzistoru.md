@@ -121,6 +121,8 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=14" target="_blank" rel="noopener">BJT6.pdf, s. 14</a></small></p>
 
+> **Odpověď:** Nakreslit výstupní charakteristiky $i_C = f(v_{\mathrm{CE}})$ pro několik $i_B$ (obrázek níže). **Pozor: při $v_{\mathrm{CE}} = 0$ je proud $i_C$ záporný** – charakteristiky nezačínají v nule. **Earlyho napětí** $V_{AF}$ udává **sklon charakteristik v aktivním režimu** – zdroj proudu $i_C \approx \beta_F i_B$ není ideální, proud s $v_{\mathrm{CE}}$ mírně roste. Prodloužené přímky se protnou v bodě $-V_{AF}$ na ose $v_{\mathrm{CE}}$, proto **pro větší $i_C$ je sklon větší**.
+
 ![Výstupní charakteristiky tranzistoru a Earlyho napětí](magistr/B2M31IASA/img/bjt_vystupni_early.png)
 *Výstupní charakteristiky tranzistoru a Earlyho napětí*
 
