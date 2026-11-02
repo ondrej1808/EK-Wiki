@@ -39,7 +39,7 @@ Modelujeme diodu pomocí přímého a zpětného proudu. Přímý proud $i_{1F}$
 
 Fyzikálně je způsobena setrvačností nahromaděných nosičů náboje (elektrony a díry). Při propustném směru se v okolí přechodu hromadí minoritní nosiče. Když se změní napětí, tento náboj se nestihne okamžitě přizpůsobit, a proto se přechod chová jako kapacita. Uplatní se hlavně v propustném směru, protože je úměrná proudu.
 
-$$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba, $i_1$ je proud diodou ze Shockleyho vzorečku.
+$$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba – **průměrná doba, za kterou injektovaný minoritní nosič zrekombinuje**; $i_1$ je proud diodou ze Shockleyho vzorečku.
 
 **Průletová doba $\tau_d$** (u BJT $\tau_F$) je průměrná doba, kterou injektovaný minoritní nosič „přežije“ v oblasti za přechodem, než zrekombinuje (u BJT: než projde bází do kolektoru). Čím déle tam nosiče vydrží, tím víc se jich při daném proudu nahromadí $\Rightarrow$ $Q_d = \tau_d\, i_1$ je větší $\Rightarrow$ větší difúzní kapacita a pomalejší dioda.
 
