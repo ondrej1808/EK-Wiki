@@ -141,6 +141,24 @@ def convert_body(body, pre):
     body = re.sub(r'\\(needspace|vspace\*?|enlargethispage)\{[^}]*\}%?', '', body)
     body = re.sub(r'\\(newpage|clearpage|pagebreak)\b', '', body)
     body = re.sub(r'\\begin\{figure\}.*?\\end\{figure\}', fig, body, flags=re.S)
+    # tabulky (tabular + booktabs) → markdown tabulka
+    def table(m):
+        """Převede obsah prostředí tabular na markdown tabulku.
+
+        Parametry:
+            m -- shoda regexu, group(1) = tělo tabulky
+        Vrací: markdown tabulku obalenou prázdnými řádky.
+        """
+        rows = [r.strip() for r in re.split(r'\\\\', m.group(1))]
+        rows = [re.sub(r'\\(toprule|midrule|bottomrule|hline)', '', r).strip() for r in rows]
+        rows = [[inline(c.strip(), pre) for c in r.split('&')] for r in rows if r]
+        if not rows:
+            return ''
+        out = ['| ' + ' | '.join(rows[0]) + ' |', '|' + '---|' * len(rows[0])]
+        out += ['| ' + ' | '.join(r) + ' |' for r in rows[1:]]
+        return '\n' + '\n'.join(out) + '\n'
+    body = re.sub(r'\\begin\{tabular\}\{[^}]*\}(.*?)\\end\{tabular\}', table, body, flags=re.S)
+    body = re.sub(r'\\(begin|end)\{center\}', '', body)
     # TikZ/circuitikz kresby v markdownu nevykreslíme
     body = re.sub(r'\\begin\{(tikzpicture|circuitikz)\}.*?\\end\{\1\}', '', body, flags=re.S)
     # rovnice
@@ -209,6 +227,12 @@ def convert_body(body, pre):
                 i += 1
             bullet = '1.' if counters[-1] else '-'
             out.append('    ' * (depth - 1) + f'{bullet} {inline(text, pre)}')
+            continue
+        if st.startswith('|'):        # řádek markdown tabulky — nespojovat do odstavce
+            flush()
+            out.append(st)
+            if i >= len(lines) or not lines[i].strip().startswith('|'):
+                out.append('')
             continue
         if st.startswith('<p class="zdroj">'):
             flush()

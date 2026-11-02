@@ -81,20 +81,17 @@ Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=23" target="_blank" rel="noopener">Diode6.pdf, s. 23–26</a></small></p>
 
-**Teplotně závislé parametry:** $I_S$ (saturační proud), $\phi_0$ (difúzní napětí) a $C_{J0}$ (bariérová kapacita při nulovém napětí). Teplotní chování určují parametry $X_{TI}$ (teplotní exponent $I_S$) a $E_g$ (šířka zakázaného pásu); $T$ je jmenovitá, $T'$ nová teplota:
+| Parametr | Co to je | S rostoucí teplotou |
+|---|---|---|
+| $I_S$ | saturační proud | roste (určuje $X_{TI}$ a $E_g$) |
+| $\phi_0$ | difúzní napětí | klesá |
+| $C_{J0}$ | kapacita při 0 V | mění se přes $\phi_0$ |
 
-$$
-I_S' = I_S\left(\frac{T'}{T}\right)^{\frac{X_{TI}}{n}} e^{\frac{qE_g}{nk}\left(\frac{1}{T}-\frac{1}{T'}\right)}, \qquad
-C_{J0}' = C_{J0}\left(\frac{\phi_0}{\phi_0'}\right)^m
-$$
+| Dioda | $X_{TI}$ | Poznámka |
+|---|---|---|
+| PN | 3 | výchozí hodnota v SPICE |
+| Schottkyho | 2 | nutno zadat ručně! |
 
-($\phi_0$ s teplotou klesá, tím se mění i $C_{J0}$.)
-
-**Problém Schottkyho diod:**
-
-- $X_{TI}$ určuje, jak rychle roste saturační proud $I_S$ s teplotou.
-- Pro **PN diodu** je $X_{TI} \approx 3$ – to je **implicitní (výchozí) hodnota v SPICE**.
-- Pro **Schottkyho diodu** (přechod kov–polovodič, proud tvoří termoemise majoritních nosičů přes bariéru, ne difúze minoritních) je $X_{TI} \approx 2$.
-- **Problém:** když se u Schottkyho diody parametr nezadá, SPICE použije výchozí $X_{TI} = 3$ $\Rightarrow$ špatná teplotní závislost $I_S$, a tím i proudu diodou při jiné teplotě než jmenovité. U Schottkyho diod se proto musí $X_{TI} = 2$ zadat ručně.
+**Problém Schottkyho diod:** když se $X_{TI} = 2$ nezadá, SPICE použije výchozí 3 $\Rightarrow$ špatná teplotní závislost $I_S$ a tím i proudu diodou.
 
 ## <del>Tři typy šumu v modelu diody, fyzikální příčiny, matematické vztahy pro spektrální výkonové hustoty</del>
