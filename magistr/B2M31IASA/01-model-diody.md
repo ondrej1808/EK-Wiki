@@ -75,6 +75,8 @@ $$
 ![Linearizace barierové kapacity](magistr/B2M31IASA/img/barierova_kapacita.png)
 *Linearizace barierové kapacity*
 
+Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C_{J0}/(1 - v_{AC}/\phi_0)^m$ (modře), od tohoto bodu se nahradí tečnou – přímkou (červeně), aby kapacita při $v_{AC} \to \phi_0$ nerostla do nekonečna, což reálně neplatí a simulace by spadla.
+
 ## Teplotně závislé parametry modelu diody, problém Schottkyho diod (tj. jaká je implicitní hodnota parametru $X_{TI}$ a jaká je jeho hodnota pro Schottkyho diody)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=23" target="_blank" rel="noopener">Diode6.pdf, s. 23–26</a></small></p>
