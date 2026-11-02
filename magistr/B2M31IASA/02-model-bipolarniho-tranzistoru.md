@@ -8,7 +8,7 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=2" target="_blank" rel="noopener">BJT6.pdf, s. 2</a></small></p>
 
-<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between"><figure style="flex:0 1 56%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Celý model (BJT6.pdf, s. 2)</em></figcaption></figure><figure style="flex:0 1 40%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro_only.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Jen jádro ($i_1$–$i_9$)</em></figcaption></figure></div>
+<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between"><figure style="flex:0 1 56%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Celý model (BJT6.pdf, s. 2)</em></figcaption></figure><figure style="flex:0 1 40%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro_only.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Jen jádro ($i_1$–$i_9$), tranzistor NPN</em></figcaption></figure></div>
 
 *Model BJT – jádro, kvazisaturační a substrátová část*
 
@@ -24,7 +24,7 @@
 | $i_8$ | kapacita b–c | vnitřní část kapacity B-C (podíl $X_{CJC}$) |
 | $i_9$ | kapacita B–c | vnější část kapacity B-C ($1 - X_{CJC}$) |
 
-Kvazisaturační část ($i_{12}$–$i_{14}$) a substrátová část ($i_{10}$, $i_{11}$) jsou doplňky, které jádro rozšiřují.
+Nakreslené jádro je pro tranzistor **NPN** (diody mají anodu na bázi). U PNP jsou obě diody i směr zdroje $i_3$ obrácené (na slidu naznačeno vedle diod). Kvazisaturační část ($i_{12}$–$i_{14}$) a substrátová část ($i_{10}$, $i_{11}$) jsou doplňky, které jádro rozšiřují.
 
 ## Základní vztah pro proud hlavním řízeným proudovým zdrojem modelu
 
