@@ -90,8 +90,6 @@ Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C
 | Dioda | $X_{TI}$ | Poznámka |
 |---|---|---|
 | PN | 3 | výchozí hodnota v SPICE |
-| Schottkyho | 2 | nutno zadat ručně! |
-
-**Problém Schottkyho diod:** když se $X_{TI} = 2$ nezadá, SPICE použije výchozí 3 $\Rightarrow$ špatná teplotní závislost $I_S$ a tím i proudu diodou.
+| Schottkyho | 2 |  |
 
 ## <del>Tři typy šumu v modelu diody, fyzikální příčiny, matematické vztahy pro spektrální výkonové hustoty</del>
