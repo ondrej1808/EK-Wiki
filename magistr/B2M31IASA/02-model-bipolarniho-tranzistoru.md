@@ -152,15 +152,21 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=19" target="_blank" rel="noopener">BJT6.pdf, s. 19–21</a></small></p>
 
+> **Odpověď:** Při **velkých proudech** $i_C$ (velké $i_B$, červená a fialová křivka v obrázku níže) nepřechází charakteristika ze saturace do aktivní oblasti ostře, ale **pozvolna** – mezi nimi je oblast kvazisaturace. Oblasti zleva doprava:
+>
+> - **saturace** – strmý náběh u $v_{\mathrm{CE}} \approx 0$,
+>
+> - **ohmická kvazisaturace** – přibližně lineární úsek (úbytek na odporu epitaxní vrstvy kolektoru),
+>
+> - **neohmická kvazisaturace** – zakřivený úsek (báze se rozšiřuje do kolektoru),
+>
+> - **aktivní oblast** – téměř vodorovný průběh. **Fyzikální příčina:** rozšiřování báze do slabě dotované epitaxní oblasti kolektoru – vnitřní přechod B-C se otevře, i když vnější je ještě uzavřený.
+
 ![Kvazisaturace – výstupní charakteristiky](magistr/B2M31IASA/img/bjt_kvazisaturace.png)
 *Kvazisaturace – výstupní charakteristiky*
 
-**Vysvětlení:**
-
-- **Definice:** kvazisaturace je zvláštní mód činnosti tranzistoru – *vnitřní* přechod báze-kolektor se **otevírá**, zatímco *vnější* přechod báze-kolektor zůstává **uzavřen**.
-- **Fyzikální příčina:** **rozšiřování báze do kolektoru** (do slabě dotované epitaxní oblasti). Při velkém proudu je na odporu epitaxní vrstvy kolektoru velký úbytek, takže vnitřní přechod B-C se otevře, i když na vnějších svorkách je ještě $v_{\mathrm{BC}} < 0$; injektované nosiče zaplaví část kolektoru a ta se chová jako prodloužená báze.
-- **V obrázku:** při velkých $i_B$ (červená, fialová křivka) přechází charakteristika do aktivní oblasti *pozvolna* – mezi saturací a aktivní oblastí je oblast kvazisaturace. Rozlišuje se *ohmická* kvazisaturace (lineární úsek, odpor epitaxe) a *neohmická* (zakřivený úsek, rozšíření báze).
-- V modelu ji popisuje kvazisaturační část (proud $i_{12}$ v epitaxní oblasti, Kullův model, parametry $r_{C0}$, $\gamma$, $V_0$).
+- **Definice:** kvazisaturace je zvláštní mód činnosti tranzistoru – *vnitřní* přechod báze-kolektor se **otevírá**, zatímco *vnější* přechod zůstává **uzavřen**.
+- **V modelu:** kvazisaturační část (proud $i_{12}$ v epitaxní oblasti, Kullův model, parametry $r_{C0}$, $\gamma$, $V_0$).
 
 ## ⭐ <u>Závislost průletové doby tranzistoru na přímém proudu</u> (znát obrázek, ne vztahy)
 
