@@ -18,16 +18,6 @@
 ![Základní proudová rovnice a výstupní charakteristiky JFET](magistr/B2M31IASA/img/jfet_vystupni.png)
 *Základní proudová rovnice a výstupní charakteristiky JFET*
 
-**Základní proudová rovnice** (obecně s $\gamma$):
-
-$$
-i_1 = \begin{cases}
-0 & \text{pro } v_{\mathrm{GS}} - V_T \le 0 \quad \text{(podprahová oblast)},\\
-(1+\lambda v_{\mathrm{DS}})\,\beta\left[2(v_{\mathrm{GS}} - V_T) - \gamma v_{\mathrm{DS}}\right] v_{\mathrm{DS}} & \text{pro } v_{\mathrm{GS}} - V_T > \gamma v_{\mathrm{DS}} \quad \text{(lineární oblast)},\\
-(1+\lambda v_{\mathrm{DS}})\,\beta\,(v_{\mathrm{GS}} - V_T)^2/\gamma & \text{pro } 0 < v_{\mathrm{GS}} - V_T \le \gamma v_{\mathrm{DS}} \quad \text{(oblast saturace)}.
-\end{cases}
-$$
-
 **Pro $\gamma = 1$ v lineární oblasti:**
 
 $$
