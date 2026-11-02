@@ -54,9 +54,6 @@ Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu
 | $i_c$ | $\ldots$ | svodový proud přechodu b–c; vzorec není v prezentaci |
 | $\beta_F$, $\beta_R$ |  | ideální proudové zesílení (dopředné, zpětné) |
 
-![Základní statické proudy modelu BJT (BJT6.pdf, s. 7)](magistr/B2M31IASA/img/bjt_rovnice.png)
-*Základní statické proudy modelu BJT (BJT6.pdf, s. 7)*
-
 ## Mechanismus poklesu zesílení bipolárního tranzistoru při malém proudu kolektorem (stačí vyložit pojem „svodový“ (leakage) proud)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=9" target="_blank" rel="noopener">BJT6.pdf, s. 9, 13</a></small></p>
