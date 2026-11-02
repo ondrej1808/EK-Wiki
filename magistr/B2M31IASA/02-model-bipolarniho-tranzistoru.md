@@ -136,7 +136,7 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=15" target="_blank" rel="noopener">BJT6.pdf, s. 15–18</a></small></p>
 
-> **Odpověď:** Bázový odpor $r_b$ **klesá s rostoucím proudem báze** – monotónně z hodnoty $r_B$ (malý proud) k minimu $r_{Bm}$ (velký proud), viz obrázek níže. Průběh popisují **tři parametry** $r_B$, $r_{Bm}$, $I_{rB}$.
+> **Odpověď:** Bázový odpor $r_b$ **klesá s rostoucím proudem báze** – monotónně z hodnoty $r_B$ k minimu $r_{Bm}$ (velký proud), viz obrázek níže. **Pro $i_B = 0$ je odpor konstanta $r_B$** – při kreslení musí graf **začínat na ose $r_b$ v bodě $r_B$**. Průběh popisují **tři parametry** $r_B$, $r_{Bm}$, $I_{rB}$.
 
 ![Proudová závislost bázové rezistance](magistr/B2M31IASA/img/bjt_rb_iB.png)
 *Proudová závislost bázové rezistance*
