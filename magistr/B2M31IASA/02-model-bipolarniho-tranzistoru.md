@@ -210,4 +210,18 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 ## Teplotní závislost proudového zesilovacího činitele bipolárního tranzistoru
 
+<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=44" target="_blank" rel="noopener">BJT6.pdf, s. 44</a></small></p>
+
+> **Odpověď:** Proudové zesílení **s teplotou roste** podle mocninného vztahu s novým parametrem $X_{TB}$ (teplotní exponent zesílení): $\beta_F' = \beta_F\left(\frac{T'}{T}\right)^{X_{TB}}$, stejně $\beta_R$. Přepočítají se i saturační proudy svodových složek $I_{SE}$, $I_{SC}$. Ostatní teplotní závislosti ($I_S$, $\phi_0$, $C_{J0}$, parametr $X_{TI}$, $E_g$) jsou **stejné jako u diody** (otázka 1.7).
+
+| Parametr | Teplotní přepočet | Význam |
+|---|---|---|
+| $\beta_F$ | $\beta_F' = \beta_F\left(\frac{T'}{T}\right)^{X_{TB}}$ | dopředné zesílení |
+| $\beta_R$ | $\beta_R' = \beta_R\left(\frac{T'}{T}\right)^{X_{TB}}$ | zpětné zesílení |
+| $I_{SE}$ | $I_{SE}' = I_{SE}\,\dfrac{(I_S'/I_S)^{1/n_E}}{(T'/T)^{X_{TB}}}$ | svodový proud přechodu B-E |
+| $I_{SC}$ | $I_{SC}' = I_{SC}\,\dfrac{(I_S'/I_S)^{1/n_C}}{(T'/T)^{X_{TB}}}$ | svodový proud přechodu B-C |
+| $I_S$, $\phi_0$, $C_{J0}$ | jako u diody (1.7) | – |
+
+$T$ je jmenovitá teplota, $T'$ nová teplota.
+
 ## <del>Šumový model bipolárního tranzistoru (znát jen typy šumu, ne náhradní obvod)</del>
