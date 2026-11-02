@@ -188,11 +188,15 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=31" target="_blank" rel="noopener">BJT6.pdf, s. 31–32</a></small></p>
 
-**Vysvětlení:**
+> **Odpověď:** Přechod B-C leží zčásti pod emitorem (**vnitřní báze**) a zčásti mimo něj (**vnější báze**), obrázek níže. Proto se kapacita $C_{JC}$ **dělí**: podíl $X_{CJC}$ je za odporem $r_b$, zbytek $(1-X_{CJC})$ před ním (obrázek níže). Bez rozdělení by model nesprávně fungoval na **vysokých kmitočtech**.
 
-- Reálný přechod báze-kolektor je *rozprostřený* – část leží pod emitorem (*vnitřní* báze, za bázovým odporem $r_b$), část mimo něj až k bázovému kontaktu (*vnější* báze, přímo na svorce B).
-- Proto se kolektorová kapacita v modelu **dělí** parametrem $X_{CJC} \in \langle 0,1\rangle$: podíl $X_{CJC}$ je připojen k vnitřní bázi, zbytek $(1-X_{CJC})$ k vnější bázi (před $r_b$). Analogicky $X_{CJC2}$ u kvazisaturačního modelu a $X_{CJS}$ u substrátové kapacity.
-- **Proč:** jediná soustředěná kapacita na vnitřní bázi by vedla ke špatnému *kmitočtovému chování* – rozdělení lépe aproximuje rozprostřenou RC strukturu báze (kapacita vs. $r_b$), a tím přesněji modeluje zesílení a fázi na vysokých kmitočtech.
+![Schematický řez planárním NPN tranzistorem – vnitřní a vnější báze, rozdělení kapacity B-C (vlastní kresba)](magistr/B2M31IASA/img/bjt_rez.png)
+*Schematický řez planárním NPN tranzistorem – vnitřní a vnější báze, rozdělení kapacity B-C (vlastní kresba)*
+
+![Výřez náhradního modelu: vnitřní kapacita $i_8$ a vnější kapacita $i_9$ (barvy odpovídají řezu)](magistr/B2M31IASA/img/bjt_kap_bc.png)
+*Výřez náhradního modelu: vnitřní kapacita $i_8$ a vnější kapacita $i_9$ (barvy odpovídají řezu)*
+
+*Zdroje:* [Qucs – Technical documentation, Gummel–Poon model](https://qucs.github.io/tech/node70.html) (kapacita B-C rozdělena na vnější a vnitřní část, parametr XCJC); [US5525818A – Reducing extrinsic base-collector capacitance](https://patents.google.com/patent/US5525818) (vnitřní a vnější báze a jejich podíl na kapacitě B-C).
 
 ## Modelování zpoždění mikrovlnných tranzistorů, Besselova funkce (jen vědět, že se touto funkcí zpoždění aproximuje)
 
