@@ -33,8 +33,6 @@ $$
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/JFET6.pdf#page=9" target="_blank" rel="noopener">JFET6.pdf, s. 8–10</a></small></p>
 
 - Podle tradice programů SPICE je **prahové napětí $V_T$ zadáváno záporné pro N-kanálový i pro P-kanálový JFET**.
-- To samozřejmě **odporuje skutečnosti**: z fyzikálního hlediska musí být prahové napětí *N-kanálových* tranzistorů *záporné* a *P-kanálových* tranzistorů *kladné*!
-- Chyba přetrvává kvůli kompatibilitě s existujícími knihovnami modelů – na zadávání je třeba dát pozor.
 
 ## ⭐ Teplotní vlastnosti, vědět, že je <u>JFET málo teplotně závislý a proč</u>, případně existence teplotně nezávislého bodu v charakteristikách
 
