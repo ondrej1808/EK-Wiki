@@ -36,6 +36,10 @@ $$
 
 Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu**, upravený dvěma korekčními činiteli $k_i$ a $k_v$.
 
+\small
+
+\setlength{\tabcolsep}{4pt}
+
 | Veličina | Vzorec | Význam |
 |---|---|---|
 | $i_f$ | $\boldsymbol{I_S\left(e^{\frac{v_{\mathrm{be}}}{n_F v_T}} - 1\right)}$ | dopředný proud (řízen $v_{\mathrm{be}}$) |
