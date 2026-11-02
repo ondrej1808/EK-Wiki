@@ -95,11 +95,9 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 
 | Proud | Směrnice $i_C$ | Směrnice $i_B$ | $\beta$ | Proč |
 |---|---|---|---|---|
-| malý | $1/n_F \approx 1$ | $\boldsymbol{1/n_E \approx \frac12}$ | **klesá** | v $i_B$ převládá svodový proud $i_e$ |
-| střední | $\boldsymbol{1/n_F \approx 1}$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
-| velký (nad $I_{KF}$) | $\boldsymbol{(1-n_K)/n_F \approx \frac12}$ | $1/n_F \approx 1$ | **klesá** | vysoká injekce – $i_C$ roste pomaleji |
-
-**Tučně** = směrnice ze zadání (1 a $\frac12$).
+| malý | $1/n_F \approx 1$ | $1/n_E \approx \frac12$ | klesá | v $i_B$ převládá svodový proud $i_e$ |
+| střední | $1/n_F \approx 1$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
+| velký (nad $I_{KF}$) | $(1-n_K)/n_F \approx \frac12$ | $1/n_F \approx 1$ | klesá | vysoká injekce – $i_C$ roste pomaleji |
 
 ![Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$ (BJT6.pdf, s. 10)](magistr/B2M31IASA/img/bjt_lnIB_lnIC.png)
 *Závislost logaritmu bázového a kolektorového proudu na $v_{\mathrm{BE}}/v_T$ (BJT6.pdf, s. 10)*
