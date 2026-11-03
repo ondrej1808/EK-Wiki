@@ -85,7 +85,19 @@ def inline(s, pre):
     s = re.sub(r'\$\$.*?\$\$|\\\[.*?\\\]|\$[^$]+\$', keep, s, flags=re.S)
 
     s = re.sub(r'\\priorita\s*', '⭐ ', s)
-    s = replace_cmd(s, 'href', lambda u, t: f'[{t}]({u.replace(chr(92) + "%", "%")})', 2)
+    def href(u, t):
+        """\\href{url}{text} → markdown odkaz; místní PDF (bez http) míří do složky pdf/ předmětu.
+
+        Parametry:
+            u -- URL nebo jméno PDF (případně s #page=N)
+            t -- text odkazu
+        Vrací: markdown odkaz.
+        """
+        u = u.replace(chr(92) + '%', '%').replace(chr(92) + '#', '#')
+        if not u.startswith(('http://', 'https://')) and '.pdf' in u:
+            u = f'{pre}/pdf/{u}'
+        return f'[{t}]({u})'
+    s = replace_cmd(s, 'href', href, 2)
     s = replace_cmd(s, 'hyperref', lambda t: t)   # interní odkaz v PDF → ve wiki jen text (např. „1.7“)
     s = replace_cmd(s, 'podtr', lambda a: f'<u>{a}</u>')
     s = replace_cmd(s, 'skrt', lambda a: f'<del>{a}</del>')
@@ -97,7 +109,7 @@ def inline(s, pre):
     # ve wiki nejsou čísla obrázků: „obrázek \ref{fig:…}“ → „obrázek níže“, jiné odkazy pryč
     s = replace_cmd(s, 'ref', lambda a: 'níže' if a.startswith('fig:') else '')
     s = replace_cmd(s, 'label', lambda a: '')
-    s = s.replace(r'\dots', '…').replace('~', ' ').replace(r'\,', ' ').replace('{,}', ',')
+    s = s.replace(r'\dots', '…').replace('~', ' ').replace(r'\,', ' ').replace('{,}', ',').replace(r'\%', '%')
     s = s.replace(r'\ ', ' ').replace('---', '—').replace('--', '–')
     s = re.sub(r'\\(medskip|par|noindent|centering|newpage)\b', '', s)
     s = re.sub(r'\x00(\d+)\x00', lambda m: maths[int(m.group(1))], s)

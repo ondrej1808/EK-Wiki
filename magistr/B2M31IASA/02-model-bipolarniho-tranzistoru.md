@@ -60,7 +60,7 @@ Proud hlavního zdroje je **rozdíl dopředného $i_f$ a zpětného $i_r$ proudu
 
 **Co je svodový (leakage) proud:** neideální složka proudu báze, kterou tvoří **rekombinace nosičů v přechodu báze-emitor** (v jeho vyprázdněné oblasti a na povrchu). Tyto nosiče zaniknou dřív, než by prošly bází do kolektoru – proud báze tedy teče, ale kolektorový proud nepřibude. V Gummel–Poonově modelu ho popisují parametry $I_{SE}$ („B–E leakage saturation current“) a $n_E$ („B–E leakage emission coefficient“, výchozí hodnota 1,5).
 
-*Zdroje:* [Wikipedia – Gummel–Poon model](https://en.wikipedia.org/wiki/Gummel%E2%80%93Poon_model) (tabulka parametrů ISE, NE); [H. Spieler (LBNL) – Amplifying Devices, s. 5](https://www-physics.lbl.gov/ spieler/Heidelberg_Notes_2001/pdf/V_Amplifying_Devices_and_Microelectronics.pdf\#page=5) (pokles zesílení při malém proudu = rekombinace ve vyprázdněné oblasti přechodu B-E).
+*Zdroje:* [Wikipedia – Gummel–Poon model](https://en.wikipedia.org/wiki/Gummel%E2%80%93Poon_model) (tabulka parametrů ISE, NE); [H. Spieler (LBNL) – Amplifying Devices, s. 5](https://www-physics.lbl.gov/ spieler/Heidelberg_Notes_2001/pdf/V_Amplifying_Devices_and_Microelectronics.pdf#page=5) (pokles zesílení při malém proudu = rekombinace ve vyprázdněné oblasti přechodu B-E).
 
 **Proud báze má dvě složky** (dioda $i_1$ jádra): $i_B = \underbrace{i_f/\beta_F}_{\text{užitečná}} + \underbrace{i_e}_{\text{svodová}}$.
 
