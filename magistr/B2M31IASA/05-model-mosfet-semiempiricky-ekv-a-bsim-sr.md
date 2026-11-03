@@ -55,6 +55,8 @@
 ![Převodní charakteristika MOSFET s podprahovým režimem](magistr/B2M31IASA/img/mosfet_podprah.png)
 *Převodní charakteristika MOSFET s podprahovým režimem*
 
+*Poznámka ke slidu:* slovo „lineární“ je na slidu přeškrtnuté – transkonduktance nad $V_{\mathrm{on}}$ se považuje za **neexponenciální** (v nejjednodušším případě **kvadratickou**), ne lineární.
+
 - Pod prahem $V_T$ proud není nulový – **podprahový režim** (slabá inverze), proud roste **exponenciálně** s $v_{\mathrm{GS}}$ (difúzní proud jako u BJT).
 - Nad napětím $V_{\mathrm{on}}$ (o něco výše než $V_T$) je závislost **kvadratická** (silná inverze, driftový proud); v grafu zjednodušeně téměř lineární.
 - $V_{\mathrm{on}}$ je napětí, od něhož je transkonduktance považována za kvadratickou – obě části se v něm napojí.

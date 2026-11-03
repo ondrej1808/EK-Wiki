@@ -176,6 +176,8 @@ def convert_body(body, pre):
         if not img:
             return ''
         return f'\n![{caption}]({img_path(img.group(1))})\n\n*{caption}*\n'
+    # \redbox{…} (červený rámeček kolem rovnice) → KaTeX \boxed{…}
+    body = body.replace('\\redbox{', '\\boxed{')
     # \odpoved{…} (rámeček s přímou odpovědí) → zvýrazněný citační blok na jednom řádku
     def odpoved(a):
         """Převede obsah \\odpoved{…} na citační blok; odrážky itemize → řádky „> - …“.

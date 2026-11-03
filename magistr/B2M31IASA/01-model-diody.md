@@ -15,7 +15,7 @@ v_t = \frac{q}{kT}
 $$
 
 $$
-i_{1, Shockley}=I_S(e^{\frac{v_{AC}}{nv_t}}-1)
+\boxed{i_{1, Shockley}=I_S(e^{\frac{v_{AC}}{nv_t}}-1)}
 $$
 
 n je emisní koeficient.  $v_{ac}$ je napětí anoda-katoda.
@@ -50,10 +50,12 @@ $$q_d=\tau_d i_1$$ $\tau_d$ je průletová doba – **průměrná doba, za ktero
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Diode6.pdf#page=18" target="_blank" rel="noopener">Diode6.pdf, s. 18–20</a></small></p>
 
+> **Odpověď:** Bariérová kapacita je způsobena **vyprázdněnou oblastí** kolem přechodu PN (pevné ionty bez volných nosičů). V **diferenciálním tvaru** je $dq_b = c_b\, dv_{AC}$ (rovnice ) s $c_b = C_{J0}/(1 - v_{AC}/\phi_0)^m$. **Tři parametry modelu:** $C_{J0}$ (kapacita při 0 V), $\phi_0$ (difúzní napětí), $m$ (exponent přechodu).
+
 Fyzikálně je způsobena vyprázdněnou oblastí v okolí přechodu PN. Uplatní se při každém napětí $v_{AC} < \phi_0$ – vyprázdněná oblast tam existuje a s rostoucím napětím se zužuje (kapacita roste). Hlavně v **závěrném směru** (P na $-$, N na $+$), kde je jediná (difúzní kapacita je tam prakticky nulová). V propustném směru ji při větším proudu přebije difúzní kapacita.
 
 $$
-dq_b=c_b dv_{AC}
+\boxed{dq_b=c_b dv_{AC}}\label{eq:dqb}
 $$
 
 $$
@@ -75,7 +77,7 @@ $$
 ![Linearizace barierové kapacity](magistr/B2M31IASA/img/barierova_kapacita.png)
 *Linearizace barierové kapacity*
 
-Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C_{J0}/(1 - v_{AC}/\phi_0)^m$ (modře), od tohoto bodu se nahradí tečnou – přímkou (červeně), aby kapacita při $v_{AC} \to \phi_0$ nerostla do nekonečna, což reálně neplatí a simulace by spadla.
+Do napětí $F_C\phi_0$ (typicky $F_C = 0{,}5$) platí původní vzorec $c_b = C_{J0}/(1 - v_{AC}/\phi_0)^m$ (modře), od tohoto bodu se nahradí tečnou – přímkou (červeně), aby kapacita při $v_{AC} \to \phi_0$ nerostla do nekonečna.
 
 ## Teplotně závislé parametry modelu diody, problém Schottkyho diod (tj. jaká je implicitní hodnota parametru $X_{TI}$ a jaká je jeho hodnota pro Schottkyho diody)
 

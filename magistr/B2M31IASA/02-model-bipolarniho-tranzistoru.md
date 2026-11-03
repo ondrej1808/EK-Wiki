@@ -8,7 +8,7 @@
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=2" target="_blank" rel="noopener">BJT6.pdf, s. 2</a></small></p>
 
-<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between"><figure style="flex:0 1 56%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Celý model (BJT6.pdf, s. 2)</em></figcaption></figure><figure style="flex:0 1 40%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro_only.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Jen jádro ($i_1$–$i_9$), tranzistor NPN</em></figcaption></figure></div>
+<div style="display:flex;gap:12px;align-items:flex-end;justify-content:space-between"><figure style="flex:0 1 40%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro_only.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Jen jádro ($i_1$–$i_9$), tranzistor NPN</em></figcaption></figure><figure style="flex:0 1 56%;min-width:0;margin:0"><img src="magistr/B2M31IASA/img/bjt_jadro.png" alt="" style="width:100%"><figcaption style="text-align:center;font-size:.9em"><em>Celý model (BJT6.pdf, s. 2)</em></figcaption></figure></div>
 
 *Model BJT – jádro, kvazisaturační a substrátová část*
 
