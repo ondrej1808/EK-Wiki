@@ -94,42 +94,36 @@
 
 ## Vědět, že v „krátkokanálových“ modelech EKV a BSIM se používá nábojově řízený (Wardův) model hradlové kapacity (jeho rovnice jsme pro složitost nedefinovali, Wardovy rovnice jste dostali prostřednictvím poslané kapitoly z naší knihy)
 
-<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Kapitola4.MOSFET.pdf" target="_blank" rel="noopener">Kapitola4.MOSFET.pdf</a></small></p>
+<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/Kapitola4.MOSFET.pdf#page=18" target="_blank" rel="noopener">Kapitola4.MOSFET.pdf, s. 18 (v knize s. 63)</a></small></p>
 
-Meyerův model počítá s kapacitami $C(v)$ a *nezachovává náboj*. V EKV a BSIM se proto používá **nábojově řízený Wardův model** – modelují se přímo náboje gatu, kanálu a substrátu ($q_G$, $q_D$, $q_S$, $q_B$, dělení náboje kanálu mezi D a S) a proudy jsou jejich časové derivace $\Rightarrow$ zachování náboje (obdoba integrální formulace u diody).
+> **Odpověď:** V krátkokanálových modelech EKV a BSIM se hradlová kapacita nepočítá Meyerovým modelem (kapacity $C(v)$), ale **nábojově řízeným (Wardovým) modelem**: modelují se přímo **náboje** gatu, kanálu a substrátu ($q_G$, $q_D$, $q_S$, $q_B$) a proudy jsou jejich časové derivace. Tím se **zachovává náboj**, což Meyerův model nezaručuje.
 
 ## Základní odlišnosti modelů EKV a BSIM (dokázat jednoduše slovně vysvětlit)
 
-<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/EKVvsBSIMiasa26.pdf" target="_blank" rel="noopener">EKVvsBSIMiasa26.pdf</a></small></p>
+<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/EKVvsBSIMoverview26.pdf#page=2" target="_blank" rel="noopener">EKVvsBSIMoverview26.pdf, s. 2–3</a></small></p>
 
-### ⭐ Koncepce výstavby modelu (<u>charge-based vs. threshold-voltage based</u>)
+> **Odpověď:** EKV je **nábojový**, kompaktní model se **spojitými rovnicemi**, vhodný pro **analogové a low-power** obvody. BSIM je **semiempirický model založený na prahovém napětí** s mnoha korekcemi, průmyslový standard pro **číslicové** obvody. Podrobně v tabulce:
 
-EKV vychází z **náboje** inverzní vrstvy (proud jako funkce náboje), BSIM vychází z **prahového napětí** (klasický přístup $v_{\mathrm{GS}} - V_T$ s mnoha korekcemi).
+|  | EKV | BSIM |
+|---|---|---|
+| ⭐ a) koncepce | **charge-based** – rovnice odvozené z náboje v kanálu; napětí vztažená k substrátu $\Rightarrow$ přirozená **symetrie** S/D | **threshold-voltage based** – napětí vztažená k source, spousta korekčních (fitting) funkcí; problémy se symetrií např. při $V_{DS} = 0$ |
+| ⭐ b) obvody | **moderní analogové**, low-power; přesný ve slabé a střední inverzi | **rychlé spínací** (číslicové), hluboký submikron; přesný v silné inverzi |
+| ⭐ c) spojitost | **jediná spojitá rovnice** od slabé po silnou inverzi i od lineární oblasti po saturaci; hladké derivace ($g_m$) | starší verze (BSIM3, BSIM4) – **rovnice pro různé oblasti propojené** vyhlazovacími funkcemi; nespojitosti vyšších derivací |
+| ⭐ d) složitost | **desítky parametrů**, snadná extrakce | **stovky až tisíce parametrů**, náročná extrakce |
 
-### ⭐ Pro jaké typy obvodů jsou spíše modely EKV a BSIM vhodné (zjednodušeně řečeno <u>moderní analogové vs. rychlé spínací</u>)
-
-EKV – **moderní analogové** obvody (nízké napětí, slabá a střední inverze, přesné $g_m/I_D$). BSIM – **rychlé spínací** (číslicové) obvody v silné inverzi.
-
-### ⭐ Spojitost rovnic (<u>jediná spojitá rovnice vs. matematicky propojené rovnice pro různé oblasti funkce</u>)
-
-EKV má **jedinou spojitou rovnici** pro všechny oblasti (slabá $\to$ silná inverze, lineární $\to$ saturace). BSIM má **samostatné rovnice pro jednotlivé oblasti**, které jsou matematicky propojeny (vyhlazovacími funkcemi).
-
-### ⭐ Složitost modelu (<u>desítky parametrů vs. stovky parametrů</u>)
-
-EKV – **desítky parametrů** (fyzikálně názorné), BSIM – **stovky parametrů** (empirické, náročná identifikace).
+Novější BSIM (BSIM6, BSIM-CMG) už také přecházejí na nábojový přístup.
 
 ## ⭐ Koncepce pinch-off napětí v modelu EKV (přesněji definované jako potenciál kanálu, při kterém se <u>hustota inverzního náboje vyrovná hustotě náboje ochuzené oblasti</u>)
 
-<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/ekv_v262.pdf" target="_blank" rel="noopener">ekv_v262.pdf</a></small></p>
+<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/EKVvsBSIMoverview26.pdf#page=4" target="_blank" rel="noopener">EKVvsBSIMoverview26.pdf, s. 4–5</a></small></p>
 
-Pinch-off napětí $V_P$ je **potenciál kanálu**, při kterém je hustota inverzního náboje rovna hustotě náboje ochuzené oblasti (hranice slabé a silné inverze). Přibližně $V_P \approx (V_G - V_{T0})/n$, kde $n$ je faktor sklonu. Všechna napětí se v EKV vztahují k substrátu (bulk) – model je symetrický vůči S a D.
+> **Odpověď:** Pinch-off napětí $V_P$ v EKV **není napětí mezi drainem a sourcem**, ale **potenciál kanálu** (vůči substrátu), při kterém se **hustota inverzního náboje vyrovná hustotě náboje ochuzené oblasti** (obrázek níže). Vyjadřuje, jak moc gate „otevřel“ kanál: $V_P \approx (V_G - V_{T0})/n$. Porovnáním $V_S$ a $V_D$ s $V_P$ model určí režim tranzistoru a díky tomu zůstává **symetrický** vůči source a drainu.
 
-![Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím gatu se sklonem $1/n$](magistr/B2M31IASA/img/pinchoff.png)
-*Pinch-off napětí v EKV (schematicky): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím gatu se sklonem $1/n$*
+![Pinch-off napětí v EKV (schematicky, vlastní kresba): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím gatu se sklonem $1/n$](magistr/B2M31IASA/img/pinchoff.png)
+*Pinch-off napětí v EKV (schematicky, vlastní kresba): a) náboje podél kanálu – v bodě $V_P$ se vyrovnají, b) $V_P$ roste s napětím gatu se sklonem $1/n$*
 
-- **a)** Když roste potenciál kanálu $V_{ch}$ (např. směrem k drainu), inverzní náboj (elektrony, které vedou proud) **ubývá**, kdežto náboj ochuzené oblasti **mírně přibývá**. Bod, kde jsou si rovny, je $V_P$. Vlevo od něj je silná inverze (vodivý kanál), vpravo slabá inverze (kanál prakticky zaškrcený).
-- **b)** $V_P$ vyjadřuje, jak moc gate „otevřelo“ kanál: začíná od prahového napětí $V_{T0}$ a roste pomaleji než $V_G$ (sklon $1/n$, $n \approx 1{,}2$–$1{,}5$), protože část napětí gatu „spotřebuje“ ochuzená oblast.
-- Režim tranzistoru EKV určí porovnáním $V_S$ a $V_D$ s $V_P$: oba menší než $V_P$ $\Rightarrow$ silná inverze (lineární oblast), $V_S < V_P < V_D$ $\Rightarrow$ saturace, oba větší $\Rightarrow$ slabá inverze.
+- **Režimy:** $V_S < V_P$ $\Rightarrow$ kanál je u source otevřený, teče dopředný proud $I_F$; $V_D < V_P$ $\Rightarrow$ otevřený i u drainu (teče i $I_R$). Když $V_D$ stoupne nad $V_P$, kanál se u drainu zaškrtí, $I_R$ je zanedbatelný $\Rightarrow$ **saturace**, $V_{D,\mathrm{sat}} = V_P - V_S$.
+- $n$ je podprahový faktor sklonu (kapacitní dělič mezi gatem a kanálem), proto $V_P$ roste pomaleji než $V_G$.
 
 **Po lopatě (N-MOSFET):**
 
@@ -140,13 +134,23 @@ Pinch-off napětí $V_P$ je **potenciál kanálu**, při kterém je hustota inve
 
 ## ⭐ Základní vztah pro dopředný proud v modelu EKV (jen vědět, že se podobně jako např. v modelu bipolárního tranzistoru určuje jako rozdíl dopředného a zpětného proudu, přičemž v rovnici pro dopředný proud se používá interpolační funkce s <u>ln a exp, která umožňuje automatický přechod do exponenciální závislosti v slabé inverzi a do kvadratické závislosti v silné inverzi</u>, aniž by docházelo k nespojitostem v transkonduktancím, což je velmi důležité pro návrh analogových obvodů)
 
-<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/ekv_v262.pdf" target="_blank" rel="noopener">ekv_v262.pdf</a></small></p>
+<p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/EKVvsBSIMoverview26.pdf#page=6" target="_blank" rel="noopener">EKVvsBSIMoverview26.pdf, s. 6</a></small></p>
+
+> **Odpověď:** Proud drainu je (podobně jako u BJT) **rozdíl dopředného a zpětného proudu** $I_D = I_F - I_R$. Dopředný proud je $I_F = I_S\, i_f$ s interpolační funkcí
 
 $$
-I_D = I_F - I_R, \qquad
-I_{F(R)} = I_S \ln^2\!\left[1 + e^{\frac{V_P - V_{S(D)}}{2 v_T}}\right]
+i_f = \left[\ln\left(1 + e^{\frac{V_P - V_S}{2 U_T}}\right)\right]^2 ,
 $$
 
-- Proud je rozdíl **dopředného** $I_F$ (řízen $V_S$) a **zpětného** $I_R$ (řízen $V_D$) proudu – obdoba Ebersova–Mollova modelu BJT.
-- Interpolační funkce $\ln^2(1 + e^x)$: pro $x \ll 0$ (slabá inverze) $\to e^{x}$ – **exponenciální**, pro $x \gg 0$ (silná inverze) $\to x^2/4$ – **kvadratická** závislost.
-- Přechod je hladký, bez nespojitostí v $g_m$ – důležité pro analogový návrh.
+která přechází **automaticky** do **exponenciální** závislosti ve slabé inverzi a do **kvadratické** v silné inverzi – **bez nespojitostí v transkonduktanci**, což je důležité pro analogový návrh.
+
+| Veličina | Význam |
+|---|---|
+| $I_S = 2 n \mu C_{ox} U_T^2 \frac{W}{L}$ | specifický (normalizační) proud |
+| $n$ | faktor strmosti podprahové oblasti |
+| $\mu$, $C_{ox}$ | pohyblivost nosičů, kapacita oxidu na plochu |
+| $U_T = kT/q$ | teplotní napětí ($\approx 26$ mV), v EKV se značí $U_T$ |
+| $V_S$, $V_P$ | napětí source vůči substrátu, pinch-off napětí (5.11) |
+| $I_R$ | stejný tvar, jen místo $V_S$ je $V_D$ |
+
+Limity funkce: pro $x \ll 0$ (slabá inverze) $\ln^2(1+e^x) \to e^{2x}$ (exponenciála), pro $x \gg 0$ (silná inverze) $\to x^2$ (kvadratická).

@@ -247,7 +247,7 @@
    "answer_parts": [
     {
      "title": "",
-     "text": "**EKV** je postaven na **náboji** v kanálu (charge-based) – proud se počítá z náboje inverzní vrstvy. **BSIM** je postaven na **prahovém napětí** (threshold-voltage based) – proud se počítá z rozdílu $v_{GS}-V_T$ a doplňuje se mnoha korekcemi.",
+     "text": "**EKV** je **nábojový** model (charge-based) – rovnice vychází z náboje v kanálu, napětí se vztahují k **substrátu**, takže je přirozeně **symetrický** vůči source a drain. **BSIM** je založený na **prahovém napětí** (threshold-voltage based), napětí vztahuje k **source** a používá mnoho korekčních (fitting) funkcí – může mít problémy se symetrií (např. při $V_{DS}=0$).",
      "image": null
     }
    ]
@@ -262,7 +262,7 @@
    "answer_parts": [
     {
      "title": "",
-     "text": "**EKV**: moderní **analogové** obvody (nízké napětí, slabá a střední inverze, přesné malé proudy). **BSIM**: **rychlé spínací** (číslicové) obvody, kde tranzistor pracuje hlavně v silné inverzi.",
+     "text": "**EKV**: moderní **analogové** a low-power obvody – přesný ve **slabé a střední inverzi**. **BSIM**: průmyslový standard pro **číslicové (rychlé spínací)** obvody a hluboký submikron – přesný v **silné inverzi**.",
      "image": null
     }
    ]
@@ -277,7 +277,7 @@
    "answer_parts": [
     {
      "title": "",
-     "text": "**EKV** má **jedinou spojitou rovnici** platnou ve všech oblastech (od slabé po silnou inverzi). **BSIM** má **samostatné rovnice pro jednotlivé oblasti**, které jsou matematicky „sešité“ dohromady.",
+     "text": "**EKV** má **jedinou spojitou rovnici** od slabé po silnou inverzi i od lineární oblasti po saturaci; derivace (např. $g_m$) jsou hladké. **BSIM** (starší verze BSIM3, BSIM4) má **rovnice pro různé oblasti** propojené vyhlazovacími funkcemi – nespojitosti vyšších derivací.",
      "image": null
     }
    ]
@@ -292,7 +292,7 @@
    "answer_parts": [
     {
      "title": "",
-     "text": "**EKV**: řádově **desítky parametrů** (fyzikálně názorné, snadnější určení). **BSIM**: řádově **stovky parametrů** (hodně empirických, náročné určení z měření).",
+     "text": "**EKV**: kompaktní, řádově **desítky parametrů**, snadno se určí z měření. **BSIM**: **stovky až tisíce parametrů** (i geometrické koeficienty), extrakce je velmi náročná.",
      "image": null
     }
    ]
@@ -307,7 +307,7 @@
    "answer_parts": [
     {
      "title": "",
-     "text": "Pinch-off napětí $V_P$ je **potenciál kanálu**, při kterém se **hustota náboje inverzní vrstvy rovná hustotě náboje vyprázdněné (ochuzené) oblasti**. Odděluje slabou a silnou inverzi. Přibližně $V_P \\approx (V_G - V_{T0})/n$. Napětí v EKV se vztahují k substrátu, takže model je symetrický vůči source a drain.",
+     "text": "$V_P$ **není napětí mezi drainem a sourcem**, ale **potenciál kanálu** (vůči substrátu), při kterém se **hustota inverzního náboje vyrovná hustotě náboje ochuzené oblasti**. Vyjadřuje, jak moc gate otevřel kanál: $V_P \\approx (V_G - V_{T0})/n$. Když $V_D > V_P$, kanál se u drainu zaškrtí → saturace ($V_{D,sat} = V_P - V_S$).",
      "image": null
     }
    ]
@@ -322,7 +322,7 @@
    "answer_parts": [
     {
      "title": "",
-     "text": "Proud je rozdíl **dopředného a zpětného** proudu $I_D = I_F - I_R$ (podobně jako u BJT). Pro dopředný proud se použije interpolační funkce s **ln a exp**: $I_F = I_S \\ln^2(1 + e^{(V_P - V_S)/2v_T})$. Pro slabou inverzi z ní vyjde **exponenciála**, pro silnou **kvadratická** závislost – přechod je hladký, bez skoků v transkonduktanci (důležité pro analogový návrh).",
+     "text": "Proud je rozdíl **dopředného a zpětného** proudu $I_D = I_F - I_R$ (podobně jako u BJT). Dopředný proud $I_F = I_S\\,i_f$, kde interpolační funkce s **ln a exp** je $i_f = [\\ln(1 + e^{(V_P - V_S)/2U_T})]^2$ a $I_S = 2n\\mu C_{ox} U_T^2 W/L$. Pro slabou inverzi z ní vyjde **exponenciála**, pro silnou **kvadratická** závislost – přechod je hladký, bez skoků v transkonduktanci (důležité pro analogový návrh).",
      "image": null
     }
    ]
