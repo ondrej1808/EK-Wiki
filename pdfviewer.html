@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/web/pdf_viewer.css">
+<style>
+  /* Jednoduchý PDF prohlížeč pro wiki: pamatuje si stránku a zoom pro každý soubor (localStorage) */
+  html, body { margin: 0; height: 100%; background: #525659; font-family: system-ui, sans-serif; }
+  #bar { position: absolute; top: 0; left: 0; right: 0; height: 36px; display: flex; gap: 6px; align-items: center;
+         justify-content: center; background: #323639; color: #eee; font-size: 13px; z-index: 2; }
+  #bar button { background: #4a4e51; color: #eee; border: 0; border-radius: 4px; padding: 4px 9px; cursor: pointer; font-size: 13px; }
+  #bar button:hover { background: #5f6366; }
+  #bar span { white-space: nowrap; }
+  #bar input { width: 42px; text-align: center; background: #202124; color: #eee; border: 1px solid #555; border-radius: 4px; padding: 3px; }
+  #viewerContainer { position: absolute; top: 36px; left: 0; right: 0; bottom: 0; overflow: auto; }
+  .pdfViewer .page { margin: 8px auto; border: 0; box-shadow: 0 1px 6px rgba(0,0,0,.4); }
+  #err { color: #fff; padding: 40px; text-align: center; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <button id="prev" title="Předchozí stránka">◀</button>
+  <input id="pageNum" type="text" inputmode="numeric"> <span>/ <span id="pageCount">–</span></span>
+  <button id="next" title="Další stránka">▶</button>
+  <span style="width:12px"></span>
+  <button id="zoomOut" title="Zmenšit">−</button>
+  <span id="zoomVal">100 %</span>
+  <button id="zoomIn" title="Zvětšit">+</button>
+  <button id="fitW" title="Na šířku">↔</button>
+  <button id="fitP" title="Celá stránka">⬍</button>
+</div>
+<div id="viewerContainer"><div id="viewer" class="pdfViewer"></div></div>
+<script type="module">
+import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';
+globalThis.pdfjsLib = pdfjsLib;
+const { EventBus, PDFViewer, PDFLinkService } = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/web/pdf_viewer.mjs');
+
+const params = new URLSearchParams(location.search);
+const file = params.get('file');
+const KEY = 'pdfpos:' + file;
+const $ = id => document.getElementById(id);
+
+/** Načte uloženou pozici (stránka, zoom) pro tento soubor.
+ *  @returns {{page:number, scale:string}|null} uložený stav, nebo null */
+function loadPos() {
+  try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; }
+}
+
+/** Uloží aktuální stránku a zoom do localStorage (chyby úložiště ignoruje).
+ *  @returns nic */
+function savePos() {
+  try { localStorage.setItem(KEY, JSON.stringify({ page: viewer.currentPageNumber, scale: viewer.currentScaleValue })); } catch (e) { /* bez úložiště */ }
+}
+
+const eventBus = new EventBus();
+const linkService = new PDFLinkService({ eventBus });
+const viewer = new PDFViewer({ container: $('viewerContainer'), viewer: $('viewer'), eventBus, linkService });
+linkService.setViewer(viewer);
+
+eventBus.on('pagesinit', () => {
+  const pos = loadPos();
+  viewer.currentScaleValue = (pos && pos.scale) || params.get('zoom') || 'page-width';
+  const page = parseInt(params.get('page') || (pos && pos.page) || 1, 10);
+  if (page > 1) viewer.currentPageNumber = Math.min(page, viewer.pagesCount);
+});
+eventBus.on('pagechanging', e => { $('pageNum').value = e.pageNumber; savePos(); });
+eventBus.on('scalechanging', e => { $('zoomVal').textContent = Math.round(e.scale * 100) + ' %'; savePos(); });
+
+$('prev').onclick = () => viewer.previousPage();
+$('next').onclick = () => viewer.nextPage();
+$('zoomIn').onclick = () => viewer.increaseScale();
+$('zoomOut').onclick = () => viewer.decreaseScale();
+$('fitW').onclick = () => { viewer.currentScaleValue = 'page-width'; };
+$('fitP').onclick = () => { viewer.currentScaleValue = 'page-fit'; };
+$('pageNum').onchange = e => { const n = parseInt(e.target.value, 10); if (n) viewer.currentPageNumber = n; };
+// rám ve wiki dostává rozměry až po vykreslení panelů → přepočítat „na šířku / celou stránku“
+new ResizeObserver(() => { const v = viewer.currentScaleValue; if (v && isNaN(+v)) viewer.currentScaleValue = v; }).observe($('viewerContainer'));
+
+try {
+  const doc = await pdfjsLib.getDocument({ url: file }).promise;
+  viewer.setDocument(doc);
+  linkService.setDocument(doc);
+  $('pageCount').textContent = doc.numPages;
+  document.title = file.split('/').pop();
+} catch (e) {
+  $('viewerContainer').innerHTML = '<div id="err">PDF se nepodařilo načíst: ' + String(e.message || e) + '</div>';
+}
+</script>
+</body>
+</html>

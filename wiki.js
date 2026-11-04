@@ -814,7 +814,8 @@
       let tries = 0;
       (function setSrc() {
         if ((!frame.isConnected || !frame.clientWidth) && tries++ < 40) return setTimeout(setSrc, 50);
-        frame.src = enc + pdfZoomHash(frame);
+        // vlastní prohlížeč (pdf.js) — pamatuje si stránku a zoom po refreshi
+        frame.src = 'pdfviewer.html?file=' + encodeURIComponent(enc);
       })();
       return;
     }
