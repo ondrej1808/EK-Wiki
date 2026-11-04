@@ -342,6 +342,7 @@
             { type: 'cards', label: 'Kartičky ⭐ (podtržené otázky)',      src: 'set=json/magistr-iasa.json&subject=IASA' },
             { type: 'pdf',  label: 'Témata 2026 – modely (zadání)',       src: MG_IASA + 'pdf/Temata2026modely.pdf' },
             { type: 'pdf',  label: 'Semestrální test – celé PDF',         src: MG_IASA + 'pdf/IASA_sem_test.pdf' },
+            { type: 'pdf',  label: 'Studentský materiál 2 – Pavel (sem. test v1)', src: MG_IASA + 'pdf/PAVEL_IASAsemTest_v1.pdf' },
             { type: 'pdf',  label: 'Prezentace – Dioda',                  src: MG_IASA + 'pdf/Diode6.pdf' },
             { type: 'pdf',  label: 'Prezentace – BJT',                    src: MG_IASA + 'pdf/BJT6.pdf' },
             { type: 'pdf',  label: 'Prezentace – JFET',                   src: MG_IASA + 'pdf/JFET6.pdf' },
