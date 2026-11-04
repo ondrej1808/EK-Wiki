@@ -701,3 +701,19 @@ body.embedded .cards-grid { align-items: stretch; }
 body.embedded .card { top: 0 !important; height: calc(100% - 8px); max-height: calc(100% - 8px); }
 body.embedded .card-content { height: 100%; box-sizing: border-box; }
 body.embedded .navigation-section { display: none; }
+
+/* Hlavička kartiček ve wiki: lišta postupu nízká a čitelná (bílý text na světlém pozadí nebyl vidět
+   a překrýval nadpis), horní panel bez pevných 25vh → žádný prázdný blok nad kartou */
+body.embedded .progress-bar-container { height: 22px; }
+body.embedded .progress-text { color: var(--card-text); text-shadow: none; font-size: 12px; letter-spacing: 0; }
+body.embedded .container { padding-top: 26px; }
+body.embedded .menu-section { height: auto; }
+body.embedded .header { height: auto; }
+body.embedded .header-title { padding: 8px 16px; }
+body.embedded .header-title h1 { font-size: 16px; }
+body.embedded .header-title .stats { margin-top: 4px; }
+@media (max-width: 768px) {
+    body.embedded .container { padding-top: 0; }
+    body.embedded .mobile-header { top: 22px; height: 44px; padding: 4px 14px; }
+    body.embedded .cards-section { padding-top: 70px; margin-top: 0; }
+}
