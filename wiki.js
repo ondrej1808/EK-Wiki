@@ -596,7 +596,8 @@
   /* ── State ── */
   let activeKey    = null;
   let filterText   = '';
-  const groupOpen  = {};  // code → bool (default false — sections start collapsed)
+  // code → bool (default false — sections start collapsed); ukládá se, aby rozbalení přežilo refresh
+  const groupOpen  = (() => { try { return JSON.parse(localStorage.getItem(lsKey('wiki_group_open'))) || {}; } catch (e) { return {}; } })();
 
   /* ═══════════════════════════════════════════════════════
    *  Helpers
@@ -979,6 +980,7 @@
           `<span class="arr">▶</span>`;
         hdr.addEventListener('click', () => {
           groupOpen[subj.code] = !isOpen;
+          try { localStorage.setItem(lsKey('wiki_group_open'), JSON.stringify(groupOpen)); } catch (e) { /* bez úložiště */ }
           renderSidebar();
         });
 
