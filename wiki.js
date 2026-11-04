@@ -1234,7 +1234,9 @@
       el.classList.add('drag-over');
     });
     el.addEventListener('dragleave', e => {
-      if (!el.contains(e.relatedTarget)) el.classList.remove('drag-over');
+      // Firefox: relatedTarget může být null nebo objekt mimo DOM (např. při opuštění iframe) → Node.contains by spadl
+      const rt = e.relatedTarget;
+      if (!(rt instanceof Node) || !el.contains(rt)) el.classList.remove('drag-over');
     });
     el.addEventListener('drop', e => {
       e.preventDefault();

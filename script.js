@@ -1153,12 +1153,25 @@ function rateOpenAnswer(qId, knewIt) {
     }
 }
 
+/**
+ * Přejde na další kartu a posune odpočet připomínek.
+ * Na poslední kartě dřív nedělala nic, takže odložené karty („Připomenout za n“) zůstaly navždy skryté;
+ * teď se na konci balíčku čekající připomínky uvolní hned a zařadí za aktuální kartu.
+ * @returns {void} nic; mění pořadí karet, ukládá postup a překreslí UI
+ */
 function nextCard() {
     const scopeState = getCurrentScopeState();
     const visibleQuestions = ensureVisibleOrder();
     const total = visibleQuestions.length;
+    const atEnd = currentCardIndex >= total - 1;
+    const hasPendingReminders = Object.keys(scopeState.reminders || {}).length > 0;
 
-    if (currentCardIndex < total - 1) {
+    if (atEnd && hasPendingReminders) {
+        // konec balíčku: všechny odložené karty uvolnit při tomto kroku
+        Object.values(scopeState.reminders).forEach(reminder => { reminder.remaining = 1; });
+    }
+
+    if (!atEnd || hasPendingReminders) {
         const currentCard = document.querySelector('.card.stack-0');
         currentCard.classList.add('swipe-left');
         const currentQuestion = visibleQuestions[currentCardIndex];

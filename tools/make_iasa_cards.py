@@ -117,11 +117,10 @@ CARDS = [
      '$V_P \\approx (V_G - V_{T0})/n$. Když $V_D > V_P$, kanál se u drainu zaškrtí → saturace ($V_{D,sat} = V_P - V_S$).',
      None),
     ('MOSFET', 'Základní vztah pro dopředný proud v modelu EKV.',
-     'Proud je rozdíl **dopředného a zpětného** proudu $I_D = I_F - I_R$ (podobně jako u BJT). '
-     'Dopředný proud $I_F = I_S\\,i_f$, kde interpolační funkce s **ln a exp** je '
-     '$i_f = [\\ln(1 + e^{(V_P - V_S)/2U_T})]^2$ a $I_S = 2n\\mu C_{ox} U_T^2 W/L$. '
-     'Pro slabou inverzi z ní vyjde **exponenciála**, pro silnou **kvadratická** závislost – přechod je hladký, '
-     'bez skoků v transkonduktanci (důležité pro analogový návrh).',
+     'Proud je (podobně jako u BJT) **rozdíl dopředného a zpětného proudu**: $I_D = I_F - I_R$. '
+     'V rovnici pro $I_F$ je **interpolační funkce s ln a exp**, která sama přejde '
+     've **slabé inverzi do exponenciály** a v **silné inverzi do kvadratické závislosti** – '
+     'hladce, **bez nespojitostí v transkonduktanci** (důležité pro analogový návrh).',
      None),
 ]
 
