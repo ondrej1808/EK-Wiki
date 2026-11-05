@@ -75,9 +75,9 @@
 
 <iframe src="magistr/B2M31IASA/applety/mosfet-pinch-off.html" class="applet-frame" title="NMOS – pinch-off a podprah" loading="lazy" style="width:100%;height:640px;border:0;border-radius:8px"></iframe>
 
-- **Podprah** ($IC < 0{,}1$): pod oxidem jen málo elektronů, proud teče **difúzí**, $\log i_D$ roste lineárně (sklon $\approx n\cdot 60$ mV/dek) a proud se nasytí už po $\approx 4U_T \approx 100$ mV $v_{DS}$ – bez klasického pinch-off.
+- **Podprah** ($IC < 0{,}1$): pod oxidem jen málo elektronů, proud teče **difúzí**, $\log i_D$ roste lineárně (podprahový sklon $S \approx n\cdot 60$ mV/dek) a proud se nasytí už po $\approx 4U_T \approx 100$ mV $v_{DS}$ – bez klasického pinch-off.
 - **Silná inverze** ($IC > 10$): souvislý kanál, proud driftem; saturace při $v_{DS} \gtrsim (v_{GS}-V_T)/n + 4U_T$, kdy náboj u drainu klesne hluboko pod náboj u source (**pinch-off**); ve střední inverzi saturace bez ostrého pinch-off.
-- Výpočet (EKV 2.6, ekv_v262.pdf s. 9–10): $V_P \approx (V_{GS}-V_T)/n$, normovaný náboj z $v = 2q + \ln q$ s $v = (V_P - V_{S,D})/U_T$, proud $i = q^2 + q$, $I_D \propto (i_f - i_r)(1+\lambda V_{DS})$. $\lambda$ je jen zjednodušení modulace délky kanálu ze SPICE level 1 – EKV 2.6 ji počítá přes $\Delta L$ (rov. 48–52). Zanedbána mobilita závislá na poli, saturace rychlosti, DIBL a krátký kanál (v BSIM4 by v podprahu proud kvůli DIBL mírně rostl dál).
+- Výpočet (EKV 2.6, ekv_v262.pdf s. 9–10): $V_P \approx (V_{GS}-V_T)/n$, normovaný náboj z $v = 2q + \ln q$ s $v = (V_P - V_{S,D})/U_T$, proud $i = q^2 + q$, $I_D \propto (i_f - i_r)(1+\lambda V_{DS})$. $\lambda$ je jen zjednodušení modulace délky kanálu ze SPICE level 1 – EKV 2.6 ji počítá přes $\Delta L$ (rov. 48–52) a jeho parametr LAMBDA je koeficient u $\Delta L$, ne $\lambda$ ze SPICE. Mez saturace $(v_{GS}-V_T)/n + 4U_T$ je heuristika (EKV 2.6 počítá $V_{DSS}$ podle rov. 46–47). Zanedbána mobilita závislá na poli, saturace rychlosti, DIBL a krátký kanál (v BSIM4 by v podprahu proud kvůli DIBL mírně rostl dál).
 
 ## Dělení bariérových kapacit MOSFET na postranní kapacity a kapacitu dna, odlišné exponenty napěťové závislosti obou kapacit (znát jen princip dělení kapacit)
 
