@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NMOS – pinch-off a podprah (EKV)</title>
+<style>
+  :root { --bg:#fff; --txt:#2c2c2a; --sub:#5f5e5a; --ax:#B4B2A9; --sub2:#D3D1C7; --ok:#3B6D11; --warn:#854F0B; --bad:#A32D2D; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1e1e1c; --txt:#D3D1C7; --sub:#b4b2a9; --ax:#5F5E5A; --sub2:#444441; --ok:#97C459; --warn:#EF9F27; --bad:#F09595; } }
+  body { margin:0 auto; max-width:720px; padding:10px 14px; background:var(--bg); color:var(--txt); font-family:system-ui,sans-serif; }
+  .ctl { display:grid; grid-template-columns:auto minmax(0,1fr) 80px; gap:8px 12px; align-items:center; margin-bottom:8px; font-size:14px; }
+  .leg { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--sub); margin:6px 0; }
+  .sw { display:inline-block; width:12px; height:12px; vertical-align:-2px; }
+  .plots { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+  canvas { width:100%; height:auto; display:block; }
+</style>
+</head>
+<body>
+<div class="ctl">
+  <label>v<sub>GS</sub></label><input type="range" id="g" min="0" max="200" value="55" step="1"><span id="go" style="font-weight:500"></span>
+  <label>v<sub>DS</sub></label><input type="range" id="d" min="0" max="200" value="20" step="1"><span id="do" style="font-weight:500"></span>
+</div>
+<canvas id="cv" width="680" height="250"></canvas>
+<div class="leg">
+  <span><span class="sw" style="background:#BA7517"></span> gate</span>
+  <span><span class="sw" style="background:#FAC775"></span> oxid</span>
+  <span><span class="sw" style="background:#185FA5"></span> inverzní náboj (sytost ~ log hustoty elektronů)</span>
+  <span><span class="sw" style="background:#85B7EB"></span> n+ source / drain</span>
+  <span><span class="sw" style="background:#D3D1C7"></span> p substrát</span>
+</div>
+<div class="plots">
+  <canvas id="p1" width="330" height="200"></canvas>
+  <canvas id="p2" width="330" height="200"></canvas>
+</div>
+<div id="st" style="font-size:14px;font-weight:500;margin-top:6px"></div>
+<script>
+/* NMOS podle zjednodušeného EKV (ekv_v262.pdf s. 9–14): V_P = (V_GS − V_T)/n, i_f = F(V_P/U_T),
+   i_r = F((V_P − V_DS)/U_T), F(x) = ln²(1 + e^{x/2}), I_D ∝ (i_f − i_r)(1 + λ·V_DS);
+   normovaný náboj q = √(1/4 + i) − 1/2, profil podél kanálu q² + q lineárně mezi source a drainem.
+   Zanedbáno: závislost mobility na poli, saturace rychlosti, DIBL, n závislé na V_G. */
+const cv = document.getElementById('cv'), c = cv.getContext('2d');
+const c1 = document.getElementById('p1').getContext('2d'), c2 = document.getElementById('p2').getContext('2d');
+const g = document.getElementById('g'), d = document.getElementById('d');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const UT = 0.0259, N = 1.3, VT = 0.7, LAMBDA = 0.05, OX = 60, SI = 68, X0 = 190, X1 = 490;
+let ph = 0;
+const parts = Array.from({ length: 120 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() }));
+
+/** Interpolační funkce EKV F(x) = ln²(1 + e^{x/2}) (pro velké x asymptota (x/2)²).
+ *  @param {number} x  normované napětí (V_P − V)/U_T  @returns {number} normovaný proud i */
+function F(x) { const z = x / 2; const l = z > 30 ? z : Math.log(1 + Math.exp(z)); return l * l; }
+
+/** Normovaný inverzní náboj z normovaného proudu: q = √(1/4 + i) − 1/2.
+ *  @param {number} i  normovaný proud (i_f nebo i_r)  @returns {number} náboj (vůči 2nC_ox·U_T) */
+function qOf(i) { return Math.sqrt(0.25 + i) - 0.5; }
+
+/** Dopředný a zpětný normovaný proud pro dané napětí.
+ *  @param {number} vg  V_GS (V)  @param {number} vd  V_DS (V)  @returns {{f:number, r:number}} i_f, i_r */
+function ifr(vg, vd) { const vp = (vg - VT) / N; return { f: F(vp / UT), r: F((vp - vd) / UT) }; }
+
+/** Proud drainu (normovaný, I_S = 1) včetně modulace délky kanálu λ.
+ *  @param {number} vg  V_GS (V)  @param {number} vd  V_DS (V)  @returns {number} I_D/I_S */
+function Id(vg, vd) { const i = ifr(vg, vd); return (i.f - i.r) * (1 + LAMBDA * vd); }
+
+/** Normovaný náboj v místě t podél kanálu (0 = source, 1 = drain); q² + q je lineární v t.
+ *  @param {number} t  poloha 0–1  @param {{f:number, r:number}} i  výsledek ifr()  @returns {number} q(t) */
+function qAt(t, i) { const f = i.f * (1 - t) + i.r * t; return qOf(f); }
+
+/** Viditelnost náboje na logaritmické škále (podprah má q ~ 1e-4, silná inverze q ~ 10).
+ *  @param {number} q  normovaný náboj  @returns {number} 0–1 (sytost / hustota teček) */
+function vis(q) { return Math.min(1, Math.max(0, (Math.log10(Math.max(q, 1e-9)) + 6) / 7)); }
+
+/** Formátuje malé i velké hodnoty náboje.
+ *  @param {number} q  hodnota  @returns {string} text */
+function fmt(q) { return q < 0.01 ? q.toExponential(1) : q.toFixed(2); }
+
+/** Vykreslí řez tranzistorem, částice a obě charakteristiky; volá se přes requestAnimationFrame.
+ *  @returns nic */
+function draw() {
+  const vg = +g.value / 100, vd = +d.value / 100, i = ifr(vg, vd), I = Id(vg, vd);
+  const T = css('--txt'), qS = qOf(i.f), IC = i.f, sat = i.r / Math.max(i.f, 1e-30) < 0.01;
+  c.clearRect(0, 0, 680, 250);
+  c.fillStyle = '#D3D1C7'; c.fillRect(20, SI, 640, 170);
+  c.fillStyle = '#85B7EB';
+  c.beginPath(); c.ellipse(105, SI, 95, 45, 0, 0, Math.PI); c.fill();
+  c.beginPath(); c.ellipse(575, SI, 95, 45, 0, 0, Math.PI); c.fill();
+  for (let k = 0; k < 100; k++) {
+    const t = k / 100, qq = qAt(t, i), al = vis(qq), h = Math.min(34, 3 + Math.max(0, qq) * 3);
+    c.fillStyle = 'rgba(24,95,165,' + (0.03 + 0.97 * al).toFixed(3) + ')';
+    c.fillRect(X0 + t * (X1 - X0), SI, (X1 - X0) / 100 + 1, h);
+  }
+  c.fillStyle = '#FAC775'; c.fillRect(X0 - 10, OX, X1 - X0 + 20, SI - OX);
+  c.fillStyle = '#BA7517'; c.fillRect(X0 - 10, OX - 18, X1 - X0 + 20, 18);
+  c.fillStyle = '#5F5E5A'; c.fillRect(50, SI - 12, 90, 12); c.fillRect(540, SI - 12, 90, 12);
+  const strong = IC > 10;
+  ph += 0.002 + Math.min(0.02, Math.sqrt(Math.max(0, I)) * 0.002);
+  parts.forEach(o => {
+    const t = (o.x + ph * (strong ? 1 : 0.4)) % 1, qq = qAt(t, i);
+    if (o.r > vis(qq) * 0.9) return;
+    const X = X0 + t * (X1 - X0) + (strong ? 0 : (Math.random() - .5) * 4), h = Math.min(34, 3 + Math.max(0, qq) * 3);
+    c.fillStyle = qq > 1.5 ? '#FFFFFF' : '#0C447C';
+    c.beginPath(); c.arc(X, SI + 1 + o.y * Math.max(2, h - 2), 1.8, 0, 7); c.fill();
+  });
+  c.font = '13px sans-serif'; c.fillStyle = T; c.textAlign = 'center';
+  c.fillText('source', 95, SI - 20); c.fillText('drain', 585, SI - 20); c.fillText('gate', 340, OX - 24);
+  c.textAlign = 'left'; c.fillText('p substrát', 30, SI + 160);
+  c.fillText('náboj u source q_S = ' + fmt(qS), X0 - 160, SI + 70);
+  c.textAlign = 'right'; c.fillText('náboj u drainu q_D = ' + fmt(qOf(i.r)), X1 + 160, SI + 70);
+  const reg = IC < 0.1 ? 'slabá inverze (podprah), IC = ' : IC < 10 ? 'střední inverze, IC = ' : 'silná inverze, IC = ';
+  c.textAlign = 'center'; c.fillStyle = IC < 0.1 ? css('--warn') : IC < 10 ? '#534AB7' : '#185FA5';
+  c.fillText(reg + (IC < 0.01 ? IC.toExponential(1) : IC.toFixed(2)), 340, SI + 100);
+  if (sat && IC > 10) {
+    c.strokeStyle = '#E24B4A'; c.lineWidth = 2; c.beginPath(); c.arc(X1 - 6, SI + 3, 11, 0, 7); c.stroke();
+    c.fillStyle = css('--bad'); c.fillText('pinch-off u drainu (náboj klesl na úroveň slabé inverze)', 380, SI + 125);
+  }
+  plot1(vg, vd); plot2(vg, vd);
+  document.getElementById('go').textContent = vg.toFixed(2) + ' V';
+  document.getElementById('do').textContent = (vd * 1000).toFixed(0) + ' mV';
+  const st = document.getElementById('st'), vdsat = (vg - VT) / N;
+  st.textContent = IC < 0.1
+    ? (sat ? 'Podprah: proud teče DIFÚZÍ; nasycen už po ~4 U_T ≈ 100 mV (I ∝ 1 − e^{−V_DS/U_T}), bez klasického pinch-off. Sklon log I_D ≈ n·60 mV/dek.'
+           : 'Podprah: v_DS < ~4 U_T, u drainu ještě zbývají elektrony, proud roste s v_DS')
+    : sat ? 'Saturace: v_DS ≳ (v_GS − V_T)/n + 4U_T ≈ ' + Math.max(0, vdsat + 4 * UT).toFixed(2) + ' V → pinch-off u drainu, proud téměř konstantní (mírný sklon = λ)'
+          : 'Odporová oblast: kanál souvislý, u drainu tenčí';
+  st.style.color = IC < 0.1 ? css('--warn') : sat ? css('--bad') : css('--ok');
+  requestAnimationFrame(draw);
+}
+
+/** Nakreslí osy malého grafu.
+ *  @param {CanvasRenderingContext2D} cx  kontext  @param {string} t1  popisek osy y  @param {string} t2  popisek osy x
+ *  @returns nic */
+function axes(cx, t1, t2) {
+  cx.clearRect(0, 0, 330, 200); cx.strokeStyle = css('--ax'); cx.lineWidth = 1;
+  cx.beginPath(); cx.moveTo(40, 175); cx.lineTo(320, 175); cx.moveTo(40, 175); cx.lineTo(40, 15); cx.stroke();
+  cx.fillStyle = css('--txt'); cx.font = '12px sans-serif'; cx.textAlign = 'left'; cx.fillText(t1, 44, 14);
+  cx.textAlign = 'right'; cx.fillText(t2, 320, 192);
+}
+
+/** Graf log I_D vs v_GS při aktuálním v_DS.
+ *  @param {number} vg  V_GS (V)  @param {number} vd  V_DS (V)  @returns nic */
+function plot1(vg, vd) {
+  axes(c1, 'log i_D', 'v_GS');
+  const x = v => 40 + v / 2 * 280, y = i => 175 - (Math.log10(Math.max(i, 1e-9)) + 9) / 11 * 160;
+  c1.strokeStyle = '#185FA5'; c1.lineWidth = 2; c1.beginPath();
+  for (let v = 0; v <= 2; v += 0.01) { const Y = y(Id(v, vd)); v === 0 ? c1.moveTo(x(v), Y) : c1.lineTo(x(v), Y); }
+  c1.stroke();
+  c1.setLineDash([3, 3]); c1.strokeStyle = css('--ax'); c1.beginPath(); c1.moveTo(x(VT), 15); c1.lineTo(x(VT), 175); c1.stroke(); c1.setLineDash([]);
+  c1.fillStyle = css('--txt'); c1.textAlign = 'center'; c1.fillText('V_T', x(VT), 192);
+  c1.textAlign = 'left'; c1.fillText('exponenciála', x(0.15), y(Id(0.3, vd)) - 8);
+  c1.fillStyle = '#E24B4A'; c1.beginPath(); c1.arc(x(vg), y(Id(vg, vd)), 5, 0, 7); c1.fill();
+}
+
+/** Graf I_D vs v_DS při aktuálním v_GS (normováno na I_D při 2 V).
+ *  @param {number} vg  V_GS (V)  @param {number} vd  V_DS (V)  @returns nic */
+function plot2(vg, vd) {
+  axes(c2, 'i_D (normováno)', 'v_DS');
+  const Im = Math.max(1e-30, Id(vg, 2)), x = v => 40 + v / 2 * 280, y = i => 175 - i / Im * 145;
+  c2.strokeStyle = '#185FA5'; c2.lineWidth = 2; c2.beginPath();
+  for (let v = 0; v <= 2; v += 0.005) { const Y = y(Id(vg, v)); v === 0 ? c2.moveTo(x(v), Y) : c2.lineTo(x(v), Y); }
+  c2.stroke();
+  c2.fillStyle = '#E24B4A'; c2.beginPath(); c2.arc(x(vd), y(Id(vg, vd)), 5, 0, 7); c2.fill();
+}
+draw();
+</script>
+</body>
+</html>

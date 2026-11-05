@@ -71,6 +71,14 @@
 - **Lineární odporová oblast** (malé $v_{\mathrm{DS}}$): tranzistor se chová jako odpor řízený $v_{\mathrm{GS}}$.
 - **Saturační oblast** ($v_{\mathrm{DS}} > v_{\mathrm{GS}} - V_T$): kanál zaškrcen, proud jen mírně roste (modulace délky kanálu $\lambda$, resp. parametr $\kappa$).
 
+**Animace – pinch-off a podprahový režim NMOS (zjednodušený EKV)** (jezdce $v_{GS}$ a $v_{DS}$):
+
+<iframe src="magistr/B2M31IASA/applety/mosfet-pinch-off.html" class="applet-frame" title="NMOS – pinch-off a podprah" loading="lazy" style="width:100%;height:640px;border:0;border-radius:8px"></iframe>
+
+- **Podprah** ($IC < 0{,}1$): pod oxidem jen málo elektronů, proud teče **difúzí**, $\log i_D$ roste lineárně (sklon $\approx n\cdot 60$ mV/dek) a proud se nasytí už po $\approx 4U_T \approx 100$ mV $v_{DS}$ – bez klasického pinch-off.
+- **Silná inverze** ($IC > 10$): souvislý kanál, proud driftem; saturace při $v_{DS} \gtrsim (v_{GS}-V_T)/n + 4U_T$, kdy náboj u drainu klesne na úroveň slabé inverze (**pinch-off**); mírný sklon v saturaci = modulace délky kanálu $\lambda$.
+- Výpočet: $i_{f,r} = \ln^2\!\left(1+e^{(V_P - V_{S,D})/2U_T}\right)$, $V_P \approx (V_{GS}-V_T)/n$, $I_D \propto (i_f - i_r)(1+\lambda V_{DS})$, náboj $q = \sqrt{1/4 + i} - 1/2$ (ekv_v262.pdf). Zanedbána mobilita závislá na poli, saturace rychlosti a krátký kanál.
+
 ## Dělení bariérových kapacit MOSFET na postranní kapacity a kapacitu dna, odlišné exponenty napěťové závislosti obou kapacit (znát jen princip dělení kapacit)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/MOSFET6.pdf#page=12" target="_blank" rel="noopener">MOSFET6.pdf, s. 12</a></small></p>
