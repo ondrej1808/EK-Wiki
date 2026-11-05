@@ -102,6 +102,12 @@ Graf ukazuje logaritmus bázového a kolektorového proudu v závislosti na $v_{
 | střední | $1/n_F \approx 1$ | $1/n_F \approx 1$ | $\beta_F$ (konst.) | přímky rovnoběžné |
 | velký (nad $I_{KF}$) | $(1-n_K)/n_F \approx \frac12$ | $1/n_F \approx 1$ | klesá | vysoká injekce – $i_C$ roste pomaleji |
 
+**Animace – co se děje v bázi NPN při vysoké injekci** (posuň jezdcem $v_{BE}$):
+
+<iframe src="magistr/B2M31IASA/applety/npn-vysoka-injekce.html" class="applet-frame" title="NPN – vysoká injekce" loading="lazy" style="width:100%;height:530px;border:0;border-radius:8px"></iframe>
+
+Dokud je elektronů v bázi málo, každý přírůstek napětí jde celý na elektrony. Když bázi zaplaví, musí si kvůli neutralitě přitáhnout stejně děr navíc – přírůstek napětí se „dělí“ a $i_C$ ztratí půlku tempa (směrnice ½), $i_B$ roste dál ⇒ β klesá. Počty částic jsou ilustrační.
+
 ## ⭐ Závislost zesílení bipolárního tranzistoru na přímém proudu, znát obrázek „<u>Závislost logaritmu proudového zesílení…</u>“, opět stačí jen přibližné číselné hodnoty směrnic, tj. $\frac{1}{2}$ a $-1$)
 
 <p class="zdroj"><small><em>Zdroj:</em> <a href="magistr/B2M31IASA/pdf/BJT6.pdf#page=11" target="_blank" rel="noopener">BJT6.pdf, s. 11</a></small></p>

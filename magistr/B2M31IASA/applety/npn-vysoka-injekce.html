@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NPN – vysoká injekce</title>
+<style>
+  :root { --bg:#fff; --txt:#2c2c2a; --sub:#5f5e5a; --card:#f1efe8; --nE:#E6F1FB; --pB:#FCEBEB; --kont:#5F5E5A; --ok:#3B6D11; --bad:#A32D2D; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1e1e1c; --txt:#e8e6df; --sub:#b4b2a9; --card:#2c2c2a; --nE:#0C447C; --pB:#791F1F; --kont:#888780; --ok:#97C459; --bad:#F09595; } }
+  body { margin:0; padding:10px 14px; background:var(--bg); color:var(--txt); font-family:system-ui,sans-serif; }
+  .row { display:flex; align-items:center; gap:12px; margin-bottom:8px; font-size:14px; }
+  .row input { flex:1; }
+  .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:8px; }
+  .m { background:var(--card); border-radius:8px; padding:8px 10px; }
+  .m div:first-child { font-size:12px; color:var(--sub); }
+  .m div:last-child { font-size:19px; font-weight:500; }
+  .leg { display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:var(--sub); margin-top:8px; }
+  .d { display:inline-block; width:10px; height:10px; border-radius:50%; vertical-align:-1px; box-sizing:border-box; }
+  canvas { width:100%; height:auto; display:block; }
+</style>
+</head>
+<body>
+<div class="row">
+  <label>v<sub>BE</sub> (otevírání)</label>
+  <input type="range" min="0" max="100" value="20" step="1" id="v">
+  <span id="reg" style="min-width:120px;font-weight:500"></span>
+</div>
+<canvas id="cv" width="680" height="300"></canvas>
+<div class="grid">
+  <div class="m"><div>díry v bázi (dotace + navíc)</div><div id="mh"></div></div>
+  <div class="m"><div>i<sub>C</sub> (elektrony)</div><div id="mc"></div></div>
+  <div class="m"><div>i<sub>B</sub> (díry do E)</div><div id="mb"></div></div>
+  <div class="m"><div>β = i<sub>C</sub>/i<sub>B</sub></div><div id="mbeta"></div></div>
+</div>
+<div class="leg">
+  <span><span class="d" style="background:#378ADD"></span> elektron</span>
+  <span><span class="d" style="border:2px solid #E24B4A"></span> díra z dotace báze</span>
+  <span><span class="d" style="background:#E24B4A"></span> díra navíc (kvůli neutralitě) / díra odcházející do emitoru</span>
+</div>
+<script>
+/* Ilustrační animace NPN: elektrony z emitoru přes bázi do kolektoru; při vysoké injekci si báze
+   přitáhne díry navíc a i_C roste pomaleji než i_B → β klesá. Počty nejsou v měřítku. */
+const cv = document.getElementById('cv'), cx = cv.getContext('2d'), sl = document.getElementById('v');
+const W = 680, H = 300, X1 = 230, X2 = 450, Y0 = 40, Y1 = 260, NA = 14;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let el = [], back = [], extra = [];
+const dop = Array.from({ length: NA }, () => ({ x: X1 + 20 + Math.random() * (X2 - X1 - 40), y: Y0 + 20 + Math.random() * (Y1 - Y0 - 40) }));
+
+/** Zjednodušený model báze: n·(n + N_A) = K·e^v (neutralita p = N_A + n).
+ *  @returns {{n:number, iB:number, iC:number}} elektrony v bázi, proud báze a kolektoru (rel. jednotky) */
+function model() {
+  const v = +sl.value / 100 * 7, K = Math.exp(v) * 0.2;
+  const n = (-NA + Math.sqrt(NA * NA + 4 * K)) / 2;
+  return { n, iB: K / NA / 12, iC: n };
+}
+
+/** Nakreslí jednu částici.
+ *  @param {number} x  souřadnice x (px)  @param {number} y  souřadnice y (px)
+ *  @param {string} c  barva  @param {boolean} fill  plná (true) / jen obrys (false)
+ *  @returns nic */
+function dot(x, y, c, fill) {
+  cx.beginPath(); cx.arc(x, y, 5, 0, 7);
+  if (fill) { cx.fillStyle = c; cx.fill(); } else { cx.strokeStyle = c; cx.lineWidth = 2; cx.stroke(); }
+}
+
+/** Vykreslí strukturu, částice a aktualizuje čísla pod animací.
+ *  @param {{n:number, iB:number, iC:number}} m  výsledek model()
+ *  @returns nic */
+function draw(m) {
+  cx.clearRect(0, 0, W, H);
+  cx.fillStyle = css('--nE'); cx.fillRect(20, Y0, X1 - 20, Y1 - Y0); cx.fillRect(X2, Y0, W - 20 - X2, Y1 - Y0);
+  cx.fillStyle = css('--pB'); cx.fillRect(X1, Y0, X2 - X1, Y1 - Y0);
+  cx.fillStyle = css('--kont'); cx.fillRect(X1 + 70, Y0 - 10, X2 - X1 - 140, 10);
+  cx.fillStyle = css('--txt'); cx.font = '14px sans-serif'; cx.textAlign = 'center';
+  cx.fillText('emitor N+', (20 + X1) / 2, Y1 + 22); cx.fillText('báze P', (X1 + X2) / 2, Y1 + 22);
+  cx.fillText('kolektor N', (X2 + W - 20) / 2, Y1 + 22); cx.fillText('kontakt báze (přívod děr)', (X1 + X2) / 2, Y0 - 16);
+  dop.forEach(h => dot(h.x, h.y, '#E24B4A', false));
+  extra.forEach(h => dot(h.x, h.y, '#E24B4A', true));
+  back.forEach(b => dot(b.x, b.y, '#E24B4A', true));
+  el.forEach(e => dot(e.x, e.y, '#378ADD', true));
+  document.getElementById('mh').textContent = NA + ' + ' + extra.length;
+  document.getElementById('mc').textContent = m.iC.toFixed(1);
+  document.getElementById('mb').textContent = m.iB.toFixed(2);
+  document.getElementById('mbeta').textContent = Math.round(m.iC / m.iB);
+  const hi = m.n > NA * 0.5, r = document.getElementById('reg');
+  r.textContent = hi ? 'vysoká injekce' : 'nízká injekce'; r.style.color = hi ? css('--bad') : css('--ok');
+}
+
+/** Jeden krok animace (posun částic, doplnění děr navíc), volá se přes requestAnimationFrame.
+ *  @returns nic */
+function tick() {
+  const m = model(), target = Math.round(m.n);
+  while (extra.length < target) extra.push({ x: X1 + 20 + Math.random() * (X2 - X1 - 40), y: Y0 + 2, ty: Y0 + 20 + Math.random() * (Y1 - Y0 - 40) });
+  while (extra.length > target) extra.pop();
+  const inBase = el.filter(e => e.x > X1 && e.x < X2).length;
+  if (inBase < target + 1 && Math.random() < 0.9) el.push({ x: X1 - 30 - Math.random() * 20, y: Y0 + 15 + Math.random() * (Y1 - Y0 - 30), v: 1.5 + Math.random() });
+  if (Math.random() < m.iB * 0.6) back.push({ x: X1 + 5, y: Y0 + 20 + Math.random() * (Y1 - Y0 - 40) });
+  el.forEach(e => { e.x += e.v; e.y += (Math.random() - .5) * 2; }); el = el.filter(e => e.x < W - 10);
+  back.forEach(b => { b.x -= 1.6; }); back = back.filter(b => b.x > 20);
+  extra.forEach(h => { h.y += (h.ty - h.y) * 0.05; h.x += (Math.random() - .5) * 1.5; });
+  dop.forEach(h => { h.x = Math.min(X2 - 10, Math.max(X1 + 10, h.x + (Math.random() - .5))); h.y = Math.min(Y1 - 10, Math.max(Y0 + 10, h.y + (Math.random() - .5))); });
+  draw(m); requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>

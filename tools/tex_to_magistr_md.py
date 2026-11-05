@@ -350,6 +350,36 @@ def slug(s):
     return re.sub(r'[^a-z0-9]+', '-', s).strip('-')[:40]
 
 
+# Interaktivní applety (samostatné HTML v magistr/B2M31IASA/applety/) vložené na konec sekce,
+# jejíž nadpis obsahuje daný text — .tex je nezná, proto se doplňují až při převodu
+APPLETY = {
+    'při velkém proudu kolektorem': (
+        '**Animace – co se děje v bázi NPN při vysoké injekci** (posuň jezdcem $v_{BE}$):\n\n'
+        '<iframe src="magistr/B2M31IASA/applety/npn-vysoka-injekce.html" class="applet-frame" '
+        'title="NPN – vysoká injekce" loading="lazy" style="width:100%;height:530px;border:0;border-radius:8px"></iframe>\n\n'
+        'Dokud je elektronů v bázi málo, každý přírůstek napětí jde celý na elektrony. Když bázi zaplaví, '
+        'musí si kvůli neutralitě přitáhnout stejně děr navíc – přírůstek napětí se „dělí“ a $i_C$ ztratí půlku tempa '
+        '(směrnice ½), $i_B$ roste dál ⇒ β klesá. Počty částic jsou ilustrační.\n\n'),
+}
+
+
+def add_applets(md):
+    """Vloží applety z APPLETY na konec odpovídajících sekcí (před další nadpis ##).
+
+    Parametry:
+        md -- markdown jedné kapitoly
+    Vrací: markdown s vloženými iframe applety.
+    """
+    for key, snippet in APPLETY.items():
+        m = re.search(r'(?m)^## .*' + re.escape(key) + r'.*$', md)
+        if not m:
+            continue
+        nxt = re.search(r'(?m)^## ', md[m.end():])
+        pos = m.end() + nxt.start() if nxt else len(md)
+        md = md[:pos] + snippet + md[pos:]
+    return md
+
+
 def main():
     """Rozdělí .tex na sekce a každou uloží jako markdown.
 
@@ -371,7 +401,7 @@ def main():
         fn = f'{n:02d}-{slug(title)}.md'
         legend = ('> ⭐ = podtržené téma — **nejpravděpodobněji v testu** (vyučující: „některé z nich se v testu objeví“). '
                   '<del>Přeškrtnuté</del> v testu nebude (šum, přenosová vedení).\n\n')
-        md = f'# {n} {title_md}\n\n' + legend + convert_body(body, pre)
+        md = add_applets(f'# {n} {title_md}\n\n' + legend + convert_body(body, pre))
         (outdir / fn).write_text(md, encoding='utf8')
         print(f'{n}|{re.sub(r"<[^>]+>", "", title_md)}|{fn}')
 
