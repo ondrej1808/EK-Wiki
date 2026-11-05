@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MESFET – skok kapacity</title>
+<style>
+  :root { --bg:#fff; --txt:#444441; --sub:#5f5e5a; --sub2:#D3D1C7; --ch:#B5D4F4; --dep:#F1EFE8; --cont:#5F5E5A; --ax:#B4B2A9; --ok:#3B6D11; --bad:#A32D2D; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1e1e1c; --txt:#D3D1C7; --sub:#b4b2a9; --sub2:#444441; --ch:#0C447C; --dep:#2C2C2A; --cont:#B4B2A9; --ax:#5F5E5A; --ok:#97C459; --bad:#F09595; } }
+  body { margin:0 auto; max-width:720px; padding:10px 14px; background:var(--bg); color:var(--txt); font-family:system-ui,sans-serif; }
+  .row { display:flex; align-items:center; gap:12px; margin-bottom:8px; font-size:14px; }
+  .row input { flex:1; }
+  canvas { width:100%; height:auto; display:block; }
+</style>
+</head>
+<body>
+<div class="row">
+  <label>v<sub>GS</sub></label>
+  <input type="range" min="-300" max="50" value="0" step="1" id="v">
+  <span id="vo" style="font-weight:500;min-width:64px"></span>
+</div>
+<canvas id="cv" width="680" height="250"></canvas>
+<canvas id="pl" width="680" height="200" style="margin-top:8px"></canvas>
+<div id="st" style="font-size:14px;margin-top:8px;font-weight:500"></div>
+<script>
+/* Ilustrace skoku kapacity MESFET: dokud pod gate zbývá vodivý kanál, je „spodní deska“ těsně pod
+   vyprázdněnou oblastí (velká C); když vyprázdnění dosáhne poloizolačního substrátu, deska odskočí
+   k source/drain a C skokem klesne. Křivka C(v) je podle rovnic z přednášky, geometrie řezu je ilustrační. */
+const cv = document.getElementById('cv'), c = cv.getContext('2d'), pl = document.getElementById('pl'), p = pl.getContext('2d'), sl = document.getElementById('v');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const PHI = 0.8, VT = -2.2, M = 0.5, CJ0 = 1, EW = 0.15, A = 80, TOP = 60, W0 = A / Math.sqrt((PHI - VT) / PHI);
+
+/** Tloušťka vyprázdněné oblasti pod gate (px), roste jako sqrt(phi - V).
+ *  @param {number} V  napětí gate-source (V)  @returns {number} tloušťka (px) */
+function wd(V) { return W0 * Math.sqrt(Math.max(0.01, PHI - V) / PHI); }
+
+/** Kapacita gate podle modelu z přednášky (MESFET-Delay-Dispersion, s. 7; tvar jako Statzův model):
+ *  pod V_A jen okrajová kapacita eW·arctan(...), nad V_B okrajová πeW/2 + Schottky C_J0(1-V/φ0)^-m,
+ *  mezi V_A a V_B lineární přechod (V_A = V_T1 - 0,15 V, V_B = V_T1 + 0,08 V).
+ *  @param {number} V  napětí gate (V)  @returns {number} kapacita (rel. jednotky, C_J0 = 1) */
+function C(V) {
+  const eW = EW, VA = VT - 0.15, VB = VT + 0.08;
+  const fr = v => eW * Math.atan(Math.sqrt((PHI - VT) / (VT - v)));
+  const sch = v => Math.PI * eW / 2 + CJ0 * Math.pow(1 - v / PHI, -M);
+  if (V <= VA) return fr(V);
+  if (V >= VB) return sch(V);
+  return (V - VA) / (VB - VA) * (sch(VB) - fr(VA)) + fr(VA);
+}
+
+/** Nakreslí řez MESFETem s vyprázdněnou oblastí a siločarami.
+ *  @param {number} V  napětí gate-source (V)  @returns nic */
+function cross(V) {
+  c.clearRect(0, 0, 680, 250); const w = Math.min(wd(V), A), pinch = V <= VT;
+  c.fillStyle = css('--sub2'); c.fillRect(20, TOP + A, 640, 150 - A + 20);
+  c.fillStyle = css('--ch'); c.fillRect(20, TOP, 640, A);
+  c.fillStyle = css('--dep'); c.beginPath(); c.ellipse(340, TOP, 130, w, 0, 0, Math.PI); c.fill();
+  c.fillStyle = css('--cont'); c.fillRect(40, TOP - 14, 100, 14); c.fillRect(540, TOP - 14, 100, 14);
+  c.fillStyle = '#BA7517'; c.fillRect(240, TOP - 16, 200, 16);
+  c.fillStyle = css('--txt'); c.font = '13px sans-serif'; c.textAlign = 'center';
+  c.fillText('source', 90, TOP - 22); c.fillText('gate (Schottky)', 340, TOP - 24); c.fillText('drain', 590, TOP - 22);
+  c.fillText('n kanál', 600, TOP + A / 2 + 4); c.fillText('poloizolační substrát', 150, TOP + A + 40);
+  c.fillText(pinch ? 'vyprázdněno až na substrát' : 'vyprázdněná oblast', 340, TOP + Math.min(w, A) / 2 + 4);
+  c.strokeStyle = '#E24B4A'; c.lineWidth = 1.5;
+  if (!pinch) {
+    for (let x = 250; x <= 430; x += 30) { const dy = w * Math.sqrt(Math.max(0, 1 - ((x - 340) / 130) ** 2)); c.beginPath(); c.moveTo(x, TOP); c.lineTo(x, TOP + dy); c.stroke(); }
+  } else {
+    [[250, 140], [430, 540]].forEach(([a, b]) => { for (let k = 0; k < 3; k++) { c.beginPath(); c.moveTo(a + (b > a ? k * 8 : -k * 8), TOP); c.quadraticCurveTo((a + b) / 2, TOP + 40 + k * 25, b, TOP); c.stroke(); } });
+  }
+}
+
+/** Nakreslí graf C_GS(v_GS) s bodem v aktuálním napětí.
+ *  @param {number} V  napětí gate-source (V)  @returns nic */
+function plot(V) {
+  p.clearRect(0, 0, 680, 200); const x = v => 60 + (v + 3) / 3.5 * 600, y = q => 180 - q * 150;
+  p.strokeStyle = css('--ax'); p.lineWidth = 1; p.beginPath(); p.moveTo(60, 180); p.lineTo(660, 180); p.moveTo(60, 180); p.lineTo(60, 15); p.stroke();
+  p.strokeStyle = '#185FA5'; p.lineWidth = 2; p.beginPath();
+  for (let v = -3; v <= 0.5; v += 0.01) { const q = C(v) / C(0.5); v === -3 ? p.moveTo(x(v), y(q)) : p.lineTo(x(v), y(q)); }
+  p.stroke();
+  const q = C(V) / C(0.5); p.fillStyle = '#E24B4A'; p.beginPath(); p.arc(x(V), y(q), 6, 0, 7); p.fill();
+  p.fillStyle = css('--txt'); p.font = '13px sans-serif'; p.textAlign = 'center';
+  p.fillText('v_GS', 640, 196); p.fillText('práh (zaškrcení)', x(VT), 196); p.textAlign = 'left'; p.fillText('C_GS', 66, 20);
+}
+
+/** Překreslí vše podle jezdce.  @returns nic */
+function up() {
+  const V = +sl.value / 100; document.getElementById('vo').textContent = V.toFixed(2) + ' V'; cross(V); plot(V);
+  const pin = V <= VT, s = document.getElementById('st');
+  s.textContent = pin ? 'Kanál pod gate zmizel – druhá „deska“ kondenzátoru odskočila daleko k source/drain, C je malá'
+                      : 'Kanál existuje – druhá „deska“ je hned pod vyprázdněnou oblastí, C je velká';
+  s.style.color = pin ? css('--bad') : css('--ok');
+}
+sl.oninput = up; up();
+</script>
+</body>
+</html>

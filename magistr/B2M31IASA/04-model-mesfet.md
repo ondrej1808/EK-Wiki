@@ -63,4 +63,10 @@ Příčinou poklesu je hlavně *samoohřev* (vyšší ztrátový výkon $\Righta
 - Podobný průběh mají i **mikrovlnné varaktory** $\Rightarrow$ lze je popsat stejnými funkcemi.
 - *Nepoužívat simulátory, které nemají tyto zalomené charakteristiky!*
 
+**Animace – proč má kapacita MESFET skok** (posuň jezdcem $v_{GS}$ doleva):
+
+<iframe src="magistr/B2M31IASA/applety/mesfet-kapacita.html" class="applet-frame" title="MESFET – skok kapacity" loading="lazy" style="width:100%;height:580px;border:0;border-radius:8px"></iframe>
+
+Gate je horní deska kondenzátoru, spodní deska je nejbližší vodivé místo. Dokud pod gate zbývá n kanál, je spodní deska těsně pod vyprázdněnou oblastí ⇒ velká C. Když vyprázdnění dosáhne **poloizolačního substrátu**, kanál pod gate zmizí celý najednou a spodní deska „odskočí“ až k source/drain ⇒ C **skokem** klesne na malou okrajovou hodnotu. Hodnoty jsou ilustrační.
+
 ## <del>Metodika modelování zpoždění mikrovlnných tranzistorů Besselovou funkcí (jde o stejnou funkci a stejný přístup jako byl u modelování zpoždění mikrovlnných BJT)</del>
