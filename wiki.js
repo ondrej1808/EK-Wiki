@@ -325,6 +325,7 @@
    *  a naopak; stav panelů se ukládá pod jinými klíči. */
   const MAGISTR = new URLSearchParams(window.location.search).get('kap') === 'magistr';
   const MG_IASA = 'magistr/B2M31IASA/';
+  const MG_EPL = 'magistr/EPL/';
   const MAGISTR_SECTIONS = [
     {
       section: 'EK Magistr',
@@ -353,6 +354,13 @@
             { type: 'pdf',  label: 'EKV vs. BSIM (přehled)',              src: MG_IASA + 'pdf/EKVvsBSIMoverview26.pdf' },
             { type: 'pdf',  label: 'EKV v2.6',                            src: MG_IASA + 'pdf/ekv_v262.pdf' },
             { type: 'pdf',  label: 'Prezentace – Přenosová vedení',       src: MG_IASA + 'pdf/TransmissionLine6.pdf' },
+          ],
+        },
+        {
+          code: 'EPL', title: 'EPL – krystaly, poruchy, vazby, pásy',
+          resources: [
+            { type: 'note',  label: 'Otázky 1–50 (z Anki)',  src: MG_EPL + 'otazky.md' },
+            { type: 'cards', label: 'Kartičky',              src: 'set=json/magistr-epl.json&subject=EPL' },
           ],
         },
       ],

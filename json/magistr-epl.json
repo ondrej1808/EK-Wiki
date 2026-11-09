@@ -1,0 +1,808 @@
+{
+ "title": "EK Magistr – EPL (otázky 1–50)",
+ "questions": [
+  {
+   "type": "open",
+   "question": "Otázka 1. až 4. :\n1. Zobrazte krystalografické roviny určené Millerovými indexy (100) a (311)\n2. Zobrazte krystalografické roviny určené Millerovými indexy (111) a (210)\n3. Zobrazte krystalografické roviny určené Millerovými indexy (100) a (221)\n4. Zobrazte krystalografické roviny určené Millerovými indexy (110) a (121)",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-4f54f414c8aa653c2557660799ab2ea6c0e5df01.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "platí h:k:l = 1/a 1/b 1/c"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 5: Vyjmenujte a popište operace symetrie v krystalech",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "inverze: symetrie přes bod\nreflexe: symetrie přes rovinu\nrotace: symetrie přes rotační osu",
+     "image": {
+      "src": "magistr/EPL/img/paste-4729d78f76c8867efe4b1bd6607a0a7c22e9f2a4.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "otázka 6: Vyberte jednu z krystalových soustav a popište její vlastnosti",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Pokud máš rád svuj čas a život tak vyber kubickou a věz že je to prostě spíčená kostka.\n\nPro fajnšmekry:\ntriklinická:",
+     "image": {
+      "src": "magistr/EPL/img/paste-82bd07563eda56d96e9c93d5564d394c124d1aa0.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "monoklinická:",
+     "image": {
+      "src": "magistr/EPL/img/paste-0bb2505b6a74036c8287c5d2739b90c7f0a736dd.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "ortorombická:",
+     "image": {
+      "src": "magistr/EPL/img/paste-87984748cef7b18cffff624ef50b8766d0e6a2ff.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "**Kubická:**",
+     "image": {
+      "src": "magistr/EPL/img/paste-5fe952c4f4b00a1e6a3472544bfa5c6010688ec1.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Tetragonální:",
+     "image": {
+      "src": "magistr/EPL/img/paste-f1b093f72536c7cdaf7d7d21b01863b1d16d3b5b.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Trigonální:",
+     "image": {
+      "src": "magistr/EPL/img/paste-df0eae320624dce0976107dea9db4877bbff3d0d.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Hexagonální:",
+     "image": {
+      "src": "magistr/EPL/img/paste-e9b76d27775c8b859200aa76f7a2246150d3ae1f.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 7: Jaká jsou možná nejtěsnější uspořádání atomů v mřížce",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Hexagonální ABABAB",
+     "image": {
+      "src": "magistr/EPL/img/paste-771ad094e3ce0afa655203022c7ab8767afeae1e.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 8: Nakreslete základní buňku kubické, prostorově centrované mřížky",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-6fc764f1da897bc1cfc6870654444108df53e5ba.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "otázka 9: Nakreslete základní buňku kubické, plošně centrované mřížky",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-dee695d61a53964a8fbae8d72a0808aa3377e826.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 10: Co to je Wignerova-Seitzova buňka, nakreslete ji pro 2D mřížku",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Wignerova-Seitzova buňka je množina bodů, které jsou k bodu mřížky blíže, než ke kterémukoliv jinému bodu mřížky:\n\nKonstrukce:",
+     "image": {
+      "src": "magistr/EPL/img/paste-3e21c4fe52b5b871336dacf2ca25ef0ea1069205.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Ve 2D:",
+     "image": {
+      "src": "magistr/EPL/img/paste-9e68890fbde4e4f3d86d3e116cb8feb6ca806378.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 11. : Jak vznikne sfaleritová mřížka, nakreslete jeden atom v této mřížce s jeho nejbližšími sousedy",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Kubická mřížka, každá FCC jiný atom:",
+     "image": {
+      "src": "magistr/EPL/img/paste-30dd292b5d7e56649a0e795c97616cbb2fcea14c.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 12: Jak vznikne diamantová mřížka, nakreslete jeden atom v této mřížce s jeho nejbližšími\nsousedy",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "A.k.a křemíková mřížka, dvě krychle v sobě, dělá to pak takový šestiúhelníky:",
+     "image": {
+      "src": "magistr/EPL/img/paste-b04752f75a58b93195671ab56cbb0845fe9438c9.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 13: Co to jsou akustické fonony, nakreslete závislost E(q) pro akustickou větev",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Kvanta kmitů v krystalové mřížce: pohybují se ve stejném směru a fázi\n\nNakreslit chce asi tenhle obrázek?:",
+     "image": {
+      "src": "magistr/EPL/img/paste-ac9016e86e041cb879ded105b7ac6b5618db4aa1.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 14: Co to jsou optické fonony, nakreslete závislost E(q) pro optickou větev",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Kvanta kmitů v krystalické mřížce pohybující se proti sobě v protifázi\n\nObrázek:",
+     "image": {
+      "src": "magistr/EPL/img/paste-c1a1ab0517d2a09b6fc2355466d82e7aafefeae9.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 15: Porovnejte Einsteinovu a Debyeovu aproximaci měrného tepla krystalu",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Einsteinova aproximace:\nKmitající krystal nahrazuje souborem 3Ns stejných oscilátoru\ns frekvencí ωE , tj. ideálním plynem fononů s energií ℏωE\n\nPoužití: hodí se pro úzké optické pásy\n\nDebeyova aproximace:\nPředpokládejme jedno jádro v elementární buňce (s=1) a\nuvažuje izotropní elastické kontinuum s disperzní závislostí\n\nω = v*q\n\nkde v je rychlost zvuku\n\nPoužití: Hodí se na akustické větve"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 16: S jakými jevy souvisí teplotní roztažnost krystalů",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "S anharmonickými jevy a anharmonickým kmitánímm střední vzdálenost se totiž lineárně zvyšuje s teplotou. Musíme upravit aproximaci kmitání"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 17. : Napište Gibsův fázový zákon, co vyjadřuje",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Gibbsův fázový zákon:",
+     "image": {
+      "src": "magistr/EPL/img/paste-29ed96d820b76ffd038d830861b60fad03e8ceaf.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "v = počet nezávisle proměnných\nk = počet složek soustavy\nf = počet koexistujících fází\nPopisuje kolik skupenských fází může mít daná soustava"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 18. : Nakreslete p,T diagram jednosložkové soustavy, označte plochy a významné body",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-67c573f4f11f3211fa7bf24dd6f102f61962ca38.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 19. : Nakreslete x,T diagram dvousložkové soustavy úplně mísitelné v kapalném i tuhém\nstavu, označte plochy",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-d0c88cfade1246dc1b676981fee1dde5cf623e45.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 20. : Co je to kongruentní krystalizace",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Proces, při kterém se **kapalná fáze (tavenina) přeměňuje na pevnou fázi (krystal) o naprosto stejném chemickém složení**, a to bez jakýchkoliv mezikroků nebo vzniku jiných fází. (Gemini)"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 21.: Nakreslete x,T diagram dvousložkové eutektické slitiny omezeně mísitelné v tuhém\nstavu, označte plochy",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-9637dccf67ef002531c80f981b5b94eae1fe88da.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 22. : Jaké jsou podmínky vzniku substitučního tuhého roztoku",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Atomy příměsy nahrazují původní atomy v krystalové mřížce, může být uspořádaný a nebo taky ne."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 23. : Vysvětlete metodu zonálního čištění krystalu",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Nečistoty se drží v kapalině\n\nVezme se křemíkový ingot a na jednom konci okolo něj přiloží cívka(co ho indukcí lokálně roztaví) cívka se velmi pomalu pohybuje podél ingotu. S cívkou se táhne i roztavená zóna v ingotu, která “sbírá” všechny nečistoty"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 24. : Nakreslete jednotlivé typy bodový poruch v krystalu",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-2a857e4566e512654553149f2a7e2a029f4dea78.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 25: Jaká je závislost koncentrace vakancí na teplotě",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Roste exponencionálně s teplotou:\nCv = exp [- Ef / kT]"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 26: Co je to Schottkyho a Frenkelova porucha",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Freknelova porucha: pár kationtové vakance a intersticiálu\nShottkyho porucha: pár kationtové a aniontové vakance",
+     "image": {
+      "src": "magistr/EPL/img/paste-5cd0ef8e88a6b20fb17a93708eb5c5f8fc194c0f.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 27: Jak se liší Burgersův vektor hranové a šroubové dislokace",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Je-li Burgesův vektor kolmý na hranu zkluzu hovoříme o hranové dislokaci\n\nJe- li burgesův vektor rovnoběžný s hranou skluzu hovoříme o šroubové dislokaci",
+     "image": {
+      "src": "magistr/EPL/img/paste-1803dd649a7386a6530e04ad2d33ec4358681c59.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 28. : Popište mechanismus skluzu a mechanismus šplhání dislokací",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Šplhání dislokací: dochází k anihilací vakancí, což pak vede ke šplhání dislokací:",
+     "image": {
+      "src": "magistr/EPL/img/paste-cc5d852b5a4d320648be4182b4bc6a981d444170.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Skluz: v rámci dislokační linie dochází k psouvu krystalické mřížky a následnému skluzu"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 29. : Popište maticovou notaci rekonstruovaného povrchu krystalu",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "",
+     "image": {
+      "src": "magistr/EPL/img/paste-63a2c5c8521ed804a804d9da09ab8b746219a9e0.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "matice M je transformační matice krystalu"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 30. : Uveďte definici vektoru reciproké mřížky",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "vektor reciproké mřížky V = (a*, b*, c*)\n\na* = (b x c)/V\nb* = (c x a)/V\nc* = (axb)/V\n\nkde V je objem elementární buňky a vektor (a,b,c) je vektor přímé mřížky"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 31. : Nakreslete a popište odvození Braggovy difrakční rovnice",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "nλ = 2d*sin(**θ**)",
+     "image": {
+      "src": "magistr/EPL/img/paste-5447988e4c584842bdba31634e54aa154fe8cb76.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 32. : Popište metodu Evaldovy konstrukce #TODO",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Jedná se o geometrické vyjádření Breggova zákona,",
+     "image": {
+      "src": "magistr/EPL/img/paste-ccff5c5d6e29623f1e78110fd48103557e7995f4.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 33. :  Vyjmenujte a charakterizujte jednotlivé roentgenové difrakční metody",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Laueho metoda - jako zdroj celé spektrum, krystal odráží jednotlivé vlnové délky, ty se pak zachycují na film. Metoda slouží primárně k určení symetrie a orientace krystalu. Je rychlá nemusí být přesná.",
+     "image": {
+      "src": "magistr/EPL/img/paste-3fa05ff1a056234abf1b69540e60f22d6c0bb121.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Metoda rotujícího krystalu - monochromatické záření dopadá na rotující krystal, který je obklopený záchytným filmem. Jednotlivé roviny postupně splňují Braggovu podmínku a odrážejí záření.",
+     "image": {
+      "src": "magistr/EPL/img/paste-632d9cd0cbfccb66d0c6d4281d9aa57b8cf435be.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Wiesenbergova metoda - slouží k zobrazení reciprocké mříže. Rotující krystal obklopený válcem s tenkou škvírkou, za kterou se nahoru a dolů posouvá film.",
+     "image": {
+      "src": "magistr/EPL/img/paste-99805ef83aaec8544c0d05f8ba771b68c00ada0a.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Prášková metoda - POLYkrystal je nanesen na tyčku která se otáčí, tyčka je obklopena filmem, ve kterém je tenká zdířka, kterou prochází monochromatické rentgenové záření. Metoda slouží k analýze meziatomových rovin a celkové struktury polykrystalu.",
+     "image": {
+      "src": "magistr/EPL/img/paste-306f9678621401e874f86d968daa29c7092bca82.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 34. : Jak se v difrakčním obraze projeví tzv. strukturní factor",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Strukturní faktor udává intenzitu krystalem rozptýleného světla. Jedná se o součet amplitud vln rozptýlenými jedntolivými atomy v mřížce."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 35. : Jakou energii by měli mít elektrony pro difrakční analýzu krystalu, proč",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "EK = 40 eV Vychází to z hybnosti elektronů a vhodné vlnové délce elektronů."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 36. : Co to je Brillouinova zóna, jak vznikne, proč se zavádí?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Jedná se o primitivní buňku  v reciprocké mřížce (obdoba Wigner-Seitzovy mřížky). Tato mřížka se pak v materiálu periodicky opakuje, vyzkoumáme-li tedy vlastnosti pouze v této buňce známe je v celém materiálu."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 37. : Co je to Madelungova konstanta?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Určuje uspořádání struktury kationtů a aniontů při výpočtu napětí za pomoci Coloumbova zákona.:",
+     "image": {
+      "src": "magistr/EPL/img/paste-2608259440c27ab69b8f3922c7a293f787c237eb.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "v tomto vzorečku je Madelungova konstanta α"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 38. : Charakterizujte σ vazbu a π vazbu",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "σ vazba: Maximální hustota elektronů na spojnici atomových jader. Stabilní a silná vazba.\nπ vazba: Maximální hustota elektronů mimo spojnici atomových jader. Slabší kovalntní vazba, která vzniká společně se σ vazbami",
+     "image": {
+      "src": "magistr/EPL/img/paste-7bcfbb8a4fb5f9732353cbb8a30ba6dad4d6153d.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 39. : Jaký je vztah mezi elektronegativitou a iontovou vazbou?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Podle elektronegativity rozlišujeme vazby na:\nnepolární -> elektronegativita nížší než 0,4 společně zdílená dvojce elektronů je přibližně uprostřed\npolární -> elektronegativita mezi 0,4 a 1,7 společná dvojce elektronů je vychýlena\niontová -> exktrémní verze polární vazby, elektronegativita větší než 1,7. vzniká Kationt a Aniont"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 40. : Charakterizujte vlastnosti krystalů podle toho, jaké vazby se v nich\nvyskytují.",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Iontové krystaly : Křehké, Tvrdé, vysoký bod tání, nevedou el. proud a jsou průhledné v širokém spektru (příklad: NaCl)Kovové krystaly: Kujné, měkčí, dobrá tepelná a el. vodivost (příklad: ocel)Kovalentní materiály: Vysoká tvrdost a křehkost, vysoký bod tání, nízká el. vodivost příklad: (diamant)"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 41. : Co je hybridizace orbitalů, uveďte příklady",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Dojde k mixování orbitalů na jedné energetické úrovni vznikají tak sp orbitaly. Hybridní orbitaly vznikají když se elektrony z různmých orbitalů dostanou na stejnou ůroveň.\n\nTypy hybridizace:\nsp3: (a.k.a 3D struktura)",
+     "image": {
+      "src": "magistr/EPL/img/paste-cf9365a83f66c37a3b93c19e698909a84f0e3b54.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "sp2: (a.k.a 2d struktura)",
+     "image": {
+      "src": "magistr/EPL/img/paste-cc235ec1bc49869d37dff61887b2a762f5794d2a.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "sp1: (a.k.a 1d struktura)",
+     "image": {
+      "src": "magistr/EPL/img/paste-da85349811b5efd035f4423d390552f5a42efccd.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 42. : Jaké typy vazeb se vyskytují v krystalu GaAs",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Má mix iontovo-kovalentních vazeb."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 43. : Jaké typy vazeb se vyskytují v krystalu Si?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Čistě kovalentní vazby."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 44. : Jak vzniká Van der Waalsova vazba?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Interakcí mezi elektrickými dipóly a nerovnoměrnou distribucí elektronů kolem jádra."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 45. : Nakreslete průběh hustoty stavů v objemovém polovodiči, co vyja-\ndřuje hustota stavů?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Obrázek:",
+     "image": {
+      "src": "magistr/EPL/img/paste-ec0f51381ff21bf5173491c1b423be221715bb11.jpg"
+     }
+    },
+    {
+     "title": "",
+     "text": "Hustota stavů je počet dovolených stavů na jednotkový objem energie"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 46. : Vysvětlete princip vzniku Blochových oscilací.",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Blochova oscilace je jev kdy částice zachycena v poli s periodickým potenciálem a na dnaou částici působí konstantní síla, tak bude pohyb částice periodický.\n\nVezmeme-li tedy ideální krystal a dáme ho do konstantního elektrického pole, tak elektrony v něm budou kmitat."
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "Otázka 47. : Co je to Blochova funkce, z čeho vyplývá?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Libovolná fce, která je řešením Schrodingerovy rovnice s periodickým potencionálem má vektor **k** takový že při translaci o vektor **a **se u funkce **ψ **mění pouze fáze a to o faktor e^(j**ka**). **ψ **je pak *Blochovou funkcí. *"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "48. : Co je to Kronig-Penneyho model polovodiče?",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Aproximuje potenciál schodovou funkcí.\nŘešení Shrodingerovy rce s tímto modelem potenciální energie dává přípustné hodnoty energie elektronů rozdělené do pásů oddělených od sebe tzv. zakázaným pásem",
+     "image": {
+      "src": "magistr/EPL/img/paste-495e2e59fad604ab7fcd627a8dc2d0ef25d03711.jpg"
+     }
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "49. : Popište vliv tlaku na pásovou strukturu polovodičů.",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Zvyšování tlaku -> rozšiřování zakázaného pásu"
+    }
+   ]
+  },
+  {
+   "type": "open",
+   "question": "50. : Popište vliv teploty na pásovou strukturu polovodičů.",
+   "subsetPath": [
+    "EPL"
+   ],
+   "answer_parts": [
+    {
+     "title": "",
+     "text": "Se zvyšující se teplotou se zmenšuje zakázaný pás a polovodiče lépe vedou proud."
+    }
+   ]
+  }
+ ]
+}
