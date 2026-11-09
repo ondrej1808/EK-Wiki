@@ -142,7 +142,7 @@ def main():
             if p['text']:
                 md.append('\n' + p['text'] + '\n')
             if 'image' in p:
-                md.append(f"\n![](img/{p['image']['src'].rsplit('/', 1)[1]})\n")
+                md.append(f"\n![]({p['image']['src']})\n")
     os.makedirs(os.path.dirname(a.out_json) or '.', exist_ok=True)
     json.dump({'title': a.title or a.subject, 'questions': qs}, open(a.out_json, 'w', encoding='utf-8'),
               ensure_ascii=False, indent=1)
