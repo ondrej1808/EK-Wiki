@@ -832,6 +832,78 @@
     return '#zoom=' + Math.round(target / pageW100 * 100);
   }
 
+  /** Vytvoří lepicí lištu „Hledat v dokumentu“ (hlavně pro mobil, kde není Ctrl+F).
+   *  Zvýrazní shody (<mark>) v textu mimo KaTeX/kód, šipky ▲▼ / Enter přeskakují mezi nimi.
+   *  @param {HTMLElement} root  vykreslený obsah markdownu, ve kterém se hledá
+   *  @returns {HTMLElement} element lišty (vložit před root) */
+  function attachDocSearch(root) {
+    const bar = document.createElement('div');
+    bar.className = 'doc-search';
+    bar.innerHTML =
+      '<input type="search" placeholder="Hledat v dokumentu…" aria-label="Hledat v dokumentu">' +
+      '<span class="doc-search-count"></span>' +
+      '<button type="button" data-d="-1" aria-label="Předchozí">▲</button>' +
+      '<button type="button" data-d="1" aria-label="Další">▼</button>';
+    const input = bar.querySelector('input');
+    const count = bar.querySelector('.doc-search-count');
+    let marks = [], cur = -1, timer = 0;
+
+    /** Odstraní všechna zvýraznění.  @returns {void} */
+    function clear() {
+      for (const m of marks) m.replaceWith(document.createTextNode(m.textContent));
+      root.normalize();
+      marks = []; cur = -1;
+    }
+    /** Přeskočí na shodu o d dál (cyklicky) a odroluje k ní.
+     *  @param {number} d  +1 další, -1 předchozí  @returns {void} */
+    function go(d) {
+      if (!marks.length) return;
+      if (cur >= 0) marks[cur].classList.remove('cur');
+      cur = (cur + d + marks.length) % marks.length;
+      marks[cur].classList.add('cur');
+      marks[cur].scrollIntoView({ block: 'center' });
+      count.textContent = `${cur + 1}/${marks.length}`;
+    }
+    /** Najde a zvýrazní dotaz (bez ohledu na velikost písmen a diakritiku).  @returns {void} */
+    function search() {
+      clear();
+      const fold = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      const q = fold(input.value.trim());
+      if (q.length < 2) { count.textContent = ''; return; }
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode: n => n.parentElement.closest('.katex, pre, script, style, svg')
+          ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        // NFD fold zachová délku jen bez diakritiky → mapujeme po znacích
+        const src = node.nodeValue, folded = [...src].map(fold).join('');
+        if (folded.length !== src.length) continue;
+        let idx = folded.indexOf(q), last = 0;
+        if (idx < 0) continue;
+        const frag = document.createDocumentFragment();
+        while (idx >= 0) {
+          frag.append(src.slice(last, idx));
+          const m = document.createElement('mark');
+          m.className = 'doc-hit';
+          m.textContent = src.slice(idx, idx + q.length);
+          frag.append(m); marks.push(m);
+          last = idx + q.length;
+          idx = folded.indexOf(q, last);
+        }
+        frag.append(src.slice(last));
+        node.replaceWith(frag);
+      }
+      count.textContent = marks.length ? '' : '0';
+      go(1);
+    }
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 200); });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(e.shiftKey ? -1 : 1); } });
+    bar.addEventListener('click', e => { const d = e.target.dataset.d; if (d) go(+d); });
+    return bar;
+  }
+
   async function renderResourceInto(targets, label, src, type) {
     targets.docTitle.textContent = label;
     targets.docMeta.textContent  = src;
@@ -892,6 +964,7 @@
 
       targets.docBody.classList.remove('status');
       targets.docBody.innerHTML = '';
+      targets.docBody.appendChild(attachDocSearch(rendered));
       targets.docBody.appendChild(rendered);
 
       // KaTeX fallback for any math that slipped through
