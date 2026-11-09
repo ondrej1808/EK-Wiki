@@ -360,8 +360,11 @@
           code: 'B2M34EPL', title: 'Elektronika pevných látek',
           resources: [
             { type: 'note',  label: 'Otázky 1–50 (ověřené)',  src: MG_EPL + 'otazky.md' },
-            { type: 'cards', label: 'Kartičky',              src: 'set=json/magistr-epl.json&subject=EPL' },
+            { type: 'note',  label: 'Otázky 51–87 (z přednášek)', src: MG_EPL + 'otazky-51-87.md' },
+            { type: 'cards', label: 'Kartičky – semestrální test (1–50)', src: 'set=json/magistr-epl.json&subject=EPL' },
+            { type: 'cards', label: 'Kartičky – kompletní (1–87)',        src: 'set=json/magistr-epl-komplet.json&subject=EPL' },
             { type: 'note',  label: 'Applety, hystereze, literatura', src: MG_EPL + 'applety.md' },
+            { type: 'pdf',   label: 'Zadání – seznam testových otázek 1–87', src: MG_EPL + 'pdf/otazky-zadani-1-87.pdf' },
             { type: 'pdf',   label: 'Přednáška 1 – Krystaly', src: MG_EPL + 'pdf/P01-krystaly.pdf' },
             { type: 'pdf',   label: 'Přednáška 2a – Vodík, kvantová jáma', src: MG_EPL + 'pdf/P02a-vodik-kvantova-jama.pdf' },
             { type: 'pdf',   label: 'Přednáška 2b – Vazby', src: MG_EPL + 'pdf/P02b-vazby.pdf' },
