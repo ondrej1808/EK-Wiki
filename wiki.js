@@ -325,7 +325,7 @@
    *  a naopak; stav panelů se ukládá pod jinými klíči. */
   const MAGISTR = new URLSearchParams(window.location.search).get('kap') === 'magistr';
   const MG_IASA = 'magistr/B2M31IASA/';
-  const MG_EPL = 'magistr/EPL/';
+  const MG_EPL = 'magistr/B2M34EPL/';
   const MAGISTR_SECTIONS = [
     {
       section: 'EK Magistr',
@@ -357,10 +357,39 @@
           ],
         },
         {
-          code: 'EPL', title: 'EPL – krystaly, poruchy, vazby, pásy',
+          code: 'B2M34EPL', title: 'Elektronika pevných látek',
           resources: [
-            { type: 'note',  label: 'Otázky 1–50 (z Anki)',  src: MG_EPL + 'otazky.md' },
+            { type: 'note',  label: 'Otázky 1–50 (ověřené)',  src: MG_EPL + 'otazky.md' },
             { type: 'cards', label: 'Kartičky',              src: 'set=json/magistr-epl.json&subject=EPL' },
+            { type: 'note',  label: 'Applety, hystereze, literatura', src: MG_EPL + 'applety.md' },
+            { type: 'pdf',   label: 'Přednáška 1 – Krystaly', src: MG_EPL + 'pdf/P01-krystaly.pdf' },
+            { type: 'pdf',   label: 'Přednáška 2a – Vodík, kvantová jáma', src: MG_EPL + 'pdf/P02a-vodik-kvantova-jama.pdf' },
+            { type: 'pdf',   label: 'Přednáška 2b – Vazby', src: MG_EPL + 'pdf/P02b-vazby.pdf' },
+            { type: 'pdf',   label: 'Přednáška 3 – Reciproká mřížka, difrakce', src: MG_EPL + 'pdf/P03-reciproka-mrizka-difrakce.pdf' },
+            { type: 'pdf',   label: 'Přednáška 4 – Kmity mřížky (fonony)', src: MG_EPL + 'pdf/P04-kmity-mrizky-fonony.pdf' },
+            { type: 'pdf',   label: 'Přednáška 5a – Fázové přechody', src: MG_EPL + 'pdf/P05a-fazove-prechody.pdf' },
+            { type: 'pdf',   label: 'Přednáška 5b – Růst krystalů', src: MG_EPL + 'pdf/P05b-rust-krystalu.pdf' },
+            { type: 'pdf',   label: 'Přednáška 6a – Poruchy', src: MG_EPL + 'pdf/P06a-poruchy.pdf' },
+            { type: 'pdf',   label: 'Přednáška 6b – Povrchy (Woodova notace)', src: MG_EPL + 'pdf/P06b-poruchy-povrchy.pdf' },
+            { type: 'pdf',   label: 'Přednáška 7 – Pásový model', src: MG_EPL + 'pdf/P07-pasovy-model.pdf' },
+            { type: 'pdf',   label: 'Přednáška 8 – Elektrony a díry', src: MG_EPL + 'pdf/P08-elektrony-a-diry.pdf' },
+            { type: 'pdf',   label: 'Přednáška 9 – Transport', src: MG_EPL + 'pdf/P09-transport.pdf' },
+            { type: 'pdf',   label: 'Přednáška 10 – Generace, rekombinace', src: MG_EPL + 'pdf/P10-generace-rekombinace.pdf' },
+            { type: 'pdf',   label: 'Přednáška 11 – Dielektrika', src: MG_EPL + 'pdf/P11-dielektrika.pdf' },
+            { type: 'pdf',   label: 'Přednáška 12 – Kovy', src: MG_EPL + 'pdf/P12-kovy.pdf' },
+            { type: 'pdf',   label: 'Přednáška 13 – Supravodivost', src: MG_EPL + 'pdf/P13-supravodivost.pdf' },
+            { type: 'pdf',   label: 'Přednáška 14 – Optické vlastnosti', src: MG_EPL + 'pdf/P14-opticke-vlastnosti.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Bodové grupy (EN)', src: MG_EPL + 'pdf/X-bodove-grupy-en.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Prostorové grupy (EN)', src: MG_EPL + 'pdf/X-prostorove-grupy-en.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Krystalizace, binární systémy', src: MG_EPL + 'pdf/X-krystalizace-binarni-systemy.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Rozdělovací funkce (statistiky)', src: MG_EPL + 'pdf/X-rozdelovaci-funkce-statistiky.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Elektronová mikroskopie', src: MG_EPL + 'pdf/X-elektronova-mikroskopie.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Ramanova spektroskopie', src: MG_EPL + 'pdf/X-ramanova-spektroskopie.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Skenovací sondová mikroskopie', src: MG_EPL + 'pdf/X-skenovaci-sondova-mikroskopie.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Mikroskopie opt./el./AFM (EN)', src: MG_EPL + 'pdf/X-mikroskopie-opt-el-AFM-en.pdf' },
+            { type: 'pdf',   label: 'Doplněk – QuantumWise ATK (EN)', src: MG_EPL + 'pdf/X-QuantumWise-ATK-en.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Silvaco TCAD', src: MG_EPL + 'pdf/X-Silvaco-TCAD.pdf' },
+            { type: 'pdf',   label: 'Doplněk – Feromagnetické polovodiče DMS (EN)', src: MG_EPL + 'pdf/X-DMS-feromagneticke-polovodice-en.pdf' },
           ],
         },
       ],
