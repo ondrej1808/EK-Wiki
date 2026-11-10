@@ -325,6 +325,7 @@
    *  a naopak; stav panelů se ukládá pod jinými klíči. */
   const MAGISTR = new URLSearchParams(window.location.search).get('kap') === 'magistr';
   const MG_IASA = 'magistr/B2M31IASA/';
+  const MG_DPL = 'magistr/DPL/';
   const MG_EPL = 'magistr/B2M34EPL/';
   const MAGISTR_SECTIONS = [
     {
@@ -354,6 +355,16 @@
             { type: 'pdf',  label: 'EKV vs. BSIM (přehled)',              src: MG_IASA + 'pdf/EKVvsBSIMoverview26.pdf' },
             { type: 'pdf',  label: 'EKV v2.6',                            src: MG_IASA + 'pdf/ekv_v262.pdf' },
             { type: 'pdf',  label: 'Prezentace – Přenosová vedení',       src: MG_IASA + 'pdf/TransmissionLine6.pdf' },
+          ],
+        },
+        {
+          code: 'DPL', title: 'Deep Learning',
+          resources: [
+            { type: 'pdf', label: 'Přednáška 1 – Machine Learning 101', src: MG_DPL + 'pdf/01_machinelearning101.pdf' },
+            { type: 'pdf', label: 'Přednáška 2 – Linear Classifier', src: MG_DPL + 'pdf/02_linearclassifier.pdf' },
+            { type: 'pdf', label: 'Přednáška 3 – Maximum Likelihood, KL Divergence', src: MG_DPL + 'pdf/03_maximumlikelihoodkldivergence.pdf' },
+            { type: 'pdf', label: 'Přednáška 4 – Neural Networks', src: MG_DPL + 'pdf/04_neuralnetworks.pdf' },
+            { type: 'pdf', label: 'Přednáška 5 – Convolutional Neural Networks', src: MG_DPL + 'pdf/05_cnns.pdf' },
           ],
         },
         {
