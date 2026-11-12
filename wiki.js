@@ -341,6 +341,7 @@
             { type: 'note', label: '5 – Model MOSFET (EKV a BSIM)',       src: MG_IASA + '05-model-mosfet-semiempiricky-ekv-a-bsim-sr.md' },
             { type: 'note', label: '6 – Přesnost modelů',                 src: MG_IASA + '06-presnost-modelu-prakticke-charakterizace.md' },
             { type: 'note', label: '7 – Modely přenosových vedení (nezkouší se)', src: MG_IASA + '07-modely-prenosovych-vedeni.md' },
+            { type: 'note', label: '8 – ⭐ Zkouška: model transimpedančního zesilovače', src: MG_IASA + '08-zkouska-model-transimpedancniho-zesilovace.md' },
             { type: 'cards', label: 'Kartičky ⭐ (podtržené otázky)',      src: 'set=json/magistr-iasa.json&subject=IASA' },
             { type: 'pdf',  label: 'Témata 2026 – modely (zadání)',       src: MG_IASA + 'pdf/Temata2026modely.pdf' },
             { type: 'pdf',  label: 'Semestrální test – celé PDF',         src: MG_IASA + 'pdf/IASA_sem_test.pdf' },
